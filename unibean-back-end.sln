@@ -5,6 +5,10 @@ VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unibean.Repository", "Unibean.Repository\Unibean.Repository.csproj", "{A996E0B4-61E2-44B3-A01A-04B5338AC81A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unibean.Service", "Unibean.Service\Unibean.Service.csproj", "{578B0E3B-3875-46A4-ADBF-7D323DBABA3C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unibean.API", "Unibean.API\Unibean.API.csproj", "{62575BD0-DEA6-4745-8712-B4DF7C88751B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{A996E0B4-61E2-44B3-A01A-04B5338AC81A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A996E0B4-61E2-44B3-A01A-04B5338AC81A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A996E0B4-61E2-44B3-A01A-04B5338AC81A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{578B0E3B-3875-46A4-ADBF-7D323DBABA3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{578B0E3B-3875-46A4-ADBF-7D323DBABA3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{578B0E3B-3875-46A4-ADBF-7D323DBABA3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{578B0E3B-3875-46A4-ADBF-7D323DBABA3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62575BD0-DEA6-4745-8712-B4DF7C88751B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62575BD0-DEA6-4745-8712-B4DF7C88751B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62575BD0-DEA6-4745-8712-B4DF7C88751B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62575BD0-DEA6-4745-8712-B4DF7C88751B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
