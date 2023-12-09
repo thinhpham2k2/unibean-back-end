@@ -3,27 +3,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Unibean.Repository.Entities;
 
-[Table("tbl_university")]
-public class University
+[Table("tbl_state")]
+public class State
 {
     [Key]
     [Column("id", TypeName = "char(26)")]
     public string Id { get; set; }
 
     [MaxLength(255)]
-    [Column("university_name")]
-    public string UniversityName { get; set; }
-
-    [Column("phone", TypeName = "char(20)")]
-    public string Phone { get; set; }
-
-    [EmailAddress]
-    [MaxLength(320)]
-    [Column("email")]
-    public string Email { get; set; }
-
-    [Column("link", TypeName = "text")]
-    public string Link { get; set; }
+    [Column("state_name")]
+    public string StateName { get; set; }
 
     [Column("image", TypeName = "text")]
     public string Image { get; set; }
@@ -38,10 +27,10 @@ public class University
     public string Description { get; set; }
 
     [Column("state", TypeName = "bit(1)")]
-    public bool? State { get; set; }
+    public bool? States { get; set; }
 
-    [Column("status", TypeName = "bit(1)")]  
+    [Column("status", TypeName = "bit(1)")]
     public bool? Status { get; set; }
 
-    public virtual ICollection<Campus> Campuses { get; set; }
+    public virtual ICollection<OrderState> OrderStates { get; set; }
 }

@@ -25,10 +25,10 @@ public class Campus
     public string CampusName { get; set; }
 
     [Column("opening_hours")]
-    public TimeOnly OpeningHours { get; set; }
+    public TimeOnly? OpeningHours { get; set; }
 
     [Column("closing_hours")]
-    public TimeOnly ClosingHours { get; set; }
+    public TimeOnly? ClosingHours { get; set; }
 
     [Column("Address", TypeName = "text")]
     public string address { get; set; }
