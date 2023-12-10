@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Unibean.Repository.Entities;
 
+[Table("tbl_image")]
 public class Image
 {
     [Key]

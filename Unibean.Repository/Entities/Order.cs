@@ -4,23 +4,24 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Unibean.Repository.Entities;
 
+[Table("tbl_order")]
 public class Order
 {
     [Key]
     [Column("id", TypeName = "char(26)")]
     public string Id { get; set; }
 
-    //[Column("student_id", TypeName = "char(26)")]
-    //public string StudentId { get; set; }
+    [Column("student_id", TypeName = "char(26)")]
+    public string StudentId { get; set; }
 
-    //public Student Student { get; set; }
+    public Student Student { get; set; }
 
     [Column("station_id", TypeName = "char(26)")]
     public string StationId { get; set; }
 
     public Station Station { get; set; }
 
-    [Column("amount")]
+    [Column("amount", TypeName = "decimal(38,2)")]
     public decimal? Amount { get; set; }
 
     [Column("date_created")]

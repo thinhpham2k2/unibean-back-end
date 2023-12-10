@@ -47,14 +47,14 @@ public class Campus
     [Column("image", TypeName = "text")]
     public string Image { get; set; }
 
+    [Column("description", TypeName = "text")]
+    public string Description { get; set; }
+
     [Column("date_created")]
     public DateTime? DateCreated { get; set; }
 
     [Column("date_updated")]
     public DateTime? DateUpdated { get; set; }
-
-    [Column("description", TypeName = "text")]
-    public string Description { get; set; }
 
     [Column("state", TypeName = "bit(1)")]
     public bool? State { get; set; }

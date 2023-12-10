@@ -4,31 +4,28 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Unibean.Repository.Entities;
 
-[Table("tbl_order_state")]
-public class OrderState
+[Table("tbl_campaign_gender")]
+public class CampaignGender
 {
     [Key]
     [Column("id", TypeName = "char(26)")]
     public string Id { get; set; }
 
-    [Column("order_id", TypeName = "char(26)")]
-    public string OrderId { get; set; }
+    [Column("campaign_id", TypeName = "char(26)")]
+    public string CampaignId { get; set; }
 
-    public Order Order { get; set; }
+    public Campaign Campaign { get; set; }
 
-    [Column("state_id", TypeName = "char(26)")]
-    public string StateId { get; set; }
+    [Column("gender_id", TypeName = "char(26)")]
+    public string GenderId { get; set; }
 
-    public State State { get; set; }
-
-    [Column("date_created")]
-    public DateTime? DateCreated { get; set; }
+    public Gender Gender { get; set; }
 
     [Column("description", TypeName = "text")]
     public string Description { get; set; }
 
     [Column("state", TypeName = "bit(1)")]
-    public bool? States { get; set; }
+    public bool? State { get; set; }
 
     [Column("status", TypeName = "bit(1)")]
     public bool? Status { get; set; }

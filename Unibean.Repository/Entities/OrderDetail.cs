@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Unibean.Repository.Entities;
 
+[Table("tbl_order_detail")]
 public class OrderDetail
 {
     [Key]
@@ -20,13 +21,13 @@ public class OrderDetail
 
     public Order Order { get; set; }
 
-    [Column("price")]
+    [Column("price", TypeName = "decimal(38,2)")]
     public decimal? Price { get; set; }
 
     [Column("quantity")]
     public int? Quantity { get; set; }
 
-    [Column("amount")]
+    [Column("amount", TypeName = "decimal(38,2)")]
     public decimal? Amount { get; set; }
 
     [Column("state", TypeName = "bit(1)")]
