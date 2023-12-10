@@ -3,25 +3,22 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Unibean.Repository.Entities;
 
-[Table("tbl_campaign_type")]
-public class CampaignType
+[Table("tbl_campaign_store")]
+public class CampaignStore
 {
     [Key]
     [Column("id", TypeName = "char(26)")]
     public string Id { get; set; }
 
-    [MaxLength(255)]
-    [Column("type_name")]
-    public string TypeName { get; set; }
+    [Column("campaign_id", TypeName = "char(26)")]
+    public string CampaignId { get; set; }
 
-    [Column("image", TypeName = "text")]
-    public string Image { get; set; }
+    public Campaign Campaign { get; set; }
 
-    [Column("date_created")]
-    public DateTime? DateCreated { get; set; }
+    [Column("store_id", TypeName = "char(26)")]
+    public string StoreId { get; set; }
 
-    [Column("date_updated")]
-    public DateTime? DateUpdated { get; set; }
+    public Store Store { get; set; }
 
     [Column("description", TypeName = "text")]
     public string Description { get; set; }
@@ -31,6 +28,4 @@ public class CampaignType
 
     [Column("status", TypeName = "bit(1)")]
     public bool? Status { get; set; }
-
-    public virtual ICollection<Campaign> Campaigns { get; set; }
 }

@@ -83,11 +83,11 @@ public class Student
 
     public virtual ICollection<Order> Orders { get; set; }
 
-    //public virtual ICollection<Order> Orders { get; set; }
+    public virtual ICollection<Activity> Activities { get; set; }
 
-    //public virtual ICollection<Order> Orders { get; set; }
+    public virtual ICollection<Wallet> Wallets { get; set; }
 
-    //public virtual ICollection<Order> Orders { get; set; }
+    public virtual ICollection<Payment> Payments { get; set; }
 
-    //public virtual ICollection<Order> Orders { get; set; }
+    public virtual ICollection<Wishlist> Wishlists { get; set; }
 }

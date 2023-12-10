@@ -4,27 +4,30 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Unibean.Repository.Entities;
 
-[Table("tbl_area")]
-public class Area
+[Table("tbl_voucher")]
+public class Voucher
 {
     [Key]
     [Column("id", TypeName = "char(26)")]
     public string Id { get; set; }
 
-    [Column("district_id", TypeName = "char(26)")]
-    public string DistrictId { get; set; }
+    [Column("partner_id", TypeName = "char(26)")]
+    public string PartnerId { get; set; }
 
-    public District District { get; set; }
+    public Partner Partner { get; set; }
 
     [MaxLength(255)]
-    [Column("area_name")]
-    public string AreaName { get; set; }
+    [Column("voucher_name")]
+    public string VoucherName { get; set; }
+
+    [Column("price", TypeName = "decimal(38,2)")]
+    public decimal? Price { get; set; }
+
+    [Column("rate", TypeName = "decimal(38,2)")]
+    public decimal? Rate { get; set; }
 
     [Column("image", TypeName = "text")]
     public string Image { get; set; }
-
-    [Column("address", TypeName = "text")]
-    public string Address { get; set; }
 
     [Column("date_created")]
     public DateTime? DateCreated { get; set; }
@@ -41,7 +44,5 @@ public class Area
     [Column("status", TypeName = "bit(1)")]
     public bool? Status { get; set; }
 
-    public virtual ICollection<Campus> Campuses { get; set; }
-
-    public virtual ICollection<Store> Stores { get; set; }
+    public virtual ICollection<VoucherItem> VoucherItems { get; set; }
 }

@@ -4,28 +4,28 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Unibean.Repository.Entities;
 
-[Table("tbl_order")]
-public class Order
+[Table("tbl_order_transaction")]
+public class OrderTransaction
 {
     [Key]
     [Column("id", TypeName = "char(26)")]
     public string Id { get; set; }
 
-    [Column("student_id", TypeName = "char(26)")]
-    public string StudentId { get; set; }
+    [Column("order_id", TypeName = "char(26)")]
+    public string OrderId { get; set; }
 
-    public Student Student { get; set; }
+    public Order Order { get; set; }
 
-    [Column("station_id", TypeName = "char(26)")]
-    public string StationId { get; set; }
+    [Column("wallet_id", TypeName = "char(26)")]
+    public string WalletId { get; set; }
 
-    public Station Station { get; set; }
+    public Wallet Wallet { get; set; }
 
     [Column("amount", TypeName = "decimal(38,2)")]
     public decimal? Amount { get; set; }
 
-    [Column("date_created")]
-    public DateTime? DateCreated { get; set; }
+    [Column("rate", TypeName = "decimal(38,2)")]
+    public decimal? Rate { get; set; }
 
     [Column("description", TypeName = "text")]
     public string Description { get; set; }
@@ -35,10 +35,4 @@ public class Order
 
     [Column("status", TypeName = "bit(1)")]
     public bool? Status { get; set; }
-
-    public virtual ICollection<OrderState> OrderStates { get; set; }
-
-    public virtual ICollection<OrderDetail> OrderDetails { get; set; }
-
-    public virtual ICollection<OrderTransaction> OrderTransactions { get; set; }
 }

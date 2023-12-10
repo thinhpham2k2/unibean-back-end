@@ -3,19 +3,25 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Unibean.Repository.Entities;
 
-[Table("tbl_campaign_type")]
-public class CampaignType
+[Table("tbl_request")]
+public class Request
 {
     [Key]
     [Column("id", TypeName = "char(26)")]
     public string Id { get; set; }
 
-    [MaxLength(255)]
-    [Column("type_name")]
-    public string TypeName { get; set; }
+    [Column("partner_id", TypeName = "char(26)")]
+    public string PartnerId { get; set; }
 
-    [Column("image", TypeName = "text")]
-    public string Image { get; set; }
+    public Partner Partner { get; set; }
+
+    [Column("admin_id", TypeName = "char(26)")]
+    public string AdminId { get; set; }
+
+    public Admin Admin { get; set; }
+
+    [Column("amount", TypeName = "decimal(38,2)")]
+    public decimal? Amount { get; set; }
 
     [Column("date_created")]
     public DateTime? DateCreated { get; set; }
@@ -27,10 +33,10 @@ public class CampaignType
     public string Description { get; set; }
 
     [Column("state", TypeName = "bit(1)")]
-    public bool? State { get; set; }
+    public bool? States { get; set; }
 
     [Column("status", TypeName = "bit(1)")]
     public bool? Status { get; set; }
 
-    public virtual ICollection<Campaign> Campaigns { get; set; }
+    public virtual ICollection<RequestTransaction> RequestTransactions { get; set; }
 }

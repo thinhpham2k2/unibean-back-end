@@ -31,7 +31,7 @@ public class Campus
     public TimeOnly? ClosingHours { get; set; }
 
     [Column("Address", TypeName = "text")]
-    public string address { get; set; }
+    public string Address { get; set; }
 
     [Column("phone", TypeName = "char(20)")]
     public string Phone { get; set; }
@@ -61,4 +61,8 @@ public class Campus
 
     [Column("status", TypeName = "bit(1)")]
     public bool? Status { get; set; }
+
+    public virtual ICollection<Student> Students { get; set; }
+
+    public virtual ICollection<CampaignCampus> CampaignCampuses { get; set; }
 }

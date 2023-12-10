@@ -10,10 +10,10 @@ public class Campaign
     [Column("id", TypeName = "char(26)")]
     public string Id { get; set; }
 
-    //[Column("partner_id", TypeName = "char(26)")]
-    //public string PartnerId { get; set; }
+    [Column("partner_id", TypeName = "char(26)")]
+    public string PartnerId { get; set; }
 
-    //public Partner Partner { get; set; }
+    public Partner Partner { get; set; }
 
     [Column("type_id", TypeName = "char(26)")]
     public string TypeId { get; set; }
@@ -56,4 +56,18 @@ public class Campaign
 
     [Column("status", TypeName = "bit(1)")]
     public bool? Status { get; set; }
+
+    public virtual ICollection<CampaignCampus> CampaignCampuses { get; set; }
+
+    public virtual ICollection<CampaignGender> CampaignGenders { get; set; }
+
+    public virtual ICollection<CampaignMajor> CampaignMajors { get; set; }
+
+    public virtual ICollection<CampaignStore> CampaignStores { get; set; }
+
+    public virtual ICollection<VoucherItem> VoucherItems { get; set; }
+
+    public virtual ICollection<Wallet> Wallets { get; set; }
+
+    public virtual ICollection<WalletTransaction> WalletTransactions { get; set; }
 }
