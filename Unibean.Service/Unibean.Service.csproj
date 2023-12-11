@@ -1,13 +1,56 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Unibean.Repository\Unibean.Repository.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\Activity\" />
+    <Folder Include="Models\ActivityTransaction\" />
+    <Folder Include="Models\Admin\" />
+    <Folder Include="Models\Area\" />
+    <Folder Include="Models\Campaign\" />
+    <Folder Include="Models\CampaignCampus\" />
+    <Folder Include="Models\CampaignGender\" />
+    <Folder Include="Models\CampaignMajor\" />
+    <Folder Include="Models\CampaignStore\" />
+    <Folder Include="Models\CampaignType\" />
+    <Folder Include="Models\Campus\" />
+    <Folder Include="Models\Category\" />
+    <Folder Include="Models\City\" />
+    <Folder Include="Models\District\" />
+    <Folder Include="Models\Gender\" />
+    <Folder Include="Models\Image\" />
+    <Folder Include="Models\Major\" />
+    <Folder Include="Models\Wishlist\" />
+    <Folder Include="Models\WalletType\" />
+    <Folder Include="Models\WalletTransaction\" />
+    <Folder Include="Models\Wallet\" />
+    <Folder Include="Models\VoucherItem\" />
+    <Folder Include="Models\Voucher\" />
+    <Folder Include="Models\University\" />
+    <Folder Include="Models\Type\" />
+    <Folder Include="Models\Student\" />
+    <Folder Include="Models\Store\" />
+    <Folder Include="Models\Station\" />
+    <Folder Include="Models\State\" />
+    <Folder Include="Models\RequestTransaction\" />
+    <Folder Include="Models\Request\" />
+    <Folder Include="Models\Product\" />
+    <Folder Include="Models\PaymentTransaction\" />
+    <Folder Include="Models\Payment\" />
+    <Folder Include="Models\Partner\" />
+    <Folder Include="Models\OrderTransaction\" />
+    <Folder Include="Models\OrderState\" />
+    <Folder Include="Models\OrderDetail\" />
+    <Folder Include="Models\Order\" />
+    <Folder Include="Validations\" />
   </ItemGroup>
 
 </Project>
