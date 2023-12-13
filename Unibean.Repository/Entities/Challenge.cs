@@ -15,6 +15,10 @@ public class Challenge
 
     public ChallengeType Type { get; set; }
 
+    [MaxLength(255)]
+    [Column("challenge_name")]
+    public string ChallengeName { get; set; }
+
     [Column("amount", TypeName = "decimal(38,2)")]
     public decimal? Amount { get; set; }
 

@@ -11,7 +11,7 @@ using Unibean.Repository.Entities;
 namespace Unibean.Repository.Migrations
 {
     [DbContext(typeof(UnibeanDBContext))]
-    [Migration("20231213031800_Unibean")]
+    [Migration("20231213111605_Unibean")]
     partial class Unibean
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -597,6 +597,11 @@ namespace Unibean.Repository.Migrations
                     b.Property<decimal?>("Amount")
                         .HasColumnType("decimal(38,2)")
                         .HasColumnName("amount");
+
+                    b.Property<string>("ChallengeName")
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("challenge_name");
 
                     b.Property<decimal?>("Condition")
                         .HasColumnType("decimal(38,2)")

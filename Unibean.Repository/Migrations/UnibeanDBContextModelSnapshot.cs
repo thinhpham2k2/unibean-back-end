@@ -596,6 +596,11 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("decimal(38,2)")
                         .HasColumnName("amount");
 
+                    b.Property<string>("ChallengeName")
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("challenge_name");
+
                     b.Property<decimal?>("Condition")
                         .HasColumnType("decimal(38,2)")
                         .HasColumnName("condition");

@@ -381,6 +381,8 @@ namespace Unibean.Repository.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     type_id = table.Column<string>(type: "char(26)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    challenge_name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     amount = table.Column<decimal>(type: "decimal(38,2)", nullable: true),
                     condition = table.Column<decimal>(type: "decimal(38,2)", nullable: true),
                     date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),

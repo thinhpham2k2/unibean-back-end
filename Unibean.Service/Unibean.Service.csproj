@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -11,50 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\ActivityTransactions\" />
-    <Folder Include="Models\Admins\" />
-    <Folder Include="Models\Areas\" />
-    <Folder Include="Models\Campaigns\" />
-    <Folder Include="Models\CampaignCampuses\" />
-    <Folder Include="Models\CampaignGenders\" />
-    <Folder Include="Models\CampaignMajors\" />
-    <Folder Include="Models\CampaignStores\" />
-    <Folder Include="Models\CampaignTypes\" />
-    <Folder Include="Models\Campuses\" />
-    <Folder Include="Models\Categories\" />
-    <Folder Include="Models\Cities\" />
-    <Folder Include="Models\Districts\" />
-    <Folder Include="Models\Genders\" />
-    <Folder Include="Models\Images\" />
-    <Folder Include="Models\Majors\" />
-    <Folder Include="Models\Challenges\" />
-    <Folder Include="Models\ChallengeTransactions\" />
-    <Folder Include="Models\ChallengeTypes\" />
-    <Folder Include="Models\Invitations\" />
-    <Folder Include="Models\Levels\" />
-    <Folder Include="Models\StudentChallenges\" />
-    <Folder Include="Models\Wishlists\" />
-    <Folder Include="Models\WalletTypes\" />
-    <Folder Include="Models\WalletTransactions\" />
-    <Folder Include="Models\Wallets\" />
-    <Folder Include="Models\VoucherItems\" />
-    <Folder Include="Models\Vouchers\" />
-    <Folder Include="Models\Universities\" />
-    <Folder Include="Models\Types\" />
-    <Folder Include="Models\Students\" />
-    <Folder Include="Models\Stores\" />
-    <Folder Include="Models\Stations\" />
-    <Folder Include="Models\States\" />
-    <Folder Include="Models\RequestTransactions\" />
-    <Folder Include="Models\Requests\" />
-    <Folder Include="Models\Products\" />
-    <Folder Include="Models\PaymentTransactions\" />
-    <Folder Include="Models\Payments\" />
-    <Folder Include="Models\Partners\" />
-    <Folder Include="Models\OrderTransactions\" />
-    <Folder Include="Models\OrderStates\" />
-    <Folder Include="Models\OrderDetails\" />
-    <Folder Include="Models\Orders\" />
     <Folder Include="Validations\" />
   </ItemGroup>
 
