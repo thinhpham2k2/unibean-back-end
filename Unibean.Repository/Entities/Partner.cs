@@ -52,6 +52,12 @@ public class Partner
     [Column("link", TypeName = "text")]
     public string Link { get; set; }
 
+    [Column("total_income", TypeName = "decimal(38,2)")]
+    public decimal? TotalIncome { get; set; }
+
+    [Column("total_spending", TypeName = "decimal(38,2)")]
+    public decimal? TotalSpending { get; set; }
+
     [Column("description", TypeName = "text")]
     public string Description { get; set; }
 

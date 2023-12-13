@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using System.Reflection;
 
 namespace Unibean.Repository.Entities;
 
@@ -11,6 +10,11 @@ public class Student
     [Key]
     [Column("id", TypeName = "char(26)")]
     public string Id { get; set; }
+
+    [Column("level_id", TypeName = "char(26)")]
+    public string LevelId { get; set; }
+
+    public Level Level { get; set; }
 
     [Column("gender_id", TypeName = "char(26)")]
     public string GenderId { get; set; }
@@ -63,6 +67,12 @@ public class Student
     [Column("address", TypeName = "text")]
     public string Address { get; set; }
 
+    [Column("total_income", TypeName = "decimal(38,2)")]
+    public decimal? TotalIncome { get; set; }
+
+    [Column("total_spending", TypeName = "decimal(38,2)")]
+    public decimal? TotalSpending { get; set; }
+
     [Column("date_created")]
     public DateTime? DateCreated { get; set; }
 
@@ -90,4 +100,10 @@ public class Student
     public virtual ICollection<Payment> Payments { get; set; }
 
     public virtual ICollection<Wishlist> Wishlists { get; set; }
+
+    public virtual ICollection<Invitation> Inviters { get; set; }
+
+    public virtual ICollection<Invitation> Invitees { get; set; }
+
+    public virtual ICollection<StudentChallenge> StudentChallenges { get; set; }
 }
