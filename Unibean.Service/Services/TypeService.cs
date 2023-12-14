@@ -4,6 +4,7 @@ using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Types;
 using Unibean.Service.Services.Interfaces;
+using Unibean.Service.Utilities.FireBase;
 using Type = Unibean.Repository.Entities.Type;
 
 namespace Unibean.Service.Services;

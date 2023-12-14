@@ -168,6 +168,9 @@ builder.Services.AddSingleton<IWalletTransactionService, WalletTransactionServic
 builder.Services.AddSingleton<IWalletTypeService, WalletTypeService>();
 builder.Services.AddSingleton<IWishlistService, WishlistService>();
 
+//FireBase
+builder.Services.AddSingleton<IFireBaseService, FireBaseService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

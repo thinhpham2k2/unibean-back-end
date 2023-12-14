@@ -2,6 +2,7 @@
 using System.Net;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Types;
+using Unibean.Service.Services;
 using Unibean.Service.Services.Interfaces;
 
 namespace Unibean.API.Controllers;
@@ -12,9 +13,13 @@ public class TypeController : ControllerBase
 {
     private readonly ITypeService typeService;
 
-    public TypeController(ITypeService typeService)
+    private readonly IFireBaseService fireBaseService;
+
+    public TypeController(ITypeService typeService,
+        IFireBaseService fireBaseService)
     {
         this.typeService = typeService;
+        this.fireBaseService = fireBaseService;
     }
 
     /// <summary>
@@ -45,10 +50,18 @@ public class TypeController : ControllerBase
     //[Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(TypeModel), (int)HttpStatusCode.Created)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public IActionResult Create([FromBody] CreateTypeModel creator)
+    public async Task<ActionResult> Create([FromForm] CreateTypeModel creator)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
+        //try
+        //{
+        //    return Ok(await fireBaseService.UploadFileAsync(creator.Image, "types"));
+        //}
+        //catch (InvalidParameterException e)
+        //{
+        //    return BadRequest(e.Message);
+        //}
         var type = typeService.Add(creator);
         if (type != null)
         {
