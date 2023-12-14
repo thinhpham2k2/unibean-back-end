@@ -45,7 +45,7 @@ builder.Services.Configure<ApiBehaviorOptions>(options => {
     options.SuppressModelStateInvalidFilter = true;
 });
 
-// Controller service
+// Controller service, exception handler
 builder.Services.AddControllers(options =>
 {
     options.Filters.Add<ExceptionFilter>();
@@ -190,6 +190,7 @@ app.UseCors(builder =>
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
