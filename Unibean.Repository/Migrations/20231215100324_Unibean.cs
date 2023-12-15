@@ -26,6 +26,8 @@ namespace Unibean.Repository.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     phone = table.Column<string>(type: "char(20)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    email = table.Column<string>(type: "varchar(320)", maxLength: 320, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     avatar = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     file_name = table.Column<string>(type: "text", nullable: true)

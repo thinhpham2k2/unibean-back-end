@@ -12,96 +12,118 @@ public class FireBaseService : IFireBaseService
 {
     public async Task<string> GetLinkAsync(string fileName, string folder)
     {
-        var config = new FirebaseAuthConfig
+        try
         {
-            ApiKey = UploadConfig.API_KEY,
-            AuthDomain = UploadConfig.AuthDomain,
-            Providers = new FirebaseAuthProvider[]
-                {
-                    new EmailProvider()
-                },
-        };
-        var auth = new FirebaseAuthClient(config);
-        var loginInfo = await auth.SignInWithEmailAndPasswordAsync(UploadConfig.AuthEmail, UploadConfig.AuthPassword);
-        var storage = new FirebaseStorage(UploadConfig.Bucket, new FirebaseStorageOptions
-        {
-            AuthTokenAsyncFactory = async () => await Task.FromResult(await loginInfo.User.GetIdTokenAsync()),
-            ThrowOnCancel = true
-        });
-
-        var starRef = storage.Child(folder).Child(fileName);
-        var dowloadURL = await starRef.GetDownloadUrlAsync();
-        return dowloadURL;
-    }
-
-    public async Task<bool> RemoveFileAsync(string fileName, string folder)
-    {
-        var config = new FirebaseAuthConfig
-        {
-            ApiKey = UploadConfig.API_KEY,
-            AuthDomain = UploadConfig.AuthDomain,
-            Providers = new FirebaseAuthProvider[]
-                {
-                    new EmailProvider()
-                },
-        };
-        var auth = new FirebaseAuthClient(config);
-        var loginInfo = await auth.SignInWithEmailAndPasswordAsync(UploadConfig.AuthEmail, UploadConfig.AuthPassword);
-        var storage = new FirebaseStorage(UploadConfig.Bucket, new FirebaseStorageOptions
-        {
-            AuthTokenAsyncFactory = async () => await Task.FromResult(await loginInfo.User.GetIdTokenAsync()),
-            ThrowOnCancel = true
-        });
-        await storage.Child(folder).Child(fileName).DeleteAsync();
-        return true;
-    }
-
-    public async Task<FireBaseFile> UploadFileAsync(IFormFile fileUpload, string folder)
-    {
-        FileInfo fileInfo = new FileInfo(fileUpload.FileName);
-        string fileName = Ulid.NewUlid().ToString();
-        if (fileUpload.Length > 0)
-        {
-            var fs = fileUpload.OpenReadStream();
             var config = new FirebaseAuthConfig
             {
                 ApiKey = UploadConfig.API_KEY,
                 AuthDomain = UploadConfig.AuthDomain,
                 Providers = new FirebaseAuthProvider[]
-                {
+                    {
                     new EmailProvider()
-                },
+                    },
             };
             var auth = new FirebaseAuthClient(config);
             var loginInfo = await auth.SignInWithEmailAndPasswordAsync(UploadConfig.AuthEmail, UploadConfig.AuthPassword);
-
-            var cancellation = new FirebaseStorage(
-                UploadConfig.Bucket,
-                new FirebaseStorageOptions
-                {
-                    AuthTokenAsyncFactory = async () => await Task.FromResult(await loginInfo.User.GetIdTokenAsync()),
-                    ThrowOnCancel = true
-                }
-                ).Child(folder).Child(fileName)
-                .PutAsync(fs, CancellationToken.None);
-            try
+            var storage = new FirebaseStorage(UploadConfig.Bucket, new FirebaseStorageOptions
             {
-                var result = await cancellation;
+                AuthTokenAsyncFactory = async () => await Task.FromResult(await loginInfo.User.GetIdTokenAsync()),
+                ThrowOnCancel = true
+            });
 
-                return new FireBaseFile
-                {
-                    FileName = fileName,
-                    URL = result,
-                    Extension = fileInfo.Extension
-                };
-            }
-            catch (Exception ex)
-            {
-                throw new InvalidParameterException(ex.Message);
-
-            }
-
+            var starRef = storage.Child(folder).Child(fileName);
+            var dowloadURL = await starRef.GetDownloadUrlAsync();
+            return dowloadURL;
         }
-        else throw new InvalidParameterException("File is not existed!");
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return null;
+        }
+    }
+
+    public async Task<bool> RemoveFileAsync(string fileName, string folder)
+    {
+        try
+        {
+            var config = new FirebaseAuthConfig
+            {
+                ApiKey = UploadConfig.API_KEY,
+                AuthDomain = UploadConfig.AuthDomain,
+                Providers = new FirebaseAuthProvider[]
+                    {
+                    new EmailProvider()
+                    },
+            };
+            var auth = new FirebaseAuthClient(config);
+            var loginInfo = await auth.SignInWithEmailAndPasswordAsync(UploadConfig.AuthEmail, UploadConfig.AuthPassword);
+            var storage = new FirebaseStorage(UploadConfig.Bucket, new FirebaseStorageOptions
+            {
+                AuthTokenAsyncFactory = async () => await Task.FromResult(await loginInfo.User.GetIdTokenAsync()),
+                ThrowOnCancel = true
+            });
+            await storage.Child(folder).Child(fileName).DeleteAsync();
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return false;
+        }
+    }
+
+    public async Task<FireBaseFile> UploadFileAsync(IFormFile fileUpload, string folder)
+    {
+        try
+        {
+            FileInfo fileInfo = new FileInfo(fileUpload.FileName);
+            string fileName = Ulid.NewUlid().ToString();
+            if (fileUpload.Length > 0)
+            {
+                var fs = fileUpload.OpenReadStream();
+                var config = new FirebaseAuthConfig
+                {
+                    ApiKey = UploadConfig.API_KEY,
+                    AuthDomain = UploadConfig.AuthDomain,
+                    Providers = new FirebaseAuthProvider[]
+                    {
+                    new EmailProvider()
+                    },
+                };
+                var auth = new FirebaseAuthClient(config);
+                var loginInfo = await auth.SignInWithEmailAndPasswordAsync(UploadConfig.AuthEmail, UploadConfig.AuthPassword);
+
+                var cancellation = new FirebaseStorage(
+                    UploadConfig.Bucket,
+                    new FirebaseStorageOptions
+                    {
+                        AuthTokenAsyncFactory = async () => await Task.FromResult(await loginInfo.User.GetIdTokenAsync()),
+                        ThrowOnCancel = true
+                    }
+                    ).Child(folder).Child(fileName)
+                    .PutAsync(fs, CancellationToken.None);
+                try
+                {
+                    var result = await cancellation;
+
+                    return new FireBaseFile
+                    {
+                        FileName = fileName,
+                        URL = result,
+                        Extension = fileInfo.Extension
+                    };
+                }
+                catch (Exception ex)
+                {
+                    throw new InvalidParameterException(ex.Message);
+                }
+            }
+            else throw new InvalidParameterException("File is not existed!");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return null;
+        }
     }
 }

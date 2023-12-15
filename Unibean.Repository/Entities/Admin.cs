@@ -26,6 +26,11 @@ public class Admin
     [Column("phone", TypeName = "char(20)")]
     public string Phone { get; set; }
 
+    [EmailAddress]
+    [MaxLength(320)]
+    [Column("email")]
+    public string Email { get; set; }
+
     [Column("avatar", TypeName = "text")]
     public string Avatar { get; set; }
 

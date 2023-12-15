@@ -11,7 +11,7 @@ using Unibean.Repository.Entities;
 namespace Unibean.Repository.Migrations
 {
     [DbContext(typeof(UnibeanDBContext))]
-    [Migration("20231215024419_Unibean")]
+    [Migration("20231215100324_Unibean")]
     partial class Unibean
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -136,6 +136,11 @@ namespace Unibean.Repository.Migrations
                     b.Property<DateTime?>("DateUpdated")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("date_updated");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(320)
+                        .HasColumnType("varchar(320)")
+                        .HasColumnName("email");
 
                     b.Property<string>("FileName")
                         .HasColumnType("text")

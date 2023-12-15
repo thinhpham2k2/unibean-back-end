@@ -135,6 +135,11 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("datetime(6)")
                         .HasColumnName("date_updated");
 
+                    b.Property<string>("Email")
+                        .HasMaxLength(320)
+                        .HasColumnType("varchar(320)")
+                        .HasColumnName("email");
+
                     b.Property<string>("FileName")
                         .HasColumnType("text")
                         .HasColumnName("file_name");
