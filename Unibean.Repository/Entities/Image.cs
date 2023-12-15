@@ -19,6 +19,9 @@ public class Image
     [Column("url", TypeName = "text")]
     public string Url { get; set; }
 
+    [Column("file_name", TypeName = "text")]
+    public string FileName { get; set; }
+
     [Column("is_cover", TypeName = "bit(1)")]
     public bool? IsCover { get; set; }
 

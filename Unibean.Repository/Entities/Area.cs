@@ -23,6 +23,9 @@ public class Area
     [Column("image", TypeName = "text")]
     public string Image { get; set; }
 
+    [Column("file_name", TypeName = "text")]
+    public string FileName { get; set; }
+
     [Column("address", TypeName = "text")]
     public string Address { get; set; }
 

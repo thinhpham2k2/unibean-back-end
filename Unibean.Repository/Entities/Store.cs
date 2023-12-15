@@ -35,6 +35,9 @@ public class Store
     [Column("image", TypeName = "text")]
     public string Image { get; set; }
 
+    [Column("file_name", TypeName = "text")]
+    public string FileName { get; set; }
+
     [EmailAddress]
     [MaxLength(320)]
     [Column("email")]

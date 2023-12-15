@@ -29,6 +29,9 @@ public class Admin
     [Column("avatar", TypeName = "text")]
     public string Avatar { get; set; }
 
+    [Column("file_name", TypeName = "text")]
+    public string FileName { get; set; }
+
     [Column("date_created")]
     public DateTime? DateCreated { get; set; }
 

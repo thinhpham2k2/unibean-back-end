@@ -32,8 +32,14 @@ public class Partner
     [Column("logo", TypeName = "text")]
     public string Logo { get; set; }
 
+    [Column("logo_file_name", TypeName = "text")]
+    public string LogoFileName { get; set; }
+
     [Column("cover_photo", TypeName = "text")]
     public string CoverPhoto { get; set; }
+
+    [Column("cover_file_name", TypeName = "text")]
+    public string CoverFileName { get; set; }
 
     [EmailAddress]
     [MaxLength(320)]

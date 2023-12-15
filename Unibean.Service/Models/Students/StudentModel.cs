@@ -19,6 +19,7 @@ public class StudentModel
     public DateOnly? DateOfBirth { get; set; }
     public string Phone { get; set; }
     public string Avatar { get; set; }
+    public string FileName { get; set; }
     public string Address { get; set; }
     public decimal? TotalIncome { get; set; }
     public decimal? TotalSpending { get; set; }

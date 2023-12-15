@@ -13,29 +13,46 @@ public class TypeService : ITypeService
 {
     private readonly Mapper mapper;
 
+    private readonly string FOLDER_NAME = "types";
+
     private readonly ITypeRepository typeRepository;
 
-    public TypeService(ITypeRepository typeRepository)
+    private readonly IFireBaseService fireBaseService;
+
+    public TypeService(ITypeRepository typeRepository,
+        IFireBaseService fireBaseService)
     {
         var config = new MapperConfiguration(cfg
                 =>
         {
             cfg.CreateMap<Type, TypeModel>().ReverseMap();
-            cfg.CreateMap<Type, UpdateTypeModel>().ReverseMap();
+            cfg.CreateMap<Type, UpdateTypeModel>()
+            .ReverseMap()
+            .ForMember(t => t.Image, opt => opt.Ignore())
+            .ForMember(t => t.DateUpdated, opt => opt.MapFrom(src => DateTime.Now));
             cfg.CreateMap<Type, CreateTypeModel>()
             .ReverseMap()
             .ForMember(t => t.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
+            .ForMember(t => t.Image, opt => opt.Ignore())
             .ForMember(t => t.DateCreated, opt => opt.MapFrom(src => DateTime.Now))
             .ForMember(t => t.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
             .ForMember(t => t.Status, opt => opt.MapFrom(src => true));
         });
         mapper = new Mapper(config);
         this.typeRepository = typeRepository;
+        this.fireBaseService = fireBaseService;
     }
 
-    public TypeModel Add(CreateTypeModel creation)
+    public async Task<TypeModel> Add(CreateTypeModel creation)
     {
-        return mapper.Map<TypeModel>(typeRepository.Add(mapper.Map<Type>(creation)));
+        Type entity = mapper.Map<Type>(creation);
+        if (creation.Image != null && creation.Image.Length > 0)
+        {
+            FireBaseFile f = await fireBaseService.UploadFileAsync(creation.Image, FOLDER_NAME);
+            entity.Image = f.URL;
+            entity.FileName = f.FileName;
+        }
+        return mapper.Map<TypeModel>(typeRepository.Add(entity));
     }
 
     public void Delete(string id)
@@ -58,8 +75,21 @@ public class TypeService : ITypeService
         throw new InvalidParameterException("Not found activity's type");
     }
 
-    public TypeModel Update(string id, UpdateTypeModel update)
+    public async Task<TypeModel> Update(string id, UpdateTypeModel update)
     {
-        throw new NotImplementedException();
+        Type entity = typeRepository.GetById(id);
+        if (entity != null)
+        {
+            entity = mapper.Map(update, entity);
+            if (update.Image != null && update.Image.Length > 0)
+            {
+                await fireBaseService.RemoveFileAsync(entity.FileName, FOLDER_NAME);
+                FireBaseFile f = await fireBaseService.UploadFileAsync(update.Image, FOLDER_NAME);
+                entity.Image = f.URL;
+                entity.FileName = f.FileName;
+            }
+            return mapper.Map<TypeModel>(typeRepository.Update(entity));
+        }
+        throw new InvalidParameterException("Not found activity's type");
     }
 }

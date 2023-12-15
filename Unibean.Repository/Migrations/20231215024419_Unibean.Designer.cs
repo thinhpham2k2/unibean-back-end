@@ -11,7 +11,7 @@ using Unibean.Repository.Entities;
 namespace Unibean.Repository.Migrations
 {
     [DbContext(typeof(UnibeanDBContext))]
-    [Migration("20231213111605_Unibean")]
+    [Migration("20231215024419_Unibean")]
     partial class Unibean
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -137,6 +137,10 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("datetime(6)")
                         .HasColumnName("date_updated");
 
+                    b.Property<string>("FileName")
+                        .HasColumnType("text")
+                        .HasColumnName("file_name");
+
                     b.Property<string>("FullName")
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)")
@@ -200,6 +204,10 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("char(26)")
                         .HasColumnName("district_id");
 
+                    b.Property<string>("FileName")
+                        .HasColumnType("text")
+                        .HasColumnName("file_name");
+
                     b.Property<string>("Image")
                         .HasColumnType("text")
                         .HasColumnName("image");
@@ -253,6 +261,10 @@ namespace Unibean.Repository.Migrations
                     b.Property<DateOnly?>("EndOn")
                         .HasColumnType("date")
                         .HasColumnName("end_on");
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("text")
+                        .HasColumnName("file_name");
 
                     b.Property<string>("Image")
                         .HasColumnType("text")
@@ -449,6 +461,10 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("text")
                         .HasColumnName("description");
 
+                    b.Property<string>("FileName")
+                        .HasColumnType("text")
+                        .HasColumnName("file_name");
+
                     b.Property<string>("Image")
                         .HasColumnType("text")
                         .HasColumnName("image");
@@ -511,6 +527,10 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("varchar(320)")
                         .HasColumnName("email");
 
+                    b.Property<string>("FileName")
+                        .HasColumnType("text")
+                        .HasColumnName("file_name");
+
                     b.Property<string>("Image")
                         .HasColumnType("text")
                         .HasColumnName("image");
@@ -570,6 +590,10 @@ namespace Unibean.Repository.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text")
                         .HasColumnName("description");
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("text")
+                        .HasColumnName("file_name");
 
                     b.Property<string>("Image")
                         .HasColumnType("text")
@@ -699,6 +723,10 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("text")
                         .HasColumnName("description");
 
+                    b.Property<string>("FileName")
+                        .HasColumnType("text")
+                        .HasColumnName("file_name");
+
                     b.Property<string>("Image")
                         .HasColumnType("text")
                         .HasColumnName("image");
@@ -744,6 +772,10 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("text")
                         .HasColumnName("description");
 
+                    b.Property<string>("FileName")
+                        .HasColumnType("text")
+                        .HasColumnName("file_name");
+
                     b.Property<string>("Image")
                         .HasColumnType("text")
                         .HasColumnName("image");
@@ -788,6 +820,10 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("varchar(255)")
                         .HasColumnName("district_name");
 
+                    b.Property<string>("FileName")
+                        .HasColumnType("text")
+                        .HasColumnName("file_name");
+
                     b.Property<string>("Image")
                         .HasColumnType("text")
                         .HasColumnName("image");
@@ -825,6 +861,10 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("text")
                         .HasColumnName("description");
 
+                    b.Property<string>("FileName")
+                        .HasColumnType("text")
+                        .HasColumnName("file_name");
+
                     b.Property<string>("GenderName")
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)")
@@ -860,6 +900,10 @@ namespace Unibean.Repository.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text")
                         .HasColumnName("description");
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("text")
+                        .HasColumnName("file_name");
 
                     b.Property<ulong?>("IsCover")
                         .HasColumnType("bit(1)")
@@ -949,6 +993,10 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("text")
                         .HasColumnName("description");
 
+                    b.Property<string>("FileName")
+                        .HasColumnType("text")
+                        .HasColumnName("file_name");
+
                     b.Property<string>("Image")
                         .HasColumnType("text")
                         .HasColumnName("image");
@@ -988,6 +1036,10 @@ namespace Unibean.Repository.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text")
                         .HasColumnName("description");
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("text")
+                        .HasColumnName("file_name");
 
                     b.Property<string>("Image")
                         .HasColumnType("text")
@@ -1203,6 +1255,10 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("time(6)")
                         .HasColumnName("closing_hours");
 
+                    b.Property<string>("CoverFileName")
+                        .HasColumnType("text")
+                        .HasColumnName("cover_file_name");
+
                     b.Property<string>("CoverPhoto")
                         .HasColumnType("text")
                         .HasColumnName("cover_photo");
@@ -1231,6 +1287,10 @@ namespace Unibean.Repository.Migrations
                     b.Property<string>("Logo")
                         .HasColumnType("text")
                         .HasColumnName("logo");
+
+                    b.Property<string>("LogoFileName")
+                        .HasColumnType("text")
+                        .HasColumnName("logo_file_name");
 
                     b.Property<TimeOnly?>("OpeningHours")
                         .HasColumnType("time(6)")
@@ -1532,6 +1592,10 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("text")
                         .HasColumnName("description");
 
+                    b.Property<string>("FileName")
+                        .HasColumnType("text")
+                        .HasColumnName("file_name");
+
                     b.Property<string>("Image")
                         .HasColumnType("text")
                         .HasColumnName("image");
@@ -1584,6 +1648,10 @@ namespace Unibean.Repository.Migrations
                         .HasMaxLength(320)
                         .HasColumnType("varchar(320)")
                         .HasColumnName("email");
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("text")
+                        .HasColumnName("file_name");
 
                     b.Property<string>("Image")
                         .HasColumnType("text")
@@ -1649,6 +1717,10 @@ namespace Unibean.Repository.Migrations
                         .HasMaxLength(320)
                         .HasColumnType("varchar(320)")
                         .HasColumnName("email");
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("text")
+                        .HasColumnName("file_name");
 
                     b.Property<string>("Image")
                         .HasColumnType("text")
@@ -1741,6 +1813,10 @@ namespace Unibean.Repository.Migrations
                         .HasMaxLength(320)
                         .HasColumnType("varchar(320)")
                         .HasColumnName("email");
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("text")
+                        .HasColumnName("file_name");
 
                     b.Property<string>("FullName")
                         .HasMaxLength(255)
@@ -1887,6 +1963,10 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("text")
                         .HasColumnName("description");
 
+                    b.Property<string>("FileName")
+                        .HasColumnType("text")
+                        .HasColumnName("file_name");
+
                     b.Property<string>("Image")
                         .HasColumnType("text")
                         .HasColumnName("image");
@@ -1931,6 +2011,10 @@ namespace Unibean.Repository.Migrations
                         .HasMaxLength(320)
                         .HasColumnType("varchar(320)")
                         .HasColumnName("email");
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("text")
+                        .HasColumnName("file_name");
 
                     b.Property<string>("Image")
                         .HasColumnType("text")
@@ -1979,6 +2063,10 @@ namespace Unibean.Repository.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text")
                         .HasColumnName("description");
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("text")
+                        .HasColumnName("file_name");
 
                     b.Property<string>("Image")
                         .HasColumnType("text")
@@ -2198,6 +2286,10 @@ namespace Unibean.Repository.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text")
                         .HasColumnName("description");
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("text")
+                        .HasColumnName("file_name");
 
                     b.Property<string>("Image")
                         .HasColumnType("text")

@@ -5,7 +5,7 @@ namespace Unibean.Service.Services.Interfaces;
 
 public interface ITypeService
 {
-    TypeModel Add(CreateTypeModel creation);
+    Task<TypeModel> Add(CreateTypeModel creation);
 
     void Delete(string id);
 
@@ -14,5 +14,5 @@ public interface ITypeService
 
     TypeModel GetById(string id);
 
-    TypeModel Update(string id, UpdateTypeModel update);
+    Task<TypeModel> Update(string id, UpdateTypeModel update);
 }

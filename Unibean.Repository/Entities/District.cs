@@ -22,6 +22,9 @@ public class District
     [Column("image", TypeName = "text")]
     public string Image { get; set; }
 
+    [Column("file_name", TypeName = "text")]
+    public string FileName { get; set; }
+
     [Column("date_created")]
     public DateTime? DateCreated { get; set; }
 

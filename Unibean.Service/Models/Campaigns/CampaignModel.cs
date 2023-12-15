@@ -10,6 +10,7 @@ public class CampaignModel
     public string TypeName { get; set; }
     public string CampaignName { get; set; }
     public string Image { get; set; }
+    public string FileName { get; set; }
     public string Condition { get; set; }
     public string Link { get; set; }
     public DateOnly? StartOn { get; set; }

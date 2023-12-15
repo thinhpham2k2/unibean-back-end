@@ -9,6 +9,7 @@ public class AreaModel
     public string CityName { get; set; }
     public string AreaName { get; set; }
     public string Image { get; set; }
+    public string FileName { get; set; }
     public string Address { get; set; }
     public DateTime? DateCreated { get; set; }
     public DateTime? DateUpdated { get; set; }

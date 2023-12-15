@@ -21,6 +21,9 @@ public class Station
     [Column("image", TypeName = "text")]
     public string Image { get; set; }
 
+    [Column("file_name", TypeName = "text")]
+    public string FileName { get; set; }
+
     [Column("opening_hours")]
     public TimeOnly? OpeningHours { get; set; }
 

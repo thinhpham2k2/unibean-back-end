@@ -6,6 +6,7 @@ public class ImageModel
     public string ProductId { get; set; }
     public string ProductName { get; set; }
     public string Url { get; set; }
+    public string FileName { get; set; }
     public bool? IsCover { get; set; }
     public DateTime? DateCreated { get; set; }
     public string Description { get; set; }

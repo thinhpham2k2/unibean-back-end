@@ -64,6 +64,9 @@ public class Student
     [Column("avatar", TypeName = "text")]
     public string Avatar { get; set; }
 
+    [Column("file_name", TypeName = "text")]
+    public string FileName { get; set; }
+
     [Column("address", TypeName = "text")]
     public string Address { get; set; }
 

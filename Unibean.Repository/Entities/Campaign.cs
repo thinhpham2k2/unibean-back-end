@@ -27,6 +27,9 @@ public class Campaign
     [Column("image", TypeName = "text")]
     public string Image { get; set; }
 
+    [Column("file_name", TypeName = "text")]
+    public string FileName { get; set; }
+
     [Column("condition", TypeName = "text")]
     public string Condition { get; set; }
 

@@ -28,6 +28,8 @@ namespace Unibean.Repository.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     avatar = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    file_name = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     date_updated = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     state = table.Column<ulong>(type: "bit(1)", nullable: true),
@@ -48,6 +50,8 @@ namespace Unibean.Repository.Migrations
                     type_name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     image = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    file_name = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     date_updated = table.Column<DateTime>(type: "datetime(6)", nullable: true),
@@ -72,6 +76,8 @@ namespace Unibean.Repository.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     image = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    file_name = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     date_updated = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     description = table.Column<string>(type: "text", nullable: true)
@@ -94,6 +100,8 @@ namespace Unibean.Repository.Migrations
                     type_name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     image = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    file_name = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     date_updated = table.Column<DateTime>(type: "datetime(6)", nullable: true),
@@ -118,6 +126,8 @@ namespace Unibean.Repository.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     image = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    file_name = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     date_updated = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     description = table.Column<string>(type: "text", nullable: true)
@@ -140,6 +150,8 @@ namespace Unibean.Repository.Migrations
                     gender_name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     image = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    file_name = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     date_updated = table.Column<DateTime>(type: "datetime(6)", nullable: true),
@@ -165,6 +177,8 @@ namespace Unibean.Repository.Migrations
                     condition = table.Column<decimal>(type: "decimal(38,2)", nullable: true),
                     image = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    file_name = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     date_updated = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     description = table.Column<string>(type: "text", nullable: true)
@@ -187,6 +201,8 @@ namespace Unibean.Repository.Migrations
                     major_name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     image = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    file_name = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     date_updated = table.Column<DateTime>(type: "datetime(6)", nullable: true),
@@ -219,7 +235,11 @@ namespace Unibean.Repository.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     logo = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    logo_file_name = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     cover_photo = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    cover_file_name = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     email = table.Column<string>(type: "varchar(320)", maxLength: 320, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -254,6 +274,8 @@ namespace Unibean.Repository.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     image = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    file_name = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     date_updated = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     description = table.Column<string>(type: "text", nullable: true)
@@ -278,6 +300,8 @@ namespace Unibean.Repository.Migrations
                     address = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     image = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    file_name = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     opening_hours = table.Column<TimeOnly>(type: "time(6)", nullable: true),
                     closing_hours = table.Column<TimeOnly>(type: "time(6)", nullable: true),
@@ -308,6 +332,8 @@ namespace Unibean.Repository.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     image = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    file_name = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     date_updated = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     description = table.Column<string>(type: "text", nullable: true)
@@ -337,6 +363,8 @@ namespace Unibean.Repository.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     image = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    file_name = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     date_updated = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     description = table.Column<string>(type: "text", nullable: true)
@@ -359,6 +387,8 @@ namespace Unibean.Repository.Migrations
                     type_name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     image = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    file_name = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     date_updated = table.Column<DateTime>(type: "datetime(6)", nullable: true),
@@ -414,6 +444,8 @@ namespace Unibean.Repository.Migrations
                     district_name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     image = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    file_name = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     date_updated = table.Column<DateTime>(type: "datetime(6)", nullable: true),
@@ -484,6 +516,8 @@ namespace Unibean.Repository.Migrations
                     campaign_name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     image = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    file_name = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     condition = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -563,6 +597,8 @@ namespace Unibean.Repository.Migrations
                     rate = table.Column<decimal>(type: "decimal(38,2)", nullable: true),
                     image = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    file_name = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     date_updated = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     description = table.Column<string>(type: "text", nullable: true)
@@ -593,6 +629,8 @@ namespace Unibean.Repository.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     image = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    file_name = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     address = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
@@ -622,6 +660,8 @@ namespace Unibean.Repository.Migrations
                     product_id = table.Column<string>(type: "char(26)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     url = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    file_name = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     is_cover = table.Column<ulong>(type: "bit(1)", nullable: true),
                     date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
@@ -765,6 +805,8 @@ namespace Unibean.Repository.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     image = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    file_name = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     description = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
@@ -805,6 +847,8 @@ namespace Unibean.Repository.Migrations
                     password = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     image = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    file_name = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     email = table.Column<string>(type: "varchar(320)", maxLength: 320, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -898,6 +942,8 @@ namespace Unibean.Repository.Migrations
                     phone = table.Column<string>(type: "char(20)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     avatar = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    file_name = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     address = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),

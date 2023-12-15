@@ -9,7 +9,9 @@ public class PartnerModel
     public string Password { get; set; }
     public string Address { get; set; }
     public string Logo { get; set; }
+    public string LogoFileName { get; set; }
     public string CoverPhoto { get; set; }
+    public string CoverFileName { get; set; }
     public string Email { get; set; }
     public string Phone { get; set; }
     public TimeOnly? OpeningHours { get; set; }

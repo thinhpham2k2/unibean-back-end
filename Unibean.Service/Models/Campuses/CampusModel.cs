@@ -15,6 +15,7 @@ public class CampusModel
     public string Email { get; set; }
     public string Link { get; set; }
     public string Image { get; set; }
+    public string FileName { get; set; }
     public string Description { get; set; }
     public DateTime? DateCreated { get; set; }
     public DateTime? DateUpdated { get; set; }

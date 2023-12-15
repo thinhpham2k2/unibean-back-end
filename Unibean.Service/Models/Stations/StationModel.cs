@@ -6,6 +6,7 @@ public class StationModel
     public string StationName { get; set; }
     public string Address { get; set; }
     public string Image { get; set; }
+    public string FileName { get; set; }
     public TimeOnly? OpeningHours { get; set; }
     public TimeOnly? ClosingHours { get; set; }
     public string Phone { get; set; }

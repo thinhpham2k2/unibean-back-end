@@ -2,7 +2,6 @@
 using Firebase.Auth.Providers;
 using Firebase.Storage;
 using Microsoft.AspNetCore.Http;
-using System.Net.Sockets;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Utilities.FireBase;
@@ -60,7 +59,7 @@ public class FireBaseService : IFireBaseService
     public async Task<FireBaseFile> UploadFileAsync(IFormFile fileUpload, string folder)
     {
         FileInfo fileInfo = new FileInfo(fileUpload.FileName);
-
+        string fileName = Ulid.NewUlid().ToString();
         if (fileUpload.Length > 0)
         {
             var fs = fileUpload.OpenReadStream();
@@ -83,7 +82,7 @@ public class FireBaseService : IFireBaseService
                     AuthTokenAsyncFactory = async () => await Task.FromResult(await loginInfo.User.GetIdTokenAsync()),
                     ThrowOnCancel = true
                 }
-                ).Child(folder).Child(fileUpload.FileName)
+                ).Child(folder).Child(fileName)
                 .PutAsync(fs, CancellationToken.None);
             try
             {
@@ -91,7 +90,7 @@ public class FireBaseService : IFireBaseService
 
                 return new FireBaseFile
                 {
-                    FileName = fileUpload.FileName,
+                    FileName = fileName,
                     URL = result,
                     Extension = fileInfo.Extension
                 };
