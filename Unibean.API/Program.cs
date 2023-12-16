@@ -51,6 +51,9 @@ builder.Services.AddControllers(options =>
     options.Filters.Add<ExceptionFilter>();
 });
 
+// Configure Date/Datetime/Timeonly parameter
+builder.Services.AddDateOnlyTimeOnlyStringConverters();
+
 // Configure CORS
 builder.Services.AddCors(options =>
 {
@@ -63,6 +66,7 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Unibean REST API", Version = "v1" });
     c.OrderActionsBy(apiDesc => apiDesc.RelativePath);
+    c.UseDateOnlyTimeOnlyStringConverters();
 
     // using System.Reflection;
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -116,6 +120,7 @@ builder.Services.AddSingleton<ITypeRepository, TypeRepository>();
 builder.Services.AddSingleton<IUniversityRepository, UniversityRepository>();
 builder.Services.AddSingleton<IVoucherItemRepository, VoucherItemRepository>();
 builder.Services.AddSingleton<IVoucherRepository, VoucherRepository>();
+builder.Services.AddSingleton<IVoucherTypeRepository, VoucherTypeRepository>();
 builder.Services.AddSingleton<IWalletRepository, WalletRepository>();
 builder.Services.AddSingleton<IWalletTransactionRepository, WalletTransactionRepository>();
 builder.Services.AddSingleton<IWalletTypeRepository, WalletTypeRepository>();
@@ -163,6 +168,7 @@ builder.Services.AddSingleton<ITypeService, TypeService>();
 builder.Services.AddSingleton<IUniversityService, UniversityService>();
 builder.Services.AddSingleton<IVoucherItemService, VoucherItemService>();
 builder.Services.AddSingleton<IVoucherService, VoucherService>();
+builder.Services.AddSingleton<IVoucherTypeService, VoucherTypeService>();
 builder.Services.AddSingleton<IWalletService, WalletService>();
 builder.Services.AddSingleton<IWalletTransactionService, WalletTransactionService>();
 builder.Services.AddSingleton<IWalletTypeService, WalletTypeService>();

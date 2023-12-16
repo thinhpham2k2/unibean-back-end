@@ -2055,6 +2055,10 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("char(26)")
                         .HasColumnName("id");
 
+                    b.Property<string>("Condition")
+                        .HasColumnType("text")
+                        .HasColumnName("condition");
+
                     b.Property<DateTime?>("DateCreated")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("date_created");
@@ -2095,6 +2099,10 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("bit(1)")
                         .HasColumnName("status");
 
+                    b.Property<string>("TypeId")
+                        .HasColumnType("char(26)")
+                        .HasColumnName("type_id");
+
                     b.Property<string>("VoucherName")
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)")
@@ -2103,6 +2111,8 @@ namespace Unibean.Repository.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("PartnerId");
+
+                    b.HasIndex("TypeId");
 
                     b.ToTable("tbl_voucher");
                 });
@@ -2168,6 +2178,50 @@ namespace Unibean.Repository.Migrations
                     b.HasIndex("VoucherId");
 
                     b.ToTable("tbl_voucher_item");
+                });
+
+            modelBuilder.Entity("Unibean.Repository.Entities.VoucherType", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("char(26)")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime?>("DateCreated")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("date_created");
+
+                    b.Property<DateTime?>("DateUpdated")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("date_updated");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text")
+                        .HasColumnName("description");
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("text")
+                        .HasColumnName("file_name");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("text")
+                        .HasColumnName("image");
+
+                    b.Property<ulong?>("State")
+                        .HasColumnType("bit(1)")
+                        .HasColumnName("state");
+
+                    b.Property<ulong?>("Status")
+                        .HasColumnType("bit(1)")
+                        .HasColumnName("status");
+
+                    b.Property<string>("TypeName")
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("type_name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tbl_voucher_type");
                 });
 
             modelBuilder.Entity("Unibean.Repository.Entities.Wallet", b =>
@@ -2741,7 +2795,13 @@ namespace Unibean.Repository.Migrations
                         .WithMany("Vouchers")
                         .HasForeignKey("PartnerId");
 
+                    b.HasOne("Unibean.Repository.Entities.VoucherType", "Type")
+                        .WithMany("Vouchers")
+                        .HasForeignKey("TypeId");
+
                     b.Navigation("Partner");
+
+                    b.Navigation("Type");
                 });
 
             modelBuilder.Entity("Unibean.Repository.Entities.VoucherItem", b =>
@@ -3008,6 +3068,11 @@ namespace Unibean.Repository.Migrations
             modelBuilder.Entity("Unibean.Repository.Entities.VoucherItem", b =>
                 {
                     b.Navigation("Activities");
+                });
+
+            modelBuilder.Entity("Unibean.Repository.Entities.VoucherType", b =>
+                {
+                    b.Navigation("Vouchers");
                 });
 
             modelBuilder.Entity("Unibean.Repository.Entities.Wallet", b =>

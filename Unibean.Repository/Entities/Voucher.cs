@@ -16,6 +16,11 @@ public class Voucher
 
     public Partner Partner { get; set; }
 
+    [Column("type_id", TypeName = "char(26)")]
+    public string TypeId { get; set; }
+
+    public VoucherType Type { get; set; }
+
     [MaxLength(255)]
     [Column("voucher_name")]
     public string VoucherName { get; set; }
@@ -25,6 +30,9 @@ public class Voucher
 
     [Column("rate", TypeName = "decimal(38,2)")]
     public decimal? Rate { get; set; }
+
+    [Column("condition", TypeName = "text")]
+    public string Condition { get; set; }
 
     [Column("image", TypeName = "text")]
     public string Image { get; set; }

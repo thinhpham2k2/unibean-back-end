@@ -52,10 +52,10 @@ public class TypeRepository : ITypeRepository
             using (var db = new UnibeanDBContext())
             {
                 var query = db.Types
-                    .Where(s => (EF.Functions.Like(s.TypeName, "%" + search + "%")
-                    || EF.Functions.Like(s.Image, "%" + search + "%")
-                    || EF.Functions.Like(s.Description, "%" + search + "%"))
-                    && s.Status.Equals(true))
+                    .Where(t => (EF.Functions.Like(t.TypeName, "%" + search + "%")
+                    || EF.Functions.Like(t.FileName, "%" + search + "%")
+                    || EF.Functions.Like(t.Description, "%" + search + "%"))
+                    && t.Status.Equals(true))
                     .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 
                 var result = query

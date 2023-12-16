@@ -26,6 +26,8 @@ public class TypeService : ITypeService
                 =>
         {
             cfg.CreateMap<Type, TypeModel>().ReverseMap();
+            cfg.CreateMap<PagedResultModel<Type>, PagedResultModel<TypeModel>>()
+            .ReverseMap();
             cfg.CreateMap<Type, UpdateTypeModel>()
             .ReverseMap()
             .ForMember(t => t.Image, opt => opt.Ignore())
@@ -46,6 +48,8 @@ public class TypeService : ITypeService
     public async Task<TypeModel> Add(CreateTypeModel creation)
     {
         Type entity = mapper.Map<Type>(creation);
+
+        //Upload image
         if (creation.Image != null && creation.Image.Length > 0)
         {
             FireBaseFile f = await fireBaseService.UploadFileAsync(creation.Image, FOLDER_NAME);
@@ -62,6 +66,7 @@ public class TypeService : ITypeService
         {
             if (entity.Image != null && entity.FileName != null)
             {
+                //Remove image
                 fireBaseService.RemoveFileAsync(entity.FileName, FOLDER_NAME);
             }
             typeRepository.Delete(id);
@@ -74,17 +79,7 @@ public class TypeService : ITypeService
 
     public PagedResultModel<TypeModel> GetAll(string propertySort, bool isAsc, string search, int page, int limit)
     {
-        PagedResultModel<Type>
-                result = typeRepository.GetAll(propertySort, isAsc, search, page, limit);
-        return new PagedResultModel<TypeModel>
-        {
-            RowCount = result.RowCount,
-            PageCount = result.PageCount,
-            PageSize = result.PageSize,
-            CurrentPage = result.CurrentPage,
-            Result = mapper.Map<List<TypeModel>>(result.Result),
-            TotalCount = result.TotalCount,
-        };
+        return mapper.Map<PagedResultModel<TypeModel>>(typeRepository.GetAll(propertySort, isAsc, search, page, limit));
     }
 
     public TypeModel GetById(string id)
@@ -105,7 +100,10 @@ public class TypeService : ITypeService
             entity = mapper.Map(update, entity);
             if (update.Image != null && update.Image.Length > 0)
             {
+                // Remove image
                 await fireBaseService.RemoveFileAsync(entity.FileName, FOLDER_NAME);
+
+                //Upload new image update
                 FireBaseFile f = await fireBaseService.UploadFileAsync(update.Image, FOLDER_NAME);
                 entity.Image = f.URL;
                 entity.FileName = f.FileName;

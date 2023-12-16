@@ -1,13 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Win32;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
 using System.Text;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Jwts;
-using Unibean.Service.Services;
+using Unibean.Service.Models.Partners;
 using Unibean.Service.Services.Interfaces;
 
 namespace Unibean.API.Controllers;
@@ -40,7 +41,7 @@ public class AuthController : ControllerBase
         this.studentService = studentService;
     }
 
-    // Login by username & password ////////////////////////////////
+    // Login by username & password API ////////////////////////////////
     /// <summary>
     /// Admin login to system
     /// </summary>
@@ -168,4 +169,31 @@ public class AuthController : ControllerBase
     }
 
     //////////////////////////////////////////////////////////////////
+
+    // Register student and partner API ////////////////////////////////
+    /// <summary>
+    /// Partner register account
+    /// </summary>
+    [AllowAnonymous]
+    [HttpPost("partner/register")]
+    [ProducesResponseType(typeof(PartnerModel), (int)HttpStatusCode.Created)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    public async Task<ActionResult> PartnerRegister([FromForm] CreatePartnerModel register)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            var partner = await partnerService.Add(register);
+            if (partner != null)
+            {
+                return StatusCode(StatusCodes.Status201Created, partner);
+            }
+            return NotFound("Create fail");
+        }
+        catch (InvalidParameterException e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
 }

@@ -5,6 +5,8 @@ public class VoucherItemModel
     public string Id { get; set; }
     public string VoucherId { get; set; }
     public string VoucherName { get; set; }
+    public string TypeId { get; set; }
+    public string TypeName { get; set; }
     public string CampaignId { get; set; }
     public string CampaignName { get; set; }
     public decimal? Price { get; set; }

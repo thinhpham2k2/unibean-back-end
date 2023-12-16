@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using Unibean.Repository.Paging;
 using Unibean.Service.Models.Exceptions;
@@ -24,7 +25,7 @@ public class TypeController : ControllerBase
     /// Get activity's type list
     /// </summary>
     [HttpGet]
-    //[Authorize(Roles = "Admin, Partner, Store, Student")]
+    [Authorize(Roles = "Admin, Partner, Store, Student")]
     [ProducesResponseType(typeof(PagedResultModel<TypeModel>),
         (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
@@ -52,7 +53,7 @@ public class TypeController : ControllerBase
     /// Get activity's type by id
     /// </summary>
     [HttpGet("{id}")]
-    //[Authorize(Roles = "Admin, Partner, Store, Student")]
+    [Authorize(Roles = "Admin, Partner, Store, Student")]
     [ProducesResponseType(typeof(TypeModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public IActionResult GetById(string id)
@@ -73,16 +74,16 @@ public class TypeController : ControllerBase
     /// Create activity's type
     /// </summary>
     [HttpPost]
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(TypeModel), (int)HttpStatusCode.Created)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public async Task<ActionResult> Create([FromForm] CreateTypeModel creator)
+    public async Task<ActionResult> Create([FromForm] CreateTypeModel creation)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         try
         {
-            var type = await typeService.Add(creator);
+            var type = await typeService.Add(creation);
             if (type != null)
             {
                 return StatusCode(StatusCodes.Status201Created, type);
@@ -99,7 +100,7 @@ public class TypeController : ControllerBase
     /// Update activity's type
     /// </summary>
     [HttpPut("{id}")]
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(TypeModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public async Task<ActionResult> Update(string id, [FromForm] UpdateTypeModel update)
@@ -125,7 +126,7 @@ public class TypeController : ControllerBase
     /// Delete activity's type
     /// </summary>
     [HttpDelete("{id}")]
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType((int)HttpStatusCode.NoContent)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public IActionResult Delete(string id)

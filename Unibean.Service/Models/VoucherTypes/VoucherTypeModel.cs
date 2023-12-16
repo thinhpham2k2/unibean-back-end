@@ -1,16 +1,9 @@
-﻿namespace Unibean.Service.Models.Vouchers;
+﻿namespace Unibean.Service.Models.VoucherTypes;
 
-public class VoucherModel
+public class VoucherTypeModel
 {
     public string Id { get; set; }
-    public string PartnerId { get; set; }
-    public string BrandName { get; set; }
-    public string TypeId { get; set; }
     public string TypeName { get; set; }
-    public string VoucherName { get; set; }
-    public decimal? Price { get; set; }
-    public decimal? Rate { get; set; }
-    public string Condition { get; set; }
     public string Image { get; set; }
     public string FileName { get; set; }
     public DateTime? DateCreated { get; set; }

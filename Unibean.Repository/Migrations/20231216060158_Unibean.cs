@@ -381,6 +381,31 @@ namespace Unibean.Repository.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "tbl_voucher_type",
+                columns: table => new
+                {
+                    id = table.Column<string>(type: "char(26)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    type_name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    image = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    file_name = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    date_updated = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    description = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    state = table.Column<ulong>(type: "bit(1)", nullable: true),
+                    status = table.Column<ulong>(type: "bit(1)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tbl_voucher_type", x => x.id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "tbl_wallet_type",
                 columns: table => new
                 {
@@ -593,10 +618,14 @@ namespace Unibean.Repository.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     partner_id = table.Column<string>(type: "char(26)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    type_id = table.Column<string>(type: "char(26)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     voucher_name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     price = table.Column<decimal>(type: "decimal(38,2)", nullable: true),
                     rate = table.Column<decimal>(type: "decimal(38,2)", nullable: true),
+                    condition = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     image = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     file_name = table.Column<string>(type: "text", nullable: true)
@@ -615,6 +644,11 @@ namespace Unibean.Repository.Migrations
                         name: "FK_tbl_voucher_tbl_partner_partner_id",
                         column: x => x.partner_id,
                         principalTable: "tbl_partner",
+                        principalColumn: "id");
+                    table.ForeignKey(
+                        name: "FK_tbl_voucher_tbl_voucher_type_type_id",
+                        column: x => x.type_id,
+                        principalTable: "tbl_voucher_type",
                         principalColumn: "id");
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
@@ -1798,6 +1832,11 @@ namespace Unibean.Repository.Migrations
                 column: "partner_id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_tbl_voucher_type_id",
+                table: "tbl_voucher",
+                column: "type_id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_tbl_voucher_item_campaign_id",
                 table: "tbl_voucher_item",
                 column: "campaign_id");
@@ -1972,6 +2011,9 @@ namespace Unibean.Repository.Migrations
 
             migrationBuilder.DropTable(
                 name: "tbl_partner");
+
+            migrationBuilder.DropTable(
+                name: "tbl_voucher_type");
 
             migrationBuilder.DropTable(
                 name: "tbl_area");
