@@ -7,6 +7,7 @@ using System.Security.Claims;
 using System.Text;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Jwts;
+using Unibean.Service.Services;
 using Unibean.Service.Services.Interfaces;
 
 namespace Unibean.API.Controllers;
@@ -39,6 +40,7 @@ public class AuthController : ControllerBase
         this.studentService = studentService;
     }
 
+    // Login by username & password ////////////////////////////////
     /// <summary>
     /// Admin login to system
     /// </summary>
@@ -49,9 +51,81 @@ public class AuthController : ControllerBase
     public IActionResult GenerateAdminToken([FromBody] LoginFromModel requestLogin)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+        try
+        {
+            var admin = adminService.GetByUserNameAndPassword(requestLogin.UserName, requestLogin.Password);
+            return accountAuthentication(admin, "Admin");
+        }
+        catch (InvalidParameterException e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
 
-        var admin = adminService.GetByUserNameAndPassword(requestLogin.UserName, requestLogin.Password);
-        return accountAuthentication(admin, "Admin");
+    /// <summary>
+    /// Partner login to system
+    /// </summary>
+    [AllowAnonymous]
+    [HttpPost("partner/login")]
+    [ProducesResponseType(typeof(JwtResponseModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    public IActionResult GeneratePartnerToken([FromBody] LoginFromModel requestLogin)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            var partner = partnerService.GetByUserNameAndPassword(requestLogin.UserName, requestLogin.Password);
+            return accountAuthentication(partner, "Partner");
+        }
+        catch (InvalidParameterException e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Store login to system
+    /// </summary>
+    [AllowAnonymous]
+    [HttpPost("store/login")]
+    [ProducesResponseType(typeof(JwtResponseModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    public IActionResult GenerateStoreToken([FromBody] LoginFromModel requestLogin)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            var store = storeService.GetByUserNameAndPassword(requestLogin.UserName, requestLogin.Password);
+            return accountAuthentication(store, "Store");
+        }
+        catch (InvalidParameterException e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Student login to system
+    /// </summary>
+    [AllowAnonymous]
+    [HttpPost("student/login")]
+    [ProducesResponseType(typeof(JwtResponseModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    public IActionResult GenerateStudentToken([FromBody] LoginFromModel requestLogin)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            var student = studentService.GetByUserNameAndPassword(requestLogin.UserName, requestLogin.Password);
+            return accountAuthentication(student, "Student");
+        }
+        catch (InvalidParameterException e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 
     private IActionResult accountAuthentication(object user, string role)
@@ -65,8 +139,9 @@ public class AuthController : ControllerBase
             var claims = new List<Claim>
                 {
                     new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    new(JwtRegisteredClaimNames.Sub, user.GetType().GetProperty("UserName").GetValue(user).ToString()),
-                    new(JwtRegisteredClaimNames.Email, user.GetType().GetProperty("Email").GetValue(user).ToString()),
+                    new(JwtRegisteredClaimNames.Sid, (user.GetType().GetProperty("Id").GetValue(user) ?? string.Empty).ToString()),
+                    new(JwtRegisteredClaimNames.Sub, (user.GetType().GetProperty("UserName").GetValue(user) ?? string.Empty).ToString()),
+                    new(JwtRegisteredClaimNames.Email, (user.GetType().GetProperty("Email").GetValue(user) ?? string.Empty).ToString()),
                     new Claim(ClaimTypes.Role, role)
                 };
 
@@ -91,4 +166,6 @@ public class AuthController : ControllerBase
             return NotFound("Invalid username or password.");
         }
     }
+
+    //////////////////////////////////////////////////////////////////
 }
