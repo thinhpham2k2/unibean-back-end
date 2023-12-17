@@ -134,6 +134,8 @@ public class PartnerRepository : IPartnerRepository
                 partner = db.Partners
                 .Where(s => s.Id.Equals(id) && s.Status.Equals(true))
                 .Include(s => s.Wishlists.Where(w => w.Status.Equals(true)))
+                .Include(s => s.Wallets.Where(w => w.Status.Equals(true)))
+                .ThenInclude(w => w.Type)
                 .Include(s => s.Campaigns.Where(c => c.Status.Equals(true)))
                 .ThenInclude(c => c.Type)
                 .Include(s => s.Stores.Where(s => s.Status.Equals(true)))

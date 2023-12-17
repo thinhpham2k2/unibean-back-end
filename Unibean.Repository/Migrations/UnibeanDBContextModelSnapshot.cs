@@ -293,6 +293,14 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("bit(1)")
                         .HasColumnName("status");
 
+                    b.Property<decimal?>("TotalIncome")
+                        .HasColumnType("decimal(38,2)")
+                        .HasColumnName("total_income");
+
+                    b.Property<decimal?>("TotalSpending")
+                        .HasColumnType("decimal(38,2)")
+                        .HasColumnName("total_spending");
+
                     b.Property<string>("TypeId")
                         .HasColumnType("char(26)")
                         .HasColumnName("type_id");

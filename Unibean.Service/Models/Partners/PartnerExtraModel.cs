@@ -1,5 +1,6 @@
 ﻿using Unibean.Service.Models.Campaigns;
 using Unibean.Service.Models.Stores;
+using Unibean.Service.Models.Wallets;
 
 namespace Unibean.Service.Models.Partners;
 
@@ -27,6 +28,7 @@ public class PartnerExtraModel
     public bool? State { get; set; }
     public bool? Status { get; set; }
     public int? NumberOfFollowers { get; set; }
+    public List<WalletModel> Wallets { get; set; }
     public List<CampaignModel> Campaigns { get; set; }
     public List<StoreModel> Stores { get; set; }
 }

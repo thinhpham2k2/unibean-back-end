@@ -4,5 +4,7 @@ namespace Unibean.Repository.Repositories.Interfaces;
 
 public interface IStudentRepository
 {
+    Student GetById(string id);
+
     Student GetByUserNameAndPassword(string userName, string password);
 }

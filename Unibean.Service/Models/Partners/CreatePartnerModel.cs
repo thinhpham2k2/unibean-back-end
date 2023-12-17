@@ -18,9 +18,13 @@ public class CreatePartnerModel
     public string UserName { get; set; }
 
     [Required(ErrorMessage = "Password is required!")]
-    [StringLength(255, MinimumLength = 3,
-        ErrorMessage = "The length of password is from 3 to 255 characters")]
+    [StringLength(255, MinimumLength = 8,
+        ErrorMessage = "The length of password is from 8 to 255 characters")]
     public string Password { get; set; }
+
+    [Required(ErrorMessage = "Password confirm is required!")]
+    [Compare(nameof(Password), ErrorMessage = "Passwords do not match")]
+    public string PasswordConfirmed { get; set; }
 
     public string Address { get; set; }
 

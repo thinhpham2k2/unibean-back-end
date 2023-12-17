@@ -7,6 +7,25 @@ namespace Unibean.Repository.Repositories;
 
 public class StudentRepository : IStudentRepository
 {
+    public Student GetById(string id)
+    {
+        Student student = new Student();
+        try
+        {
+            using (var db = new UnibeanDBContext())
+            {
+                student = db.Students
+                .Where(s => s.Id.Equals(id) && s.Status.Equals(true))
+                .FirstOrDefault();
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return student;
+    }
+
     public Student GetByUserNameAndPassword(string userName, string password)
     {
         Student student = new Student();

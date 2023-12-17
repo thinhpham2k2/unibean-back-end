@@ -11,7 +11,7 @@ using Unibean.Repository.Entities;
 namespace Unibean.Repository.Migrations
 {
     [DbContext(typeof(UnibeanDBContext))]
-    [Migration("20231216060158_Unibean")]
+    [Migration("20231217035257_Unibean")]
     partial class Unibean
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -294,6 +294,14 @@ namespace Unibean.Repository.Migrations
                     b.Property<ulong?>("Status")
                         .HasColumnType("bit(1)")
                         .HasColumnName("status");
+
+                    b.Property<decimal?>("TotalIncome")
+                        .HasColumnType("decimal(38,2)")
+                        .HasColumnName("total_income");
+
+                    b.Property<decimal?>("TotalSpending")
+                        .HasColumnType("decimal(38,2)")
+                        .HasColumnName("total_spending");
 
                     b.Property<string>("TypeId")
                         .HasColumnType("char(26)")

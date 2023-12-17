@@ -553,6 +553,8 @@ namespace Unibean.Repository.Migrations
                     start_on = table.Column<DateOnly>(type: "date", nullable: true),
                     end_on = table.Column<DateOnly>(type: "date", nullable: true),
                     duration = table.Column<int>(type: "int", nullable: true),
+                    total_income = table.Column<decimal>(type: "decimal(38,2)", nullable: true),
+                    total_spending = table.Column<decimal>(type: "decimal(38,2)", nullable: true),
                     date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     date_updated = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     description = table.Column<string>(type: "text", nullable: true)

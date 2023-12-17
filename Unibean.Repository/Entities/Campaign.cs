@@ -45,6 +45,12 @@ public class Campaign
     [Column("duration")]
     public int? Duration { get; set; }
 
+    [Column("total_income", TypeName = "decimal(38,2)")]
+    public decimal? TotalIncome { get; set; }
+
+    [Column("total_spending", TypeName = "decimal(38,2)")]
+    public decimal? TotalSpending { get; set; }
+
     [Column("date_created")]
     public DateTime? DateCreated { get; set; }
 

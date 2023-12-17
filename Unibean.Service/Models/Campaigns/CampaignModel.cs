@@ -16,6 +16,8 @@ public class CampaignModel
     public DateOnly? StartOn { get; set; }
     public DateOnly? EndOn { get; set; }
     public int? Duration { get; set; }
+    public decimal? TotalIncome { get; set; }
+    public decimal? TotalSpending { get; set; }
     public DateTime? DateCreated { get; set; }
     public DateTime? DateUpdated { get; set; }
     public string Description { get; set; }
