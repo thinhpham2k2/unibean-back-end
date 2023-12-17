@@ -29,10 +29,15 @@ public class UnibeanDBContext : DbContext
     public virtual DbSet<CampaignType> CampaignTypes { get; set; }
     public virtual DbSet<Campus> Campuses { get; set; }
     public virtual DbSet<Category> Categories { get; set; }
+    public virtual DbSet<Challenge> Challenges { get; set; }
+    public virtual DbSet<ChallengeTransaction> ChallengeTransactions { get; set; }
+    public virtual DbSet<ChallengeType> ChallengeTypes{ get; set; }
     public virtual DbSet<City> Cities { get; set; }
     public virtual DbSet<District> Districts { get; set; }
     public virtual DbSet<Gender> Genders { get; set; }
     public virtual DbSet<Image> Images { get; set; }
+    public virtual DbSet<Invitation> Invitations { get; set; }
+    public virtual DbSet<Level> Levels { get; set; }
     public virtual DbSet<Major> Majors { get; set; }
     public virtual DbSet<Order> Orders { get; set; }
     public virtual DbSet<OrderDetail> OrderDetails { get; set; }
@@ -48,10 +53,12 @@ public class UnibeanDBContext : DbContext
     public virtual DbSet<Station> Stations { get; set; }
     public virtual DbSet<Store> Stores { get; set; }
     public virtual DbSet<Student> Students { get; set; }
+    public virtual DbSet<StudentChallenge> StudentChallenges { get; set; }
     public virtual DbSet<Type> Types { get; set; }
     public virtual DbSet<University> Universities { get; set; }
     public virtual DbSet<Voucher> Vouchers { get; set; }
     public virtual DbSet<VoucherItem> VoucherItems { get; set; }
+    public virtual DbSet<VoucherType> VoucherTypes { get; set; }
     public virtual DbSet<Wallet> Wallets { get; set; }
     public virtual DbSet<WalletTransaction> WalletTransactions { get; set; }
     public virtual DbSet<WalletType> WalletTypes { get; set; }

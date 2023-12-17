@@ -69,7 +69,7 @@ public class TypeRepository : ITypeRepository
                     PageSize = limit,
                     PageCount = (int)Math.Ceiling((double)query.Count() / limit),
                     Result = result,
-                    RowCount = result.Count(),
+                    RowCount = result.Count,
                     TotalCount = query.Count()
                 };
             }
