@@ -76,7 +76,7 @@ public class FireBaseService : IFireBaseService
     {
         try
         {
-            FileInfo fileInfo = new FileInfo(fileUpload.FileName);
+            FileInfo fileInfo = new(fileUpload.FileName);
             string fileName = Ulid.NewUlid().ToString();
             if (fileUpload.Length > 0)
             {
