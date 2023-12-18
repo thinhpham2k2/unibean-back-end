@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Unibean.Service.Models.CampaignTypes;
 
-public class CreateVoucherTypeModel
+public class CreateCampaignTypeModel
 {
     [Required(ErrorMessage = "Type's name is required!")]
     [StringLength(255, MinimumLength = 3,

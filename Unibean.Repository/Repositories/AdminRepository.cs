@@ -8,7 +8,7 @@ public class AdminRepository : IAdminRepository
 {
     public Admin GetByUserNameAndPassword(string userName, string password)
     {
-        Admin admin = new Admin();
+        Admin admin = new();
         try
         {
             using (var db = new UnibeanDBContext())

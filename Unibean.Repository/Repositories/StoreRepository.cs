@@ -9,7 +9,7 @@ public class StoreRepository : IStoreRepository
 {
     public Store GetByUserNameAndPassword(string userName, string password)
     {
-        Store store = new Store();
+        Store store = new();
         try
         {
             using (var db = new UnibeanDBContext())

@@ -9,11 +9,9 @@ public class WalletRepository : IWalletRepository
     {
         try
         {
-            using (var db = new UnibeanDBContext())
-            {
-                creation = db.Wallets.Add(creation).Entity;
-                db.SaveChanges();
-            }
+            using var db = new UnibeanDBContext();
+            creation = db.Wallets.Add(creation).Entity;
+            db.SaveChanges();
         }
         catch (Exception ex)
         {

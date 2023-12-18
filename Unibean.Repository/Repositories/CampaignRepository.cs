@@ -7,15 +7,13 @@ public class CampaignRepository : ICampaignRepository
 {
     public Campaign GetById(string id)
     {
-        Campaign campaign = new Campaign();
+        Campaign campaign = new();
         try
         {
-            using (var db = new UnibeanDBContext())
-            {
-                campaign = db.Campaigns
-                .Where(s => s.Id.Equals(id) && s.Status.Equals(true))
-                .FirstOrDefault();
-            }
+            using var db = new UnibeanDBContext();
+            campaign = db.Campaigns
+            .Where(s => s.Id.Equals(id) && s.Status.Equals(true))
+            .FirstOrDefault();
         }
         catch (Exception ex)
         {

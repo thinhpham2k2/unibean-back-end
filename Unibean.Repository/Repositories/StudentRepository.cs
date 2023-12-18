@@ -9,15 +9,13 @@ public class StudentRepository : IStudentRepository
 {
     public Student GetById(string id)
     {
-        Student student = new Student();
+        Student student = new();
         try
         {
-            using (var db = new UnibeanDBContext())
-            {
-                student = db.Students
-                .Where(s => s.Id.Equals(id) && s.Status.Equals(true))
-                .FirstOrDefault();
-            }
+            using var db = new UnibeanDBContext();
+            student = db.Students
+            .Where(s => s.Id.Equals(id) && s.Status.Equals(true))
+            .FirstOrDefault();
         }
         catch (Exception ex)
         {
@@ -28,7 +26,7 @@ public class StudentRepository : IStudentRepository
 
     public Student GetByUserNameAndPassword(string userName, string password)
     {
-        Student student = new Student();
+        Student student = new();
         try
         {
             using (var db = new UnibeanDBContext())
