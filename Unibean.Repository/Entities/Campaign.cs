@@ -10,10 +10,10 @@ public class Campaign
     [Column("id", TypeName = "char(26)")]
     public string Id { get; set; }
 
-    [Column("partner_id", TypeName = "char(26)")]
-    public string PartnerId { get; set; }
+    [Column("brand_id", TypeName = "char(26)")]
+    public string BrandId { get; set; }
 
-    public Partner Partner { get; set; }
+    public Brand Brand { get; set; }
 
     [Column("type_id", TypeName = "char(26)")]
     public string TypeId { get; set; }
@@ -26,6 +26,12 @@ public class Campaign
 
     [Column("image", TypeName = "text")]
     public string Image { get; set; }
+
+    [Column("image_name", TypeName = "text")]
+    public string ImageName { get; set; }
+
+    [Column("file", TypeName = "text")]
+    public string File { get; set; }
 
     [Column("file_name", TypeName = "text")]
     public string FileName { get; set; }

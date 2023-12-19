@@ -26,6 +26,9 @@ public class WalletTransaction
     [Column("rate", TypeName = "decimal(38,2)")]
     public decimal? Rate { get; set; }
 
+    [Column("date_created")]
+    public DateTime? DateCreated { get; set; }
+
     [Column("description", TypeName = "text")]
     public string Description { get; set; }
 

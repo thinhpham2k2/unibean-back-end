@@ -20,6 +20,9 @@ public class VoucherItem
 
     public Campaign Campaign { get; set; }
 
+    [Column("voucher_code", TypeName = "text")]
+    public string VoucherCode { get; set; }
+
     [Column("price", TypeName = "decimal(38,2)")]
     public decimal? Price { get; set; }
 

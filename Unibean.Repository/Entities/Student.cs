@@ -31,16 +31,16 @@ public class Student
 
     public Campus Campus { get; set; }
 
-    [MaxLength(50)]
-    [Column("user_name")]
-    public string UserName { get; set; }
+    [Column("account_id", TypeName = "char(26)")]
+    public string AccountId { get; set; }
 
-    [MaxLength(255)]
-    [Column("password")]
-    public string Password { get; set; }
+    public Account Account { get; set; }
 
     [Column("student_card", TypeName = "text")]
     public string StudentCard { get; set; }
+
+    [Column("file_name", TypeName = "text")]
+    public string FileName { get; set; }
 
     [MaxLength(255)]
     [Column("full_name")]
@@ -50,22 +50,8 @@ public class Student
     [Column("code")]
     public string Code { get; set; }
 
-    [EmailAddress]
-    [MaxLength(320)]
-    [Column("email")]
-    public string Email { get; set; }
-
     [Column("date_of_birth")]
     public DateOnly? DateOfBirth { get; set; }
-
-    [Column("phone", TypeName = "char(20)")]
-    public string Phone { get; set; }
-
-    [Column("avatar", TypeName = "text")]
-    public string Avatar { get; set; }
-
-    [Column("file_name", TypeName = "text")]
-    public string FileName { get; set; }
 
     [Column("address", TypeName = "text")]
     public string Address { get; set; }
@@ -81,12 +67,6 @@ public class Student
 
     [Column("date_updated")]
     public DateTime? DateUpdated { get; set; }
-
-    [Column("date_verified")]
-    public DateTime? DateVerified { get; set; }
-
-    [Column("is_verify", TypeName = "bit(1)")]
-    public bool? IsVerify { get; set; }
 
     [Column("state", TypeName = "bit(1)")]
     public bool? State { get; set; }

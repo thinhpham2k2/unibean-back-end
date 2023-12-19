@@ -11,15 +11,17 @@ public class StudentModel
     public string MajorName { get; set; }
     public string CampusId { get; set; }
     public string CampusName { get; set; }
+    public string AccountId { get; set; }
     public string UserName { get; set; }
     public string StudentCard { get; set; }
+    public string FileName { get; set; }
     public string FullName { get; set; }
     public string Code { get; set; }
     public string Email { get; set; }
     public DateOnly? DateOfBirth { get; set; }
     public string Phone { get; set; }
     public string Avatar { get; set; }
-    public string FileName { get; set; }
+    public string ImageName { get; set; }
     public string Address { get; set; }
     public decimal? TotalIncome { get; set; }
     public decimal? TotalSpending { get; set; }

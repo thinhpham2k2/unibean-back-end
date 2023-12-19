@@ -15,10 +15,10 @@ public class Wishlist
 
     public Student Student { get; set; }
 
-    [Column("partner_id", TypeName = "char(26)")]
-    public string PartnerId { get; set; }
+    [Column("brand_id", TypeName = "char(26)")]
+    public string BrandId { get; set; }
 
-    public Partner Partner { get; set; }
+    public Brand Brand { get; set; }
 
     [Column("description", TypeName = "text")]
     public string Description { get; set; }

@@ -1,13 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Data;
 using System.Net;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Service.Models.Exceptions;
-using Unibean.Service.Models.Types;
 using Unibean.Service.Models.VoucherTypes;
-using Unibean.Service.Services;
 using Unibean.Service.Services.Interfaces;
 
 namespace Unibean.API.Controllers;
@@ -28,7 +25,7 @@ public class VoucherTypeController : ControllerBase
     /// Get voucher's type list
     /// </summary>
     [HttpGet]
-    [Authorize(Roles = "Admin, Partner, Store, Student")]
+    [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(PagedResultModel<VoucherTypeModel>),
         (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
@@ -56,7 +53,7 @@ public class VoucherTypeController : ControllerBase
     /// Get voucher's type by id
     /// </summary>
     [HttpGet("{id}")]
-    [Authorize(Roles = "Admin, Partner, Store, Student")]
+    [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(VoucherTypeModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public IActionResult GetById(string id)

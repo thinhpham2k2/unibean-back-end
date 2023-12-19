@@ -4,32 +4,32 @@ using System.Net;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Service.Models.Exceptions;
-using Unibean.Service.Models.WalletTypes;
+using Unibean.Service.Models.Roles;
 using Unibean.Service.Services.Interfaces;
 
 namespace Unibean.API.Controllers;
 
 [ApiController]
-[Tags("Wallet Type API")]
-[Route("api/v1/wallet-types")]
-public class WalletTypeController : ControllerBase
+[Tags("Role API")]
+[Route("api/v1/roles")]
+public class RoleController : ControllerBase
 {
-    private readonly IWalletTypeService walletTypeService;
+    private readonly IRoleService roleService;
 
-    public WalletTypeController(IWalletTypeService walletTypeService)
+    public RoleController(IRoleService roleService)
     {
-        this.walletTypeService = walletTypeService;
+        this.roleService = roleService;
     }
 
     /// <summary>
-    /// Get wallet's type list
+    /// Get role list
     /// </summary>
     [HttpGet]
-    [Authorize(Roles = "Admin, Brand, Store, Student")]
-    [ProducesResponseType(typeof(PagedResultModel<WalletTypeModel>),
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType(typeof(PagedResultModel<RoleModel>),
         (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public ActionResult<PagedResultModel<WalletTypeModel>> GetList(
+    public ActionResult<PagedResultModel<RoleModel>> GetList(
         [FromQuery] string sort = "Id,desc",
         [FromQuery] string search = "",
         [FromQuery] int page = 1,
@@ -38,23 +38,23 @@ public class WalletTypeController : ControllerBase
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         string propertySort = sort.Split(",")[0];
-        var propertyInfo = typeof(WalletType).GetProperty(propertySort);
+        var propertyInfo = typeof(Role).GetProperty(propertySort);
         if (propertySort != null && propertyInfo != null)
         {
-            PagedResultModel<WalletTypeModel>
-                result = walletTypeService.GetAll
+            PagedResultModel<RoleModel>
+                result = roleService.GetAll
                 (propertySort, sort.Split(",")[1].Equals("asc"), search, page, limit);
             return Ok(result);
         }
-        return BadRequest("Invalid property of wallet's type");
+        return BadRequest("Invalid property of role");
     }
 
     /// <summary>
-    /// Get wallet's type by id
+    /// Get role by id
     /// </summary>
     [HttpGet("{id}")]
-    [Authorize(Roles = "Admin, Brand, Store, Student")]
-    [ProducesResponseType(typeof(WalletTypeModel), (int)HttpStatusCode.OK)]
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType(typeof(RoleModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public IActionResult GetById(string id)
     {
@@ -62,7 +62,7 @@ public class WalletTypeController : ControllerBase
 
         try
         {
-            return Ok(walletTypeService.GetById(id));
+            return Ok(roleService.GetById(id));
         }
         catch (InvalidParameterException e)
         {
@@ -71,22 +71,22 @@ public class WalletTypeController : ControllerBase
     }
 
     /// <summary>
-    /// Create wallet's type
+    /// Create role
     /// </summary>
     [HttpPost]
     [Authorize(Roles = "Admin")]
-    [ProducesResponseType(typeof(WalletTypeModel), (int)HttpStatusCode.Created)]
+    [ProducesResponseType(typeof(RoleModel), (int)HttpStatusCode.Created)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public async Task<ActionResult> Create([FromForm] CreateWalletTypeModel creation)
+    public async Task<ActionResult> Create([FromForm] CreateRoleModel creation)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         try
         {
-            var type = await walletTypeService.Add(creation);
-            if (type != null)
+            var role = await roleService.Add(creation);
+            if (role != null)
             {
-                return StatusCode(StatusCodes.Status201Created, type);
+                return StatusCode(StatusCodes.Status201Created, role);
             }
             return NotFound("Create fail");
         }
@@ -97,22 +97,22 @@ public class WalletTypeController : ControllerBase
     }
 
     /// <summary>
-    /// Update wallet's type
+    /// Update role
     /// </summary>
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin")]
-    [ProducesResponseType(typeof(WalletTypeModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(RoleModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public async Task<ActionResult> Update(string id, [FromForm] UpdateWalletTypeModel update)
+    public async Task<ActionResult> Update(string id, [FromForm] UpdateRoleModel update)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         try
         {
-            var type = await walletTypeService.Update(id, update);
-            if (type != null)
+            var role = await roleService.Update(id, update);
+            if (role != null)
             {
-                return StatusCode(StatusCodes.Status200OK, type);
+                return StatusCode(StatusCodes.Status200OK, role);
             }
             return NotFound("Update fail");
         }
@@ -123,7 +123,7 @@ public class WalletTypeController : ControllerBase
     }
 
     /// <summary>
-    /// Delete wallet's type
+    /// Delete role
     /// </summary>
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin")]
@@ -135,7 +135,7 @@ public class WalletTypeController : ControllerBase
 
         try
         {
-            walletTypeService.Delete(id);
+            roleService.Delete(id);
             return StatusCode(StatusCodes.Status204NoContent);
         }
         catch (InvalidParameterException e)

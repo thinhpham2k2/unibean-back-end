@@ -25,7 +25,7 @@ public class ChallengeTypeController : ControllerBase
     /// Get challenge's type list
     /// </summary>
     [HttpGet]
-    [Authorize(Roles = "Admin, Partner, Store, Student")]
+    [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(PagedResultModel<ChallengeTypeModel>),
         (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
@@ -53,7 +53,7 @@ public class ChallengeTypeController : ControllerBase
     /// Get challenge's type by id
     /// </summary>
     [HttpGet("{id}")]
-    [Authorize(Roles = "Admin, Partner, Store, Student")]
+    [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(ChallengeTypeModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public IActionResult GetById(string id)

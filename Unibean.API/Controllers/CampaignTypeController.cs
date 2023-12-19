@@ -25,7 +25,7 @@ public class CampaignTypeController : ControllerBase
     /// Get campaign's type list
     /// </summary>
     [HttpGet]
-    [Authorize(Roles = "Admin, Partner, Store, Student")]
+    [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(PagedResultModel<CampaignTypeModel>),
         (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
@@ -53,7 +53,7 @@ public class CampaignTypeController : ControllerBase
     /// Get campaign's type by id
     /// </summary>
     [HttpGet("{id}")]
-    [Authorize(Roles = "Admin, Partner, Store, Student")]
+    [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(CampaignTypeModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public IActionResult GetById(string id)

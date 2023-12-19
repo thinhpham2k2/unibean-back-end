@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
 using Unibean.Repository.Entities;
-using Unibean.Repository.Repositories;
 using Unibean.Repository.Repositories.Interfaces;
-using Unibean.Service.Models.Partners;
 using Unibean.Service.Models.Wallets;
 using Unibean.Service.Services.Interfaces;
 

@@ -7,7 +7,7 @@ public class WalletModel
     public string CampaignName { get; set; }
     public string StudentId { get; set; }
     public string StudentName { get; set; }
-    public string PartnerId { get; set; }
+    public string BrandId { get; set; }
     public string BrandName { get; set; }
     public string TypeId { get; set; }
     public string TypeName { get; set; }

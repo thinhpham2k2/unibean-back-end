@@ -79,10 +79,12 @@ builder.Services.AddEndpointsApiExplorer();
 
 // Dependency injection service
 // Repository
+builder.Services.AddSingleton<IAccountRepository, AccountRepository>();
 builder.Services.AddSingleton<IActivityRepository, ActivityRepository>();
 builder.Services.AddSingleton<IActivityTransactionRepository, ActivityTransactionRepository>();
 builder.Services.AddSingleton<IAdminRepository, AdminRepository>();
 builder.Services.AddSingleton<IAreaRepository, AreaRepository>();
+builder.Services.AddSingleton<IBrandRepository, BrandRepository>();
 builder.Services.AddSingleton<ICampaignCampusRepository, CampaignCampusRepository>();
 builder.Services.AddSingleton<ICampaignGenderRepository, CampaignGenderRepository>();
 builder.Services.AddSingleton<ICampaignMajorRepository, CampaignMajorRepository>();
@@ -105,12 +107,12 @@ builder.Services.AddSingleton<IOrderDetailRepository, OrderDetailRepository>();
 builder.Services.AddSingleton<IOrderRepository, OrderRepository>();
 builder.Services.AddSingleton<IOrderStateRepository, OrderStateRepository>();
 builder.Services.AddSingleton<IOrderTransactionRepository, OrderTransactionRepository>();
-builder.Services.AddSingleton<IPartnerRepository, PartnerRepository>();
 builder.Services.AddSingleton<IPaymentRepository, PaymentRepository>();
 builder.Services.AddSingleton<IPaymentTransactionRepository, PaymentTransactionRepository>();
 builder.Services.AddSingleton<IProductRepository, ProductRepository>();
 builder.Services.AddSingleton<IRequestRepository, RequestRepository>();
 builder.Services.AddSingleton<IRequestTransactionRepository, RequestTransactionRepository>();
+builder.Services.AddSingleton<IRoleRepository, RoleRepository>();
 builder.Services.AddSingleton<IStateRepository, StateRepository>();
 builder.Services.AddSingleton<IStationRepository, StationRepository>();
 builder.Services.AddSingleton<IStoreRepository, StoreRepository>();
@@ -127,10 +129,12 @@ builder.Services.AddSingleton<IWalletTypeRepository, WalletTypeRepository>();
 builder.Services.AddSingleton<IWishlistRepository, WishlistRepository>();
 
 // Service
+builder.Services.AddSingleton<IAccountService, AccountService>();
 builder.Services.AddSingleton<IActivityService, ActivityService>();
 builder.Services.AddSingleton<IActivityTransactionService, ActivityTransactionService>();
 builder.Services.AddSingleton<IAdminService, AdminService>();
 builder.Services.AddSingleton<IAreaService, AreaService>();
+builder.Services.AddSingleton<IBrandService, BrandService>();
 builder.Services.AddSingleton<ICampaignCampusService, CampaignCampusService>();
 builder.Services.AddSingleton<ICampaignGenderService, CampaignGenderService>();
 builder.Services.AddSingleton<ICampaignMajorService, CampaignMajorService>();
@@ -153,12 +157,12 @@ builder.Services.AddSingleton<IOrderDetailService, OrderDetailService>();
 builder.Services.AddSingleton<IOrderService, OrderService>();
 builder.Services.AddSingleton<IOrderStateService, OrderStateService>();
 builder.Services.AddSingleton<IOrderTransactionService, OrderTransactionService>();
-builder.Services.AddSingleton<IPartnerService, PartnerService>();
 builder.Services.AddSingleton<IPaymentService, PaymentService>();
 builder.Services.AddSingleton<IPaymentTransactionService, PaymentTransactionService>();
 builder.Services.AddSingleton<IProductService, ProductService>();
 builder.Services.AddSingleton<IRequestService, RequestService>();
 builder.Services.AddSingleton<IRequestTransactionService, RequestTransactionService>();
+builder.Services.AddSingleton<IRoleService, RoleService>();
 builder.Services.AddSingleton<IStateService, StateService>();
 builder.Services.AddSingleton<IStationService, StationService>();
 builder.Services.AddSingleton<IStoreService, StoreService>();

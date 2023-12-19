@@ -25,7 +25,7 @@ public class TypeController : ControllerBase
     /// Get activity's type list
     /// </summary>
     [HttpGet]
-    [Authorize(Roles = "Admin, Partner, Store, Student")]
+    [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(PagedResultModel<TypeModel>),
         (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
@@ -53,7 +53,7 @@ public class TypeController : ControllerBase
     /// Get activity's type by id
     /// </summary>
     [HttpGet("{id}")]
-    [Authorize(Roles = "Admin, Partner, Store, Student")]
+    [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(TypeModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public IActionResult GetById(string id)

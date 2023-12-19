@@ -4,14 +4,14 @@ using Unibean.Repository.Repositories.Interfaces;
 
 namespace Unibean.Service.Validations;
 
-public class ValidPartnerEmail : ValidationAttribute
+public class ValidEmail : ValidationAttribute
 {
-    private readonly IPartnerRepository partnerRepository = new PartnerRepository();
+    private readonly IAccountRepository accountRepository = new AccountRepository();
 
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
         string email = value.ToString();
-        if (partnerRepository.CheckEmailDuplicate(email))
+        if (accountRepository.CheckEmailDuplicate(email))
         {
             return ValidationResult.Success;
         }

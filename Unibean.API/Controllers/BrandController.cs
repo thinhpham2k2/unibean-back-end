@@ -1,33 +1,30 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Data;
 using System.Net;
+using Unibean.Service.Models.Brands;
 using Unibean.Service.Models.Exceptions;
-using Unibean.Service.Models.Partners;
-using Unibean.Service.Models.Types;
-using Unibean.Service.Services;
 using Unibean.Service.Services.Interfaces;
 
 namespace Unibean.API.Controllers;
 
 [ApiController]
-[Tags("Partner API")]
-[Route("api/v1/partners")]
-public class PartnerController : ControllerBase
+[Tags("Brand API")]
+[Route("api/v1/brands")]
+public class BrandController : ControllerBase
 {
-    private readonly IPartnerService partnerService;
+    private readonly IBrandService brandService;
 
-    public PartnerController(IPartnerService partnerService)
+    public BrandController(IBrandService brandService)
     {
-        this.partnerService = partnerService;
+        this.brandService = brandService;
     }
 
     /// <summary>
-    /// Get partner by id
+    /// Get brand by id
     /// </summary>
     [HttpGet("{id}")]
-    [Authorize(Roles = "Admin, Partner, Store, Student")]
-    [ProducesResponseType(typeof(PartnerExtraModel), (int)HttpStatusCode.OK)]
+    [Authorize(Roles = "Admin, Brand, Store, Student")]
+    [ProducesResponseType(typeof(BrandExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public IActionResult GetById(string id)
     {
@@ -35,7 +32,7 @@ public class PartnerController : ControllerBase
 
         try
         {
-            return Ok(partnerService.GetById(id));
+            return Ok(brandService.GetById(id));
         }
         catch (InvalidParameterException e)
         {

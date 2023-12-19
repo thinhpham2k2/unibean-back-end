@@ -5,16 +5,16 @@ using Unibean.Repository.Repositories.Interfaces;
 
 namespace Unibean.Service.Validations;
 
-public class ValidPartnerUserName : ValidationAttribute
+public class ValidUserName : ValidationAttribute
 {
-    private readonly IPartnerRepository partnerRepository = new PartnerRepository();
+    private readonly IAccountRepository accountRepository = new AccountRepository();
 
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
         string userName = value.ToString();
         if (Regex.IsMatch(userName, @"^[a-z0-9]{3,50}$"))
         {
-            if (partnerRepository.CheckUsernameDuplicate(userName))
+            if (accountRepository.CheckUsernameDuplicate(userName))
             {
                 return ValidationResult.Success;
             }

@@ -2,24 +2,23 @@
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
+using Unibean.Service.Models.Brands;
 using Unibean.Service.Models.Campaigns;
 using Unibean.Service.Models.Exceptions;
-using Unibean.Service.Models.Partners;
 using Unibean.Service.Models.Stores;
 using Unibean.Service.Models.Wallets;
 using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Utilities.FireBase;
-using BCryptNet = BCrypt.Net.BCrypt;
 
 namespace Unibean.Service.Services;
 
-public class PartnerService : IPartnerService
+public class BrandService : IBrandService
 {
     private readonly Mapper mapper;
 
-    private readonly string FOLDER_NAME = "partners";
+    private readonly string FOLDER_NAME = "brands";
 
-    private readonly IPartnerRepository partnerRepository;
+    private readonly IBrandRepository brandRepository;
 
     private readonly IFireBaseService fireBaseService;
 
@@ -27,7 +26,7 @@ public class PartnerService : IPartnerService
 
     private readonly IWalletTypeService walletTypeService;
 
-    public PartnerService(IPartnerRepository partnerRepository, 
+    public BrandService(IBrandRepository brandRepository, 
         IFireBaseService fireBaseService,
         IWalletService walletService,
         IWalletTypeService walletTypeService)
@@ -35,7 +34,7 @@ public class PartnerService : IPartnerService
         var config = new MapperConfiguration(cfg
                 =>
         {
-            cfg.CreateMap<Partner, PartnerModel>().ReverseMap();
+            cfg.CreateMap<Brand, BrandModel>().ReverseMap();
             cfg.CreateMap<Wallet, WalletModel>()
             .ForMember(w => w.TypeName, opt => opt.MapFrom(src => src.Type.TypeName))
             .ReverseMap();
@@ -45,17 +44,15 @@ public class PartnerService : IPartnerService
             cfg.CreateMap<Store, StoreModel>()
             .ForMember(s => s.AreaName, opt => opt.MapFrom(src => src.Area.AreaName))
             .ReverseMap();
-            cfg.CreateMap<Partner, PartnerModel>().ReverseMap();
-            cfg.CreateMap<Partner, PartnerExtraModel>()
+            cfg.CreateMap<Brand, BrandModel>().ReverseMap();
+            cfg.CreateMap<Brand, BrandExtraModel>()
             .ForMember(p => p.NumberOfFollowers, opt => opt.MapFrom(src => src.Wishlists.Count))
             .ReverseMap();
-            cfg.CreateMap<PagedResultModel<Partner>, PagedResultModel<PartnerModel>>()
+            cfg.CreateMap<PagedResultModel<Brand>, PagedResultModel<BrandModel>>()
             .ReverseMap();
-            cfg.CreateMap<Partner, CreatePartnerModel>()
+            cfg.CreateMap<Brand, CreateBrandModel>()
             .ReverseMap()
             .ForMember(p => p.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
-            .ForMember(p => p.Password, opt => opt.MapFrom(src => BCryptNet.HashPassword(src.Password)))
-            .ForMember(p => p.Logo, opt => opt.Ignore())
             .ForMember(p => p.CoverPhoto, opt => opt.Ignore())
             .ForMember(p => p.TotalIncome, opt => opt.MapFrom(src => 0))
             .ForMember(p => p.TotalSpending, opt => opt.MapFrom(src => 0))
@@ -64,22 +61,22 @@ public class PartnerService : IPartnerService
             .ForMember(p => p.Status, opt => opt.MapFrom(src => true));
         });
         mapper = new Mapper(config);
-        this.partnerRepository = partnerRepository;
+        this.brandRepository = brandRepository;
         this.fireBaseService = fireBaseService;
         this.walletService = walletService;
         this.walletTypeService = walletTypeService;
     }
 
-    public async Task<PartnerExtraModel> Add(CreatePartnerModel creation)
+    public async Task<BrandExtraModel> Add(CreateBrandModel creation)
     {
-        Partner entity = mapper.Map<Partner>(creation);
+        Brand entity = mapper.Map<Brand>(creation);
         
         // Upload logo image
         if (creation.Logo != null && creation.Logo.Length > 0)
         {
             FireBaseFile f = await fireBaseService.UploadFileAsync(creation.Logo, FOLDER_NAME);
-            entity.Logo = f.URL;
-            entity.LogoFileName = f.FileName;
+            //entity.Logo = f.URL;
+            //entity.LogoFileName = f.FileName;
         }
 
         // Upload cover photo
@@ -90,13 +87,13 @@ public class PartnerService : IPartnerService
             entity.CoverFileName = f.FileName;
         }
 
-        entity = partnerRepository.Add(entity);
+        entity = brandRepository.Add(entity);
         // Create wallet
         if(entity != null)
         {
             walletService.Add(new CreateWalletModel
             {
-                PartnerId = entity.Id,
+                BrandId = entity.Id,
                 TypeId = walletTypeService.GetFirst().Id,
                 Balance = 0,
                 Description = string.Empty,
@@ -104,28 +101,23 @@ public class PartnerService : IPartnerService
             });
             walletService.Add(new CreateWalletModel
             {
-                PartnerId = entity.Id,
+                BrandId = entity.Id,
                 TypeId = walletTypeService.GetSecond().Id,
                 Balance = 0,
                 Description = string.Empty,
                 State = true
             });
         }
-        return mapper.Map<PartnerExtraModel>(entity);
+        return mapper.Map<BrandExtraModel>(entity);
     }
 
-    public PartnerExtraModel GetById(string id)
+    public BrandExtraModel GetById(string id)
     {
-        Partner entity = partnerRepository.GetById(id);
+        Brand entity = brandRepository.GetById(id);
         if (entity != null)
         {
-            return mapper.Map<PartnerExtraModel>(entity);
+            return mapper.Map<BrandExtraModel>(entity);
         }
-        throw new InvalidParameterException("Not found partner");
-    }
-
-    public PartnerModel GetByUserNameAndPassword(string userName, string password)
-    {
-        return mapper.Map<PartnerModel>(partnerRepository.GetByUserNameAndPassword(userName, password));
+        throw new InvalidParameterException("Not found brand");
     }
 }

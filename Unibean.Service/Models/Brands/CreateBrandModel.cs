@@ -2,9 +2,9 @@
 using System.ComponentModel.DataAnnotations;
 using Unibean.Service.Validations;
 
-namespace Unibean.Service.Models.Partners;
+namespace Unibean.Service.Models.Brands;
 
-public class CreatePartnerModel
+public class CreateBrandModel
 {
     [Required(ErrorMessage = "Brand's name is required!")]
     [StringLength(255, MinimumLength = 3,
@@ -13,7 +13,7 @@ public class CreatePartnerModel
 
     public string Acronym { get; set; }
 
-    [ValidPartnerUserName]
+    [ValidUserName]
     [Required(ErrorMessage = "User name is required!")]
     public string UserName { get; set; }
 
@@ -33,7 +33,7 @@ public class CreatePartnerModel
     public IFormFile CoverPhoto { get; set; }
 
     [EmailAddress]
-    [ValidPartnerEmail]
+    [ValidEmail]
     public string Email { get; set; }
 
     [StringLength(20, MinimumLength = 3,

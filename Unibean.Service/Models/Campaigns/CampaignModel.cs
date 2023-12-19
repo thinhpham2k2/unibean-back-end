@@ -3,13 +3,15 @@
 public class CampaignModel
 {
     public string Id { get; set; }
-    public string PartnerId { get; set; }
+    public string BrandId { get; set; }
     public string BrandName { get; set; }
     public string Acronym { get; set; }
     public string TypeId { get; set; }
     public string TypeName { get; set; }
     public string CampaignName { get; set; }
     public string Image { get; set; }
+    public string ImageName { get; set; }
+    public string File { get; set; }
     public string FileName { get; set; }
     public string Condition { get; set; }
     public string Link { get; set; }

@@ -4,5 +4,4 @@ namespace Unibean.Repository.Repositories.Interfaces;
 
 public interface IStoreRepository
 {
-    Store GetByUserNameAndPassword(string userName, string password);
 }

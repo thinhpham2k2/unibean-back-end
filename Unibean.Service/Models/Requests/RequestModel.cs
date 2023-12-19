@@ -3,7 +3,7 @@
 public class RequestModel
 {
     public string Id { get; set; }
-    public string PartnerId { get; set; }
+    public string BrandId { get; set; }
     public string BrandName { get; set; }
     public string AdminId { get; set; }
     public string AdminName { get; set; }

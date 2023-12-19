@@ -20,10 +20,10 @@ public class Wallet
 
     public Student Student { get; set; }
 
-    [Column("partner_id", TypeName = "char(26)")]
-    public string PartnerId { get; set; }
+    [Column("brand_id", TypeName = "char(26)")]
+    public string BrandId { get; set; }
 
-    public Partner Partner { get; set; }
+    public Brand Brand { get; set; }
 
     [Column("type_id", TypeName = "char(26)")]
     public string TypeId { get; set; }

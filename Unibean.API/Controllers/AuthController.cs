@@ -1,14 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.Win32;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
 using System.Text;
+using Unibean.Service.Models.Brands;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Jwts;
-using Unibean.Service.Models.Partners;
 using Unibean.Service.Services.Interfaces;
 
 namespace Unibean.API.Controllers;
@@ -22,21 +21,26 @@ public class AuthController : ControllerBase
 
     private static readonly TimeSpan TOKEN_LIFE_TIME = TimeSpan.FromDays(90);
 
+    private readonly IAccountService accountService;
+
     private readonly IAdminService adminService;
 
-    private readonly IPartnerService partnerService;
+    private readonly IBrandService brandService;
 
     private readonly IStoreService storeService;
 
     private readonly IStudentService studentService;
 
-    public AuthController(IAdminService adminService, 
-        IPartnerService partnerService, 
+    public AuthController(
+        IAccountService accountService,
+        IAdminService adminService, 
+        IBrandService brandService, 
         IStoreService storeService, 
         IStudentService studentService)
     {
+        this.accountService = accountService;
         this.adminService = adminService;
-        this.partnerService = partnerService;
+        this.brandService = brandService;
         this.storeService = storeService;
         this.studentService = studentService;
     }
@@ -54,7 +58,7 @@ public class AuthController : ControllerBase
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
         try
         {
-            var admin = adminService.GetByUserNameAndPassword(requestLogin.UserName, requestLogin.Password);
+            var admin = accountService.GetByUserNameAndPassword(requestLogin.UserName, requestLogin.Password);
             return accountAuthentication(admin, "Admin");
         }
         catch (InvalidParameterException e)
@@ -64,20 +68,20 @@ public class AuthController : ControllerBase
     }
 
     /// <summary>
-    /// Partner login to system
+    /// Brand login to system
     /// </summary>
     [AllowAnonymous]
-    [HttpPost("partner/login")]
+    [HttpPost("brand/login")]
     [ProducesResponseType(typeof(JwtResponseModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public IActionResult GeneratePartnerToken([FromBody] LoginFromModel requestLogin)
+    public IActionResult GenerateBrandToken([FromBody] LoginFromModel requestLogin)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         try
         {
-            var partner = partnerService.GetByUserNameAndPassword(requestLogin.UserName, requestLogin.Password);
-            return accountAuthentication(partner, "Partner");
+            var brand = accountService.GetByUserNameAndPassword(requestLogin.UserName, requestLogin.Password);
+            return accountAuthentication(brand, "Brand");
         }
         catch (InvalidParameterException e)
         {
@@ -98,7 +102,7 @@ public class AuthController : ControllerBase
 
         try
         {
-            var store = storeService.GetByUserNameAndPassword(requestLogin.UserName, requestLogin.Password);
+            var store = accountService.GetByUserNameAndPassword(requestLogin.UserName, requestLogin.Password);
             return accountAuthentication(store, "Store");
         }
         catch (InvalidParameterException e)
@@ -120,7 +124,7 @@ public class AuthController : ControllerBase
 
         try
         {
-            var student = studentService.GetByUserNameAndPassword(requestLogin.UserName, requestLogin.Password);
+            var student = accountService.GetByUserNameAndPassword(requestLogin.UserName, requestLogin.Password);
             return accountAuthentication(student, "Student");
         }
         catch (InvalidParameterException e)
@@ -170,24 +174,24 @@ public class AuthController : ControllerBase
 
     //////////////////////////////////////////////////////////////////
 
-    // Register student and partner API ////////////////////////////////
+    // Register student and brand API ////////////////////////////////
     /// <summary>
-    /// Partner register account
+    /// Brand register account
     /// </summary>
     [AllowAnonymous]
-    [HttpPost("partner/register")]
-    [ProducesResponseType(typeof(PartnerModel), (int)HttpStatusCode.Created)]
+    [HttpPost("brand/register")]
+    [ProducesResponseType(typeof(BrandModel), (int)HttpStatusCode.Created)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public async Task<ActionResult> PartnerRegister([FromForm] CreatePartnerModel register)
+    public async Task<ActionResult> BrandRegister([FromForm] CreateBrandModel register)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         try
         {
-            var partner = await partnerService.Add(register);
-            if (partner != null)
+            var brand = await brandService.Add(register);
+            if (brand != null)
             {
-                return StatusCode(StatusCodes.Status201Created, partner);
+                return StatusCode(StatusCodes.Status201Created, brand);
             }
             return NotFound("Create fail");
         }

@@ -10,44 +10,27 @@ public class Store
     [Column("id", TypeName = "char(26)")]
     public string Id { get; set; }
 
-    [Column("partner_id", TypeName = "char(26)")]
-    public string PartnerId { get; set; }
+    [Column("brand_id", TypeName = "char(26)")]
+    public string BrandId { get; set; }
 
-    public Partner Partner { get; set; }
+    public Brand Brand { get; set; }
 
     [Column("area_id", TypeName = "char(26)")]
     public string AreaId { get; set; }
 
     public Area Area { get; set; }
 
+    [Column("account_id", TypeName = "char(26)")]
+    public string AccountId { get; set; }
+
+    public Account Account { get; set; }
+
     [MaxLength(255)]
     [Column("store_name")]
     public string StoreName { get; set; }
 
-    [MaxLength(50)]
-    [Column("user_name")]
-    public string UserName { get; set; }
-
-    [MaxLength(255)]
-    [Column("password")]
-    public string Password { get; set; }
-
-    [Column("image", TypeName = "text")]
-    public string Image { get; set; }
-
-    [Column("file_name", TypeName = "text")]
-    public string FileName { get; set; }
-
-    [EmailAddress]
-    [MaxLength(320)]
-    [Column("email")]
-    public string Email { get; set; }
-
     [Column("address", TypeName = "text")]
     public string Address { get; set; }
-
-    [Column("phone", TypeName = "char(20)")]
-    public string Phone { get; set; }
 
     [Column("opening_hours")]
     public TimeOnly? OpeningHours { get; set; }
@@ -55,14 +38,20 @@ public class Store
     [Column("closing_hours")]
     public TimeOnly? ClosingHours { get; set; }
 
-    [Column("description", TypeName = "text")]
-    public string Description { get; set; }
+    [Column("file", TypeName = "text")]
+    public string File { get; set; }
+
+    [Column("file_name", TypeName = "text")]
+    public string FileName { get; set; }
 
     [Column("date_created")]
     public DateTime? DateCreated { get; set; }
 
     [Column("date_updated")]
     public DateTime? DateUpdated { get; set; }
+
+    [Column("description", TypeName = "text")]
+    public string Description { get; set; }
 
     [Column("state", TypeName = "bit(1)")]
     public bool? State { get; set; }

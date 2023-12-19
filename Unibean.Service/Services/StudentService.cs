@@ -32,12 +32,4 @@ public class StudentService : IStudentService
         this.studentRepository = studentRepository;
         this.fireBaseService = fireBaseService;
     }
-
-    public StudentModel GetByUserNameAndPassword(string userName, string password)
-    {
-        StudentModel student = mapper.Map<StudentModel>(studentRepository.GetByUserNameAndPassword(userName, password));
-        return student != null ? 
-            (bool)student.IsVerify ? student : throw new InvalidParameterException("Account is not verified")
-            : null;
-    }
 }

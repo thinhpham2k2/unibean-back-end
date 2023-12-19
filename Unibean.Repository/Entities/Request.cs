@@ -10,10 +10,10 @@ public class Request
     [Column("id", TypeName = "char(26)")]
     public string Id { get; set; }
 
-    [Column("partner_id", TypeName = "char(26)")]
-    public string PartnerId { get; set; }
+    [Column("brand_id", TypeName = "char(26)")]
+    public string BrandId { get; set; }
 
-    public Partner Partner { get; set; }
+    public Brand Brand { get; set; }
 
     [Column("admin_id", TypeName = "char(26)")]
     public string AdminId { get; set; }

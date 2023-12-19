@@ -26,9 +26,4 @@ public class AdminService : IAdminService
         this.adminRepository = adminRepository;
         this.fireBaseService = fireBaseService;
     }
-
-    public AdminModel GetByUserNameAndPassword(string userName, string password)
-    {
-        return mapper.Map<AdminModel>(adminRepository.GetByUserNameAndPassword(userName, password));
-    }
 }

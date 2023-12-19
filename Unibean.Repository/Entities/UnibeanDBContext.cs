@@ -17,10 +17,12 @@ public class UnibeanDBContext : DbContext
         optionsBuilder.UseMySql(connetionString, ServerVersion.AutoDetect(connetionString));
     }
 
+    public virtual DbSet<Account> Accounts { get; set; }
     public virtual DbSet<Activity> Activities { get; set; }
     public virtual DbSet<ActivityTransaction> ActivityTransactions { get; set; }
     public virtual DbSet<Admin> Admins { get; set; }
     public virtual DbSet<Area> Areas { get; set; }
+    public virtual DbSet<Brand> Brands { get; set; }
     public virtual DbSet<Campaign> Campaigns { get; set; }
     public virtual DbSet<CampaignCampus> CampaignCampuses { get; set; }
     public virtual DbSet<CampaignGender> CampaignGenders { get; set; }
@@ -43,12 +45,12 @@ public class UnibeanDBContext : DbContext
     public virtual DbSet<OrderDetail> OrderDetails { get; set; }
     public virtual DbSet<OrderState> OrderStates { get; set; }
     public virtual DbSet<OrderTransaction> OrderTransactions { get; set; }
-    public virtual DbSet<Partner> Partners { get; set; }
     public virtual DbSet<Payment> Payments { get; set; }
     public virtual DbSet<PaymentTransaction> PaymentTransactions { get; set; }
     public virtual DbSet<Product> Products { get; set; }
     public virtual DbSet<Request> Requests { get; set; }
     public virtual DbSet<RequestTransaction> RequestTransactions { get; set; }
+    public virtual DbSet<Role> Roles { get; set; }
     public virtual DbSet<State> States { get; set; }
     public virtual DbSet<Station> Stations { get; set; }
     public virtual DbSet<Store> Stores { get; set; }

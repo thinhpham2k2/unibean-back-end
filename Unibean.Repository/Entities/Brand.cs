@@ -3,12 +3,17 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Unibean.Repository.Entities;
 
-[Table("tbl_partner")]
-public class Partner
+[Table("tbl_brand")]
+public class Brand
 {
     [Key]
     [Column("id", TypeName = "char(26)")]
     public string Id { get; set; }
+
+    [Column("account_id", TypeName = "char(26)")]
+    public string AccountId { get; set; }
+
+    public Account Account { get; set; }
 
     [MaxLength(255)]
     [Column("brand_name")]
@@ -18,22 +23,8 @@ public class Partner
     [Column("acronym")]
     public string Acronym { get; set; }
 
-    [MaxLength(50)]
-    [Column("user_name")]
-    public string UserName { get; set; }
-
-    [MaxLength(255)]
-    [Column("password")]
-    public string Password { get; set; }
-
     [Column("address", TypeName = "text")]
     public string Address { get; set; }
-
-    [Column("logo", TypeName = "text")]
-    public string Logo { get; set; }
-
-    [Column("logo_file_name", TypeName = "text")]
-    public string LogoFileName { get; set; }
 
     [Column("cover_photo", TypeName = "text")]
     public string CoverPhoto { get; set; }
@@ -41,13 +32,8 @@ public class Partner
     [Column("cover_file_name", TypeName = "text")]
     public string CoverFileName { get; set; }
 
-    [EmailAddress]
-    [MaxLength(320)]
-    [Column("email")]
-    public string Email { get; set; }
-
-    [Column("phone", TypeName = "char(20)")]
-    public string Phone { get; set; }
+    [Column("link", TypeName = "text")]
+    public string Link { get; set; }
 
     [Column("opening_hours")]
     public TimeOnly? OpeningHours { get; set; }
@@ -55,23 +41,20 @@ public class Partner
     [Column("closing_hours")]
     public TimeOnly? ClosingHours { get; set; }
 
-    [Column("link", TypeName = "text")]
-    public string Link { get; set; }
-
     [Column("total_income", TypeName = "decimal(38,2)")]
     public decimal? TotalIncome { get; set; }
 
     [Column("total_spending", TypeName = "decimal(38,2)")]
     public decimal? TotalSpending { get; set; }
 
-    [Column("description", TypeName = "text")]
-    public string Description { get; set; }
-
     [Column("date_created")]
     public DateTime? DateCreated { get; set; }
 
     [Column("date_updated")]
     public DateTime? DateUpdated { get; set; }
+
+    [Column("description", TypeName = "text")]
+    public string Description { get; set; }
 
     [Column("state", TypeName = "bit(1)")]
     public bool? State { get; set; }

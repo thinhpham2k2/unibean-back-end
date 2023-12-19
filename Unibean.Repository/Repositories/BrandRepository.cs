@@ -3,18 +3,17 @@ using System.Linq.Dynamic.Core;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
-using BCryptNet = BCrypt.Net.BCrypt;
 
 namespace Unibean.Repository.Repositories;
 
-public class PartnerRepository : IPartnerRepository
+public class BrandRepository : IBrandRepository
 {
-    public Partner Add(Partner creation)
+    public Brand Add(Brand creation)
     {
         try
         {
             using var db = new UnibeanDBContext();
-            creation = db.Partners.Add(creation).Entity;
+            creation = db.Brands.Add(creation).Entity;
             db.SaveChanges();
         }
         catch (Exception ex)
@@ -24,46 +23,14 @@ public class PartnerRepository : IPartnerRepository
         return creation;
     }
 
-    public bool CheckEmailDuplicate(string email)
-    {
-        Partner partner = new();
-        try
-        {
-            using var db = new UnibeanDBContext();
-            partner = db.Partners
-                .Where(p => p.Email.Equals(email)).FirstOrDefault();
-        }
-        catch (Exception ex)
-        {
-            throw new Exception(ex.Message);
-        }
-        return partner == null;
-    }
-
-    public bool CheckUsernameDuplicate(string userName)
-    {
-        Partner partner = new();
-        try
-        {
-            using var db = new UnibeanDBContext();
-            partner = db.Partners
-                .Where(p => p.UserName.Equals(userName)).FirstOrDefault();
-        }
-        catch (Exception ex)
-        {
-            throw new Exception(ex.Message);
-        }
-        return partner == null;
-    }
-
     public void Delete(string id)
     {
         try
         {
             using var db = new UnibeanDBContext();
-            var partner = db.Partners.FirstOrDefault(b => b.Id.Equals(id));
-            partner.Status = false;
-            db.Partners.Update(partner);
+            var brand = db.Brands.FirstOrDefault(b => b.Id.Equals(id));
+            brand.Status = false;
+            db.Brands.Update(brand);
             db.SaveChanges();
         }
         catch (Exception ex)
@@ -72,22 +39,18 @@ public class PartnerRepository : IPartnerRepository
         }
     }
 
-    public PagedResultModel<Partner> GetAll(string propertySort, bool isAsc, string search, int page, int limit)
+    public PagedResultModel<Brand> GetAll(string propertySort, bool isAsc, string search, int page, int limit)
     {
-        PagedResultModel<Partner> pagedResult = new();
+        PagedResultModel<Brand> pagedResult = new();
         try
         {
             using var db = new UnibeanDBContext();
-            var query = db.Partners
+            var query = db.Brands
                 .Where(p => (EF.Functions.Like(p.Id, "%" + search + "%")
                 || EF.Functions.Like(p.BrandName, "%" + search + "%")
                 || EF.Functions.Like(p.Acronym, "%" + search + "%")
-                || EF.Functions.Like(p.UserName, "%" + search + "%")
                 || EF.Functions.Like(p.Address, "%" + search + "%")
-                || EF.Functions.Like(p.LogoFileName, "%" + search + "%")
                 || EF.Functions.Like(p.CoverFileName, "%" + search + "%")
-                || EF.Functions.Like(p.Email, "%" + search + "%")
-                || EF.Functions.Like(p.Phone, "%" + search + "%")
                 || EF.Functions.Like(p.Description, "%" + search + "%"))
                 && p.Status.Equals(true))
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
@@ -97,7 +60,7 @@ public class PartnerRepository : IPartnerRepository
                .Take(limit)
                .ToList();
 
-            pagedResult = new PagedResultModel<Partner>
+            pagedResult = new PagedResultModel<Brand>
             {
                 CurrentPage = page,
                 PageSize = limit,
@@ -114,14 +77,15 @@ public class PartnerRepository : IPartnerRepository
         return pagedResult;
     }
 
-    public Partner GetById(string id)
+    public Brand GetById(string id)
     {
-        Partner partner = new();
+        Brand brand = new();
         try
         {
             using var db = new UnibeanDBContext();
-            partner = db.Partners
+            brand = db.Brands
             .Where(s => s.Id.Equals(id) && s.Status.Equals(true))
+            .Include(s => s.Account)
             .Include(s => s.Wishlists.Where(w => w.Status.Equals(true)))
             .Include(s => s.Wallets.Where(w => w.Status.Equals(true)))
             .ThenInclude(w => w.Type)
@@ -135,40 +99,15 @@ public class PartnerRepository : IPartnerRepository
         {
             throw new Exception(ex.Message);
         }
-        return partner;
+        return brand;
     }
 
-    public Partner GetByUserNameAndPassword(string userName, string password)
-    {
-        Partner partner = new();
-        try
-        {
-            using (var db = new UnibeanDBContext())
-            {
-                partner = db.Partners.Where(a => a.UserName.Equals(userName)
-                && a.Status.Equals(true)).FirstOrDefault();
-            }
-            if (partner != null)
-            {
-                if (!BCryptNet.Verify(password, partner.Password))
-                {
-                    return null;
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            throw new Exception(ex.Message);
-        }
-        return partner;
-    }
-
-    public Partner Update(Partner update)
+    public Brand Update(Brand update)
     {
         try
         {
             using var db = new UnibeanDBContext();
-            update = db.Partners.Update(update).Entity;
+            update = db.Brands.Update(update).Entity;
             db.SaveChanges();
         }
         catch (Exception ex)

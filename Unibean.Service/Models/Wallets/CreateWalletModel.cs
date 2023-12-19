@@ -10,8 +10,8 @@ public class CreateWalletModel
     [ValidStudent]
     public string StudentId { get; set; }
 
-    [ValidPartner]
-    public string PartnerId { get; set; }
+    [ValidBrand]
+    public string BrandId { get; set; }
 
     [ValidWalletType]
     public string TypeId { get; set; }
