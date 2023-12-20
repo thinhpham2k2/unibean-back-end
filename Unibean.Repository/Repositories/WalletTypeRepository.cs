@@ -92,32 +92,15 @@ public class WalletTypeRepository : IWalletTypeRepository
         return walletType;
     }
 
-    public WalletType GetFirst()
+    public WalletType GetWalletTypeByName(string typeName)
     {
         WalletType walletType = new();
         try
         {
             using var db = new UnibeanDBContext();
             walletType = db.WalletTypes
-            .Where(s => s.Status.Equals(true))
-            .FirstOrDefault();
-        }
-        catch (Exception ex)
-        {
-            throw new Exception(ex.Message);
-        }
-        return walletType;
-    }
-
-    public WalletType GetSecond()
-    {
-        WalletType walletType = new();
-        try
-        {
-            using var db = new UnibeanDBContext();
-            walletType = db.WalletTypes
-            .Where(s => s.Status.Equals(true))
-            .Skip(1)
+            .Where(s => s.TypeName.Equals(typeName) 
+            && s.Status.Equals(true))
             .FirstOrDefault();
         }
         catch (Exception ex)

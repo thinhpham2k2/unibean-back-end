@@ -7,6 +7,7 @@ namespace Unibean.Service.Models.Brands;
 public class BrandExtraModel
 {
     public string Id { get; set; }
+    public string AccountId { get; set; }
     public string BrandName { get; set; }
     public string Acronym { get; set; }
     public string UserName { get; set; }

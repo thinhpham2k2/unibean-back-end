@@ -44,8 +44,19 @@ public class BrandService : IBrandService
             cfg.CreateMap<Store, StoreModel>()
             .ForMember(s => s.AreaName, opt => opt.MapFrom(src => src.Area.AreaName))
             .ReverseMap();
-            cfg.CreateMap<Brand, BrandModel>().ReverseMap();
+            cfg.CreateMap<Brand, BrandModel>()
+            .ForMember(p => p.UserName, opt => opt.MapFrom(src => src.Account.UserName))
+            .ForMember(p => p.Logo, opt => opt.MapFrom(src => src.Account.Avatar))
+            .ForMember(p => p.LogoFileName, opt => opt.MapFrom(src => src.Account.FileName))
+            .ForMember(p => p.Email, opt => opt.MapFrom(src => src.Account.Email))
+            .ForMember(p => p.Phone, opt => opt.MapFrom(src => src.Account.Phone))
+            .ReverseMap();
             cfg.CreateMap<Brand, BrandExtraModel>()
+            .ForMember(p => p.UserName, opt => opt.MapFrom(src => src.Account.UserName))
+            .ForMember(p => p.Logo, opt => opt.MapFrom(src => src.Account.Avatar))
+            .ForMember(p => p.LogoFileName, opt => opt.MapFrom(src => src.Account.FileName))
+            .ForMember(p => p.Email, opt => opt.MapFrom(src => src.Account.Email))
+            .ForMember(p => p.Phone, opt => opt.MapFrom(src => src.Account.Phone))
             .ForMember(p => p.NumberOfFollowers, opt => opt.MapFrom(src => src.Wishlists.Count))
             .ReverseMap();
             cfg.CreateMap<PagedResultModel<Brand>, PagedResultModel<BrandModel>>()
@@ -54,6 +65,14 @@ public class BrandService : IBrandService
             .ReverseMap()
             .ForMember(p => p.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
             .ForMember(p => p.CoverPhoto, opt => opt.Ignore())
+            .ForMember(p => p.TotalIncome, opt => opt.MapFrom(src => 0))
+            .ForMember(p => p.TotalSpending, opt => opt.MapFrom(src => 0))
+            .ForMember(p => p.DateCreated, opt => opt.MapFrom(src => DateTime.Now))
+            .ForMember(p => p.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
+            .ForMember(p => p.Status, opt => opt.MapFrom(src => true));
+            cfg.CreateMap<Brand, CreateBrandGoogleModel>()
+            .ReverseMap()
+            .ForMember(p => p.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
             .ForMember(p => p.TotalIncome, opt => opt.MapFrom(src => 0))
             .ForMember(p => p.TotalSpending, opt => opt.MapFrom(src => 0))
             .ForMember(p => p.DateCreated, opt => opt.MapFrom(src => DateTime.Now))
@@ -70,14 +89,6 @@ public class BrandService : IBrandService
     public async Task<BrandExtraModel> Add(CreateBrandModel creation)
     {
         Brand entity = mapper.Map<Brand>(creation);
-        
-        // Upload logo image
-        if (creation.Logo != null && creation.Logo.Length > 0)
-        {
-            FireBaseFile f = await fireBaseService.UploadFileAsync(creation.Logo, FOLDER_NAME);
-            //entity.Logo = f.URL;
-            //entity.LogoFileName = f.FileName;
-        }
 
         // Upload cover photo
         if (creation.CoverPhoto != null && creation.CoverPhoto.Length > 0)
@@ -94,21 +105,48 @@ public class BrandService : IBrandService
             walletService.Add(new CreateWalletModel
             {
                 BrandId = entity.Id,
-                TypeId = walletTypeService.GetFirst().Id,
+                TypeId = walletTypeService.GetWalletTypeByName("Green bean").Id,
                 Balance = 0,
-                Description = string.Empty,
+                Description = null,
                 State = true
             });
             walletService.Add(new CreateWalletModel
             {
                 BrandId = entity.Id,
-                TypeId = walletTypeService.GetSecond().Id,
+                TypeId = walletTypeService.GetWalletTypeByName("Red bean").Id,
                 Balance = 0,
-                Description = string.Empty,
+                Description = null,
                 State = true
             });
         }
         return mapper.Map<BrandExtraModel>(entity);
+    }
+
+    public BrandModel AddGoogle(CreateBrandGoogleModel creation)
+    {
+        Brand entity = brandRepository.Add(mapper.Map<Brand>(creation));
+
+        // Create wallet
+        if (entity != null)
+        {
+            walletService.Add(new CreateWalletModel
+            {
+                BrandId = entity.Id,
+                TypeId = walletTypeService.GetWalletTypeByName("Green bean").Id,
+                Balance = 0,
+                Description = null,
+                State = true
+            });
+            walletService.Add(new CreateWalletModel
+            {
+                BrandId = entity.Id,
+                TypeId = walletTypeService.GetWalletTypeByName("Red bean").Id,
+                Balance = 0,
+                Description = null,
+                State = true
+            });
+        }
+        return mapper.Map<BrandModel>(entity);
     }
 
     public BrandExtraModel GetById(string id)

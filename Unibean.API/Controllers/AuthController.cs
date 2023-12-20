@@ -5,9 +5,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
 using System.Text;
+using Unibean.Service.Models.Authens;
 using Unibean.Service.Models.Brands;
 using Unibean.Service.Models.Exceptions;
-using Unibean.Service.Models.Jwts;
 using Unibean.Service.Services.Interfaces;
 
 namespace Unibean.API.Controllers;
@@ -23,9 +23,13 @@ public class AuthController : ControllerBase
 
     private readonly IAccountService accountService;
 
-    public AuthController(IAccountService accountService)
+    private readonly IGoogleService googleService;
+
+    public AuthController(IAccountService accountService,
+        IGoogleService googleService)
     {
         this.accountService = accountService;
+        this.googleService = googleService;
     }
 
     // Login by username & password API ////////////////////////////////
@@ -89,7 +93,7 @@ public class AuthController : ControllerBase
             if (isVerify)
             {
                 JwtResponseModel response = new JwtResponseModel();
-                var role = (user.GetType().GetProperty("RoleName").GetValue(user) ?? string.Empty).ToString();
+                string role = (user.GetType().GetProperty("RoleName").GetValue(user) ?? string.Empty).ToString();
                 var claims = new List<Claim>
                 {
                     new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
@@ -124,6 +128,34 @@ public class AuthController : ControllerBase
         else
         {
             return NotFound("Invalid username or password");
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////
+
+    // Login with google API////////////////////////////////
+
+    /// <summary>
+    /// Login with Google on the website
+    /// </summary>
+    [AllowAnonymous]
+    [HttpPost("website/google/login")]
+    [ProducesResponseType(typeof(JwtResponseModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    public async Task<IActionResult> GenerateWebsiteTokenByGoogle([FromBody] GoogleTokenModel token)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+        try
+        {
+            var account = await googleService.LoginWithGoogle(token, "Brand");
+            return AccountAuthentication(account != null
+                && (account.RoleName.Equals("Admin")
+                || account.RoleName.Equals("Brand"))
+                ? account : null);
+        }
+        catch (InvalidParameterException e)
+        {
+            return BadRequest(e.Message);
         }
     }
 

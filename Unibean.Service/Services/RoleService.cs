@@ -92,6 +92,16 @@ public class RoleService : IRoleService
         throw new InvalidParameterException("Not found role");
     }
 
+    public RoleModel GetRoleByName(string roleName)
+    {
+        Role entity = roleRepository.GetRoleByName(roleName);
+        if (entity != null)
+        {
+            return mapper.Map<RoleModel>(entity);
+        }
+        throw new InvalidParameterException("Not found role");
+    }
+
     public async Task<RoleModel> Update(string id, UpdateRoleModel update)
     {
         Role entity = roleRepository.GetById(id);

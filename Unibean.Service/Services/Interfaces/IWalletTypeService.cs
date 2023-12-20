@@ -5,9 +5,7 @@ namespace Unibean.Service.Services.Interfaces;
 
 public interface IWalletTypeService
 {
-    WalletTypeModel GetSecond();
-
-    WalletTypeModel GetFirst();
+    WalletTypeModel GetWalletTypeByName(string typeName);
 
     Task<WalletTypeModel> Add(CreateWalletTypeModel creation);
 

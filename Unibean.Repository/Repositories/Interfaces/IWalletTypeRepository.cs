@@ -5,10 +5,7 @@ namespace Unibean.Repository.Repositories.Interfaces;
 
 public interface IWalletTypeRepository
 {
-
-    WalletType GetSecond();
-
-    WalletType GetFirst();
+    WalletType GetWalletTypeByName(string typeName);
 
     WalletType Add(WalletType creation);
 

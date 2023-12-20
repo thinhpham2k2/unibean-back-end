@@ -6,6 +6,9 @@ namespace Unibean.Service.Models.Brands;
 
 public class CreateBrandModel
 {
+    [ValidAccount]
+    public string AccountId { get; set; }
+
     [Required(ErrorMessage = "Brand's name is required!")]
     [StringLength(255, MinimumLength = 3,
             ErrorMessage = "The length of brand's name is from 3 to 255 characters")]
@@ -27,8 +30,6 @@ public class CreateBrandModel
     public string PasswordConfirmed { get; set; }
 
     public string Address { get; set; }
-
-    public IFormFile Logo { get; set; }
 
     public IFormFile CoverPhoto { get; set; }
 

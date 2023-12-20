@@ -5,6 +5,8 @@ namespace Unibean.Repository.Repositories.Interfaces;
 
 public interface IRoleRepository
 {
+    Role GetRoleByName(string roleName);
+
     Role Add(Role creation);
 
     void Delete(string id);

@@ -10,5 +10,11 @@ public interface IAccountRepository
 
     bool CheckUsernameDuplicate(string userName);
 
+    Account Add(Account creation);
+
+    Account GetById(string id);
+
+    Account GetByEmail(string email);
+
     Account GetByUserNameAndPassword(string userName, string password);
 }

@@ -7,4 +7,6 @@ public interface IBrandService
     BrandExtraModel GetById(string id);
 
     Task<BrandExtraModel> Add(CreateBrandModel creation);
+
+    BrandModel AddGoogle(CreateBrandGoogleModel creation);
 }

@@ -181,6 +181,9 @@ builder.Services.AddSingleton<IWishlistService, WishlistService>();
 //FireBase
 builder.Services.AddSingleton<IFireBaseService, FireBaseService>();
 
+//Google
+builder.Services.AddSingleton<IGoogleService, GoogleService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

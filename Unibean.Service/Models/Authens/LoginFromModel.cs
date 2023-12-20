@@ -1,4 +1,4 @@
-﻿namespace Unibean.Service.Models.Jwts;
+﻿namespace Unibean.Service.Models.Authens;
 
 public class LoginFromModel
 {

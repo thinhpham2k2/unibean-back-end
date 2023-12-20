@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Data;
 using System.Linq.Dynamic.Core;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
@@ -82,6 +83,23 @@ public class RoleRepository : IRoleRepository
             using var db = new UnibeanDBContext();
             role = db.Roles
             .Where(s => s.Id.Equals(id) && s.Status.Equals(true))
+            .FirstOrDefault();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return role;
+    }
+
+    public Role GetRoleByName(string roleName)
+    {
+        Role role = new();
+        try
+        {
+            using var db = new UnibeanDBContext();
+            role = db.Roles
+            .Where(s => s.RoleName.Equals(roleName) && s.Status.Equals(true))
             .FirstOrDefault();
         }
         catch (Exception ex)
