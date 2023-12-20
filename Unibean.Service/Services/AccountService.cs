@@ -21,39 +21,28 @@ public class AccountService : IAccountService
                 =>
         {
             cfg.CreateMap<Account, AccountModel>()
+            .ForMember(a => a.RoleName, opt => opt.MapFrom(src => src.Role.RoleName))
             .ForMember(a => a.UserId, opt => opt.MapFrom((src, dest) =>
             {
-                dest.UserId = "UserId nè";
-                switch (src.Role.RoleName)
+                return src.Role.RoleName switch
                 {
-                    case "Admin":
-                        return src.Admins.FirstOrDefault().Id;
-                    case "Brand":
-                        return src.Brands.FirstOrDefault().Id;
-                    case "Store":
-                        return src.Stores.FirstOrDefault().Id;
-                    case "Student":
-                        return src.Students.FirstOrDefault().Id;
-                    default:
-                        return null;
-                }
+                    "Admin" => src.Admins.FirstOrDefault().Id,
+                    "Brand" => src.Brands.FirstOrDefault().Id,
+                    "Store" => src.Stores.FirstOrDefault().Id,
+                    "Student" => src.Students.FirstOrDefault().Id,
+                    _ => null,
+                };
             }))
             .ForMember(a => a.Name, opt => opt.MapFrom((src, dest) =>
             {
-                dest.Name = "Name nè";
-                switch (src.Role.RoleName)
+                return src.Role.RoleName switch
                 {
-                    case "Admin":
-                        return src.Admins.FirstOrDefault().FullName;
-                    case "Brand":
-                        return src.Brands.FirstOrDefault().BrandName;
-                    case "Store":
-                        return src.Stores.FirstOrDefault().StoreName;
-                    case "Student":
-                        return src.Students.FirstOrDefault().FullName;
-                    default:
-                        return null;
-                }
+                    "Admin" => src.Admins.FirstOrDefault().FullName,
+                    "Brand" => src.Brands.FirstOrDefault().BrandName,
+                    "Store" => src.Stores.FirstOrDefault().StoreName,
+                    "Student" => src.Students.FirstOrDefault().FullName,
+                    _ => null,
+                };
             }))
             .ReverseMap();
         });
