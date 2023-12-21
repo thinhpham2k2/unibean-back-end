@@ -12,6 +12,8 @@ public interface IAccountRepository
 
     Account Add(Account creation);
 
+    Account Update(Account update);
+
     Account GetById(string id);
 
     Account GetByEmail(string email);

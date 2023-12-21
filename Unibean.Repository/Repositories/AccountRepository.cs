@@ -144,4 +144,19 @@ public class AccountRepository : IAccountRepository
         }
         return account;
     }
+
+    public Account Update(Account update)
+    {
+        try
+        {
+            using var db = new UnibeanDBContext();
+            update = db.Accounts.Update(update).Entity;
+            db.SaveChanges();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return update;
+    }
 }

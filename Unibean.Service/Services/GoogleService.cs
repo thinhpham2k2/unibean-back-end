@@ -66,7 +66,16 @@ public class GoogleService : IGoogleService
                             account.Name = brand.BrandName;
                             return account;
                         case "Student":
-                            return null;
+                            account = accountService.AddGoogle(new CreateGoogleAccountModel
+                            {
+                                Email = payload.Email,
+                                IsVerify = false,
+                                RoleId = roleModel.Id,
+                                Description = null,
+                                State = false,
+                            });
+                            account.RoleName = roleModel.RoleName;
+                            return account;
                     }
                 }
             }
