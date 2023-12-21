@@ -90,7 +90,7 @@ public class StudentService : IStudentService
         }
 
         // Set level
-        entity.LevelId = levelService.GetLevelByName("Bronze").Id;
+        entity.LevelId = levelService.GetLevelByName("Bronze")?.Id;
 
         // Create wallet
         if (entity != null)
@@ -98,7 +98,7 @@ public class StudentService : IStudentService
             walletService.Add(new CreateWalletModel
             {
                 BrandId = entity.Id,
-                TypeId = walletTypeService.GetWalletTypeByName("Green bean").Id,
+                TypeId = walletTypeService.GetWalletTypeByName("Green bean")?.Id,
                 Balance = 0,
                 Description = null,
                 State = true
@@ -106,7 +106,7 @@ public class StudentService : IStudentService
             walletService.Add(new CreateWalletModel
             {
                 BrandId = entity.Id,
-                TypeId = walletTypeService.GetWalletTypeByName("Red bean").Id,
+                TypeId = walletTypeService.GetWalletTypeByName("Red bean")?.Id,
                 Balance = 0,
                 Description = null,
                 State = true

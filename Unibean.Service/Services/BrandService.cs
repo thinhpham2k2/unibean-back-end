@@ -105,7 +105,7 @@ public class BrandService : IBrandService
             walletService.Add(new CreateWalletModel
             {
                 BrandId = entity.Id,
-                TypeId = walletTypeService.GetWalletTypeByName("Green bean").Id,
+                TypeId = walletTypeService.GetWalletTypeByName("Green bean")?.Id,
                 Balance = 0,
                 Description = null,
                 State = true
@@ -113,7 +113,7 @@ public class BrandService : IBrandService
             walletService.Add(new CreateWalletModel
             {
                 BrandId = entity.Id,
-                TypeId = walletTypeService.GetWalletTypeByName("Red bean").Id,
+                TypeId = walletTypeService.GetWalletTypeByName("Red bean")?.Id,
                 Balance = 0,
                 Description = null,
                 State = true
@@ -132,7 +132,7 @@ public class BrandService : IBrandService
             walletService.Add(new CreateWalletModel
             {
                 BrandId = entity.Id,
-                TypeId = walletTypeService.GetWalletTypeByName("Green bean").Id,
+                TypeId = walletTypeService.GetWalletTypeByName("Green bean")?.Id,
                 Balance = 0,
                 Description = null,
                 State = true
@@ -140,7 +140,7 @@ public class BrandService : IBrandService
             walletService.Add(new CreateWalletModel
             {
                 BrandId = entity.Id,
-                TypeId = walletTypeService.GetWalletTypeByName("Red bean").Id,
+                TypeId = walletTypeService.GetWalletTypeByName("Red bean")?.Id,
                 Balance = 0,
                 Description = null,
                 State = true
