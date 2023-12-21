@@ -99,6 +99,7 @@ public class BrandService : IBrandService
         }
 
         entity = brandRepository.Add(entity);
+
         // Create wallet
         if(entity != null)
         {

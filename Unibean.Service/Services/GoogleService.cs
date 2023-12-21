@@ -49,7 +49,7 @@ public class GoogleService : IGoogleService
                                 Email = payload.Email,
                                 IsVerify = true,
                                 RoleId = roleModel.Id,
-                                Description = null,
+                                Description = "Create by logging in with Google",
                                 State = true,
                             });
                             account.RoleName = roleModel.RoleName;
@@ -71,7 +71,7 @@ public class GoogleService : IGoogleService
                                 Email = payload.Email,
                                 IsVerify = false,
                                 RoleId = roleModel.Id,
-                                Description = null,
+                                Description = "Create by logging in with Google",
                                 State = false,
                             });
                             account.RoleName = roleModel.RoleName;

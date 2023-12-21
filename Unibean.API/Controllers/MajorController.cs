@@ -10,7 +10,7 @@ using Unibean.Service.Services.Interfaces;
 namespace Unibean.API.Controllers;
 
 [ApiController]
-[Tags("Major Type API")]
+[Tags("Major API")]
 [Route("api/v1/majors")]
 public class MajorController : ControllerBase
 {

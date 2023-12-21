@@ -92,12 +92,14 @@ public class StudentService : IStudentService
         // Set level
         entity.LevelId = levelService.GetLevelByName("Bronze")?.Id;
 
+        entity = studentRepository.Add(entity);
+
         // Create wallet
         if (entity != null)
         {
             walletService.Add(new CreateWalletModel
             {
-                BrandId = entity.Id,
+                StudentId = entity.Id,
                 TypeId = walletTypeService.GetWalletTypeByName("Green bean")?.Id,
                 Balance = 0,
                 Description = null,
@@ -105,13 +107,13 @@ public class StudentService : IStudentService
             });
             walletService.Add(new CreateWalletModel
             {
-                BrandId = entity.Id,
+                StudentId = entity.Id,
                 TypeId = walletTypeService.GetWalletTypeByName("Red bean")?.Id,
                 Balance = 0,
                 Description = null,
                 State = true
             });
         }
-        return mapper.Map<StudentModel>(studentRepository.Add(entity));
+        return mapper.Map<StudentModel>(entity);
     }
 }

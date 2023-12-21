@@ -7,15 +7,19 @@ namespace Unibean.Service.Models.Students;
 public class CreateGoogleStudentModel
 {
     [ValidGender]
+    [Required(ErrorMessage = "Gender is required!")]
     public string GenderId { get; set; }
 
     [ValidMajor]
+    [Required(ErrorMessage = "Major is required!")]
     public string MajorId { get; set; }
 
     [ValidCampus]
+    [Required(ErrorMessage = "Campus is required!")]
     public string CampusId { get; set; }
 
     [ValidAccount]
+    [Required(ErrorMessage = "Account is required!")]
     public string AccountId { get; set; }
 
     [Required(ErrorMessage = "Student card image is required!")]
@@ -33,6 +37,7 @@ public class CreateGoogleStudentModel
     public string Email { get; set; }
 
     [ValidBirthday]
+    [Required(ErrorMessage = "Date of birth is required!")]
     public DateOnly? DateOfBirth { get; set; }
 
     [Required(ErrorMessage = "Phone is required!")]
