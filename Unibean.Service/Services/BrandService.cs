@@ -2,6 +2,7 @@
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
+using Unibean.Service.Models.Accounts;
 using Unibean.Service.Models.Brands;
 using Unibean.Service.Models.Campaigns;
 using Unibean.Service.Models.Exceptions;
@@ -61,15 +62,6 @@ public class BrandService : IBrandService
             .ReverseMap();
             cfg.CreateMap<PagedResultModel<Brand>, PagedResultModel<BrandModel>>()
             .ReverseMap();
-            cfg.CreateMap<Brand, CreateBrandModel>()
-            .ReverseMap()
-            .ForMember(p => p.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
-            .ForMember(p => p.CoverPhoto, opt => opt.Ignore())
-            .ForMember(p => p.TotalIncome, opt => opt.MapFrom(src => 0))
-            .ForMember(p => p.TotalSpending, opt => opt.MapFrom(src => 0))
-            .ForMember(p => p.DateCreated, opt => opt.MapFrom(src => DateTime.Now))
-            .ForMember(p => p.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
-            .ForMember(p => p.Status, opt => opt.MapFrom(src => true));
             cfg.CreateMap<Brand, CreateBrandGoogleModel>()
             .ReverseMap()
             .ForMember(p => p.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
@@ -84,43 +76,6 @@ public class BrandService : IBrandService
         this.fireBaseService = fireBaseService;
         this.walletService = walletService;
         this.walletTypeService = walletTypeService;
-    }
-
-    public async Task<BrandExtraModel> Add(CreateBrandModel creation)
-    {
-        Brand entity = mapper.Map<Brand>(creation);
-
-        // Upload cover photo
-        if (creation.CoverPhoto != null && creation.CoverPhoto.Length > 0)
-        {
-            FireBaseFile f = await fireBaseService.UploadFileAsync(creation.CoverPhoto, FOLDER_NAME);
-            entity.CoverPhoto = f.URL;
-            entity.CoverFileName = f.FileName;
-        }
-
-        entity = brandRepository.Add(entity);
-
-        // Create wallet
-        if(entity != null)
-        {
-            walletService.Add(new CreateWalletModel
-            {
-                BrandId = entity.Id,
-                TypeId = walletTypeService.GetWalletTypeByName("Green bean")?.Id,
-                Balance = 0,
-                Description = null,
-                State = true
-            });
-            walletService.Add(new CreateWalletModel
-            {
-                BrandId = entity.Id,
-                TypeId = walletTypeService.GetWalletTypeByName("Red bean")?.Id,
-                Balance = 0,
-                Description = null,
-                State = true
-            });
-        }
-        return mapper.Map<BrandExtraModel>(entity);
     }
 
     public BrandModel AddGoogle(CreateBrandGoogleModel creation)

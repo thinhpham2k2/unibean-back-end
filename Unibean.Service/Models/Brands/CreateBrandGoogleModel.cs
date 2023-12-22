@@ -6,6 +6,7 @@ namespace Unibean.Service.Models.Brands;
 public class CreateBrandGoogleModel
 {
     [ValidAccount]
+    [Required(ErrorMessage = "Account is required!")]
     public string AccountId { get; set; }
 
     [Required(ErrorMessage = "Brand's name is required!")]

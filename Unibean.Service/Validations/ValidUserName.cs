@@ -12,7 +12,7 @@ public class ValidUserName : ValidationAttribute
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
         string userName = value.ToString();
-        if (Regex.IsMatch(userName, @"^[a-z0-9]{3,50}$"))
+        if (Regex.IsMatch(userName, @"^[a-z0-9]{5,50}$"))
         {
             if (accountRepository.CheckUsernameDuplicate(userName))
             {
@@ -21,6 +21,6 @@ public class ValidUserName : ValidationAttribute
             return new ValidationResult("User name is already in use");
         }
         return new ValidationResult("Username must contain lowercase " +
-                    "letters or numbers, and be between 3 and 50 characters in length");
+                    "letters or numbers, and be between 5 and 50 characters in length");
     }
 }

@@ -5,9 +5,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
 using System.Text;
-using Unibean.Repository.Entities;
+using Unibean.Service.Models.Accounts;
 using Unibean.Service.Models.Authens;
-using Unibean.Service.Models.Brands;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Students;
 using Unibean.Service.Services.Interfaces;
@@ -232,25 +231,26 @@ public class AuthController : ControllerBase
     //////////////////////////////////////////////////////////////////
 
     // Register student and brand API ////////////////////////////////
+
     /// <summary>
     /// Register account on the website
     /// </summary>
     [AllowAnonymous]
     [HttpPost("website/register")]
-    [ProducesResponseType(typeof(JwtResponseModel), (int)HttpStatusCode.Created)]
+    [ProducesResponseType(typeof(AccountModel), (int)HttpStatusCode.Created)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public async Task<ActionResult> WebsiteRegister([FromForm] CreateBrandModel register)
+    public async Task<ActionResult> WebsiteRegister([FromForm] CreateBrandAccountModel register)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         try
         {
-            //var brand = await brandService.Add(register);
-            //if (brand != null)
-            //{
-            //    return StatusCode(StatusCodes.Status201Created, brand);
-            //}
-            return NotFound("Create fail");
+            var account = await accountService.AddBrand(register);
+            if (account != null)
+            {
+                return StatusCode(StatusCodes.Status201Created, account);
+            }
+            return NotFound("Register fail");
         }
         catch (InvalidParameterException e)
         {
