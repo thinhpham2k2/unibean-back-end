@@ -28,13 +28,17 @@ public class AuthController : ControllerBase
 
     private readonly IStudentService studentService;
 
+    private readonly IEmailService emailService;
+
     public AuthController(IAccountService accountService,
         IGoogleService googleService,
-        IStudentService studentService)
+        IStudentService studentService,
+        IEmailService emailService)
     {
         this.accountService = accountService;
         this.googleService = googleService;
         this.studentService = studentService;
+        this.emailService = emailService;
     }
 
     // Login by username & password API ////////////////////////////////
@@ -251,6 +255,27 @@ public class AuthController : ControllerBase
                 return StatusCode(StatusCodes.Status201Created, account);
             }
             return NotFound("Register fail");
+        }
+        catch (InvalidParameterException e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////
+
+    // Send mail (Verification code) API ////////////////////////////////
+    [AllowAnonymous]
+    [HttpPost("website/mail")]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.Created)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    public IActionResult SendMail([FromQuery] string email)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            return Ok(emailService.SendEmailVerification(email));
         }
         catch (InvalidParameterException e)
         {

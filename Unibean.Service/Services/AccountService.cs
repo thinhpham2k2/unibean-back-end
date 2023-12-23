@@ -114,7 +114,7 @@ public class AccountService : IAccountService
     public async Task<AccountModel> AddBrand(CreateBrandAccountModel creation)
     {
         Account account = mapper.Map<Account>(creation);
-        account.RoleId = roleService.GetRoleByName("Brand").Id;
+        account.RoleId = roleService.GetRoleByName("Brand")?.Id;
         account = accountRepository.Add(account);
 
         Brand brand = mapper.Map<Brand>(creation);

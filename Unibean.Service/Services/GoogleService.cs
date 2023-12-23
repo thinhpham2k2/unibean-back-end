@@ -48,11 +48,11 @@ public class GoogleService : IGoogleService
                             {
                                 Email = payload.Email,
                                 IsVerify = true,
-                                RoleId = roleModel.Id,
+                                RoleId = roleModel?.Id,
                                 Description = "Create by logging in with Google",
                                 State = true,
                             });
-                            account.RoleName = roleModel.RoleName;
+                            account.RoleName = roleModel?.RoleName;
 
                             var brand = brandService.AddGoogle(new CreateBrandGoogleModel
                             {
@@ -70,11 +70,11 @@ public class GoogleService : IGoogleService
                             {
                                 Email = payload.Email,
                                 IsVerify = false,
-                                RoleId = roleModel.Id,
+                                RoleId = roleModel?.Id,
                                 Description = "Create by logging in with Google",
                                 State = false,
                             });
-                            account.RoleName = roleModel.RoleName;
+                            account.RoleName = roleModel?.RoleName;
                             return account;
                     }
                 }
