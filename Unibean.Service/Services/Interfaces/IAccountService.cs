@@ -5,6 +5,8 @@ namespace Unibean.Service.Services.Interfaces;
 
 public interface IAccountService
 {
+    Task<AccountModel> AddStudent(CreateStudentAccountModel creation);
+
     Task<AccountModel> AddBrand(CreateBrandAccountModel creation);
 
     AccountModel AddGoogle(CreateGoogleAccountModel creation);

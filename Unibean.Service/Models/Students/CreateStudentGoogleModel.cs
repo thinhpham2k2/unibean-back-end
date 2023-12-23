@@ -4,7 +4,7 @@ using Unibean.Service.Validations;
 
 namespace Unibean.Service.Models.Students;
 
-public class CreateGoogleStudentModel
+public class CreateStudentGoogleModel
 {
     [ValidGender]
     [Required(ErrorMessage = "Gender is required!")]
@@ -40,6 +40,7 @@ public class CreateGoogleStudentModel
     [Required(ErrorMessage = "Date of birth is required!")]
     public DateOnly? DateOfBirth { get; set; }
 
+    [ValidPhone]
     [Required(ErrorMessage = "Phone is required!")]
     public string Phone { get; set; }
 

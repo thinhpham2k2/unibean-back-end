@@ -139,7 +139,7 @@ public class AuthController : ControllerBase
                 }
                 else
                 {
-                    return BadRequest("Account is not verified");
+                    return BadRequest("Your account is being verified. Please come back later");
                 }
             }
         }
@@ -218,7 +218,7 @@ public class AuthController : ControllerBase
     [HttpPost("mobile/register/google")]
     [ProducesResponseType(typeof(JwtResponseModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public async Task<IActionResult> RegisterMobileAccountByGoogle([FromForm] CreateGoogleStudentModel student)
+    public async Task<IActionResult> RegisterMobileAccountByGoogle([FromForm] CreateStudentGoogleModel student)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
         try
@@ -250,6 +250,32 @@ public class AuthController : ControllerBase
         try
         {
             var account = await accountService.AddBrand(register);
+            if (account != null)
+            {
+                return StatusCode(StatusCodes.Status201Created, account);
+            }
+            return NotFound("Register fail");
+        }
+        catch (InvalidParameterException e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Register account on the mobile
+    /// </summary>
+    [AllowAnonymous]
+    [HttpPost("mobile/register")]
+    [ProducesResponseType(typeof(AccountModel), (int)HttpStatusCode.Created)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    public async Task<ActionResult> MobileRegister([FromForm] CreateStudentAccountModel register)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            var account = await accountService.AddStudent(register);
             if (account != null)
             {
                 return StatusCode(StatusCodes.Status201Created, account);

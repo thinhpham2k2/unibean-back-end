@@ -46,7 +46,7 @@ public class StudentService : IStudentService
             .ForMember(s => s.MajorName, opt => opt.MapFrom(src => src.Major.MajorName))
             .ForMember(s => s.CampusName, opt => opt.MapFrom(src => src.Campus.CampusName))
             .ReverseMap();
-            cfg.CreateMap<Student, CreateGoogleStudentModel>()
+            cfg.CreateMap<Student, CreateStudentGoogleModel>()
             .ReverseMap()
             .ForMember(s => s.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
             .ForMember(s => s.StudentCard, opt => opt.Ignore())
@@ -65,7 +65,7 @@ public class StudentService : IStudentService
         this.accountRepository = accountRepository;
     }
 
-    public async Task<StudentModel> AddGoogle(CreateGoogleStudentModel creation)
+    public async Task<StudentModel> AddGoogle(CreateStudentGoogleModel creation)
     {
         Student entity = mapper.Map<Student>(creation);
 
