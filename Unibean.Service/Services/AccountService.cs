@@ -153,7 +153,7 @@ public class AccountService : IAccountService
         // Set account Id
         brand.AccountId = account.Id;
 
-        // Upload cover photo
+        // Upload the cover photo
         if (creation.CoverPhoto != null && creation.CoverPhoto.Length > 0)
         {
             FireBaseFile f = await fireBaseService.UploadFileAsync(creation.CoverPhoto, BRAND_FOLDER_NAME);
@@ -204,9 +204,9 @@ public class AccountService : IAccountService
         student.AccountId = account.Id;
 
         // Set level
-        student.LevelId = levelService.GetLevelByName("Bronze")?.Id;
+        student.LevelId = levelService.GetLevelByName("Iron")?.Id;
 
-        // Upload cover photo
+        // Upload the student card image
         if (creation.StudentCard != null && creation.StudentCard.Length > 0)
         {
             FireBaseFile f = await fireBaseService.UploadFileAsync(creation.StudentCard, STUDENT_FOLDER_NAME);

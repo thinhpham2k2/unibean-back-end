@@ -1,11 +1,8 @@
 ﻿using AutoMapper;
 using Unibean.Repository.Entities;
-using Unibean.Repository.Repositories;
 using Unibean.Repository.Repositories.Interfaces;
-using Unibean.Service.Models.Brands;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Students;
-using Unibean.Service.Models.Types;
 using Unibean.Service.Models.Wallets;
 using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Utilities.FireBase;
@@ -90,7 +87,7 @@ public class StudentService : IStudentService
         }
 
         // Set level
-        entity.LevelId = levelService.GetLevelByName("Bronze")?.Id;
+        entity.LevelId = levelService.GetLevelByName("Iron")?.Id;
 
         entity = studentRepository.Add(entity);
 

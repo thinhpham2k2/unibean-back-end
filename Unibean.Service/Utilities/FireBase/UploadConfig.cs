@@ -8,7 +8,7 @@ public record FireBaseFile
 }
 public class UploadConfig
 {
-    // Vulnurable Data
+    // Vulnerable Data
     public static readonly string API_KEY = "AIzaSyC5tWKQPYpWmGeViqKBTxF4--j2jwDbCHA";
     public static readonly string AuthDomain = "upload-file-2ac29.firebaseapp.com";
     public static readonly string Bucket = "upload-file-2ac29.appspot.com";
