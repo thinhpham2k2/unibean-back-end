@@ -67,6 +67,7 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Unibean REST API", Version = "v1" });
     c.OrderActionsBy(apiDesc => apiDesc.RelativePath);
     c.UseDateOnlyTimeOnlyStringConverters();
+    c.OperationFilter<AuthorizationOperationFilter>();
 
     // using System.Reflection;
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
