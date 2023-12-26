@@ -48,6 +48,7 @@ public class DistrictRepository : IDistrictRepository
             var query = db.Districts
                 .Where(t => (EF.Functions.Like(t.DistrictName, "%" + search + "%")
                 || EF.Functions.Like(t.FileName, "%" + search + "%")
+                || EF.Functions.Like(t.City.CityName, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
                 && t.Status.Equals(true))
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
