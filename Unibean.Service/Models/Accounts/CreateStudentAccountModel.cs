@@ -52,6 +52,7 @@ public class CreateStudentAccountModel
     [Required(ErrorMessage = "Date of birth is required!")]
     public DateOnly? DateOfBirth { get; set; }
 
+    [Phone]
     [ValidPhone]
     [Required(ErrorMessage = "Phone is required!")]
     public string Phone { get; set; }

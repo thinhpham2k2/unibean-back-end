@@ -29,6 +29,7 @@ public class CreateBrandAccountModel
     [Compare(nameof(Password), ErrorMessage = "Passwords do not match")]
     public string PasswordConfirmed { get; set; }
 
+    [Phone]
     [ValidPhone]
     [Required(ErrorMessage = "Phone is required!")]
     public string Phone { get; set; }
