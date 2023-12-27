@@ -30,6 +30,7 @@ public class DistrictController : ControllerBase
         (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public ActionResult<PagedResultModel<DistrictModel>> GetList(
+        [FromQuery] List<string> cityIds,
         [FromQuery] string sort = "Id,desc",
         [FromQuery] string search = "",
         [FromQuery] int page = 1,
@@ -43,7 +44,7 @@ public class DistrictController : ControllerBase
         {
             PagedResultModel<DistrictModel>
                 result = districtService.GetAll
-                (propertySort, sort.Split(",")[1].Equals("asc"), search, page, limit);
+                (cityIds, propertySort, sort.Split(",")[1].Equals("asc"), search, page, limit);
             return Ok(result);
         }
         return BadRequest("Invalid property of district");

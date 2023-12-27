@@ -79,9 +79,9 @@ public class DistrictService : IDistrictService
         }
     }
 
-    public PagedResultModel<DistrictModel> GetAll(string propertySort, bool isAsc, string search, int page, int limit)
+    public PagedResultModel<DistrictModel> GetAll(List<string> cityIds, string propertySort, bool isAsc, string search, int page, int limit)
     {
-        return mapper.Map<PagedResultModel<DistrictModel>>(districtRepository.GetAll(propertySort, isAsc, search, page, limit));
+        return mapper.Map<PagedResultModel<DistrictModel>>(districtRepository.GetAll(cityIds, propertySort, isAsc, search, page, limit));
     }
 
     public DistrictModel GetById(string id)

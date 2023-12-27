@@ -39,7 +39,7 @@ public class AreaRepository : IAreaRepository
         }
     }
 
-    public PagedResultModel<Area> GetAll(string propertySort, bool isAsc, string search, int page, int limit)
+    public PagedResultModel<Area> GetAll(List<string> districtIds, string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<Area> pagedResult = new();
         try
@@ -51,6 +51,7 @@ public class AreaRepository : IAreaRepository
                 || EF.Functions.Like(t.District.DistrictName, "%" + search + "%")
                 || EF.Functions.Like(t.District.City.CityName, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
+                && (districtIds.Count == 0 || districtIds.Contains(t.DistrictId))
                 && t.Status.Equals(true))
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 

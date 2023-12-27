@@ -3,35 +3,35 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
-using Unibean.Service.Models.Areas;
+using Unibean.Service.Models.Campuses;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Services.Interfaces;
 
 namespace Unibean.API.Controllers;
 
 [ApiController]
-[Tags("Area API")]
-[Route("api/v1/areas")]
-public class AreaController : ControllerBase
+[Tags("Campus API")]
+[Route("api/v1/campuses")]
+public class CampusController : ControllerBase
 {
-    private readonly IAreaService areaService;
+    private readonly ICampusService campusService;
 
-    public AreaController(IAreaService areaService)
+    public CampusController(ICampusService campusService)
     {
-        this.areaService = areaService;
+        this.campusService = campusService;
     }
 
     /// <summary>
-    /// Get area list
+    /// Get campus list
     /// </summary>
-    /// <param name="districtIds">Filter by district Id</param>
     [HttpGet]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
-    [ProducesResponseType(typeof(PagedResultModel<AreaModel>),
+    [ProducesResponseType(typeof(PagedResultModel<CampusModel>),
         (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public ActionResult<PagedResultModel<AreaModel>> GetList(
-        [FromQuery] List<string> districtIds,
+    public ActionResult<PagedResultModel<CampusModel>> GetList(
+        [FromQuery] List<string> universityIds,
+        [FromQuery] List<string> areaIds,
         [FromQuery] string sort = "Id,desc",
         [FromQuery] string search = "",
         [FromQuery] int page = 1,
@@ -40,23 +40,23 @@ public class AreaController : ControllerBase
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         string propertySort = sort.Split(",")[0];
-        var propertyInfo = typeof(Area).GetProperty(propertySort);
+        var propertyInfo = typeof(Campus).GetProperty(propertySort);
         if (propertySort != null && propertyInfo != null)
         {
-            PagedResultModel<AreaModel>
-                result = areaService.GetAll
-                (districtIds, propertySort, sort.Split(",")[1].Equals("asc"), search, page, limit);
+            PagedResultModel<CampusModel>
+                result = campusService.GetAll
+                (universityIds, areaIds, propertySort, sort.Split(",")[1].Equals("asc"), search, page, limit);
             return Ok(result);
         }
-        return BadRequest("Invalid property of area");
+        return BadRequest("Invalid property of campus");
     }
 
     /// <summary>
-    /// Get area by id
+    /// Get campus by id
     /// </summary>
     [HttpGet("{id}")]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
-    [ProducesResponseType(typeof(AreaModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(CampusModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public IActionResult GetById(string id)
     {
@@ -64,7 +64,7 @@ public class AreaController : ControllerBase
 
         try
         {
-            return Ok(areaService.GetById(id));
+            return Ok(campusService.GetById(id));
         }
         catch (InvalidParameterException e)
         {
@@ -73,22 +73,22 @@ public class AreaController : ControllerBase
     }
 
     /// <summary>
-    /// Create area
+    /// Create campus
     /// </summary>
     [HttpPost]
     [Authorize(Roles = "Admin")]
-    [ProducesResponseType(typeof(AreaModel), (int)HttpStatusCode.Created)]
+    [ProducesResponseType(typeof(CampusModel), (int)HttpStatusCode.Created)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public async Task<ActionResult> Create([FromForm] CreateAreaModel creation)
+    public async Task<ActionResult> Create([FromForm] CreateCampusModel creation)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         try
         {
-            var type = await areaService.Add(creation);
-            if (type != null)
+            var campus = await campusService.Add(creation);
+            if (campus != null)
             {
-                return StatusCode(StatusCodes.Status201Created, type);
+                return StatusCode(StatusCodes.Status201Created, campus);
             }
             return NotFound("Create fail");
         }
@@ -99,22 +99,22 @@ public class AreaController : ControllerBase
     }
 
     /// <summary>
-    /// Update area
+    /// Update campus
     /// </summary>
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin")]
-    [ProducesResponseType(typeof(AreaModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(CampusModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public async Task<ActionResult> Update(string id, [FromForm] UpdateAreaModel update)
+    public async Task<ActionResult> Update(string id, [FromForm] UpdateCampusModel update)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         try
         {
-            var type = await areaService.Update(id, update);
-            if (type != null)
+            var campus = await campusService.Update(id, update);
+            if (campus != null)
             {
-                return StatusCode(StatusCodes.Status200OK, type);
+                return StatusCode(StatusCodes.Status200OK, campus);
             }
             return NotFound("Update fail");
         }
@@ -125,7 +125,7 @@ public class AreaController : ControllerBase
     }
 
     /// <summary>
-    /// Delete area
+    /// Delete campus
     /// </summary>
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin")]
@@ -137,7 +137,7 @@ public class AreaController : ControllerBase
 
         try
         {
-            areaService.Delete(id);
+            campusService.Delete(id);
             return StatusCode(StatusCodes.Status204NoContent);
         }
         catch (InvalidParameterException e)

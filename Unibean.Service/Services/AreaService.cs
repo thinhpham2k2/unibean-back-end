@@ -81,9 +81,9 @@ public class AreaService : IAreaService
         }
     }
 
-    public PagedResultModel<AreaModel> GetAll(string propertySort, bool isAsc, string search, int page, int limit)
+    public PagedResultModel<AreaModel> GetAll(List<string> districtIds, string propertySort, bool isAsc, string search, int page, int limit)
     {
-        return mapper.Map<PagedResultModel<AreaModel>>(areaRepository.GetAll(propertySort, isAsc, search, page, limit));
+        return mapper.Map<PagedResultModel<AreaModel>>(areaRepository.GetAll(districtIds, propertySort, isAsc, search, page, limit));
     }
 
     public AreaModel GetById(string id)
