@@ -24,6 +24,10 @@ public class ChallengeTypeController : ControllerBase
     /// <summary>
     /// Get challenge's type list
     /// </summary>
+    /// <param name="sort">Sorting criteria for the results.</param>
+    /// <param name="search">Search query.</param>
+    /// <param name="page">Current page in the paginated results.</param>
+    /// <param name="limit">Number of results per page.</param>
     [HttpGet]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(PagedResultModel<ChallengeTypeModel>),

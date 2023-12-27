@@ -24,6 +24,12 @@ public class CampusController : ControllerBase
     /// <summary>
     /// Get campus list
     /// </summary>
+    /// <param name="universityIds">Filter by university Id.</param>
+    /// <param name="areaIds">Filter by area Id.</param>
+    /// <param name="sort">Sorting criteria for the results.</param>
+    /// <param name="search">Search query.</param>
+    /// <param name="page">Current page in the paginated results.</param>
+    /// <param name="limit">Number of results per page.</param>
     [HttpGet]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(PagedResultModel<CampusModel>),

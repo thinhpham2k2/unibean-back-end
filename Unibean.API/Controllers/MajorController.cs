@@ -24,6 +24,10 @@ public class MajorController : ControllerBase
     /// <summary>
     /// Get major list
     /// </summary>
+    /// <param name="sort">Sorting criteria for the results.</param>
+    /// <param name="search">Search query.</param>
+    /// <param name="page">Current page in the paginated results.</param>
+    /// <param name="limit">Number of results per page.</param>
     [HttpGet]
     [AllowAnonymous]
     [ProducesResponseType(typeof(PagedResultModel<MajorModel>),
