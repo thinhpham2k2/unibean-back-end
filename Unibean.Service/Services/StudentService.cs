@@ -46,7 +46,6 @@ public class StudentService : IStudentService
             cfg.CreateMap<Student, CreateStudentGoogleModel>()
             .ReverseMap()
             .ForMember(s => s.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
-            .ForMember(s => s.StudentCard, opt => opt.Ignore())
             .ForMember(s => s.TotalIncome, opt => opt.MapFrom(src => 0))
             .ForMember(s => s.TotalSpending, opt => opt.MapFrom(src => 0))
             .ForMember(s => s.DateCreated, opt => opt.MapFrom(src => DateTime.Now))
@@ -78,12 +77,20 @@ public class StudentService : IStudentService
         account.State = true;
         accountRepository.Update(account);
 
-        //Upload image
-        if (creation.StudentCard != null && creation.StudentCard.Length > 0)
+        // Upload the student card front image
+        if (creation.StudentCardFront != null && creation.StudentCardFront.Length > 0)
         {
-            FireBaseFile f = await fireBaseService.UploadFileAsync(creation.StudentCard, FOLDER_NAME);
-            entity.StudentCard = f.URL;
-            entity.FileName = f.FileName;
+            FireBaseFile f = await fireBaseService.UploadFileAsync(creation.StudentCardFront, FOLDER_NAME);
+            entity.StudentCardFront = f.URL;
+            entity.FileNameFront = f.FileName;
+        }
+
+        // Upload the student card back image
+        if (creation.StudentCardBack != null && creation.StudentCardBack.Length > 0)
+        {
+            FireBaseFile f = await fireBaseService.UploadFileAsync(creation.StudentCardBack, FOLDER_NAME);
+            entity.StudentCardBack = f.URL;
+            entity.FileNameBack = f.FileName;
         }
 
         // Set level

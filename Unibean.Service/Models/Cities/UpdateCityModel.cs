@@ -5,7 +5,7 @@ namespace Unibean.Service.Models.Cities;
 
 public class UpdateCityModel
 {
-    [Required(ErrorMessage = "City's name is required!")]
+    [Required(ErrorMessage = "City's name is required")]
     [StringLength(255, MinimumLength = 3,
             ErrorMessage = "The length of city's name is from 3 to 255 characters")]
     public string CityName { get; set; }
@@ -14,6 +14,6 @@ public class UpdateCityModel
 
     public string Description { get; set; }
 
-    [Required(ErrorMessage = "State is required!")]
+    [Required(ErrorMessage = "State is required")]
     public bool? State { get; set; }
 }

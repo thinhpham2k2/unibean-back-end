@@ -34,12 +34,10 @@ public class AreaService : IAreaService
             .ReverseMap();
             cfg.CreateMap<Area, UpdateAreaModel>()
             .ReverseMap()
-            .ForMember(t => t.Image, opt => opt.Ignore())
             .ForMember(t => t.DateUpdated, opt => opt.MapFrom(src => DateTime.Now));
             cfg.CreateMap<Area, CreateAreaModel>()
             .ReverseMap()
             .ForMember(t => t.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
-            .ForMember(t => t.Image, opt => opt.Ignore())
             .ForMember(t => t.DateCreated, opt => opt.MapFrom(src => DateTime.Now))
             .ForMember(t => t.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
             .ForMember(t => t.Status, opt => opt.MapFrom(src => true));

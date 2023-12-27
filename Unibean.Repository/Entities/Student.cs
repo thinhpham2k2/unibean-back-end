@@ -36,11 +36,17 @@ public class Student
 
     public Account Account { get; set; }
 
-    [Column("student_card", TypeName = "text")]
-    public string StudentCard { get; set; }
+    [Column("student_card_front", TypeName = "text")]
+    public string StudentCardFront { get; set; }
 
-    [Column("file_name", TypeName = "text")]
-    public string FileName { get; set; }
+    [Column("file_name_front", TypeName = "text")]
+    public string FileNameFront { get; set; }
+
+    [Column("student_card_back", TypeName = "text")]
+    public string StudentCardBack { get; set; }
+
+    [Column("file_name_back", TypeName = "text")]
+    public string FileNameBack { get; set; }
 
     [MaxLength(255)]
     [Column("full_name")]

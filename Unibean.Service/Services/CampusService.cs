@@ -33,12 +33,10 @@ public class CampusService : ICampusService
             .ReverseMap();
             cfg.CreateMap<Campus, UpdateCampusModel>()
             .ReverseMap()
-            .ForMember(t => t.Image, opt => opt.Ignore())
             .ForMember(t => t.DateUpdated, opt => opt.MapFrom(src => DateTime.Now));
             cfg.CreateMap<Campus, CreateCampusModel>()
             .ReverseMap()
             .ForMember(t => t.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
-            .ForMember(t => t.Image, opt => opt.Ignore())
             .ForMember(t => t.DateCreated, opt => opt.MapFrom(src => DateTime.Now))
             .ForMember(t => t.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
             .ForMember(t => t.Status, opt => opt.MapFrom(src => true));

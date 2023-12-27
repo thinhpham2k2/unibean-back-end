@@ -897,9 +897,13 @@ namespace Unibean.Repository.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     account_id = table.Column<string>(type: "char(26)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    student_card = table.Column<string>(type: "text", nullable: true)
+                    student_card_front = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    file_name = table.Column<string>(type: "text", nullable: true)
+                    file_name_front = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    student_card_back = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    file_name_back = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     full_name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),

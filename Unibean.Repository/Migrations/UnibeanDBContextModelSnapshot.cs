@@ -1885,9 +1885,13 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("datetime(6)")
                         .HasColumnName("date_updated");
 
-                    b.Property<string>("FileName")
+                    b.Property<string>("FileNameBack")
                         .HasColumnType("text")
-                        .HasColumnName("file_name");
+                        .HasColumnName("file_name_back");
+
+                    b.Property<string>("FileNameFront")
+                        .HasColumnType("text")
+                        .HasColumnName("file_name_front");
 
                     b.Property<string>("FullName")
                         .HasMaxLength(255)
@@ -1914,9 +1918,13 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("bit(1)")
                         .HasColumnName("status");
 
-                    b.Property<string>("StudentCard")
+                    b.Property<string>("StudentCardBack")
                         .HasColumnType("text")
-                        .HasColumnName("student_card");
+                        .HasColumnName("student_card_back");
+
+                    b.Property<string>("StudentCardFront")
+                        .HasColumnType("text")
+                        .HasColumnName("student_card_front");
 
                     b.Property<decimal?>("TotalIncome")
                         .HasColumnType("decimal(38,2)")

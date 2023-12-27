@@ -30,12 +30,10 @@ public class ChallengeTypeService : IChallengeTypeService
             .ReverseMap();
             cfg.CreateMap<ChallengeType, UpdateChallengeTypeModel>()
             .ReverseMap()
-            .ForMember(t => t.Image, opt => opt.Ignore())
             .ForMember(t => t.DateUpdated, opt => opt.MapFrom(src => DateTime.Now));
             cfg.CreateMap<ChallengeType, CreateChallengeTypeModel>()
             .ReverseMap()
             .ForMember(t => t.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
-            .ForMember(t => t.Image, opt => opt.Ignore())
             .ForMember(t => t.DateCreated, opt => opt.MapFrom(src => DateTime.Now))
             .ForMember(t => t.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
             .ForMember(t => t.Status, opt => opt.MapFrom(src => true));

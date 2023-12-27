@@ -105,7 +105,6 @@ public class AccountService : IAccountService
             cfg.CreateMap<Brand, CreateBrandAccountModel>()
            .ReverseMap()
            .ForMember(t => t.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
-           .ForMember(t => t.CoverPhoto, opt => opt.Ignore())
            .ForMember(t => t.TotalIncome, opt => opt.MapFrom(src => 0))
            .ForMember(t => t.TotalSpending, opt => opt.MapFrom(src => 0))
            .ForMember(t => t.DateCreated, opt => opt.MapFrom(src => DateTime.Now))
@@ -123,7 +122,6 @@ public class AccountService : IAccountService
             cfg.CreateMap<Student, CreateStudentAccountModel>()
            .ReverseMap()
            .ForMember(t => t.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
-           .ForMember(s => s.StudentCard, opt => opt.Ignore())
            .ForMember(s => s.TotalIncome, opt => opt.MapFrom(src => 0))
            .ForMember(s => s.TotalSpending, opt => opt.MapFrom(src => 0))
            .ForMember(t => t.DateCreated, opt => opt.MapFrom(src => DateTime.Now))
@@ -206,12 +204,20 @@ public class AccountService : IAccountService
         // Set level
         student.LevelId = levelService.GetLevelByName("Iron")?.Id;
 
-        // Upload the student card image
-        if (creation.StudentCard != null && creation.StudentCard.Length > 0)
+        // Upload the student card front image
+        if (creation.StudentCardFront != null && creation.StudentCardFront.Length > 0)
         {
-            FireBaseFile f = await fireBaseService.UploadFileAsync(creation.StudentCard, STUDENT_FOLDER_NAME);
-            student.StudentCard = f.URL;
-            student.FileName = f.FileName;
+            FireBaseFile f = await fireBaseService.UploadFileAsync(creation.StudentCardFront, STUDENT_FOLDER_NAME);
+            student.StudentCardFront = f.URL;
+            student.FileNameFront = f.FileName;
+        }
+
+        // Upload the student card back image
+        if (creation.StudentCardBack != null && creation.StudentCardBack.Length > 0)
+        {
+            FireBaseFile f = await fireBaseService.UploadFileAsync(creation.StudentCardBack, STUDENT_FOLDER_NAME);
+            student.StudentCardBack = f.URL;
+            student.FileNameBack = f.FileName;
         }
 
         student = studentRepository.Add(student);

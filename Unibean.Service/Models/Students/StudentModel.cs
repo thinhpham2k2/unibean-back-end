@@ -13,8 +13,10 @@ public class StudentModel
     public string CampusName { get; set; }
     public string AccountId { get; set; }
     public string UserName { get; set; }
-    public string StudentCard { get; set; }
-    public string FileName { get; set; }
+    public string StudentCardFront { get; set; }
+    public string FileNameFront { get; set; }
+    public string StudentCardBack { get; set; }
+    public string FileNameBack { get; set; }
     public string FullName { get; set; }
     public string Code { get; set; }
     public string Email { get; set; }

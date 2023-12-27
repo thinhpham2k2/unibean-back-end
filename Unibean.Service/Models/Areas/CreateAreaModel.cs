@@ -10,10 +10,10 @@ namespace Unibean.Service.Models.Areas;
 public class CreateAreaModel
 {
     [ValidDistrict]
-    [Required(ErrorMessage = "District is required!")]
+    [Required(ErrorMessage = "District is required")]
     public string DistrictId { get; set; }
 
-    [Required(ErrorMessage = "Area's name is required!")]
+    [Required(ErrorMessage = "Area's name is required")]
     [StringLength(255, MinimumLength = 3,
             ErrorMessage = "The length of area's name is from 3 to 255 characters")]
     public string AreaName { get; set; }
@@ -24,6 +24,6 @@ public class CreateAreaModel
 
     public string Description { get; set; }
 
-    [Required(ErrorMessage = "State is required!")]
+    [Required(ErrorMessage = "State is required")]
     public bool? State { get; set; }
 }

@@ -58,6 +58,7 @@ public class BrandRepository : IBrandRepository
             var result = query
                .Skip((page - 1) * limit)
                .Take(limit)
+               .Include(b => b.Account)
                .ToList();
 
             pagedResult = new PagedResultModel<Brand>
@@ -93,6 +94,8 @@ public class BrandRepository : IBrandRepository
             .ThenInclude(c => c.Type)
             .Include(s => s.Stores.Where(s => s.Status.Equals(true)))
             .ThenInclude(s => s.Area)
+            .Include(s => s.Vouchers.Where(s => s.Status.Equals(true)))
+            .ThenInclude(s => s.Type)
             .FirstOrDefault();
         }
         catch (Exception ex)

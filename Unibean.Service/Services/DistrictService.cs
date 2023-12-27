@@ -32,12 +32,10 @@ public class DistrictService : IDistrictService
             .ReverseMap();
             cfg.CreateMap<District, UpdateDistrictModel>()
             .ReverseMap()
-            .ForMember(t => t.Image, opt => opt.Ignore())
             .ForMember(t => t.DateUpdated, opt => opt.MapFrom(src => DateTime.Now));
             cfg.CreateMap<District, CreateDistrictModel>()
             .ReverseMap()
             .ForMember(t => t.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
-            .ForMember(t => t.Image, opt => opt.Ignore())
             .ForMember(t => t.DateCreated, opt => opt.MapFrom(src => DateTime.Now))
             .ForMember(t => t.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
             .ForMember(t => t.Status, opt => opt.MapFrom(src => true));

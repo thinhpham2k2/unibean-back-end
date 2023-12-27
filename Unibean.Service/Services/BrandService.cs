@@ -2,14 +2,14 @@
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
-using Unibean.Service.Models.Accounts;
 using Unibean.Service.Models.Brands;
 using Unibean.Service.Models.Campaigns;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Stores;
+using Unibean.Service.Models.Types;
+using Unibean.Service.Models.Vouchers;
 using Unibean.Service.Models.Wallets;
 using Unibean.Service.Services.Interfaces;
-using Unibean.Service.Utilities.FireBase;
 
 namespace Unibean.Service.Services;
 
@@ -35,7 +35,25 @@ public class BrandService : IBrandService
         var config = new MapperConfiguration(cfg
                 =>
         {
-            cfg.CreateMap<Brand, BrandModel>().ReverseMap();
+            // Map Brand Model
+            cfg.CreateMap<Brand, BrandModel>()
+            .ForMember(p => p.UserName, opt => opt.MapFrom(src => src.Account.UserName))
+            .ForMember(p => p.Logo, opt => opt.MapFrom(src => src.Account.Avatar))
+            .ForMember(p => p.LogoFileName, opt => opt.MapFrom(src => src.Account.FileName))
+            .ForMember(p => p.Email, opt => opt.MapFrom(src => src.Account.Email))
+            .ForMember(p => p.Phone, opt => opt.MapFrom(src => src.Account.Phone))
+            .ReverseMap();
+            cfg.CreateMap<PagedResultModel<Brand>, PagedResultModel<BrandModel>>()
+            .ReverseMap();
+            // Map Brand Extra Model
+            cfg.CreateMap<Brand, BrandExtraModel>()
+            .ForMember(p => p.UserName, opt => opt.MapFrom(src => src.Account.UserName))
+            .ForMember(p => p.Logo, opt => opt.MapFrom(src => src.Account.Avatar))
+            .ForMember(p => p.LogoFileName, opt => opt.MapFrom(src => src.Account.FileName))
+            .ForMember(p => p.Email, opt => opt.MapFrom(src => src.Account.Email))
+            .ForMember(p => p.Phone, opt => opt.MapFrom(src => src.Account.Phone))
+            .ForMember(p => p.NumberOfFollowers, opt => opt.MapFrom(src => src.Wishlists.Count))
+            .ReverseMap();
             cfg.CreateMap<Wallet, WalletModel>()
             .ForMember(w => w.TypeName, opt => opt.MapFrom(src => src.Type.TypeName))
             .ReverseMap();
@@ -45,23 +63,10 @@ public class BrandService : IBrandService
             cfg.CreateMap<Store, StoreModel>()
             .ForMember(s => s.AreaName, opt => opt.MapFrom(src => src.Area.AreaName))
             .ReverseMap();
-            cfg.CreateMap<Brand, BrandModel>()
-            .ForMember(p => p.UserName, opt => opt.MapFrom(src => src.Account.UserName))
-            .ForMember(p => p.Logo, opt => opt.MapFrom(src => src.Account.Avatar))
-            .ForMember(p => p.LogoFileName, opt => opt.MapFrom(src => src.Account.FileName))
-            .ForMember(p => p.Email, opt => opt.MapFrom(src => src.Account.Email))
-            .ForMember(p => p.Phone, opt => opt.MapFrom(src => src.Account.Phone))
+            cfg.CreateMap<Voucher, VoucherModel>()
+            .ForMember(s => s.TypeName, opt => opt.MapFrom(src => src.Type.TypeName))
             .ReverseMap();
-            cfg.CreateMap<Brand, BrandExtraModel>()
-            .ForMember(p => p.UserName, opt => opt.MapFrom(src => src.Account.UserName))
-            .ForMember(p => p.Logo, opt => opt.MapFrom(src => src.Account.Avatar))
-            .ForMember(p => p.LogoFileName, opt => opt.MapFrom(src => src.Account.FileName))
-            .ForMember(p => p.Email, opt => opt.MapFrom(src => src.Account.Email))
-            .ForMember(p => p.Phone, opt => opt.MapFrom(src => src.Account.Phone))
-            .ForMember(p => p.NumberOfFollowers, opt => opt.MapFrom(src => src.Wishlists.Count))
-            .ReverseMap();
-            cfg.CreateMap<PagedResultModel<Brand>, PagedResultModel<BrandModel>>()
-            .ReverseMap();
+            // Map Create Brand Google Model
             cfg.CreateMap<Brand, CreateBrandGoogleModel>()
             .ReverseMap()
             .ForMember(p => p.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
@@ -70,12 +75,22 @@ public class BrandService : IBrandService
             .ForMember(p => p.DateCreated, opt => opt.MapFrom(src => DateTime.Now))
             .ForMember(p => p.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
             .ForMember(p => p.Status, opt => opt.MapFrom(src => true));
+            // Map Create Brand Model
+            cfg.CreateMap<Brand, CreateBrandModel>()
+            .ReverseMap()
+            .ForMember(p => p.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
+            ;
         });
         mapper = new Mapper(config);
         this.brandRepository = brandRepository;
         this.fireBaseService = fireBaseService;
         this.walletService = walletService;
         this.walletTypeService = walletTypeService;
+    }
+
+    public Task<BrandModel> Add(CreateTypeModel creation)
+    {
+        throw new NotImplementedException();
     }
 
     public BrandModel AddGoogle(CreateBrandGoogleModel creation)
@@ -105,6 +120,16 @@ public class BrandService : IBrandService
         return mapper.Map<BrandModel>(entity);
     }
 
+    public void Delete(string id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public PagedResultModel<BrandModel> GetAll(string propertySort, bool isAsc, string search, int page, int limit)
+    {
+        throw new NotImplementedException();
+    }
+
     public BrandExtraModel GetById(string id)
     {
         Brand entity = brandRepository.GetById(id);
@@ -113,5 +138,10 @@ public class BrandService : IBrandService
             return mapper.Map<BrandExtraModel>(entity);
         }
         throw new InvalidParameterException("Not found brand");
+    }
+
+    public Task<BrandModel> Update(string id, UpdateTypeModel update)
+    {
+        throw new NotImplementedException();
     }
 }

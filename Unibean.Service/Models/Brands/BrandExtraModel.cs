@@ -1,5 +1,6 @@
 ﻿using Unibean.Service.Models.Campaigns;
 using Unibean.Service.Models.Stores;
+using Unibean.Service.Models.Vouchers;
 using Unibean.Service.Models.Wallets;
 
 namespace Unibean.Service.Models.Brands;
@@ -29,7 +30,9 @@ public class BrandExtraModel
     public bool? State { get; set; }
     public bool? Status { get; set; }
     public int? NumberOfFollowers { get; set; }
+    public bool? IsFavor { get; set; }
     public List<WalletModel> Wallets { get; set; }
     public List<CampaignModel> Campaigns { get; set; }
     public List<StoreModel> Stores { get; set; }
+    public List<VoucherModel> Vouchers { get; set; }
 }

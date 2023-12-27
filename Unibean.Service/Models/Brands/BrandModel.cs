@@ -24,4 +24,5 @@ public class BrandModel
     public string Description { get; set; }
     public bool? State { get; set; }
     public bool? Status { get; set; }
+    public bool? IsFavor { get; set; }
 }
