@@ -292,6 +292,10 @@ public class AuthController : ControllerBase
     //////////////////////////////////////////////////////////////////
 
     // Send mail (Verification code) API ////////////////////////////////
+
+    /// <summary>
+    /// Send email verification code
+    /// </summary>
     [AllowAnonymous]
     [HttpPost("website/mail")]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.Created)]

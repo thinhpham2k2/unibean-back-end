@@ -145,6 +145,15 @@ public class AccountService : IAccountService
         Account account = mapper.Map<Account>(creation);
         // Set role
         account.RoleId = roleService.GetRoleByName("Brand")?.Id;
+
+        // Upload the cover photo
+        if (creation.Logo != null && creation.Logo.Length > 0)
+        {
+            FireBaseFile f = await fireBaseService.UploadFileAsync(creation.Logo, FOLDER_NAME);
+            account.Avatar = f.URL;
+            account.FileName = f.FileName;
+        }
+
         account = accountRepository.Add(account);
 
         Brand brand = mapper.Map<Brand>(creation);

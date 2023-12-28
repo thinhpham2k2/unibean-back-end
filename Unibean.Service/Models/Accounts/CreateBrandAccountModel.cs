@@ -48,6 +48,8 @@ public class CreateBrandAccountModel
 
     public string Address { get; set; }
 
+    public IFormFile Logo { get; set; }
+
     public IFormFile CoverPhoto { get; set; }
 
     public string Link { get; set; }
