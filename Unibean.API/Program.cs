@@ -179,14 +179,17 @@ builder.Services.AddSingleton<IWalletTransactionService, WalletTransactionServic
 builder.Services.AddSingleton<IWalletTypeService, WalletTypeService>();
 builder.Services.AddSingleton<IWishlistService, WishlistService>();
 
-//FireBase
+// FireBase
 builder.Services.AddSingleton<IFireBaseService, FireBaseService>();
 
-//Google
+// Google
 builder.Services.AddSingleton<IGoogleService, GoogleService>();
 
-//Email
+// Email
 builder.Services.AddSingleton<IEmailService, EmailService>();
+
+// Jwt
+builder.Services.AddSingleton<IJwtService, JwtService>();
 
 var app = builder.Build();
 

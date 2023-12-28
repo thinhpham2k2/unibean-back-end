@@ -59,6 +59,7 @@ public class BrandRepository : IBrandRepository
                .Skip((page - 1) * limit)
                .Take(limit)
                .Include(b => b.Account)
+               .Include(s => s.Wishlists.Where(w => w.Status.Equals(true)))
                .ToList();
 
             pagedResult = new PagedResultModel<Brand>

@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
+using Unibean.Repository.Repositories;
 using Unibean.Repository.Repositories.Interfaces;
+using Unibean.Service.Models.Authens;
 using Unibean.Service.Models.Brands;
 using Unibean.Service.Models.Campaigns;
 using Unibean.Service.Models.Exceptions;
@@ -10,6 +12,8 @@ using Unibean.Service.Models.Types;
 using Unibean.Service.Models.Vouchers;
 using Unibean.Service.Models.Wallets;
 using Unibean.Service.Services.Interfaces;
+using Unibean.Service.Utilities.FireBase;
+using BCryptNet = BCrypt.Net.BCrypt;
 
 namespace Unibean.Service.Services;
 
@@ -19,6 +23,8 @@ public class BrandService : IBrandService
 
     private readonly string FOLDER_NAME = "brands";
 
+    private readonly string ACCOUNT_FOLDER_NAME = "accounts";
+
     private readonly IBrandRepository brandRepository;
 
     private readonly IFireBaseService fireBaseService;
@@ -27,10 +33,16 @@ public class BrandService : IBrandService
 
     private readonly IWalletTypeService walletTypeService;
 
-    public BrandService(IBrandRepository brandRepository, 
+    private readonly IRoleService roleService;
+
+    private readonly IAccountRepository accountRepository;
+
+    public BrandService(IBrandRepository brandRepository,
         IFireBaseService fireBaseService,
         IWalletService walletService,
-        IWalletTypeService walletTypeService)
+        IWalletTypeService walletTypeService,
+        IRoleService roleService,
+        IAccountRepository accountRepository)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -44,6 +56,7 @@ public class BrandService : IBrandService
             .ForMember(p => p.Phone, opt => opt.MapFrom(src => src.Account.Phone))
             .ReverseMap();
             cfg.CreateMap<PagedResultModel<Brand>, PagedResultModel<BrandModel>>()
+            .ForMember(p => p.Result, opt => opt.Ignore())
             .ReverseMap();
             // Map Brand Extra Model
             cfg.CreateMap<Brand, BrandExtraModel>()
@@ -79,18 +92,56 @@ public class BrandService : IBrandService
             cfg.CreateMap<Brand, CreateBrandModel>()
             .ReverseMap()
             .ForMember(p => p.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
-            ;
+            .ForMember(p => p.TotalIncome, opt => opt.MapFrom(src => 0))
+            .ForMember(p => p.TotalSpending, opt => opt.MapFrom(src => 0))
+            .ForMember(p => p.DateCreated, opt => opt.MapFrom(src => DateTime.Now))
+            .ForMember(p => p.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
+            .ForMember(p => p.Status, opt => opt.MapFrom(src => true));
+            cfg.CreateMap<Account, CreateBrandModel>()
+            .ReverseMap()
+            .ForMember(p => p.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
+            .ForMember(p => p.Password, opt => opt.MapFrom(src => BCryptNet.HashPassword(src.Password)))
+            .ForMember(p => p.IsVerify, opt => opt.MapFrom(src => true))
+            .ForMember(p => p.DateCreated, opt => opt.MapFrom(src => DateTime.Now))
+            .ForMember(p => p.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
+            .ForMember(p => p.DateVerified, opt => opt.MapFrom(src => DateTime.Now))
+            .ForMember(p => p.Status, opt => opt.MapFrom(src => true));
         });
         mapper = new Mapper(config);
         this.brandRepository = brandRepository;
         this.fireBaseService = fireBaseService;
         this.walletService = walletService;
         this.walletTypeService = walletTypeService;
+        this.roleService = roleService;
+        this.accountRepository = accountRepository;
     }
 
-    public Task<BrandModel> Add(CreateTypeModel creation)
+    public async Task<BrandModel> Add(CreateBrandModel creation)
     {
-        throw new NotImplementedException();
+        Account account = mapper.Map<Account>(creation);
+        account.RoleId = roleService.GetRoleByName("Brand")?.Id;
+
+        //Upload logo
+        if (creation.Logo != null && creation.Logo.Length > 0)
+        {
+            FireBaseFile f = await fireBaseService.UploadFileAsync(creation.Logo, ACCOUNT_FOLDER_NAME);
+            account.Avatar = f.URL;
+            account.FileName = f.FileName;
+        }
+
+        account = accountRepository.Add(account);
+        Brand brand = mapper.Map<Brand>(creation);
+        brand.AccountId = account.Id;
+
+        //Upload cover photo
+        if (creation.CoverPhoto != null && creation.CoverPhoto.Length > 0)
+        {
+            FireBaseFile f = await fireBaseService.UploadFileAsync(creation.CoverPhoto, FOLDER_NAME);
+            brand.CoverPhoto = f.URL;
+            brand.CoverFileName = f.FileName;
+        }
+
+        return mapper.Map<BrandModel>(brandRepository.Add(brand));
     }
 
     public BrandModel AddGoogle(CreateBrandGoogleModel creation)
@@ -125,22 +176,45 @@ public class BrandService : IBrandService
         throw new NotImplementedException();
     }
 
-    public PagedResultModel<BrandModel> GetAll(string propertySort, bool isAsc, string search, int page, int limit)
+    public PagedResultModel<BrandModel> GetAll
+        (string propertySort, bool isAsc, string search, int page, int limit, JwtRequestModel request)
     {
-        throw new NotImplementedException();
+        if (request.Role.Equals("Student"))
+        {
+            PagedResultModel<Brand> result = brandRepository.GetAll(propertySort, isAsc, search, page, limit);
+            PagedResultModel<BrandModel> pages = mapper.Map<PagedResultModel<BrandModel>>(result);
+            pages.Result = result.Result.Select(r =>
+            {
+                return mapper.Map<Brand, BrandModel>(r, opt 
+                    => opt.AfterMap((src, dest) 
+                    => dest.IsFavor = src.Wishlists.Where(w => w.StudentId.Equals(request.UserId))?.Count() > 0));
+            }).ToList();
+
+            return pages;
+        }
+        else
+        {
+            return mapper.Map<PagedResultModel<Brand>, PagedResultModel<BrandModel>>
+                (brandRepository.GetAll(propertySort, isAsc, search, page, limit), opt 
+                => opt.AfterMap((src, dest) 
+                => dest.Result = mapper.Map<List<BrandModel>>(src.Result)));
+        }
     }
 
-    public BrandExtraModel GetById(string id)
+    public BrandExtraModel GetById(string id, JwtRequestModel request)
     {
         Brand entity = brandRepository.GetById(id);
         if (entity != null)
         {
-            return mapper.Map<BrandExtraModel>(entity);
+            return request.Role.Equals("Student") ? mapper.Map<Brand, BrandExtraModel>(entity, opt 
+                => opt.AfterMap((src, dest) => dest.IsFavor = src.Wishlists.Where(w 
+                => w.StudentId.Equals(request.UserId)).Count() > 0)) 
+                : mapper.Map<BrandExtraModel>(entity);
         }
         throw new InvalidParameterException("Not found brand");
     }
 
-    public Task<BrandModel> Update(string id, UpdateTypeModel update)
+    public Task<BrandModel> Update(string id, UpdateBrandModel update)
     {
         throw new NotImplementedException();
     }

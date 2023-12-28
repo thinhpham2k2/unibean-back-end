@@ -111,6 +111,7 @@ public class AuthController : ControllerBase
                     new(JwtRegisteredClaimNames.Sub, (user.GetType().GetProperty("UserName").GetValue(user) ?? string.Empty).ToString()),
                     new(JwtRegisteredClaimNames.Email, (user.GetType().GetProperty("Email").GetValue(user) ?? string.Empty).ToString()),
                     new(JwtRegisteredClaimNames.Name, (user.GetType().GetProperty("Name").GetValue(user) ?? string.Empty).ToString()),
+                    new Claim("userid", (user.GetType().GetProperty("UserId").GetValue(user) ?? string.Empty).ToString()),
                     new Claim(ClaimTypes.Role, role)
                 };
 
@@ -126,7 +127,7 @@ public class AuthController : ControllerBase
                 };
 
                 var token = tokenHandler.CreateToken(tokenDescription);
-                response.role = role;
+                response.Role = role;
                 response.Jwt = tokenHandler.WriteToken(token);
                 return Ok(response);
             }

@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
-using Unibean.Service.Validations;
 
 namespace Unibean.Service.Models.Brands;
 
-public class CreateBrandModel
+public class UpdateBrandModel
 {
     [Required(ErrorMessage = "Brand's name is required")]
     [StringLength(255, MinimumLength = 3,
@@ -13,32 +12,11 @@ public class CreateBrandModel
 
     public string Acronym { get; set; }
 
-    [ValidUserName]
-    [Required(ErrorMessage = "User name is required")]
-    [StringLength(50, MinimumLength = 5,
-        ErrorMessage = "The length of user name is from 5 to 50 characters")]
-    public string UserName { get; set; }
-
-    [Required(ErrorMessage = "Password is required")]
-    [StringLength(255, MinimumLength = 8,
-        ErrorMessage = "The length of password is from 8 to 255 characters")]
-    public string Password { get; set; }
-
     public string Address { get; set; }
 
     public IFormFile Logo { get; set; }
 
     public IFormFile CoverPhoto { get; set; }
-
-    [Phone]
-    [ValidPhone]
-    [Required(ErrorMessage = "Phone is required")]
-    public string Phone { get; set; }
-
-    [ValidEmail]
-    [EmailAddress]
-    [Required(ErrorMessage = "Email is required")]
-    public string Email { get; set; }
 
     public string Link { get; set; }
 
