@@ -1,0 +1,52 @@
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Net;
+using Unibean.Service.Models.Exceptions;
+using Unibean.Service.Models.Validations;
+
+namespace Unibean.API.Controllers;
+
+[ApiController]
+[Tags("Validation API")]
+[Route("api/v1/validations")]
+public class ValidationController : ControllerBase
+{
+    /// <summary>
+    /// Email validation
+    /// </summary>
+    [AllowAnonymous]
+    [HttpPost("email")]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    public IActionResult EmailValidation([FromBody] EmailModel email)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+        return Ok(email.Email + " is valid");
+    }
+
+    /// <summary>
+    /// Phone validation
+    /// </summary>
+    [AllowAnonymous]
+    [HttpPost("phone")]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    public IActionResult PhoneValidation([FromBody] PhoneModel phone)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+        return Ok(phone.Phone + " is valid");
+    }
+
+    /// <summary>
+    /// Username validation
+    /// </summary>
+    [AllowAnonymous]
+    [HttpPost("username")]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    public IActionResult UsernameValidation([FromBody] UserNameModel userName)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+        return Ok(userName.UserName + " is valid");
+    }
+}
