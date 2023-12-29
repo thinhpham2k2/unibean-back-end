@@ -30,6 +30,7 @@ public class VoucherTypeService : IVoucherTypeService
             .ReverseMap();
             cfg.CreateMap<VoucherType, UpdateVoucherTypeModel>()
             .ReverseMap()
+            .ForMember(t => t.Image, opt => opt.Ignore())
             .ForMember(t => t.DateUpdated, opt => opt.MapFrom(src => DateTime.Now));
             cfg.CreateMap<VoucherType, CreateVoucherTypeModel>()
             .ReverseMap()

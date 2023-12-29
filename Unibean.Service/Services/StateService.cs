@@ -32,6 +32,7 @@ public class StateService : IStateService
             .ReverseMap();
             cfg.CreateMap<State, UpdateStateModel>()
             .ReverseMap()
+            .ForMember(t => t.Image, opt => opt.Ignore())
             .ForMember(t => t.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
             .ForMember(t => t.States, opt => opt.MapFrom(src => src.State));
             cfg.CreateMap<State, CreateStateModel>()

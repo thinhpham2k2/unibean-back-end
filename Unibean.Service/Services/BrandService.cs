@@ -104,6 +104,10 @@ public class BrandService : IBrandService
             .ForMember(p => p.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
             .ForMember(p => p.DateVerified, opt => opt.MapFrom(src => DateTime.Now))
             .ForMember(p => p.Status, opt => opt.MapFrom(src => true));
+            // Map Update Brand Model
+            cfg.CreateMap<Brand, UpdateBrandModel>()
+            .ReverseMap()
+            .ForMember(p => p.CoverPhoto, opt => opt.Ignore());
         });
         mapper = new Mapper(config);
         this.brandRepository = brandRepository;
@@ -171,7 +175,30 @@ public class BrandService : IBrandService
 
     public void Delete(string id)
     {
-        throw new NotImplementedException();
+        Brand entity = brandRepository.GetById(id);
+        if (entity != null)
+        {
+            // Cover photo
+            if (entity.CoverPhoto != null && entity.CoverPhoto.Length > 0)
+            {
+                // Remove image
+                fireBaseService.RemoveFileAsync(entity.CoverFileName, FOLDER_NAME);
+            }
+
+            // Logo (Avatar)
+            if (entity.Account.Avatar != null && entity.Account.Avatar.Length > 0)
+            {
+                // Remove image
+                fireBaseService.RemoveFileAsync(entity.Account.FileName, ACCOUNT_FOLDER_NAME);
+            }
+
+            brandRepository.Delete(id);
+            accountRepository.Delete(entity.Account.Id);
+        }
+        else
+        {
+            throw new InvalidParameterException("Not found brand");
+        }
     }
 
     public PagedResultModel<BrandModel> GetAll
@@ -212,8 +239,41 @@ public class BrandService : IBrandService
         throw new InvalidParameterException("Not found brand");
     }
 
-    public Task<BrandModel> Update(string id, UpdateBrandModel update)
+    public async Task<BrandModel> Update(string id, UpdateBrandModel update)
     {
-        throw new NotImplementedException();
+        Brand entity = brandRepository.GetById(id);
+        if (entity != null)
+        {
+            entity = mapper.Map(update, entity);
+
+            // Cover photo
+            if (update.CoverPhoto != null && update.CoverPhoto.Length > 0)
+            {
+                // Remove image
+                await fireBaseService.RemoveFileAsync(entity.CoverFileName, FOLDER_NAME);
+
+                //Upload new image update
+                FireBaseFile f = await fireBaseService.UploadFileAsync(update.CoverPhoto, FOLDER_NAME);
+                entity.CoverPhoto = f.URL;
+                entity.CoverFileName = f.FileName;
+            }
+
+            // Logo (Avatar)
+            if (update.Logo != null && update.Logo.Length > 0)
+            {
+                // Remove image
+                await fireBaseService.RemoveFileAsync(entity.Account.FileName, ACCOUNT_FOLDER_NAME);
+
+                //Upload new image update
+                FireBaseFile f = await fireBaseService.UploadFileAsync(update.Logo, ACCOUNT_FOLDER_NAME);
+                entity.Account.Avatar = f.URL;
+                entity.Account.FileName = f.FileName;
+            }
+            entity.Account.Description = update.Description;
+            accountRepository.Update(entity.Account);
+
+            return mapper.Map<BrandModel>(brandRepository.Update(entity));
+        }
+        throw new InvalidParameterException("Not found brand");
     }
 }

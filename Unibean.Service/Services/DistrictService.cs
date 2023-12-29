@@ -32,6 +32,7 @@ public class DistrictService : IDistrictService
             .ReverseMap();
             cfg.CreateMap<District, UpdateDistrictModel>()
             .ReverseMap()
+            .ForMember(t => t.Image, opt => opt.Ignore())
             .ForMember(t => t.DateUpdated, opt => opt.MapFrom(src => DateTime.Now));
             cfg.CreateMap<District, CreateDistrictModel>()
             .ReverseMap()

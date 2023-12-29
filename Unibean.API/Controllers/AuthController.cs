@@ -296,6 +296,7 @@ public class AuthController : ControllerBase
     /// <summary>
     /// Send email verification code
     /// </summary>
+    /// <param name="email">The email will receive a verification code notification.</param>
     [AllowAnonymous]
     [HttpPost("website/mail")]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.Created)]

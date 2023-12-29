@@ -30,6 +30,7 @@ public class CityService : ICityService
             .ReverseMap();
             cfg.CreateMap<City, UpdateCityModel>()
             .ReverseMap()
+            .ForMember(t => t.Image, opt => opt.Ignore())
             .ForMember(t => t.DateUpdated, opt => opt.MapFrom(src => DateTime.Now));
             cfg.CreateMap<City, CreateCityModel>()
             .ReverseMap()

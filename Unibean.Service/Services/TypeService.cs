@@ -30,6 +30,7 @@ public class TypeService : ITypeService
             .ReverseMap();
             cfg.CreateMap<Type, UpdateTypeModel>()
             .ReverseMap()
+            .ForMember(t => t.Image, opt => opt.Ignore())
             .ForMember(t => t.DateUpdated, opt => opt.MapFrom(src => DateTime.Now));
             cfg.CreateMap<Type, CreateTypeModel>()
             .ReverseMap()

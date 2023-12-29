@@ -70,6 +70,22 @@ public class AccountRepository : IAccountRepository
         return account == null;
     }
 
+    public void Delete(string id)
+    {
+        try
+        {
+            using var db = new UnibeanDBContext();
+            var account = db.Accounts.FirstOrDefault(b => b.Id.Equals(id));
+            account.Status = false;
+            db.Accounts.Update(account);
+            db.SaveChanges();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+
     public Account GetByEmail(string email)
     {
         Account account = new();

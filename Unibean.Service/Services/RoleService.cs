@@ -30,6 +30,7 @@ public class RoleService : IRoleService
             .ReverseMap();
             cfg.CreateMap<Role, UpdateRoleModel>()
             .ReverseMap()
+            .ForMember(t => t.Image, opt => opt.Ignore())
             .ForMember(t => t.DateUpdated, opt => opt.MapFrom(src => DateTime.Now));
             cfg.CreateMap<Role, CreateRoleModel>()
             .ReverseMap()

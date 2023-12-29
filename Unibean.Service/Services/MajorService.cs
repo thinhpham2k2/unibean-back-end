@@ -30,6 +30,7 @@ public class MajorService : IMajorService
             .ReverseMap();
             cfg.CreateMap<Major, UpdateMajorModel>()
             .ReverseMap()
+            .ForMember(t => t.Image, opt => opt.Ignore())
             .ForMember(t => t.DateUpdated, opt => opt.MapFrom(src => DateTime.Now));
             cfg.CreateMap<Major, CreateMajorModel>()
             .ReverseMap()

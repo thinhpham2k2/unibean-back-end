@@ -30,6 +30,7 @@ public class CampaignTypeService : ICampaignTypeService
             .ReverseMap();
             cfg.CreateMap<CampaignType, UpdateCampaignTypeModel>()
             .ReverseMap()
+            .ForMember(t => t.Image, opt => opt.Ignore())
             .ForMember(t => t.DateUpdated, opt => opt.MapFrom(src => DateTime.Now));
             cfg.CreateMap<CampaignType, CreateCampaignTypeModel>()
             .ReverseMap()

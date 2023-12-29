@@ -12,6 +12,8 @@ public interface IAccountRepository
 
     Account Add(Account creation);
 
+    void Delete(string id);
+
     Account Update(Account update);
 
     Account GetById(string id);
