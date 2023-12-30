@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Unibean.Repository.Entities;
+using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Students;
@@ -42,6 +43,19 @@ public class StudentService : IStudentService
             .ForMember(s => s.GenderName, opt => opt.MapFrom(src => src.Gender.GenderName))
             .ForMember(s => s.MajorName, opt => opt.MapFrom(src => src.Major.MajorName))
             .ForMember(s => s.CampusName, opt => opt.MapFrom(src => src.Campus.CampusName))
+            .ForMember(s => s.UserName, opt => opt.MapFrom(src => src.Account.UserName))
+            .ForMember(s => s.Email, opt => opt.MapFrom(src => src.Account.Email))
+            .ForMember(s => s.Phone, opt => opt.MapFrom(src => src.Account.Phone))
+            .ForMember(s => s.Avatar, opt => opt.MapFrom(src => src.Account.Avatar))
+            .ForMember(s => s.ImageName, opt => opt.MapFrom(src => src.Account.FileName))
+            .ForMember(s => s.DateVerified, opt => opt.MapFrom(src => src.Account.DateVerified))
+            .ForMember(s => s.IsVerify, opt => opt.MapFrom(src => src.Account.IsVerify))
+            .ForMember(s => s.GreenWallet, opt => opt.MapFrom(src=> src.Wallets.Where(w 
+                => w.Type.TypeName.Equals("Green bean")).FirstOrDefault().Balance))
+            .ForMember(s => s.RedWallet, opt => opt.MapFrom(src => src.Wallets.Where(w 
+                => w.Type.TypeName.Equals("Red bean")).FirstOrDefault().Balance))
+            .ReverseMap();
+            cfg.CreateMap<PagedResultModel<Student>, PagedResultModel<StudentModel>>()
             .ReverseMap();
             cfg.CreateMap<Student, CreateStudentGoogleModel>()
             .ReverseMap()
@@ -119,5 +133,12 @@ public class StudentService : IStudentService
             });
         }
         return mapper.Map<StudentModel>(entity);
+    }
+
+    public PagedResultModel<StudentModel> GetAll
+        (List<string> levelIds, List<string> genderIds, List<string> majorIds, List<string> campusIds, bool? isVerify, string propertySort, bool isAsc, string search, int page, int limit)
+    {
+        return mapper.Map<PagedResultModel<StudentModel>>
+            (studentRepository.GetAll(levelIds, genderIds, majorIds, campusIds, isVerify, propertySort, isAsc, search, page, limit));
     }
 }
