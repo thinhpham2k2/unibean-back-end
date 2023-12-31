@@ -792,6 +792,14 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("text")
                         .HasColumnName("description");
 
+                    b.Property<string>("FileName")
+                        .HasColumnType("text")
+                        .HasColumnName("file_name");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("text")
+                        .HasColumnName("image");
+
                     b.Property<ulong?>("State")
                         .HasColumnType("bit(1)")
                         .HasColumnName("state");

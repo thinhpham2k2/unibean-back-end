@@ -72,7 +72,7 @@ public class WalletTypeService : IWalletTypeService
         }
         else
         {
-            throw new InvalidParameterException("Not found wallet's type");
+            throw new InvalidParameterException("Not found wallet type");
         }
     }
 
@@ -88,7 +88,7 @@ public class WalletTypeService : IWalletTypeService
         {
             return mapper.Map<WalletTypeModel>(entity);
         }
-        throw new InvalidParameterException("Not found wallet's type");
+        throw new InvalidParameterException("Not found wallet type");
     }
 
     public WalletTypeModel GetWalletTypeByName(string typeName)
@@ -114,6 +114,6 @@ public class WalletTypeService : IWalletTypeService
             }
             return mapper.Map<WalletTypeModel>(walletTypeRepository.Update(entity));
         }
-        throw new InvalidParameterException("Not found wallet's type");
+        throw new InvalidParameterException("Not found wallet type");
     }
 }

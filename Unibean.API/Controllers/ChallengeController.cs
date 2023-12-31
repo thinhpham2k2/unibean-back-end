@@ -3,37 +3,39 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
+using Unibean.Service.Models.Challenges;
 using Unibean.Service.Models.Exceptions;
-using Unibean.Service.Models.WalletTypes;
 using Unibean.Service.Services.Interfaces;
 
 namespace Unibean.API.Controllers;
 
 [ApiController]
-[Tags("Wallet Type API")]
-[Route("api/v1/wallet-types")]
-public class WalletTypeController : ControllerBase
+[Tags("Challenge API")]
+[Route("api/v1/challenges")]
+public class ChallengeController : ControllerBase
 {
-    private readonly IWalletTypeService walletTypeService;
+    private readonly IChallengeService challengeService;
 
-    public WalletTypeController(IWalletTypeService walletTypeService)
+    public ChallengeController(IChallengeService challengeService)
     {
-        this.walletTypeService = walletTypeService;
+        this.challengeService = challengeService;
     }
 
     /// <summary>
-    /// Get wallet type list
+    /// Get challenge list
     /// </summary>
+    /// <param name="typeIds">Filter by challenge type Id.</param>
     /// <param name="sort">Sorting criteria for the results.</param>
     /// <param name="search">Search query.</param>
     /// <param name="page">Current page in the paginated results.</param>
     /// <param name="limit">Number of results per page.</param>
     [HttpGet]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
-    [ProducesResponseType(typeof(PagedResultModel<WalletTypeModel>),
+    [ProducesResponseType(typeof(PagedResultModel<ChallengeModel>),
         (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public ActionResult<PagedResultModel<WalletTypeModel>> GetList(
+    public ActionResult<PagedResultModel<ChallengeModel>> GetList(
+        [FromQuery] List<string> typeIds,
         [FromQuery] string sort = "Id,desc",
         [FromQuery] string search = "",
         [FromQuery] int page = 1,
@@ -42,23 +44,23 @@ public class WalletTypeController : ControllerBase
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         string propertySort = sort.Split(",")[0];
-        var propertyInfo = typeof(WalletType).GetProperty(propertySort);
+        var propertyInfo = typeof(Challenge).GetProperty(propertySort);
         if (propertySort != null && propertyInfo != null)
         {
-            PagedResultModel<WalletTypeModel>
-                result = walletTypeService.GetAll
-                (propertySort, sort.Split(",")[1].Equals("asc"), search, page, limit);
+            PagedResultModel<ChallengeModel>
+                result = challengeService.GetAll
+                (typeIds, propertySort, sort.Split(",")[1].Equals("asc"), search, page, limit);
             return Ok(result);
         }
-        return BadRequest("Invalid property of wallet type");
+        return BadRequest("Invalid property of challenge");
     }
 
     /// <summary>
-    /// Get wallet type by id
+    /// Get challenge by id
     /// </summary>
     [HttpGet("{id}")]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
-    [ProducesResponseType(typeof(WalletTypeModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(ChallengeModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public IActionResult GetById(string id)
     {
@@ -66,7 +68,7 @@ public class WalletTypeController : ControllerBase
 
         try
         {
-            return Ok(walletTypeService.GetById(id));
+            return Ok(challengeService.GetById(id));
         }
         catch (InvalidParameterException e)
         {
@@ -75,19 +77,19 @@ public class WalletTypeController : ControllerBase
     }
 
     /// <summary>
-    /// Create wallet type
+    /// Create challenge
     /// </summary>
     [HttpPost]
     [Authorize(Roles = "Admin")]
-    [ProducesResponseType(typeof(WalletTypeModel), (int)HttpStatusCode.Created)]
+    [ProducesResponseType(typeof(ChallengeModel), (int)HttpStatusCode.Created)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public async Task<ActionResult> Create([FromForm] CreateWalletTypeModel creation)
+    public async Task<ActionResult> Create([FromForm] CreateChallengeModel creation)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         try
         {
-            var type = await walletTypeService.Add(creation);
+            var type = await challengeService.Add(creation);
             if (type != null)
             {
                 return StatusCode(StatusCodes.Status201Created, type);
@@ -101,19 +103,19 @@ public class WalletTypeController : ControllerBase
     }
 
     /// <summary>
-    /// Update wallet type
+    /// Update challenge
     /// </summary>
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin")]
-    [ProducesResponseType(typeof(WalletTypeModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(ChallengeModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public async Task<ActionResult> Update(string id, [FromForm] UpdateWalletTypeModel update)
+    public async Task<ActionResult> Update(string id, [FromForm] UpdateChallengeModel update)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         try
         {
-            var type = await walletTypeService.Update(id, update);
+            var type = await challengeService.Update(id, update);
             if (type != null)
             {
                 return StatusCode(StatusCodes.Status200OK, type);
@@ -127,7 +129,7 @@ public class WalletTypeController : ControllerBase
     }
 
     /// <summary>
-    /// Delete wallet type
+    /// Delete challenge
     /// </summary>
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin")]
@@ -139,7 +141,7 @@ public class WalletTypeController : ControllerBase
 
         try
         {
-            walletTypeService.Delete(id);
+            challengeService.Delete(id);
             return StatusCode(StatusCodes.Status204NoContent);
         }
         catch (InvalidParameterException e)

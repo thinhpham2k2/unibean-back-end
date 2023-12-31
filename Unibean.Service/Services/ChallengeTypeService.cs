@@ -72,7 +72,7 @@ public class ChallengeTypeService : IChallengeTypeService
         }
         else
         {
-            throw new InvalidParameterException("Not found challenge's type");
+            throw new InvalidParameterException("Not found challenge type");
         }
     }
 
@@ -88,7 +88,7 @@ public class ChallengeTypeService : IChallengeTypeService
         {
             return mapper.Map<ChallengeTypeModel>(entity);
         }
-        throw new InvalidParameterException("Not found challenge's type");
+        throw new InvalidParameterException("Not found challenge type");
     }
 
     public async Task<ChallengeTypeModel> Update(string id, UpdateChallengeTypeModel update)
@@ -109,6 +109,6 @@ public class ChallengeTypeService : IChallengeTypeService
             }
             return mapper.Map<ChallengeTypeModel>(challengeTypeRepository.Update(entity));
         }
-        throw new InvalidParameterException("Not found challenge's type");
+        throw new InvalidParameterException("Not found challenge type");
     }
 }

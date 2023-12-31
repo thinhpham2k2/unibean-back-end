@@ -72,7 +72,7 @@ public class TypeService : ITypeService
         }
         else
         {
-            throw new InvalidParameterException("Not found activity's type");
+            throw new InvalidParameterException("Not found activity type");
         }
     }
 
@@ -88,7 +88,7 @@ public class TypeService : ITypeService
         {
             return mapper.Map<TypeModel>(entity);
         }
-        throw new InvalidParameterException("Not found activity's type");
+        throw new InvalidParameterException("Not found activity type");
     }
 
     public async Task<TypeModel> Update(string id, UpdateTypeModel update)
@@ -109,6 +109,6 @@ public class TypeService : ITypeService
             }
             return mapper.Map<TypeModel>(typeRepository.Update(entity));
         }
-        throw new InvalidParameterException("Not found activity's type");
+        throw new InvalidParameterException("Not found activity type");
     }
 }

@@ -60,6 +60,8 @@ public class BrandRepository : IBrandRepository
                .Take(limit)
                .Include(b => b.Account)
                .Include(s => s.Wishlists.Where(w => w.Status.Equals(true)))
+               .Include(s => s.Wallets.Where(w => w.Status.Equals(true)))
+                   .ThenInclude(w => w.Type)
                .ToList();
 
             pagedResult = new PagedResultModel<Brand>
@@ -90,13 +92,13 @@ public class BrandRepository : IBrandRepository
             .Include(s => s.Account)
             .Include(s => s.Wishlists.Where(w => w.Status.Equals(true)))
             .Include(s => s.Wallets.Where(w => w.Status.Equals(true)))
-            .ThenInclude(w => w.Type)
+                .ThenInclude(w => w.Type)
             .Include(s => s.Campaigns.Where(c => c.Status.Equals(true)))
-            .ThenInclude(c => c.Type)
+                .ThenInclude(c => c.Type)
             .Include(s => s.Stores.Where(s => s.Status.Equals(true)))
-            .ThenInclude(s => s.Area)
+                .ThenInclude(s => s.Area)
             .Include(s => s.Vouchers.Where(s => s.Status.Equals(true)))
-            .ThenInclude(s => s.Type)
+                .ThenInclude(s => s.Type)
             .FirstOrDefault();
         }
         catch (Exception ex)

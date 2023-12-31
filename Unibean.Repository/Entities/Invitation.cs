@@ -10,7 +10,6 @@ public class Invitation
     [Column("id", TypeName = "char(26)")]
     public string Id { get; set; }
 
-    [ForeignKey("Inviter")]
     [Column("inviter_id", TypeName = "char(26)")]
     public string InviterId { get; set; }
 

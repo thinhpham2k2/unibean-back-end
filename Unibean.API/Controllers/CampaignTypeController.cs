@@ -22,7 +22,7 @@ public class CampaignTypeController : ControllerBase
     }
 
     /// <summary>
-    /// Get campaign's type list
+    /// Get campaign type list
     /// </summary>
     /// <param name="sort">Sorting criteria for the results.</param>
     /// <param name="search">Search query.</param>
@@ -50,11 +50,11 @@ public class CampaignTypeController : ControllerBase
                 (propertySort, sort.Split(",")[1].Equals("asc"), search, page, limit);
             return Ok(result);
         }
-        return BadRequest("Invalid property of campaign's type");
+        return BadRequest("Invalid property of campaign type");
     }
 
     /// <summary>
-    /// Get campaign's type by id
+    /// Get campaign type by id
     /// </summary>
     [HttpGet("{id}")]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
@@ -75,7 +75,7 @@ public class CampaignTypeController : ControllerBase
     }
 
     /// <summary>
-    /// Create campaign's type
+    /// Create campaign type
     /// </summary>
     [HttpPost]
     [Authorize(Roles = "Admin")]
@@ -101,7 +101,7 @@ public class CampaignTypeController : ControllerBase
     }
 
     /// <summary>
-    /// Update campaign's type
+    /// Update campaign type
     /// </summary>
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin")]
@@ -127,7 +127,7 @@ public class CampaignTypeController : ControllerBase
     }
 
     /// <summary>
-    /// Delete campaign's type
+    /// Delete campaign type
     /// </summary>
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin")]

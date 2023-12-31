@@ -31,7 +31,8 @@ public class BrandExtraModel
     public bool? Status { get; set; }
     public int? NumberOfFollowers { get; set; }
     public bool? IsFavor { get; set; }
-    public List<WalletModel> Wallets { get; set; }
+    public decimal? GreenWallet { get; set; }
+    public decimal? RedWallet { get; set; }
     public List<CampaignModel> Campaigns { get; set; }
     public List<StoreModel> Stores { get; set; }
     public List<VoucherModel> Vouchers { get; set; }

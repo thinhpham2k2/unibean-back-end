@@ -7,6 +7,8 @@ public interface IStudentRepository
 {
     Student Add(Student creation);
 
+    bool CheckInviteCode(string inviteCode);
+
     void Delete(string id);
 
     PagedResultModel<Student> GetAll

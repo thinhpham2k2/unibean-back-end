@@ -25,4 +25,6 @@ public class BrandModel
     public bool? State { get; set; }
     public bool? Status { get; set; }
     public bool? IsFavor { get; set; }
+    public decimal? GreenWallet { get; set; }
+    public decimal? RedWallet { get; set; }
 }

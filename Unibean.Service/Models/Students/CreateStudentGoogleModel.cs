@@ -35,6 +35,9 @@ public class CreateStudentGoogleModel
 
     public string Code { get; set; }
 
+    [ValidInviteCode]
+    public string InviteCode { get; set; }
+
     [EmailAddress]
     [Required(ErrorMessage = "Email is required")]
     public string Email { get; set; }

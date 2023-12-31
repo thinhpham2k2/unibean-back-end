@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Google.Apis.Util;
+using Microsoft.IdentityModel.Tokens;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Service.Models.Accounts;
+using Unibean.Service.Models.Invitations;
 using Unibean.Service.Models.Wallets;
 using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Utilities.FireBase;
@@ -16,11 +18,7 @@ public class AccountService : IAccountService
 
     private readonly string FOLDER_NAME = "accounts";
 
-    private readonly string ADMIN_FOLDER_NAME = "admins";
-
     private readonly string BRAND_FOLDER_NAME = "brands";
-
-    private readonly string STORE_FOLDER_NAME = "stores";
 
     private readonly string STUDENT_FOLDER_NAME = "students";
 
@@ -40,6 +38,8 @@ public class AccountService : IAccountService
 
     private readonly IWalletTypeService walletTypeService;
 
+    private readonly IInvitationService invitationService;
+
     public AccountService(IAccountRepository accountRepository,
         IFireBaseService fireBaseService,
         IRoleService roleService,
@@ -47,7 +47,8 @@ public class AccountService : IAccountService
         IStudentRepository studentRepository,
         ILevelService levelService,
         IWalletService walletService,
-        IWalletTypeService walletTypeService)
+        IWalletTypeService walletTypeService,
+        IInvitationService invitationService)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -138,6 +139,7 @@ public class AccountService : IAccountService
         this.levelService = levelService;
         this.walletService = walletService;
         this.walletTypeService = walletTypeService;
+        this.invitationService = invitationService;
     }
 
     public async Task<AccountModel> AddBrand(CreateBrandAccountModel creation)
@@ -231,9 +233,9 @@ public class AccountService : IAccountService
 
         student = studentRepository.Add(student);
 
-        // Create wallet
         if (student != null)
         {
+            // Create wallet
             walletService.Add(new CreateWalletModel
             {
                 StudentId = student.Id,
@@ -250,6 +252,20 @@ public class AccountService : IAccountService
                 Description = null,
                 State = true
             });
+
+            // Set invitation
+            if (creation.InviteCode.IsNullOrEmpty())
+            {
+                invitationService.Add(new CreateInvitationModel
+                {
+                    InviterId = creation.InviteCode,
+                    InviteeId = student.Id,
+                    Description = null,
+                    State = true
+                });
+            }
+
+            // Take the challenge
         }
 
         return mapper.Map<AccountModel>(account);

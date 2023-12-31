@@ -4,16 +4,16 @@ using Unibean.Repository.Repositories;
 
 namespace Unibean.Service.Validations;
 
-public class ValidType : ValidationAttribute
+public class ValidChallengeType : ValidationAttribute
 {
-    private readonly ITypeRepository typeRepo = new TypeRepository();
+    private readonly IChallengeTypeRepository challengeTypeRepo = new ChallengeTypeRepository();
 
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
-        if (typeRepo.GetById(value.ToString()) != null)
+        if (challengeTypeRepo.GetById(value.ToString()) != null)
         {
             return ValidationResult.Success;
         }
-        return new ValidationResult("Invalid activity type");
+        return new ValidationResult("Invalid challenge type");
     }
 }

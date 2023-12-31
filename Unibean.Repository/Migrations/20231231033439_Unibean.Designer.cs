@@ -11,7 +11,7 @@ using Unibean.Repository.Entities;
 namespace Unibean.Repository.Migrations
 {
     [DbContext(typeof(UnibeanDBContext))]
-    [Migration("20231227104520_Unibean")]
+    [Migration("20231231033439_Unibean")]
     partial class Unibean
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -793,6 +793,14 @@ namespace Unibean.Repository.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text")
                         .HasColumnName("description");
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("text")
+                        .HasColumnName("file_name");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("text")
+                        .HasColumnName("image");
 
                     b.Property<ulong?>("State")
                         .HasColumnType("bit(1)")

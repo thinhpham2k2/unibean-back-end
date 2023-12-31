@@ -23,6 +23,22 @@ public class StudentRepository : IStudentRepository
         return creation;
     }
 
+    public bool CheckInviteCode(string inviteCode)
+    {
+        Student student = new();
+        try
+        {
+            using var db = new UnibeanDBContext();
+            student = db.Students
+                .Where(s => s.Id.Equals(inviteCode) && s.Status.Equals(true)).FirstOrDefault();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return student != null;
+    }
+
     public void Delete(string id)
     {
         try

@@ -25,6 +25,12 @@ public class Challenge
     [Column("condition", TypeName = "decimal(38,2)")]
     public decimal? Condition { get; set; }
 
+    [Column("image", TypeName = "text")]
+    public string Image { get; set; }
+
+    [Column("file_name", TypeName = "text")]
+    public string FileName { get; set; }
+
     [Column("date_created")]
     public DateTime? DateCreated { get; set; }
 

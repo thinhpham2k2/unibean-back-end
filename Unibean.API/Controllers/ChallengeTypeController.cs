@@ -22,7 +22,7 @@ public class ChallengeTypeController : ControllerBase
     }
 
     /// <summary>
-    /// Get challenge's type list
+    /// Get challenge type list
     /// </summary>
     /// <param name="sort">Sorting criteria for the results.</param>
     /// <param name="search">Search query.</param>
@@ -50,11 +50,11 @@ public class ChallengeTypeController : ControllerBase
                 (propertySort, sort.Split(",")[1].Equals("asc"), search, page, limit);
             return Ok(result);
         }
-        return BadRequest("Invalid property of challenge's type");
+        return BadRequest("Invalid property of challenge type");
     }
 
     /// <summary>
-    /// Get challenge's type by id
+    /// Get challenge type by id
     /// </summary>
     [HttpGet("{id}")]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
@@ -75,7 +75,7 @@ public class ChallengeTypeController : ControllerBase
     }
 
     /// <summary>
-    /// Create challenge's type
+    /// Create challenge type
     /// </summary>
     [HttpPost]
     [Authorize(Roles = "Admin")]
@@ -101,7 +101,7 @@ public class ChallengeTypeController : ControllerBase
     }
 
     /// <summary>
-    /// Update challenge's type
+    /// Update challenge type
     /// </summary>
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin")]
@@ -127,7 +127,7 @@ public class ChallengeTypeController : ControllerBase
     }
 
     /// <summary>
-    /// Delete challenge's type
+    /// Delete challenge type
     /// </summary>
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin")]

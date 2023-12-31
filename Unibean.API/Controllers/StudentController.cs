@@ -24,7 +24,7 @@ public class StudentController : ControllerBase
     /// <summary>
     /// Get student list
     /// </summary>
-    /// <param name="levelIds">Filter by city Id.</param>
+    /// <param name="levelIds">Filter by level Id.</param>
     /// <param name="genderIds">Filter by gender Id.</param>
     /// <param name="majorIds">Filter by major Id.</param>
     /// <param name="campusIds">Filter by campus Id.</param>

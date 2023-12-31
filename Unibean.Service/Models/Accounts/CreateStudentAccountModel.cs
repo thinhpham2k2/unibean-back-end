@@ -46,6 +46,9 @@ public class CreateStudentAccountModel
 
     public string Code { get; set; }
 
+    [ValidInviteCode]
+    public string InviteCode { get; set; }
+
     [ValidEmail]
     [EmailAddress]
     [Required(ErrorMessage = "Email is required")]

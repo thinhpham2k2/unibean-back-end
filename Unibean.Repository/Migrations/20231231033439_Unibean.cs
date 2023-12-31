@@ -389,6 +389,10 @@ namespace Unibean.Repository.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     amount = table.Column<decimal>(type: "decimal(38,2)", nullable: true),
                     condition = table.Column<decimal>(type: "decimal(38,2)", nullable: true),
+                    image = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    file_name = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     date_updated = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     description = table.Column<string>(type: "text", nullable: true)

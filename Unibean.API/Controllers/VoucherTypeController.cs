@@ -22,7 +22,7 @@ public class VoucherTypeController : ControllerBase
     }
 
     /// <summary>
-    /// Get voucher's type list
+    /// Get voucher type list
     /// </summary>
     /// <param name="sort">Sorting criteria for the results.</param>
     /// <param name="search">Search query.</param>
@@ -50,11 +50,11 @@ public class VoucherTypeController : ControllerBase
                 (propertySort, sort.Split(",")[1].Equals("asc"), search, page, limit);
             return Ok(result);
         }
-        return BadRequest("Invalid property of voucher's type");
+        return BadRequest("Invalid property of voucher type");
     }
 
     /// <summary>
-    /// Get voucher's type by id
+    /// Get voucher type by id
     /// </summary>
     [HttpGet("{id}")]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
@@ -75,7 +75,7 @@ public class VoucherTypeController : ControllerBase
     }
 
     /// <summary>
-    /// Create voucher's type
+    /// Create voucher type
     /// </summary>
     [HttpPost]
     [Authorize(Roles = "Admin")]
@@ -101,7 +101,7 @@ public class VoucherTypeController : ControllerBase
     }
 
     /// <summary>
-    /// Update voucher's type
+    /// Update voucher type
     /// </summary>
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin")]
@@ -127,7 +127,7 @@ public class VoucherTypeController : ControllerBase
     }
 
     /// <summary>
-    /// Delete voucher's type
+    /// Delete voucher type
     /// </summary>
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin")]

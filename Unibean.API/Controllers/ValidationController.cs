@@ -25,6 +25,19 @@ public class ValidationController : ControllerBase
     }
 
     /// <summary>
+    /// Invite code validation
+    /// </summary>
+    [AllowAnonymous]
+    [HttpPost("invite-code")]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    public IActionResult InviteCodeValidation([FromBody] InviteCodeModel inviteCode)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+        return Ok(inviteCode.InviteCode + " is valid");
+    }
+
+    /// <summary>
     /// Phone validation
     /// </summary>
     [AllowAnonymous]

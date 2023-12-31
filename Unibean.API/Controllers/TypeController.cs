@@ -22,7 +22,7 @@ public class TypeController : ControllerBase
     }
 
     /// <summary>
-    /// Get activity's type list
+    /// Get activity type list
     /// </summary>
     /// <param name="sort">Sorting criteria for the results.</param>
     /// <param name="search">Search query.</param>
@@ -50,11 +50,11 @@ public class TypeController : ControllerBase
                 (propertySort, sort.Split(",")[1].Equals("asc"), search, page, limit);
             return Ok(result);
         }
-        return BadRequest("Invalid property of activity's type");
+        return BadRequest("Invalid property of activity type");
     }
 
     /// <summary>
-    /// Get activity's type by id
+    /// Get activity type by id
     /// </summary>
     [HttpGet("{id}")]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
@@ -75,7 +75,7 @@ public class TypeController : ControllerBase
     }
 
     /// <summary>
-    /// Create activity's type
+    /// Create activity type
     /// </summary>
     [HttpPost]
     [Authorize(Roles = "Admin")]
@@ -101,7 +101,7 @@ public class TypeController : ControllerBase
     }
 
     /// <summary>
-    /// Update activity's type
+    /// Update activity type
     /// </summary>
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin")]
@@ -127,7 +127,7 @@ public class TypeController : ControllerBase
     }
 
     /// <summary>
-    /// Delete activity's type
+    /// Delete activity type
     /// </summary>
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin")]

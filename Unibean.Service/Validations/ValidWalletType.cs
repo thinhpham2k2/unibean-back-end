@@ -14,6 +14,6 @@ public class ValidWalletType : ValidationAttribute
         {
             return ValidationResult.Success;
         }
-        return new ValidationResult("Invalid wallet's type");
+        return new ValidationResult("Invalid wallet type");
     }
 }
