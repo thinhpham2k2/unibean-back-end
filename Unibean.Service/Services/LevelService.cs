@@ -91,11 +91,6 @@ public class LevelService : ILevelService
         throw new InvalidParameterException("Not found level");
     }
 
-    public LevelModel GetLevelByName(string levelName)
-    {
-        return mapper.Map<LevelModel>(levelRepository.GetLevelByName(levelName));
-    }
-
     public async Task<LevelModel> Update(string id, UpdateLevelModel update)
     {
         Level entity = levelRepository.GetById(id);

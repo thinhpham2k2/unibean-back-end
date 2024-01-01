@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
+using Unibean.Service.Models.Brands;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Students;
+using Unibean.Service.Services;
 using Unibean.Service.Services.Interfaces;
 
 namespace Unibean.API.Controllers;
@@ -61,5 +63,26 @@ public class StudentController : ControllerBase
             return Ok(result);
         }
         return BadRequest("Invalid property of student");
+    }
+
+    /// <summary>
+    /// Get student by id
+    /// </summary>
+    [HttpGet("{id}")]
+    [Authorize(Roles = "Admin, Brand, Store, Student")]
+    [ProducesResponseType(typeof(StudentExtraModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    public IActionResult GetById(string id)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            return Ok(studentService.GetById(id));
+        }
+        catch (InvalidParameterException e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 }

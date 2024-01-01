@@ -32,6 +32,7 @@ public class ChallengeService : IChallengeService
             .ReverseMap();
             cfg.CreateMap<Challenge, UpdateChallengeModel>()
             .ReverseMap()
+            .ForMember(t => t.Type, opt => opt.MapFrom(src => (string)null))
             .ForMember(t => t.Image, opt => opt.Ignore())
             .ForMember(t => t.DateUpdated, opt => opt.MapFrom(src => DateTime.Now));
             cfg.CreateMap<Challenge, CreateChallengeModel>()

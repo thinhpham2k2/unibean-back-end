@@ -14,7 +14,5 @@ public interface ILevelRepository
 
     Level GetById(string id);
 
-    Level GetLevelByName(string levelName);
-
     Level Update(Level update);
 }

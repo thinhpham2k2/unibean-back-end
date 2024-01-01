@@ -5,8 +5,6 @@ namespace Unibean.Repository.Repositories.Interfaces;
 
 public interface IWalletTypeRepository
 {
-    WalletType GetWalletTypeByName(string typeName);
-
     WalletType Add(WalletType creation);
 
     void Delete(string id);

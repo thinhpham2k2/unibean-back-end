@@ -7,6 +7,7 @@ namespace Unibean.Service.Models.Challenges;
 public class UpdateChallengeModel
 {
     [ValidChallengeType]
+    [Required(ErrorMessage = "Challenge type is required")]
     public string TypeId { get; set; }
 
     [Required(ErrorMessage = "Challenge's name is required")]

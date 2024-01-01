@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
-using Google.Apis.Util;
 using Microsoft.IdentityModel.Tokens;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Service.Models.Accounts;
 using Unibean.Service.Models.Invitations;
-using Unibean.Service.Models.Wallets;
 using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Utilities.FireBase;
 using BCryptNet = BCrypt.Net.BCrypt;
@@ -32,23 +30,17 @@ public class AccountService : IAccountService
 
     private readonly IStudentRepository studentRepository;
 
-    private readonly ILevelService levelService;
-
-    private readonly IWalletService walletService;
-
-    private readonly IWalletTypeService walletTypeService;
-
     private readonly IInvitationService invitationService;
+
+    private readonly IStudentChallengeService studentChallengeService;
 
     public AccountService(IAccountRepository accountRepository,
         IFireBaseService fireBaseService,
         IRoleService roleService,
         IBrandRepository brandRepository,
         IStudentRepository studentRepository,
-        ILevelService levelService,
-        IWalletService walletService,
-        IWalletTypeService walletTypeService,
-        IInvitationService invitationService)
+        IInvitationService invitationService,
+        IStudentChallengeService studentChallengeService)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -136,10 +128,8 @@ public class AccountService : IAccountService
         this.roleService = roleService;
         this.brandRepository = brandRepository;
         this.studentRepository = studentRepository;
-        this.levelService = levelService;
-        this.walletService = walletService;
-        this.walletTypeService = walletTypeService;
         this.invitationService = invitationService;
+        this.studentChallengeService = studentChallengeService;
     }
 
     public async Task<AccountModel> AddBrand(CreateBrandAccountModel creation)
@@ -170,28 +160,7 @@ public class AccountService : IAccountService
             brand.CoverFileName = f.FileName;
         }
 
-        brand = brandRepository.Add(brand);
-
-        // Create wallet
-        if (brand != null)
-        {
-            walletService.Add(new CreateWalletModel
-            {
-                BrandId = brand.Id,
-                TypeId = walletTypeService.GetWalletTypeByName("Green bean")?.Id,
-                Balance = 0,
-                Description = null,
-                State = true
-            });
-            walletService.Add(new CreateWalletModel
-            {
-                BrandId = brand.Id,
-                TypeId = walletTypeService.GetWalletTypeByName("Red bean")?.Id,
-                Balance = 0,
-                Description = null,
-                State = true
-            });
-        }
+        brandRepository.Add(brand);
 
         return mapper.Map<AccountModel>(account);
     }
@@ -211,9 +180,6 @@ public class AccountService : IAccountService
         Student student = mapper.Map<Student>(creation);
         // Set account
         student.AccountId = account.Id;
-
-        // Set level
-        student.LevelId = levelService.GetLevelByName("Iron")?.Id;
 
         // Upload the student card front image
         if (creation.StudentCardFront != null && creation.StudentCardFront.Length > 0)
@@ -235,26 +201,8 @@ public class AccountService : IAccountService
 
         if (student != null)
         {
-            // Create wallet
-            walletService.Add(new CreateWalletModel
-            {
-                StudentId = student.Id,
-                TypeId = walletTypeService.GetWalletTypeByName("Green bean")?.Id,
-                Balance = 0,
-                Description = null,
-                State = true
-            });
-            walletService.Add(new CreateWalletModel
-            {
-                StudentId = student.Id,
-                TypeId = walletTypeService.GetWalletTypeByName("Red bean")?.Id,
-                Balance = 0,
-                Description = null,
-                State = true
-            });
-
             // Set invitation
-            if (creation.InviteCode.IsNullOrEmpty())
+            if (!creation.InviteCode.IsNullOrEmpty())
             {
                 invitationService.Add(new CreateInvitationModel
                 {
@@ -263,9 +211,20 @@ public class AccountService : IAccountService
                     Description = null,
                     State = true
                 });
-            }
 
-            // Take the challenge
+                // Take the challenge
+                studentChallengeService.Update(studentRepository
+                    .GetById(student.Id).StudentChallenges
+                    .Where(s => s.Status.Equals(true) 
+                    && s.IsCompleted.Equals(false) 
+                    && s.Challenge.Type.TypeName.Equals("Welcome")), 1);
+
+                studentChallengeService.Update(studentRepository
+                    .GetById(creation.InviteCode).StudentChallenges
+                    .Where(s => s.Status.Equals(true) 
+                    && s.IsCompleted.Equals(false) 
+                    && s.Challenge.Type.TypeName.Equals("Spread")), 1);
+            }
         }
 
         return mapper.Map<AccountModel>(account);

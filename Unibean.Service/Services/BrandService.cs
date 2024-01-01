@@ -153,29 +153,7 @@ public class BrandService : IBrandService
 
     public BrandModel AddGoogle(CreateBrandGoogleModel creation)
     {
-        Brand entity = brandRepository.Add(mapper.Map<Brand>(creation));
-
-        // Create wallet
-        if (entity != null)
-        {
-            walletService.Add(new CreateWalletModel
-            {
-                BrandId = entity.Id,
-                TypeId = walletTypeService.GetWalletTypeByName("Green bean")?.Id,
-                Balance = 0,
-                Description = null,
-                State = true
-            });
-            walletService.Add(new CreateWalletModel
-            {
-                BrandId = entity.Id,
-                TypeId = walletTypeService.GetWalletTypeByName("Red bean")?.Id,
-                Balance = 0,
-                Description = null,
-                State = true
-            });
-        }
-        return mapper.Map<BrandModel>(entity);
+        return mapper.Map<BrandModel>(brandRepository.Add(mapper.Map<Brand>(creation)));
     }
 
     public void Delete(string id)
@@ -237,8 +215,8 @@ public class BrandService : IBrandService
         if (entity != null)
         {
             return request.Role.Equals("Student") ? mapper.Map<Brand, BrandExtraModel>(entity, opt 
-                => opt.AfterMap((src, dest) => dest.IsFavor = src.Wishlists.Where(w 
-                => w.StudentId.Equals(request.UserId)).Count() > 0)) 
+                => opt.AfterMap((src, dest) => dest.IsFavor = src.Wishlists.Where(w
+                => w.StudentId.Equals(request.UserId)).Any())) 
                 : mapper.Map<BrandExtraModel>(entity);
         }
         throw new InvalidParameterException("Not found brand");

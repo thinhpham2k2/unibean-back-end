@@ -89,10 +89,10 @@ public class ChallengeController : ControllerBase
 
         try
         {
-            var type = await challengeService.Add(creation);
-            if (type != null)
+            var challenge = await challengeService.Add(creation);
+            if (challenge != null)
             {
-                return StatusCode(StatusCodes.Status201Created, type);
+                return StatusCode(StatusCodes.Status201Created, challenge);
             }
             return NotFound("Create fail");
         }
@@ -115,10 +115,10 @@ public class ChallengeController : ControllerBase
 
         try
         {
-            var type = await challengeService.Update(id, update);
-            if (type != null)
+            var challenge = await challengeService.Update(id, update);
+            if (challenge != null)
             {
-                return StatusCode(StatusCodes.Status200OK, type);
+                return StatusCode(StatusCodes.Status200OK, challenge);
             }
             return NotFound("Update fail");
         }

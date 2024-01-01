@@ -19,6 +19,7 @@ public class StudentModel
     public string FileNameBack { get; set; }
     public string FullName { get; set; }
     public string Code { get; set; }
+    public string InviteCode { get; set; }
     public string Email { get; set; }
     public DateOnly? DateOfBirth { get; set; }
     public string Phone { get; set; }

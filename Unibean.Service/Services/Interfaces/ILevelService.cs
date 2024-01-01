@@ -14,7 +14,5 @@ public interface ILevelService
 
     LevelModel GetById(string id);
 
-    LevelModel GetLevelByName(string levelName);
-
     Task<LevelModel> Update(string id, UpdateLevelModel update);
 }

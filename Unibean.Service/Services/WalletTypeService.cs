@@ -91,11 +91,6 @@ public class WalletTypeService : IWalletTypeService
         throw new InvalidParameterException("Not found wallet type");
     }
 
-    public WalletTypeModel GetWalletTypeByName(string typeName)
-    {
-        return mapper.Map<WalletTypeModel>(walletTypeRepository.GetWalletTypeByName(typeName));
-    }
-
     public async Task<WalletTypeModel> Update(string id, UpdateWalletTypeModel update)
     {
         WalletType entity = walletTypeRepository.GetById(id);

@@ -5,8 +5,6 @@ namespace Unibean.Service.Services.Interfaces;
 
 public interface IWalletTypeService
 {
-    WalletTypeModel GetWalletTypeByName(string typeName);
-
     Task<WalletTypeModel> Add(CreateWalletTypeModel creation);
 
     void Delete(string id);

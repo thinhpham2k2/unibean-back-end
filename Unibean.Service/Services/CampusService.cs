@@ -33,6 +33,8 @@ public class CampusService : ICampusService
             .ReverseMap();
             cfg.CreateMap<Campus, UpdateCampusModel>()
             .ReverseMap()
+            .ForMember(t => t.University, opt => opt.MapFrom(src => (string)null))
+            .ForMember(t => t.Area, opt => opt.MapFrom(src => (string)null))
             .ForMember(t => t.Image, opt => opt.Ignore())
             .ForMember(t => t.DateUpdated, opt => opt.MapFrom(src => DateTime.Now));
             cfg.CreateMap<Campus, CreateCampusModel>()

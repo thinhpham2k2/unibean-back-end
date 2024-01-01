@@ -14,6 +14,29 @@ public class ChallengeRepository : IChallengeRepository
         {
             using var db = new UnibeanDBContext();
             creation = db.Challenges.Add(creation).Entity;
+
+            if (creation != null)
+            {
+                // Create student challenge
+                foreach (var student in db.Students.Where(s => s.Status.Equals(true)))
+                {
+                    db.StudentChallenges.Add(new StudentChallenge
+                    {
+                        Id = Ulid.NewUlid().ToString(),
+                        ChallengeId = creation.Id,
+                        StudentId = student.Id,
+                        Amount = creation.Amount,
+                        Current = 0,
+                        Condition = creation.Condition,
+                        IsCompleted = false,
+                        DateCreated = creation.DateCreated,
+                        DateUpdated = creation.DateUpdated,
+                        Description = creation.Description,
+                        State = true,
+                        Status = true,
+                    });
+                }
+            }
             db.SaveChanges();
         }
         catch (Exception ex)

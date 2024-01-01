@@ -91,24 +91,6 @@ public class LevelRepository : ILevelRepository
         return level;
     }
 
-    public Level GetLevelByName(string levelName)
-    {
-        Level level = new();
-        try
-        {
-            using var db = new UnibeanDBContext();
-            level = db.Levels
-            .Where(l => l.LevelName.Equals(levelName)
-            && l.Status.Equals(true))
-            .FirstOrDefault();
-        }
-        catch (Exception ex)
-        {
-            throw new Exception(ex.Message);
-        }
-        return level;
-    }
-
     public Level Update(Level update)
     {
         try

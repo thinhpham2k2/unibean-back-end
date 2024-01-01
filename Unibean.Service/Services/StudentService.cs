@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
+using Microsoft.IdentityModel.Tokens;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Service.Models.Exceptions;
+using Unibean.Service.Models.Invitations;
 using Unibean.Service.Models.Students;
-using Unibean.Service.Models.Wallets;
 using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Utilities.FireBase;
 
@@ -20,20 +21,17 @@ public class StudentService : IStudentService
 
     private readonly IFireBaseService fireBaseService;
 
-    private readonly IWalletService walletService;
-
-    private readonly IWalletTypeService walletTypeService;
-
-    private readonly ILevelService levelService;
-
     private readonly IAccountRepository accountRepository;
 
+    private readonly IInvitationService invitationService;
+
+    private readonly IStudentChallengeService studentChallengeService;
+
     public StudentService(IStudentRepository studentRepository, 
-        IFireBaseService fireBaseService, 
-        IWalletService walletService,
-        IWalletTypeService walletTypeService,
-        ILevelService levelService,
-        IAccountRepository accountRepository)
+        IFireBaseService fireBaseService,
+        IAccountRepository accountRepository,
+        IInvitationService invitationService,
+        IStudentChallengeService studentChallengeService)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -43,6 +41,7 @@ public class StudentService : IStudentService
             .ForMember(s => s.GenderName, opt => opt.MapFrom(src => src.Gender.GenderName))
             .ForMember(s => s.MajorName, opt => opt.MapFrom(src => src.Major.MajorName))
             .ForMember(s => s.CampusName, opt => opt.MapFrom(src => src.Campus.CampusName))
+            .ForMember(s => s.InviteCode, opt => opt.MapFrom(src => src.Id))
             .ForMember(s => s.UserName, opt => opt.MapFrom(src => src.Account.UserName))
             .ForMember(s => s.Email, opt => opt.MapFrom(src => src.Account.Email))
             .ForMember(s => s.Phone, opt => opt.MapFrom(src => src.Account.Phone))
@@ -50,10 +49,27 @@ public class StudentService : IStudentService
             .ForMember(s => s.ImageName, opt => opt.MapFrom(src => src.Account.FileName))
             .ForMember(s => s.DateVerified, opt => opt.MapFrom(src => src.Account.DateVerified))
             .ForMember(s => s.IsVerify, opt => opt.MapFrom(src => src.Account.IsVerify))
-            .ForMember(s => s.GreenWallet, opt => opt.MapFrom(src=> src.Wallets.Where(w 
-                => w.Type.TypeName.Equals("Green bean")).FirstOrDefault().Balance))
-            .ForMember(s => s.RedWallet, opt => opt.MapFrom(src => src.Wallets.Where(w 
-                => w.Type.TypeName.Equals("Red bean")).FirstOrDefault().Balance))
+            .ForMember(s => s.GreenWallet, opt => opt.MapFrom(src=> src.Wallets.FirstOrDefault().Balance))
+            .ForMember(s => s.RedWallet, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Balance))
+            .ReverseMap();
+            cfg.CreateMap<Student, StudentExtraModel>()
+            .ForMember(s => s.LevelName, opt => opt.MapFrom(src => src.Level.LevelName))
+            .ForMember(s => s.GenderName, opt => opt.MapFrom(src => src.Gender.GenderName))
+            .ForMember(s => s.MajorName, opt => opt.MapFrom(src => src.Major.MajorName))
+            .ForMember(s => s.CampusName, opt => opt.MapFrom(src => src.Campus.CampusName))
+            .ForMember(s => s.InviteCode, opt => opt.MapFrom(src => src.Id))
+            .ForMember(s => s.UserName, opt => opt.MapFrom(src => src.Account.UserName))
+            .ForMember(s => s.Email, opt => opt.MapFrom(src => src.Account.Email))
+            .ForMember(s => s.Phone, opt => opt.MapFrom(src => src.Account.Phone))
+            .ForMember(s => s.Avatar, opt => opt.MapFrom(src => src.Account.Avatar))
+            .ForMember(s => s.ImageName, opt => opt.MapFrom(src => src.Account.FileName))
+            .ForMember(s => s.DateVerified, opt => opt.MapFrom(src => src.Account.DateVerified))
+            .ForMember(s => s.IsVerify, opt => opt.MapFrom(src => src.Account.IsVerify))
+            .ForMember(s => s.GreenWallet, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Balance))
+            .ForMember(s => s.RedWallet, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Balance))
+            .ForMember(s => s.Following, opt => opt.MapFrom(src => src.Wishlists.Count))
+            .ForMember(s => s.Inviter, opt => opt.MapFrom(src => src.Invitees.FirstOrDefault().Invitee.FullName))
+            .ForMember(s => s.Invitee, opt => opt.MapFrom(src => src.Inviters.Count))
             .ReverseMap();
             cfg.CreateMap<PagedResultModel<Student>, PagedResultModel<StudentModel>>()
             .ReverseMap();
@@ -69,10 +85,9 @@ public class StudentService : IStudentService
         mapper = new Mapper(config);
         this.studentRepository = studentRepository;
         this.fireBaseService = fireBaseService;
-        this.walletService = walletService;
-        this.walletTypeService = walletTypeService;
-        this.levelService = levelService;
         this.accountRepository = accountRepository;
+        this.invitationService = invitationService;
+        this.studentChallengeService = studentChallengeService;
     }
 
     public async Task<StudentModel> AddGoogle(CreateStudentGoogleModel creation)
@@ -107,31 +122,36 @@ public class StudentService : IStudentService
             entity.FileNameBack = f.FileName;
         }
 
-        // Set level
-        entity.LevelId = levelService.GetLevelByName("Iron")?.Id;
-
         entity = studentRepository.Add(entity);
 
-        // Create wallet
         if (entity != null)
         {
-            walletService.Add(new CreateWalletModel
+            // Set invitation
+            if (!creation.InviteCode.IsNullOrEmpty())
             {
-                StudentId = entity.Id,
-                TypeId = walletTypeService.GetWalletTypeByName("Green bean")?.Id,
-                Balance = 0,
-                Description = null,
-                State = true
-            });
-            walletService.Add(new CreateWalletModel
-            {
-                StudentId = entity.Id,
-                TypeId = walletTypeService.GetWalletTypeByName("Red bean")?.Id,
-                Balance = 0,
-                Description = null,
-                State = true
-            });
+                invitationService.Add(new CreateInvitationModel
+                {
+                    InviterId = creation.InviteCode,
+                    InviteeId = entity.Id,
+                    Description = null,
+                    State = true
+                });
+
+                // Take the challenge
+                studentChallengeService.Update(studentRepository
+                    .GetById(entity.Id).StudentChallenges
+                    .Where(s => s.Status.Equals(true)
+                    && s.IsCompleted.Equals(false)
+                    && s.Challenge.Type.TypeName.Equals("Welcome")), 1);
+
+                studentChallengeService.Update(studentRepository
+                    .GetById(creation.InviteCode).StudentChallenges
+                    .Where(s => s.Status.Equals(true)
+                    && s.IsCompleted.Equals(false)
+                    && s.Challenge.Type.TypeName.Equals("Spread")), 1);
+            }
         }
+
         return mapper.Map<StudentModel>(entity);
     }
 
@@ -140,5 +160,15 @@ public class StudentService : IStudentService
     {
         return mapper.Map<PagedResultModel<StudentModel>>
             (studentRepository.GetAll(levelIds, genderIds, majorIds, campusIds, isVerify, propertySort, isAsc, search, page, limit));
+    }
+
+    public StudentExtraModel GetById(string id)
+    {
+        Student entity = studentRepository.GetById(id);
+        if (entity != null)
+        {
+            return mapper.Map<StudentExtraModel>(entity);
+        }
+        throw new InvalidParameterException("Not found student");
     }
 }

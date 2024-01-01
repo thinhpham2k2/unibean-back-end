@@ -14,6 +14,26 @@ public class BrandRepository : IBrandRepository
         {
             using var db = new UnibeanDBContext();
             creation = db.Brands.Add(creation).Entity;
+
+            if(creation != null)
+            {
+                // Create wallet
+                foreach (var type in db.WalletTypes.Where(s => s.Status.Equals(true)))
+                {
+                    db.Wallets.Add(new Wallet
+                    {
+                        Id = Ulid.NewUlid().ToString(),
+                        BrandId = creation.Id,
+                        TypeId = type.Id,
+                        Balance = 0,
+                        DateCreated = creation.DateCreated,
+                        DateUpdated = creation.DateUpdated,
+                        Description = type.Description,
+                        State = true,
+                        Status = true,
+                    });
+                }
+            }
             db.SaveChanges();
         }
         catch (Exception ex)
