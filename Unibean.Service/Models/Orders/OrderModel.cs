@@ -10,6 +10,6 @@ public class OrderModel
     public decimal? Amount { get; set; }
     public DateTime? DateCreated { get; set; }
     public string Description { get; set; }
-    public bool? States { get; set; }
+    public bool? State { get; set; }
     public bool? Status { get; set; }
 }

@@ -21,7 +21,9 @@ public class StudentChallengeService : IStudentChallengeService
         {
             cfg.CreateMap<StudentChallenge, StudentChallengeModel>()
             .ForMember(c => c.StudentName, opt => opt.MapFrom(src => src.Student.FullName))
+            .ForMember(c => c.ChallengeType, opt => opt.MapFrom(src => src.Challenge.Type.TypeName))
             .ForMember(c => c.ChallengeName, opt => opt.MapFrom(src => src.Challenge.ChallengeName))
+            .ForMember(c => c.IsClaimed, opt => opt.MapFrom(src => src.ChallengeTransactions.Any()))
             .ReverseMap();
             cfg.CreateMap<PagedResultModel<StudentChallenge>, PagedResultModel<StudentChallengeModel>>()
             .ReverseMap();

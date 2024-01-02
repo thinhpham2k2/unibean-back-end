@@ -168,7 +168,7 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("decimal(38,2)")
                         .HasColumnName("rate");
 
-                    b.Property<ulong?>("States")
+                    b.Property<ulong?>("State")
                         .HasColumnType("bit(1)")
                         .HasColumnName("state");
 
@@ -748,7 +748,7 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("text")
                         .HasColumnName("image");
 
-                    b.Property<ulong?>("States")
+                    b.Property<ulong?>("State")
                         .HasColumnType("bit(1)")
                         .HasColumnName("state");
 
@@ -832,6 +832,10 @@ namespace Unibean.Repository.Migrations
                     b.Property<string>("ChallengeId")
                         .HasColumnType("char(26)")
                         .HasColumnName("challenge_id");
+
+                    b.Property<DateTime?>("DateCreated")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("date_created");
 
                     b.Property<string>("Description")
                         .HasColumnType("text")
@@ -1070,7 +1074,7 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("char(26)")
                         .HasColumnName("product_id");
 
-                    b.Property<ulong?>("States")
+                    b.Property<ulong?>("State")
                         .HasColumnType("bit(1)")
                         .HasColumnName("state");
 
@@ -1238,7 +1242,7 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("text")
                         .HasColumnName("description");
 
-                    b.Property<ulong?>("States")
+                    b.Property<ulong?>("State")
                         .HasColumnType("bit(1)")
                         .HasColumnName("state");
 
@@ -1289,7 +1293,7 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("int")
                         .HasColumnName("quantity");
 
-                    b.Property<ulong?>("States")
+                    b.Property<ulong?>("State")
                         .HasColumnType("bit(1)")
                         .HasColumnName("state");
 
@@ -1367,7 +1371,7 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("decimal(38,2)")
                         .HasColumnName("rate");
 
-                    b.Property<ulong?>("States")
+                    b.Property<ulong?>("State")
                         .HasColumnType("bit(1)")
                         .HasColumnName("state");
 
@@ -1460,7 +1464,7 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("decimal(38,2)")
                         .HasColumnName("rate");
 
-                    b.Property<ulong?>("States")
+                    b.Property<ulong?>("State")
                         .HasColumnType("bit(1)")
                         .HasColumnName("state");
 
@@ -1520,7 +1524,7 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("int")
                         .HasColumnName("quantity");
 
-                    b.Property<ulong?>("States")
+                    b.Property<ulong?>("State")
                         .HasColumnType("bit(1)")
                         .HasColumnName("state");
 
@@ -1571,7 +1575,7 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("text")
                         .HasColumnName("description");
 
-                    b.Property<ulong?>("States")
+                    b.Property<ulong?>("State")
                         .HasColumnType("bit(1)")
                         .HasColumnName("state");
 
@@ -1610,7 +1614,7 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("char(26)")
                         .HasColumnName("request_id");
 
-                    b.Property<ulong?>("States")
+                    b.Property<ulong?>("State")
                         .HasColumnType("bit(1)")
                         .HasColumnName("state");
 
@@ -2389,7 +2393,7 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("decimal(38,2)")
                         .HasColumnName("rate");
 
-                    b.Property<ulong?>("States")
+                    b.Property<ulong?>("State")
                         .HasColumnType("bit(1)")
                         .HasColumnName("state");
 
@@ -2468,7 +2472,7 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("text")
                         .HasColumnName("description");
 
-                    b.Property<ulong?>("States")
+                    b.Property<ulong?>("State")
                         .HasColumnType("bit(1)")
                         .HasColumnName("state");
 

@@ -1,7 +1,6 @@
-﻿using Unibean.Service.Models.Activity;
-using Unibean.Service.Models.Orders;
-using Unibean.Service.Models.Payments;
+﻿using Unibean.Service.Models.Orders;
 using Unibean.Service.Models.StudentChallenges;
+using Unibean.Service.Models.Transactions;
 using Unibean.Service.Models.VoucherItems;
 
 namespace Unibean.Service.Models.Students;
@@ -44,9 +43,9 @@ public class StudentExtraModel
     public decimal? RedWallet { get; set; }
     public decimal? Following { get; set; }
     public string Inviter { get; set; }
-    public decimal? Invitee { get; set; }
+    public decimal? Invitee { get; set; }   
     public List<VoucherItemModel> VoucherItems { get; set; }
-    //public List<ActivityModel> Activities { get; set; } // All transaction
+    public List<TransactionModel> Transactions { get; set; } // All transaction
     public List<OrderModel> Orders { get; set; }
     public List<StudentChallengeModel> Challenges { get; set; }
 }

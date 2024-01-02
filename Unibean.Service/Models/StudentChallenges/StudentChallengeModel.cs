@@ -4,13 +4,16 @@ public class StudentChallengeModel
 {
     public string Id { get; set; }
     public string ChallengeId { get; set; }
+    public string ChallengeType { get; set; }
     public string ChallengeName { get; set; }
+    public string ChallengeImage{ get; set; }
     public string StudentId { get; set; }
     public string StudentName { get; set; }
     public decimal? Amount { get; set; }
     public decimal? Current { get; set; }
     public decimal? Condition { get; set; }
     public bool? IsCompleted { get; set; }
+    public bool? IsClaimed { get; set; }
     public DateTime? DateCreated { get; set; }
     public DateTime? DateUpdated { get; set; }
     public string Description { get; set; }

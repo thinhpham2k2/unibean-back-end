@@ -5,7 +5,10 @@ using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Invitations;
+using Unibean.Service.Models.Orders;
+using Unibean.Service.Models.StudentChallenges;
 using Unibean.Service.Models.Students;
+using Unibean.Service.Models.Transactions;
 using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Utilities.FireBase;
 
@@ -27,7 +30,7 @@ public class StudentService : IStudentService
 
     private readonly IStudentChallengeService studentChallengeService;
 
-    public StudentService(IStudentRepository studentRepository, 
+    public StudentService(IStudentRepository studentRepository,
         IFireBaseService fireBaseService,
         IAccountRepository accountRepository,
         IInvitationService invitationService,
@@ -49,7 +52,7 @@ public class StudentService : IStudentService
             .ForMember(s => s.ImageName, opt => opt.MapFrom(src => src.Account.FileName))
             .ForMember(s => s.DateVerified, opt => opt.MapFrom(src => src.Account.DateVerified))
             .ForMember(s => s.IsVerify, opt => opt.MapFrom(src => src.Account.IsVerify))
-            .ForMember(s => s.GreenWallet, opt => opt.MapFrom(src=> src.Wallets.FirstOrDefault().Balance))
+            .ForMember(s => s.GreenWallet, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Balance))
             .ForMember(s => s.RedWallet, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Balance))
             .ReverseMap();
             cfg.CreateMap<Student, StudentExtraModel>()
@@ -68,8 +71,62 @@ public class StudentService : IStudentService
             .ForMember(s => s.GreenWallet, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Balance))
             .ForMember(s => s.RedWallet, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Balance))
             .ForMember(s => s.Following, opt => opt.MapFrom(src => src.Wishlists.Count))
-            .ForMember(s => s.Inviter, opt => opt.MapFrom(src => src.Invitees.FirstOrDefault().Invitee.FullName))
+            .ForMember(s => s.Inviter, opt => opt.MapFrom(src => src.Invitees.FirstOrDefault().Inviter.FullName))
             .ForMember(s => s.Invitee, opt => opt.MapFrom(src => src.Inviters.Count))
+            .ForMember(s => s.Challenges, opt => opt.MapFrom(src => src.StudentChallenges))
+            .ForMember(s => s.VoucherItems, opt => opt.Ignore())
+            .ForMember(s => s.Transactions, opt => opt.MapFrom((src, dest) =>
+            {
+                return new List<object>()
+                .Concat(src.Wallets.SelectMany(wallet => wallet.OrderTransactions))
+                .Concat(src.Wallets.SelectMany(wallet => wallet.ActivityTransactions))
+                .Concat(src.Wallets.SelectMany(wallet => wallet.ChallengeTransactions))
+                .Concat(src.Wallets.SelectMany(wallet => wallet.PaymentTransactions));
+            }))
+            .AfterMap((src, dest) =>
+            {
+                dest.Transactions = dest.Transactions.OrderByDescending(t => t.DateCreated).ToList();
+            })
+            .ReverseMap();
+            cfg.CreateMap<OrderTransaction, TransactionModel>()
+            .ForMember(t => t.Name, opt => opt.MapFrom(src => "Tạo đơn hàng (" + src.Order.Amount + " đậu)"))
+            .ForMember(t => t.RequestId, opt => opt.MapFrom(src => src.OrderId))
+            .ForMember(t => t.WalletType, opt => opt.MapFrom(src => src.Wallet.Type.TypeName))
+            .ForMember(t => t.WalletImage, opt => opt.MapFrom(src => src.Wallet.Type.Image))
+            .ForMember(t => t.TypeName, opt => opt.MapFrom(src => "Đổi quà"))
+            .ForMember(t => t.DateCreated, opt => opt.MapFrom(src => src.Order.DateCreated))
+            .ReverseMap();
+            cfg.CreateMap<ActivityTransaction, TransactionModel>()
+            .ForMember(t => t.Name, opt => opt.MapFrom(src => src.Activity.VoucherItem.Voucher.VoucherName))
+            .ForMember(t => t.RequestId, opt => opt.MapFrom(src => src.ActivityId))
+            .ForMember(t => t.WalletType, opt => opt.MapFrom(src => src.Wallet.Type.TypeName))
+            .ForMember(t => t.WalletImage, opt => opt.MapFrom(src => src.Wallet.Type.Image))
+            .ForMember(t => t.TypeName, opt => opt.MapFrom(src => src.Activity.Type.TypeName))
+            .ForMember(t => t.DateCreated, opt => opt.MapFrom(src => src.Activity.DateCreated))
+            .ReverseMap();
+            cfg.CreateMap<ChallengeTransaction, TransactionModel>()
+            .ForMember(t => t.Name, opt => opt.MapFrom(src => src.Challenge.Challenge.ChallengeName))
+            .ForMember(t => t.RequestId, opt => opt.MapFrom(src => src.ChallengeId))
+            .ForMember(t => t.WalletType, opt => opt.MapFrom(src => src.Wallet.Type.TypeName))
+            .ForMember(t => t.WalletImage, opt => opt.MapFrom(src => src.Wallet.Type.Image))
+            .ForMember(t => t.TypeName, opt => opt.MapFrom(src => "Hoàn thành thử thách"))
+            .ReverseMap();
+            cfg.CreateMap<PaymentTransaction, TransactionModel>()
+            .ForMember(t => t.Name, opt => opt.MapFrom(src => "Nạp đậu xanh cho tài khoản"))
+            .ForMember(t => t.RequestId, opt => opt.MapFrom(src => src.PaymentId))
+            .ForMember(t => t.WalletType, opt => opt.MapFrom(src => src.Wallet.Type.TypeName))
+            .ForMember(t => t.WalletImage, opt => opt.MapFrom(src => src.Wallet.Type.Image))
+            .ForMember(t => t.TypeName, opt => opt.MapFrom(src => "Thanh toán"))
+            .ForMember(t => t.DateCreated, opt => opt.MapFrom(src => src.Payment.DateCreated))
+            .ReverseMap();
+            cfg.CreateMap<Order, OrderModel>()
+            .ReverseMap();
+            cfg.CreateMap<StudentChallenge, StudentChallengeModel>()
+            .ForMember(c => c.StudentName, opt => opt.MapFrom(src => src.Student.FullName))
+            .ForMember(c => c.ChallengeType, opt => opt.MapFrom(src => src.Challenge.Type.TypeName))
+            .ForMember(c => c.ChallengeName, opt => opt.MapFrom(src => src.Challenge.ChallengeName))
+            .ForMember(c => c.ChallengeImage, opt => opt.MapFrom(src => src.Challenge.Image))
+            .ForMember(c => c.IsClaimed, opt => opt.MapFrom(src => src.ChallengeTransactions.Any()))
             .ReverseMap();
             cfg.CreateMap<PagedResultModel<Student>, PagedResultModel<StudentModel>>()
             .ReverseMap();

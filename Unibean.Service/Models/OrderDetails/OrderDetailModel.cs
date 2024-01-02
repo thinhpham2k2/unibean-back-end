@@ -10,6 +10,6 @@ public class OrderDetailModel
     public decimal? Price { get; set; }
     public int? Quantity { get; set; }
     public decimal? Amount { get; set; }
-    public bool? States { get; set; }
+    public bool? State { get; set; }
     public bool? Status { get; set; }
 }

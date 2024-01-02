@@ -31,7 +31,7 @@ public class OrderDetail
     public decimal? Amount { get; set; }
 
     [Column("state", TypeName = "bit(1)")]
-    public bool? States { get; set; }
+    public bool? State { get; set; }
 
     [Column("status", TypeName = "bit(1)")]
     public bool? Status { get; set; }

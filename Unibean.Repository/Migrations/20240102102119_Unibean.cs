@@ -1454,6 +1454,7 @@ namespace Unibean.Repository.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     amount = table.Column<decimal>(type: "decimal(38,2)", nullable: true),
                     rate = table.Column<decimal>(type: "decimal(38,2)", nullable: true),
+                    date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     description = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     state = table.Column<ulong>(type: "bit(1)", nullable: true),
