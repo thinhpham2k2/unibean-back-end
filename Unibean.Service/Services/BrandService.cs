@@ -8,7 +8,6 @@ using Unibean.Service.Models.Campaigns;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Stores;
 using Unibean.Service.Models.Vouchers;
-using Unibean.Service.Models.Wallets;
 using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Utilities.FireBase;
 using BCryptNet = BCrypt.Net.BCrypt;

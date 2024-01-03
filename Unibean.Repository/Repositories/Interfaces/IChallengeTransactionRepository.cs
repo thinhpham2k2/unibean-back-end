@@ -1,5 +1,4 @@
 ﻿using Unibean.Repository.Entities;
-using Unibean.Repository.Paging;
 
 namespace Unibean.Repository.Repositories.Interfaces;
 
@@ -7,8 +6,8 @@ public interface IChallengeTransactionRepository
 {
     ChallengeTransaction Add(ChallengeTransaction creation);
 
-    PagedResultModel<ChallengeTransaction> GetAll
-        (List<string> walletIds, List<string> challengeIds, string propertySort, bool isAsc, string search, int page, int limit);
+    List<ChallengeTransaction> GetAll
+        (List<string> walletIds, List<string> challengeIds, string search);
 
     ChallengeTransaction GetById(string id);
 }

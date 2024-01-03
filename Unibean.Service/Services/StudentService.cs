@@ -1,16 +1,20 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Invitations;
-using Unibean.Service.Models.Orders;
 using Unibean.Service.Models.StudentChallenges;
 using Unibean.Service.Models.Students;
+using Unibean.Service.Models.Transactions;
 using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Utilities.FireBase;
 using BCryptNet = BCrypt.Net.BCrypt;
+using System.Linq.Dynamic.Core;
+using System.Globalization;
+using System.Text;
 
 namespace Unibean.Service.Services;
 
@@ -34,12 +38,15 @@ public class StudentService : IStudentService
 
     private readonly IRoleService roleService;
 
+    private readonly IChallengeTransactionService challengeTransactionService;
+
     public StudentService(IStudentRepository studentRepository,
         IFireBaseService fireBaseService,
         IAccountRepository accountRepository,
         IInvitationService invitationService,
         IStudentChallengeService studentChallengeService,
-        IRoleService roleService)
+        IRoleService roleService,
+        IChallengeTransactionService challengeTransactionService)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -78,8 +85,6 @@ public class StudentService : IStudentService
             .ForMember(s => s.Following, opt => opt.MapFrom(src => src.Wishlists.Count))
             .ForMember(s => s.Inviter, opt => opt.MapFrom(src => src.Invitees.FirstOrDefault().Inviter.FullName))
             .ForMember(s => s.Invitee, opt => opt.MapFrom(src => src.Inviters.Count))
-            .ReverseMap();
-            cfg.CreateMap<Order, OrderModel>()
             .ReverseMap();
             cfg.CreateMap<StudentChallenge, StudentChallengeModel>()
             .ForMember(c => c.StudentName, opt => opt.MapFrom(src => src.Student.FullName))
@@ -133,6 +138,7 @@ public class StudentService : IStudentService
         this.invitationService = invitationService;
         this.studentChallengeService = studentChallengeService;
         this.roleService = roleService;
+        this.challengeTransactionService = challengeTransactionService;
     }
 
     public async Task<StudentModel> Add(CreateStudentModel creation)
@@ -316,6 +322,58 @@ public class StudentService : IStudentService
             return mapper.Map<StudentExtraModel>(entity);
         }
         throw new InvalidParameterException("Not found student");
+    }
+
+    public PagedResultModel<TransactionModel> GetHistoryTransactionByStudentId
+        (string id, string propertySort, bool isAsc, string search, int page, int limit)
+    {
+        PagedResultModel<TransactionModel> pagedResult = new()
+        {
+            CurrentPage = page,
+            PageSize = limit,
+            Result = new()
+        };
+        Student entity = studentRepository.GetById(id);
+        if (entity != null)
+        {
+            try
+            {
+                var query = challengeTransactionService.GetAll
+                    (studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search).AsQueryable()
+                    .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
+
+                var result = query
+                    .Skip((page - 1) * limit)
+                    .Take(limit)
+                    .ToList();
+
+                pagedResult = new()
+                {
+                    CurrentPage = page,
+                    PageSize = limit,
+                    PageCount = (int)Math.Ceiling((double)query.Count() / limit),
+                    Result = result,
+                    RowCount = result.Count,
+                    TotalCount = query.Count()
+                };
+
+                return pagedResult;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return pagedResult;
+            }
+        }
+        throw new InvalidParameterException("Not found student");
+    }
+
+    public static bool CompareStrings(string str1, string str2)
+    {
+        return string.Equals(
+            str1.Normalize(NormalizationForm.FormD), 
+            str2.Normalize(NormalizationForm.FormD), 
+            StringComparison.OrdinalIgnoreCase);
     }
 
     public async Task<StudentModel> Update(string id, UpdateStudentModel update)
