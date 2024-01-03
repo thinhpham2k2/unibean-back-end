@@ -43,9 +43,5 @@ public class StudentExtraModel
     public decimal? RedWallet { get; set; }
     public decimal? Following { get; set; }
     public string Inviter { get; set; }
-    public decimal? Invitee { get; set; }   
-    public List<VoucherItemModel> VoucherItems { get; set; }
-    public List<TransactionModel> Transactions { get; set; } // All transaction
-    public List<OrderModel> Orders { get; set; }
-    public List<StudentChallengeModel> Challenges { get; set; }
+    public decimal? Invitee { get; set; }
 }

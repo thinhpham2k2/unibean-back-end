@@ -3,10 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
-using Unibean.Service.Models.Brands;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Students;
-using Unibean.Service.Services;
 using Unibean.Service.Services.Interfaces;
 
 namespace Unibean.API.Controllers;
@@ -79,6 +77,80 @@ public class StudentController : ControllerBase
         try
         {
             return Ok(studentService.GetById(id));
+        }
+        catch (InvalidParameterException e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Create student
+    /// </summary>
+    [HttpPost]
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType(typeof(StudentModel), (int)HttpStatusCode.Created)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    public async Task<ActionResult> Create([FromForm] CreateStudentModel creation)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            var student = await studentService.Add(creation);
+            if (student != null)
+            {
+                return StatusCode(StatusCodes.Status201Created, student);
+            }
+            return NotFound("Create fail");
+        }
+        catch (InvalidParameterException e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Update student
+    /// </summary>
+    [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType(typeof(StudentModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    public async Task<ActionResult> Update(string id, [FromForm] UpdateStudentModel update)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            var student = await studentService.Update(id, update);
+            if (student != null)
+            {
+                return StatusCode(StatusCodes.Status200OK, student);
+            }
+            return NotFound("Update fail");
+        }
+        catch (InvalidParameterException e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Delete student
+    /// </summary>
+    [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType((int)HttpStatusCode.NoContent)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    public IActionResult Delete(string id)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            studentService.Delete(id);
+            return StatusCode(StatusCodes.Status204NoContent);
         }
         catch (InvalidParameterException e)
         {

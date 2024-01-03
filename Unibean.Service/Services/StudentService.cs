@@ -8,9 +8,9 @@ using Unibean.Service.Models.Invitations;
 using Unibean.Service.Models.Orders;
 using Unibean.Service.Models.StudentChallenges;
 using Unibean.Service.Models.Students;
-using Unibean.Service.Models.Transactions;
 using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Utilities.FireBase;
+using BCryptNet = BCrypt.Net.BCrypt;
 
 namespace Unibean.Service.Services;
 
@@ -19,6 +19,8 @@ public class StudentService : IStudentService
     private readonly Mapper mapper;
 
     private readonly string FOLDER_NAME = "students";
+
+    private readonly string ACCOUNT_FOLDER_NAME = "accounts";
 
     private readonly IStudentRepository studentRepository;
 
@@ -30,11 +32,14 @@ public class StudentService : IStudentService
 
     private readonly IStudentChallengeService studentChallengeService;
 
+    private readonly IRoleService roleService;
+
     public StudentService(IStudentRepository studentRepository,
         IFireBaseService fireBaseService,
         IAccountRepository accountRepository,
         IInvitationService invitationService,
-        IStudentChallengeService studentChallengeService)
+        IStudentChallengeService studentChallengeService,
+        IRoleService roleService)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -73,51 +78,6 @@ public class StudentService : IStudentService
             .ForMember(s => s.Following, opt => opt.MapFrom(src => src.Wishlists.Count))
             .ForMember(s => s.Inviter, opt => opt.MapFrom(src => src.Invitees.FirstOrDefault().Inviter.FullName))
             .ForMember(s => s.Invitee, opt => opt.MapFrom(src => src.Inviters.Count))
-            .ForMember(s => s.Challenges, opt => opt.MapFrom(src => src.StudentChallenges))
-            .ForMember(s => s.VoucherItems, opt => opt.Ignore())
-            .ForMember(s => s.Transactions, opt => opt.MapFrom((src, dest) =>
-            {
-                return new List<object>()
-                .Concat(src.Wallets.SelectMany(wallet => wallet.OrderTransactions))
-                .Concat(src.Wallets.SelectMany(wallet => wallet.ActivityTransactions))
-                .Concat(src.Wallets.SelectMany(wallet => wallet.ChallengeTransactions))
-                .Concat(src.Wallets.SelectMany(wallet => wallet.PaymentTransactions));
-            }))
-            .AfterMap((src, dest) =>
-            {
-                dest.Transactions = dest.Transactions.OrderByDescending(t => t.DateCreated).ToList();
-            })
-            .ReverseMap();
-            cfg.CreateMap<OrderTransaction, TransactionModel>()
-            .ForMember(t => t.Name, opt => opt.MapFrom(src => "Tạo đơn hàng (" + src.Order.Amount + " đậu)"))
-            .ForMember(t => t.RequestId, opt => opt.MapFrom(src => src.OrderId))
-            .ForMember(t => t.WalletType, opt => opt.MapFrom(src => src.Wallet.Type.TypeName))
-            .ForMember(t => t.WalletImage, opt => opt.MapFrom(src => src.Wallet.Type.Image))
-            .ForMember(t => t.TypeName, opt => opt.MapFrom(src => "Đổi quà"))
-            .ForMember(t => t.DateCreated, opt => opt.MapFrom(src => src.Order.DateCreated))
-            .ReverseMap();
-            cfg.CreateMap<ActivityTransaction, TransactionModel>()
-            .ForMember(t => t.Name, opt => opt.MapFrom(src => src.Activity.VoucherItem.Voucher.VoucherName))
-            .ForMember(t => t.RequestId, opt => opt.MapFrom(src => src.ActivityId))
-            .ForMember(t => t.WalletType, opt => opt.MapFrom(src => src.Wallet.Type.TypeName))
-            .ForMember(t => t.WalletImage, opt => opt.MapFrom(src => src.Wallet.Type.Image))
-            .ForMember(t => t.TypeName, opt => opt.MapFrom(src => src.Activity.Type.TypeName))
-            .ForMember(t => t.DateCreated, opt => opt.MapFrom(src => src.Activity.DateCreated))
-            .ReverseMap();
-            cfg.CreateMap<ChallengeTransaction, TransactionModel>()
-            .ForMember(t => t.Name, opt => opt.MapFrom(src => src.Challenge.Challenge.ChallengeName))
-            .ForMember(t => t.RequestId, opt => opt.MapFrom(src => src.ChallengeId))
-            .ForMember(t => t.WalletType, opt => opt.MapFrom(src => src.Wallet.Type.TypeName))
-            .ForMember(t => t.WalletImage, opt => opt.MapFrom(src => src.Wallet.Type.Image))
-            .ForMember(t => t.TypeName, opt => opt.MapFrom(src => "Hoàn thành thử thách"))
-            .ReverseMap();
-            cfg.CreateMap<PaymentTransaction, TransactionModel>()
-            .ForMember(t => t.Name, opt => opt.MapFrom(src => "Nạp đậu xanh cho tài khoản"))
-            .ForMember(t => t.RequestId, opt => opt.MapFrom(src => src.PaymentId))
-            .ForMember(t => t.WalletType, opt => opt.MapFrom(src => src.Wallet.Type.TypeName))
-            .ForMember(t => t.WalletImage, opt => opt.MapFrom(src => src.Wallet.Type.Image))
-            .ForMember(t => t.TypeName, opt => opt.MapFrom(src => "Thanh toán"))
-            .ForMember(t => t.DateCreated, opt => opt.MapFrom(src => src.Payment.DateCreated))
             .ReverseMap();
             cfg.CreateMap<Order, OrderModel>()
             .ReverseMap();
@@ -130,6 +90,7 @@ public class StudentService : IStudentService
             .ReverseMap();
             cfg.CreateMap<PagedResultModel<Student>, PagedResultModel<StudentModel>>()
             .ReverseMap();
+            // Map Create Student Model
             cfg.CreateMap<Student, CreateStudentGoogleModel>()
             .ReverseMap()
             .ForMember(s => s.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
@@ -138,6 +99,32 @@ public class StudentService : IStudentService
             .ForMember(s => s.DateCreated, opt => opt.MapFrom(src => DateTime.Now))
             .ForMember(s => s.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
             .ForMember(s => s.Status, opt => opt.MapFrom(src => true));
+            cfg.CreateMap<Student, CreateStudentModel>()
+            .ReverseMap()
+            .ForMember(s => s.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
+            .ForMember(s => s.TotalIncome, opt => opt.MapFrom(src => 0))
+            .ForMember(s => s.TotalSpending, opt => opt.MapFrom(src => 0))
+            .ForMember(s => s.DateCreated, opt => opt.MapFrom(src => DateTime.Now))
+            .ForMember(s => s.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
+            .ForMember(s => s.Status, opt => opt.MapFrom(src => true));
+            cfg.CreateMap<Account, CreateStudentModel>()
+            .ReverseMap()
+            .ForMember(s => s.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
+            .ForMember(s => s.Password, opt => opt.MapFrom(src => BCryptNet.HashPassword(src.Password)))
+            .ForMember(s => s.DateCreated, opt => opt.MapFrom(src => DateTime.Now))
+            .ForMember(s => s.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
+            .ForMember(s => s.Status, opt => opt.MapFrom(src => true))
+            .AfterMap((src, dest) =>
+            {
+                dest.DateVerified = (bool)src.IsVerify ? DateTime.Now : null;
+            });
+            // Map Update Student Model
+            cfg.CreateMap<Student, UpdateStudentModel>()
+            .ReverseMap()
+            .ForMember(t => t.Gender, opt => opt.MapFrom(src => (string)null))
+            .ForMember(t => t.Major, opt => opt.MapFrom(src => (string)null))
+            .ForMember(t => t.Campus, opt => opt.MapFrom(src => (string)null))
+            .ForMember(s => s.DateUpdated, opt => opt.MapFrom(src => DateTime.Now));
         });
         mapper = new Mapper(config);
         this.studentRepository = studentRepository;
@@ -145,6 +132,73 @@ public class StudentService : IStudentService
         this.accountRepository = accountRepository;
         this.invitationService = invitationService;
         this.studentChallengeService = studentChallengeService;
+        this.roleService = roleService;
+    }
+
+    public async Task<StudentModel> Add(CreateStudentModel creation)
+    {
+        Account account = mapper.Map<Account>(creation);
+        account.RoleId = roleService.GetRoleByName("Student")?.Id;
+
+        //Upload avatar
+        if (creation.Avatar != null && creation.Avatar.Length > 0)
+        {
+            FireBaseFile f = await fireBaseService.UploadFileAsync(creation.Avatar, ACCOUNT_FOLDER_NAME);
+            account.Avatar = f.URL;
+            account.FileName = f.FileName;
+        }
+
+        account = accountRepository.Add(account);
+        Student student = mapper.Map<Student>(creation);
+        student.AccountId = account.Id;
+
+        // Upload the student card front image
+        if (creation.StudentCardFront != null && creation.StudentCardFront.Length > 0)
+        {
+            FireBaseFile f = await fireBaseService.UploadFileAsync(creation.StudentCardFront, FOLDER_NAME);
+            student.StudentCardFront = f.URL;
+            student.FileNameFront = f.FileName;
+        }
+
+        // Upload the student card back image
+        if (creation.StudentCardBack != null && creation.StudentCardBack.Length > 0)
+        {
+            FireBaseFile f = await fireBaseService.UploadFileAsync(creation.StudentCardBack, FOLDER_NAME);
+            student.StudentCardBack = f.URL;
+            student.FileNameBack = f.FileName;
+        }
+
+        student = studentRepository.Add(student);
+
+        if (student != null)
+        {
+            // Set invitation
+            if (!creation.InviteCode.IsNullOrEmpty())
+            {
+                invitationService.Add(new CreateInvitationModel
+                {
+                    InviterId = creation.InviteCode,
+                    InviteeId = student.Id,
+                    Description = null,
+                    State = true
+                });
+
+                // Take the challenge
+                studentChallengeService.Update(studentRepository
+                    .GetById(student.Id).StudentChallenges
+                    .Where(s => s.Status.Equals(true)
+                    && s.IsCompleted.Equals(false)
+                    && s.Challenge.Type.TypeName.Equals("Welcome")), 1);
+
+                studentChallengeService.Update(studentRepository
+                    .GetById(creation.InviteCode).StudentChallenges
+                    .Where(s => s.Status.Equals(true)
+                    && s.IsCompleted.Equals(false)
+                    && s.Challenge.Type.TypeName.Equals("Spread")), 1);
+            }
+        }
+
+        return mapper.Map<StudentModel>(student);
     }
 
     public async Task<StudentModel> AddGoogle(CreateStudentGoogleModel creation)
@@ -212,6 +266,41 @@ public class StudentService : IStudentService
         return mapper.Map<StudentModel>(entity);
     }
 
+    public void Delete(string id)
+    {
+        Student entity = studentRepository.GetById(id);
+        if (entity != null)
+        {
+            // Student card front image
+            if (entity.StudentCardFront != null && entity.StudentCardFront.Length > 0)
+            {
+                // Remove image
+                fireBaseService.RemoveFileAsync(entity.FileNameFront, FOLDER_NAME);
+            }
+
+            // Student card back image
+            if (entity.StudentCardBack != null && entity.StudentCardBack.Length > 0)
+            {
+                // Remove image
+                fireBaseService.RemoveFileAsync(entity.FileNameBack, FOLDER_NAME);
+            }
+
+            // Avatar
+            if (entity.Account.Avatar != null && entity.Account.Avatar.Length > 0)
+            {
+                // Remove image
+                fireBaseService.RemoveFileAsync(entity.Account.FileName, ACCOUNT_FOLDER_NAME);
+            }
+
+            studentRepository.Delete(id);
+            accountRepository.Delete(entity.Account.Id);
+        }
+        else
+        {
+            throw new InvalidParameterException("Not found student");
+        }
+    }
+
     public PagedResultModel<StudentModel> GetAll
         (List<string> levelIds, List<string> genderIds, List<string> majorIds, List<string> campusIds, bool? isVerify, string propertySort, bool isAsc, string search, int page, int limit)
     {
@@ -225,6 +314,33 @@ public class StudentService : IStudentService
         if (entity != null)
         {
             return mapper.Map<StudentExtraModel>(entity);
+        }
+        throw new InvalidParameterException("Not found student");
+    }
+
+    public async Task<StudentModel> Update(string id, UpdateStudentModel update)
+    {
+        Student entity = studentRepository.GetById(id);
+        if (entity != null)
+        {
+            entity = mapper.Map(update, entity);
+
+            //Upload avatar
+            if (update.Avatar != null && update.Avatar.Length > 0)
+            {
+                // Remove image
+                await fireBaseService.RemoveFileAsync(entity.Account.FileName, ACCOUNT_FOLDER_NAME);
+
+                //Upload new image update
+                FireBaseFile f = await fireBaseService.UploadFileAsync(update.Avatar, ACCOUNT_FOLDER_NAME);
+                entity.Account.Avatar = f.URL;
+                entity.Account.FileName = f.FileName;
+            }
+
+            entity.Account.DateUpdated = DateTime.Now;
+            accountRepository.Update(entity.Account);
+
+            return mapper.Map<StudentModel>(studentRepository.Update(entity));
         }
         throw new InvalidParameterException("Not found student");
     }
