@@ -1,4 +1,5 @@
 ﻿using Unibean.Repository.Paging;
+using Unibean.Service.Models.StudentChallenges;
 using Unibean.Service.Models.Students;
 using Unibean.Service.Models.Transactions;
 
@@ -20,6 +21,9 @@ public interface IStudentService
 
     PagedResultModel<TransactionModel> GetHistoryTransactionByStudentId
         (string id, string propertySort, bool isAsc, string search, int page, int limit);
+
+    PagedResultModel<StudentChallengeModel> GetChallengeByStudentId
+        (string id, bool? isCompleted, bool? isClaimed, string propertySort, bool isAsc, string search, int page, int limit);
 
     Task<StudentModel> Update(string id, UpdateStudentModel update);
 }

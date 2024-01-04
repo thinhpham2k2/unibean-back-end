@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
@@ -13,7 +12,6 @@ using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Utilities.FireBase;
 using BCryptNet = BCrypt.Net.BCrypt;
 using System.Linq.Dynamic.Core;
-using System.Globalization;
 using System.Text;
 
 namespace Unibean.Service.Services;
@@ -336,6 +334,20 @@ public class StudentService : IStudentService
         throw new InvalidParameterException("Not found student");
     }
 
+    public PagedResultModel<StudentChallengeModel> GetChallengeByStudentId
+        (string id, bool? isCompleted, bool? isClaimed, string propertySort, bool isAsc, string search, int page, int limit)
+    {
+        Student entity = studentRepository.GetById(id);
+
+        if (entity != null)
+        {
+            PagedResultModel<StudentChallengeModel> result = studentChallengeService.GetAll
+                (new List<string> { id }, new(), propertySort, isAsc, search, page, limit);
+            return result;
+        }
+        throw new InvalidParameterException("Not found student");
+    }
+
     public PagedResultModel<TransactionModel> GetHistoryTransactionByStudentId
         (string id, string propertySort, bool isAsc, string search, int page, int limit)
     {
@@ -370,14 +382,6 @@ public class StudentService : IStudentService
             };
         }
         throw new InvalidParameterException("Not found student");
-    }
-
-    public static bool CompareStrings(string str1, string str2)
-    {
-        return string.Equals(
-            str1.Normalize(NormalizationForm.FormD),
-            str2.Normalize(NormalizationForm.FormD),
-            StringComparison.OrdinalIgnoreCase);
     }
 
     public async Task<StudentModel> Update(string id, UpdateStudentModel update)

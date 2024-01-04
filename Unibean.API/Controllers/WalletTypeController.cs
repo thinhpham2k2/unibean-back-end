@@ -4,6 +4,7 @@ using System.Net;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Service.Models.Exceptions;
+using Unibean.Service.Models.Parameters;
 using Unibean.Service.Models.WalletTypes;
 using Unibean.Service.Services.Interfaces;
 
@@ -24,30 +25,24 @@ public class WalletTypeController : ControllerBase
     /// <summary>
     /// Get wallet type list
     /// </summary>
-    /// <param name="sort">Sorting criteria for the results.</param>
-    /// <param name="search">Search query.</param>
-    /// <param name="page">Current page in the paginated results.</param>
-    /// <param name="limit">Number of results per page.</param>
+    /// <param name="paging">Paging parameter.</param>
     [HttpGet]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(PagedResultModel<WalletTypeModel>),
         (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public ActionResult<PagedResultModel<WalletTypeModel>> GetList(
-        [FromQuery] string sort = "Id,desc",
-        [FromQuery] string search = "",
-        [FromQuery] int page = 1,
-        [FromQuery] int limit = 10)
+        [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
-        string propertySort = sort.Split(",")[0];
+        string propertySort = paging.Sort.Split(",")[0];
         var propertyInfo = typeof(WalletType).GetProperty(propertySort);
         if (propertySort != null && propertyInfo != null)
         {
             PagedResultModel<WalletTypeModel>
                 result = walletTypeService.GetAll
-                (propertySort, sort.Split(",")[1].Equals("asc"), search, page, limit);
+                (propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }
         return BadRequest("Invalid property of wallet type");

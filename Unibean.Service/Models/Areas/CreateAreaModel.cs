@@ -4,9 +4,6 @@ using Unibean.Service.Validations;
 
 namespace Unibean.Service.Models.Areas;
 
-/// <summary>
-/// Represents the information for creating a new area.
-/// </summary>
 public class CreateAreaModel
 {
     [ValidDistrict]

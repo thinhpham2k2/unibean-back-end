@@ -12,6 +12,7 @@ using System.Reflection;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Unibean.API.Swaggers;
+using MoreLinq;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,7 +42,8 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization();
 
 // Configure exception handler
-builder.Services.Configure<ApiBehaviorOptions>(options => {
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
     options.SuppressModelStateInvalidFilter = true;
 });
 
@@ -69,9 +71,14 @@ builder.Services.AddSwaggerGen(c =>
     c.UseDateOnlyTimeOnlyStringConverters();
     c.OperationFilter<AuthorizationOperationFilter>();
 
-    // using System.Reflection;
-    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+    // using System.Reflection
+    string[] xmlCommentFileNames =
+    {
+    $"{Assembly.GetExecutingAssembly().GetName().Name}.xml",
+    "Unibean.Service.xml"
+    };
+    xmlCommentFileNames.ForEach(fileName
+        => c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, fileName)));
 });
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 
@@ -198,9 +205,14 @@ if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
     app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Unibean REST API v1"));
+    app.UseSwaggerUI(c
+        =>
+    {
+        c.InjectStylesheet("/swagger/css/swagger-ui.css");
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Unibean REST API v1");
+    });
 }
-
+app.UseStaticFiles();
 app.UseRouting();
 
 app.UseCors(builder =>
