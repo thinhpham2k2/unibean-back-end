@@ -40,13 +40,22 @@ public class StudentService : IStudentService
 
     private readonly IChallengeTransactionService challengeTransactionService;
 
+    private readonly IOrderTransactionService orderTransactionService;
+
+    private readonly IPaymentTransactionService paymentTransactionService;
+
+    private readonly IActivityTransactionService activityTransactionService;
+
     public StudentService(IStudentRepository studentRepository,
         IFireBaseService fireBaseService,
         IAccountRepository accountRepository,
         IInvitationService invitationService,
         IStudentChallengeService studentChallengeService,
         IRoleService roleService,
-        IChallengeTransactionService challengeTransactionService)
+        IChallengeTransactionService challengeTransactionService,
+        IOrderTransactionService orderTransactionService,
+        IPaymentTransactionService paymentTransactionService,
+        IActivityTransactionService activityTransactionService)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -139,6 +148,9 @@ public class StudentService : IStudentService
         this.studentChallengeService = studentChallengeService;
         this.roleService = roleService;
         this.challengeTransactionService = challengeTransactionService;
+        this.orderTransactionService = orderTransactionService;
+        this.paymentTransactionService = paymentTransactionService;
+        this.activityTransactionService = activityTransactionService;
     }
 
     public async Task<StudentModel> Add(CreateStudentModel creation)
@@ -327,43 +339,35 @@ public class StudentService : IStudentService
     public PagedResultModel<TransactionModel> GetHistoryTransactionByStudentId
         (string id, string propertySort, bool isAsc, string search, int page, int limit)
     {
-        PagedResultModel<TransactionModel> pagedResult = new()
-        {
-            CurrentPage = page,
-            PageSize = limit,
-            Result = new()
-        };
         Student entity = studentRepository.GetById(id);
+
         if (entity != null)
         {
-            try
+            var query = challengeTransactionService.GetAll
+                (studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search)
+                .Concat(orderTransactionService.GetAll
+                (studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search))
+                .Concat(paymentTransactionService.GetAll
+                (studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search))
+                .Concat(activityTransactionService.GetAll
+                (studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search))
+                .AsQueryable()
+                .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
+
+            var result = query
+                .Skip((page - 1) * limit)
+                .Take(limit)
+                .ToList();
+
+            return new()
             {
-                var query = challengeTransactionService.GetAll
-                    (studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search).AsQueryable()
-                    .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
-
-                var result = query
-                    .Skip((page - 1) * limit)
-                    .Take(limit)
-                    .ToList();
-
-                pagedResult = new()
-                {
-                    CurrentPage = page,
-                    PageSize = limit,
-                    PageCount = (int)Math.Ceiling((double)query.Count() / limit),
-                    Result = result,
-                    RowCount = result.Count,
-                    TotalCount = query.Count()
-                };
-
-                return pagedResult;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return pagedResult;
-            }
+                CurrentPage = page,
+                PageSize = limit,
+                PageCount = (int)Math.Ceiling((double)query.Count() / limit),
+                Result = result,
+                RowCount = result.Count,
+                TotalCount = query.Count()
+            };
         }
         throw new InvalidParameterException("Not found student");
     }
@@ -371,8 +375,8 @@ public class StudentService : IStudentService
     public static bool CompareStrings(string str1, string str2)
     {
         return string.Equals(
-            str1.Normalize(NormalizationForm.FormD), 
-            str2.Normalize(NormalizationForm.FormD), 
+            str1.Normalize(NormalizationForm.FormD),
+            str2.Normalize(NormalizationForm.FormD),
             StringComparison.OrdinalIgnoreCase);
     }
 

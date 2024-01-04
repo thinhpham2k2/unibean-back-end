@@ -42,6 +42,7 @@ public class ChallengeTransactionRepository : IChallengeTransactionRepository
             result = db.ChallengeTransactions
                 .Where(t => (EF.Functions.Like(t.Challenge.Challenge.ChallengeName, "%" + search + "%")
                 || EF.Functions.Like(t.Wallet.Type.TypeName, "%" + search + "%")
+                || EF.Functions.Like("Thử thách", "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
                 && (walletIds.Count == 0 || walletIds.Contains(t.WalletId))
                 && (challengeIds.Count == 0 || challengeIds.Contains(t.ChallengeId))
