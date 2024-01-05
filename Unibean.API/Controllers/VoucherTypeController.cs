@@ -11,7 +11,7 @@ using Unibean.Service.Services.Interfaces;
 namespace Unibean.API.Controllers;
 
 [ApiController]
-[Tags("Voucher Type API")]
+[Tags("🎟️Voucher Type API")]
 [Route("api/v1/voucher-types")]
 public class VoucherTypeController : ControllerBase
 {

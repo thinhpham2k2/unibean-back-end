@@ -11,7 +11,7 @@ using Unibean.Service.Services.Interfaces;
 namespace Unibean.API.Controllers;
 
 [ApiController]
-[Tags("State API")]
+[Tags("🚛State API")]
 [Route("api/v1/states")]
 public class StateController : ControllerBase
 {

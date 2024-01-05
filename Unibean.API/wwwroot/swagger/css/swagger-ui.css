@@ -1,1 +1,41 @@
-﻿
+﻿/*body {
+    background-image: url(https://img.freepik.com/free-vector/digital-technology-background-vector-with-hexagon-pattern-white-tone_53876-110878.jpg?w=1380&t=st=1704446696~exp=1704447296~hmac=eb34cd1bc7f8f77b7fb9f7a2aec08e956907f8a2264e58c51253585d971e67df);
+    background-repeat: no-repeat;
+    background-size: cover;
+}*/
+
+h3 {
+    color: #222222 !important;
+}
+
+.swagger-ui .info .title {
+    color: #32a42b;
+}
+
+.swagger-ui .btn.authorize {
+    background-color: transparent;
+    border-color: #51a05e;
+    color: #51a05e;
+    display: inline;
+    line-height: 1;
+}
+
+    .swagger-ui .btn.authorize svg {
+        fill: #51a05e;
+    }
+
+.opblock-summary-get > button > span.opblock-summary-method {
+    background-color: #1a70a9 !important;
+}
+
+.opblock-summary-post > button > span.opblock-summary-method {
+    background-color: #51a05e !important;
+}
+
+.opblock-summary-put > button > span.opblock-summary-method {
+    background-color: #ff6a00 !important;
+}
+
+.opblock-summary-delete > button > span.opblock-summary-method {
+    background-color: #cc231e !important;
+}

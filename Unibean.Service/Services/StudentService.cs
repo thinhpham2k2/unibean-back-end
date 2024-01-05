@@ -12,7 +12,7 @@ using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Utilities.FireBase;
 using BCryptNet = BCrypt.Net.BCrypt;
 using System.Linq.Dynamic.Core;
-using System.Text;
+using Unibean.Service.Models.Orders;
 
 namespace Unibean.Service.Services;
 
@@ -343,6 +343,11 @@ public class StudentService : IStudentService
         {
             PagedResultModel<StudentChallengeModel> result = studentChallengeService.GetAll
                 (new List<string> { id }, new(), propertySort, isAsc, search, page, limit);
+
+            result.Result = result.Result
+                .Where(c => (isCompleted == null || c.IsCompleted.Equals(isCompleted))
+                && (isClaimed == null || c.IsClaimed.Equals(isClaimed))).ToList();
+
             return result;
         }
         throw new InvalidParameterException("Not found student");
@@ -380,6 +385,16 @@ public class StudentService : IStudentService
                 RowCount = result.Count,
                 TotalCount = query.Count()
             };
+        }
+        throw new InvalidParameterException("Not found student");
+    }
+
+    public PagedResultModel<OrderModel> GetOrderListByStudentId(string id, string propertySort, bool isAsc, string search, int page, int limit)
+    {
+        Student entity = studentRepository.GetById(id);
+
+        if (entity != null)
+        {
         }
         throw new InvalidParameterException("Not found student");
     }

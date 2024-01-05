@@ -7,7 +7,7 @@ using Unibean.Service.Models.Validations;
 namespace Unibean.API.Controllers;
 
 [ApiController]
-[Tags("Validation API")]
+[Tags("✔️Validation API")]
 [Route("api/v1/validations")]
 public class ValidationController : ControllerBase
 {

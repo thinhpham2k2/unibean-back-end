@@ -11,7 +11,7 @@ using Unibean.Service.Services.Interfaces;
 namespace Unibean.API.Controllers;
 
 [ApiController]
-[Tags("Campaign Type API")]
+[Tags("📢Campaign Type API")]
 [Route("api/v1/campaign-types")]
 public class CampaignTypeController : ControllerBase
 {

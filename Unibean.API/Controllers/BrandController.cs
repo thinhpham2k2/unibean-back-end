@@ -11,7 +11,7 @@ using Unibean.Service.Services.Interfaces;
 namespace Unibean.API.Controllers;
 
 [ApiController]
-[Tags("Brand API")]
+[Tags("🤝🏼Brand API")]
 [Route("api/v1/brands")]
 public class BrandController : ControllerBase
 {

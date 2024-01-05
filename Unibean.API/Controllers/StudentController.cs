@@ -4,6 +4,7 @@ using System.Net;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Service.Models.Exceptions;
+using Unibean.Service.Models.Orders;
 using Unibean.Service.Models.Parameters;
 using Unibean.Service.Models.StudentChallenges;
 using Unibean.Service.Models.Students;
@@ -13,7 +14,7 @@ using Unibean.Service.Services.Interfaces;
 namespace Unibean.API.Controllers;
 
 [ApiController]
-[Tags("Student API")]
+[Tags("🎓Student API")]
 [Route("api/v1/students")]
 public class StudentController : ControllerBase
 {
@@ -163,7 +164,7 @@ public class StudentController : ControllerBase
     /// <param name="isClaimed">Filter by challenge claim status.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/challenge")]
-    //[Authorize(Roles = "Admin, Brand, Store, Student")]
+    [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(PagedResultModel<StudentChallengeModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public ActionResult<PagedResultModel<StudentChallengeModel>> GetChallengeByStudentId(string id,
@@ -218,6 +219,39 @@ public class StudentController : ControllerBase
                 return Ok(result);
             }
             return BadRequest("Invalid property of transaction");
+        }
+        catch (InvalidParameterException e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Get order list by student id
+    /// </summary>
+    /// <param name="id">Student id.</param>
+    /// <param name="paging">Paging parameter.</param>
+    [HttpGet("{id}/order")]
+    [Authorize(Roles = "Admin, Brand, Store, Student")]
+    [ProducesResponseType(typeof(PagedResultModel<OrderModel>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    public ActionResult<PagedResultModel<OrderModel>> GetOrderListByStudentId(string id,
+        [FromQuery] PagingModel paging)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            string propertySort = paging.Sort.Split(",")[0];
+            var propertyInfo = typeof(Order).GetProperty(propertySort);
+            if (propertySort != null && propertyInfo != null)
+            {
+                PagedResultModel<OrderModel>
+                result = studentService.GetOrderListByStudentId
+                    (id, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
+                return Ok(result);
+            }
+            return BadRequest("Invalid property of order");
         }
         catch (InvalidParameterException e)
         {

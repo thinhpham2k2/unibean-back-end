@@ -11,7 +11,7 @@ using Unibean.Service.Services.Interfaces;
 namespace Unibean.API.Controllers;
 
 [ApiController]
-[Tags("District API")]
+[Tags("🏙️District API")]
 [Route("api/v1/districts")]
 public class DistrictController : ControllerBase
 {

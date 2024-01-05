@@ -11,7 +11,7 @@ using Unibean.Service.Services.Interfaces;
 namespace Unibean.API.Controllers;
 
 [ApiController]
-[Tags("Category API")]
+[Tags("🗃️Category API")]
 [Route("api/v1/categories")]
 public class CategoryController : ControllerBase
 {

@@ -11,7 +11,7 @@ using Unibean.Service.Services.Interfaces;
 namespace Unibean.API.Controllers;
 
 [ApiController]
-[Tags("Wallet Type API")]
+[Tags("👛Wallet Type API")]
 [Route("api/v1/wallet-types")]
 public class WalletTypeController : ControllerBase
 {

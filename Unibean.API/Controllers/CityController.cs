@@ -11,7 +11,7 @@ using Unibean.Service.Services.Interfaces;
 namespace Unibean.API.Controllers;
 
 [ApiController]
-[Tags("City API")]
+[Tags("🌆City API")]
 [Route("api/v1/cities")]
 public class CityController : ControllerBase
 {

@@ -11,7 +11,7 @@ using Type = Unibean.Repository.Entities.Type;
 namespace Unibean.API.Controllers;
 
 [ApiController]
-[Tags("Activity Type API")]
+[Tags("📱Activity Type API")]
 [Route("api/v1/types")]
 public class TypeController : ControllerBase
 {

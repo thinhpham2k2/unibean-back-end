@@ -61,6 +61,7 @@ public class StudentChallengeRepository : IStudentChallengeRepository
                .Include(s => s.Student)
                .Include(s => s.Challenge)
                    .ThenInclude(c => c.Type)
+               .Include(s => s.ChallengeTransactions.Where(c => c.Status.Equals(true)))
                .ToList();
 
             pagedResult = new PagedResultModel<StudentChallenge>
@@ -91,6 +92,7 @@ public class StudentChallengeRepository : IStudentChallengeRepository
             .Include(s => s.Student)
             .Include(s => s.Challenge)
                 .ThenInclude(c => c.Type)
+            .Include(s => s.ChallengeTransactions.Where(c => c.Status.Equals(true)))
             .FirstOrDefault();
         }
         catch (Exception ex)

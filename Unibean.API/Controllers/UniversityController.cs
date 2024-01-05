@@ -11,7 +11,7 @@ using Unibean.Service.Services.Interfaces;
 namespace Unibean.API.Controllers;
 
 [ApiController]
-[Tags("University API")]
+[Tags("🏛️University API")]
 [Route("api/v1/universities")]
 public class UniversityController : ControllerBase
 {

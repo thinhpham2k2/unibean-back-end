@@ -11,7 +11,7 @@ using Unibean.Service.Services.Interfaces;
 namespace Unibean.API.Controllers;
 
 [ApiController]
-[Tags("Gender API")]
+[Tags("⚤Gender API")]
 [Route("api/v1/genders")]
 public class GenderController : ControllerBase
 {

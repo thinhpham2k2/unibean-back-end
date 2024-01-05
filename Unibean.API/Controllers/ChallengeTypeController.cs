@@ -11,7 +11,7 @@ using Unibean.Service.Services.Interfaces;
 namespace Unibean.API.Controllers;
 
 [ApiController]
-[Tags("Challenge Type API")]
+[Tags("🎯Challenge Type API")]
 [Route("api/v1/challenge-types")]
 public class ChallengeTypeController : ControllerBase
 {

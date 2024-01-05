@@ -11,7 +11,7 @@ using Unibean.Service.Services.Interfaces;
 namespace Unibean.API.Controllers;
 
 [ApiController]
-[Tags("Area API")]
+[Tags("🗺️Area API")]
 [Route("api/v1/areas")]
 public class AreaController : ControllerBase
 {

@@ -11,7 +11,7 @@ using Unibean.Service.Services.Interfaces;
 namespace Unibean.API.Controllers;
 
 [ApiController]
-[Tags("Role API")]
+[Tags("🛠️Role API")]
 [Route("api/v1/roles")]
 public class RoleController : ControllerBase
 {

@@ -11,7 +11,7 @@ using Unibean.Service.Services.Interfaces;
 namespace Unibean.API.Controllers;
 
 [ApiController]
-[Tags("Level API")]
+[Tags("🏅Level API")]
 [Route("api/v1/levels")]
 public class LevelController : ControllerBase
 {

@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Unibean.Repository.Repositories.Interfaces;
@@ -66,7 +66,7 @@ builder.Services.AddCors(options =>
 // Configure swagger
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Unibean REST API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "📗Unibean REST API", Version = "v1" });
     c.OrderActionsBy(apiDesc => apiDesc.RelativePath);
     c.UseDateOnlyTimeOnlyStringConverters();
     c.OperationFilter<AuthorizationOperationFilter>();
