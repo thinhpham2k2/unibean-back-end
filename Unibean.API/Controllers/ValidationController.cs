@@ -21,6 +21,7 @@ public class ValidationController : ControllerBase
     public IActionResult EmailValidation([FromBody] EmailModel email)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
         return Ok(email.Email + " is valid");
     }
 
@@ -34,6 +35,7 @@ public class ValidationController : ControllerBase
     public IActionResult InviteCodeValidation([FromBody] InviteCodeModel inviteCode)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
         return Ok(inviteCode.InviteCode + " is valid");
     }
 
@@ -47,6 +49,7 @@ public class ValidationController : ControllerBase
     public IActionResult PhoneValidation([FromBody] PhoneModel phone)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
         return Ok(phone.Phone + " is valid");
     }
 
@@ -60,6 +63,7 @@ public class ValidationController : ControllerBase
     public IActionResult UsernameValidation([FromBody] UserNameModel userName)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
         return Ok(userName.UserName + " is valid");
     }
 }

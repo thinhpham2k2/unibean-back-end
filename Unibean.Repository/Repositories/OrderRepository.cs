@@ -65,9 +65,6 @@ public class OrderRepository : IOrderRepository
                .Include(o => o.OrderDetails.Where(d => d.Status.Equals(true)))
                     .ThenInclude(o => o.Product)
                         .ThenInclude(p => p.Images)
-               .Include(o => o.OrderDetails.Where(d => d.Status.Equals(true)))
-                    .ThenInclude(o => o.Product)
-                        .ThenInclude(p => p.Category)
                .Include(o => o.OrderStates.Where(s => s.Status.Equals(true)))
                     .ThenInclude(o => o.State)
                .ToList();
@@ -102,9 +99,6 @@ public class OrderRepository : IOrderRepository
             .Include(o => o.OrderDetails.Where(d => d.Status.Equals(true)))
                 .ThenInclude(o => o.Product)
                     .ThenInclude(p => p.Images)
-            .Include(o => o.OrderDetails.Where(d => d.Status.Equals(true)))
-                .ThenInclude(o => o.Product)
-                    .ThenInclude(p => p.Category)
             .Include(o => o.OrderStates.Where(s => s.Status.Equals(true)))
                 .ThenInclude(o => o.State)
             .FirstOrDefault();

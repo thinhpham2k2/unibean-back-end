@@ -27,7 +27,7 @@ public interface IStudentService
         (string id, string propertySort, bool isAsc, string search, int page, int limit);
 
     PagedResultModel<OrderModel> GetOrderListByStudentId
-        (string id, string propertySort, bool isAsc, string search, int page, int limit);
+        (List<string> stationIds, List<string> stateIds, string id, string propertySort, bool isAsc, string search, int page, int limit);
 
     Task<StudentModel> Update(string id, UpdateStudentModel update);
 }

@@ -9,6 +9,7 @@ public class PagingModel
     /// Sorting criteria for the results.
     /// </summary>
     [DefaultValue("Id,desc")]
+    [Required(ErrorMessage = "Sort property is required")]
     public string Sort { get; set; }
 
     /// <summary>

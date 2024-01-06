@@ -31,7 +31,7 @@ public class StudentController : ControllerBase
     /// <param name="levelIds">Filter by level Id.</param>
     /// <param name="genderIds">Filter by gender Id.</param>
     /// <param name="majorIds">Filter by major Id.</param>
-    /// <param name="campusIds">Filter by campus Id.</param>
+    /// <param name="stationIds">Filter by station Id.</param>
     /// <param name="isVerify">Filter by student verification status.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
@@ -43,7 +43,7 @@ public class StudentController : ControllerBase
         [FromQuery] List<string> levelIds,
         [FromQuery] List<string> genderIds,
         [FromQuery] List<string> majorIds,
-        [FromQuery] List<string> campusIds,
+        [FromQuery] List<string> stationIds,
         [FromQuery] bool? isVerify,
         [FromQuery] PagingModel paging)
     {
@@ -55,7 +55,7 @@ public class StudentController : ControllerBase
         {
             PagedResultModel<StudentModel>
                 result = studentService.GetAll
-                (levelIds, genderIds, majorIds, campusIds, isVerify, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
+                (levelIds, genderIds, majorIds, stationIds, isVerify, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }
         return BadRequest("Invalid property of student");
@@ -163,7 +163,7 @@ public class StudentController : ControllerBase
     /// <param name="isCompleted">Filter by challenge completion status.</param>
     /// <param name="isClaimed">Filter by challenge claim status.</param>
     /// <param name="paging">Paging parameter.</param>
-    [HttpGet("{id}/challenge")]
+    [HttpGet("{id}/challenges")]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(PagedResultModel<StudentChallengeModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
@@ -198,7 +198,7 @@ public class StudentController : ControllerBase
     /// </summary>
     /// <param name="id">Student id.</param>
     /// <param name="paging">Paging parameter.</param>
-    [HttpGet("{id}/history")]
+    [HttpGet("{id}/histories")]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(PagedResultModel<TransactionModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
@@ -230,12 +230,16 @@ public class StudentController : ControllerBase
     /// Get order list by student id
     /// </summary>
     /// <param name="id">Student id.</param>
+    /// <param name="stationIds">Filter by station Id.</param>
+    /// <param name="stateIds">Filter by state Id.</param>
     /// <param name="paging">Paging parameter.</param>
-    [HttpGet("{id}/order")]
-    [Authorize(Roles = "Admin, Brand, Store, Student")]
+    [HttpGet("{id}/orders")]
+    //[Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(PagedResultModel<OrderModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public ActionResult<PagedResultModel<OrderModel>> GetOrderListByStudentId(string id,
+        [FromQuery] List<string> stationIds,
+        [FromQuery] List<string> stateIds,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -248,7 +252,7 @@ public class StudentController : ControllerBase
             {
                 PagedResultModel<OrderModel>
                 result = studentService.GetOrderListByStudentId
-                    (id, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
+                    (stationIds, stateIds, id, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
             return BadRequest("Invalid property of order");

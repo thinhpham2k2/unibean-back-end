@@ -44,6 +44,8 @@ public class StudentService : IStudentService
 
     private readonly IActivityTransactionService activityTransactionService;
 
+    private readonly IOrderService orderService;
+
     public StudentService(IStudentRepository studentRepository,
         IFireBaseService fireBaseService,
         IAccountRepository accountRepository,
@@ -53,7 +55,8 @@ public class StudentService : IStudentService
         IChallengeTransactionService challengeTransactionService,
         IOrderTransactionService orderTransactionService,
         IPaymentTransactionService paymentTransactionService,
-        IActivityTransactionService activityTransactionService)
+        IActivityTransactionService activityTransactionService,
+        IOrderService orderService)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -149,6 +152,7 @@ public class StudentService : IStudentService
         this.orderTransactionService = orderTransactionService;
         this.paymentTransactionService = paymentTransactionService;
         this.activityTransactionService = activityTransactionService;
+        this.orderService = orderService;
     }
 
     public async Task<StudentModel> Add(CreateStudentModel creation)
@@ -389,12 +393,15 @@ public class StudentService : IStudentService
         throw new InvalidParameterException("Not found student");
     }
 
-    public PagedResultModel<OrderModel> GetOrderListByStudentId(string id, string propertySort, bool isAsc, string search, int page, int limit)
+    public PagedResultModel<OrderModel> GetOrderListByStudentId
+        (List<string> stationIds, List<string> stateIds, string id, string propertySort, bool isAsc, string search, int page, int limit)
     {
         Student entity = studentRepository.GetById(id);
 
         if (entity != null)
         {
+            return orderService.GetAll
+                (stationIds, new List<string> { id }, stateIds, propertySort, isAsc, search, page, limit);
         }
         throw new InvalidParameterException("Not found student");
     }
