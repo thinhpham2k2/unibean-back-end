@@ -51,7 +51,7 @@ public class DistrictRepository : IDistrictRepository
                 || EF.Functions.Like(t.City.CityName, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
                 && (cityIds.Count == 0 || cityIds.Contains(t.CityId))
-                && t.Status.Equals(true))
+                && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 
             var result = query
@@ -84,7 +84,7 @@ public class DistrictRepository : IDistrictRepository
         {
             using var db = new UnibeanDBContext();
             district = db.Districts
-            .Where(s => s.Id.Equals(id) && s.Status.Equals(true))
+            .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(d => d.City)
             .FirstOrDefault();
         }

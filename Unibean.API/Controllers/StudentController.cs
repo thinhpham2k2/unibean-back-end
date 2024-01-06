@@ -9,6 +9,7 @@ using Unibean.Service.Models.Parameters;
 using Unibean.Service.Models.StudentChallenges;
 using Unibean.Service.Models.Students;
 using Unibean.Service.Models.Transactions;
+using Unibean.Service.Models.VoucherItems;
 using Unibean.Service.Services.Interfaces;
 
 namespace Unibean.API.Controllers;
@@ -234,7 +235,7 @@ public class StudentController : ControllerBase
     /// <param name="stateIds">Filter by state Id.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/orders")]
-    //[Authorize(Roles = "Admin, Brand, Store, Student")]
+    [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(PagedResultModel<OrderModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public ActionResult<PagedResultModel<OrderModel>> GetOrderListByStudentId(string id,
@@ -256,6 +257,45 @@ public class StudentController : ControllerBase
                 return Ok(result);
             }
             return BadRequest("Invalid property of order");
+        }
+        catch (InvalidParameterException e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Get voucher list by student id
+    /// </summary>
+    /// <param name="id">Student id.</param>
+    /// <param name="campaignIds">Filter by campaign Id.</param>
+    /// <param name="voucherIds">Filter by voucher Id.</param>
+    /// <param name="brandIds">Filter by brand Id.</param>
+    /// <param name="paging">Paging parameter.</param>
+    [HttpGet("{id}/vouchers")]
+    //[Authorize(Roles = "Admin, Brand, Store, Student")]
+    [ProducesResponseType(typeof(PagedResultModel<VoucherItemModel>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    public ActionResult<PagedResultModel<OrderModel>> GetVoucherListByStudentId(string id,
+        [FromQuery] List<string> campaignIds,
+        [FromQuery] List<string> voucherIds,
+        [FromQuery] List<string> brandIds,
+        [FromQuery] PagingModel paging)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            string propertySort = paging.Sort.Split(",")[0];
+            var propertyInfo = typeof(VoucherItem).GetProperty(propertySort);
+            if (propertySort != null && propertyInfo != null)
+            {
+                PagedResultModel<VoucherItemModel>
+                result = studentService.GetVoucherListByStudentId
+                    (campaignIds, voucherIds, brandIds, id, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
+                return Ok(result);
+            }
+            return BadRequest("Invalid property of voucher");
         }
         catch (InvalidParameterException e)
         {

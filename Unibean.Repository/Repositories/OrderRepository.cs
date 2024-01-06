@@ -53,8 +53,8 @@ public class OrderRepository : IOrderRepository
                 && (stationIds.Count == 0 || stationIds.Contains(o.StationId))
                 && (studentIds.Count == 0 || studentIds.Contains(o.StudentId))
                 && (stateIds.Count == 0 || stateIds.Contains(o.OrderStates
-                    .Where(s => s.Status.Equals(true)).Max(d => d.State.Id)))
-                && o.Status.Equals(true))
+                    .Where(s => (bool)s.Status).Max(d => d.State.Id)))
+                && (bool)o.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 
             var result = query
@@ -62,10 +62,10 @@ public class OrderRepository : IOrderRepository
                .Take(limit)
                .Include(o => o.Student)
                .Include(o => o.Station)
-               .Include(o => o.OrderDetails.Where(d => d.Status.Equals(true)))
+               .Include(o => o.OrderDetails.Where(d => (bool)d.Status))
                     .ThenInclude(o => o.Product)
                         .ThenInclude(p => p.Images)
-               .Include(o => o.OrderStates.Where(s => s.Status.Equals(true)))
+               .Include(o => o.OrderStates.Where(s => (bool)s.Status))
                     .ThenInclude(o => o.State)
                .ToList();
 
@@ -93,13 +93,13 @@ public class OrderRepository : IOrderRepository
         {
             using var db = new UnibeanDBContext();
             order = db.Orders
-            .Where(s => s.Id.Equals(id) && s.Status.Equals(true))
+            .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(o => o.Student)
             .Include(o => o.Station)
-            .Include(o => o.OrderDetails.Where(d => d.Status.Equals(true)))
+            .Include(o => o.OrderDetails.Where(d => (bool)d.Status))
                 .ThenInclude(o => o.Product)
                     .ThenInclude(p => p.Images)
-            .Include(o => o.OrderStates.Where(s => s.Status.Equals(true)))
+            .Include(o => o.OrderStates.Where(s => (bool)s.Status))
                 .ThenInclude(o => o.State)
             .FirstOrDefault();
         }

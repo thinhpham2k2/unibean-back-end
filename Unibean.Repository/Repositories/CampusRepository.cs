@@ -56,7 +56,7 @@ public class CampusRepository : ICampusRepository
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
                 && (universityIds.Count == 0 || universityIds.Contains(t.UniversityId))
                 && (areaIds.Count == 0 || areaIds.Contains(t.AreaId))
-                && t.Status.Equals(true))
+                && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 
             var result = query
@@ -90,7 +90,7 @@ public class CampusRepository : ICampusRepository
         {
             using var db = new UnibeanDBContext();
             campus = db.Campuses
-            .Where(s => s.Id.Equals(id) && s.Status.Equals(true))
+            .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.University)
             .Include(s => s.Area)
             .FirstOrDefault();

@@ -38,6 +38,7 @@ public class OrderService : IOrderService
             cfg.CreateMap<OrderState, OrderStateModel>()
             .ForMember(s => s.StateName, opt => opt.MapFrom(src => src.State.StateName))
             .ForMember(s => s.StateImage, opt => opt.MapFrom(src => src.State.Image))
+            .ForMember(s => s.State, opt => opt.MapFrom(src => src.States))
             .ReverseMap();
         });
        mapper = new Mapper(config);

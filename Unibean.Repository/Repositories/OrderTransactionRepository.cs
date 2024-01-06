@@ -20,7 +20,7 @@ public class OrderTransactionRepository : IOrderTransactionRepository
                 || EF.Functions.Like(o.Description, "%" + search + "%"))
                 && (walletIds.Count == 0 || walletIds.Contains(o.WalletId))
                 && (orderIds.Count == 0 || orderIds.Contains(o.OrderId))
-                && o.Status.Equals(true))
+                && (bool)o.Status)
                 .Include(s => s.Wallet)
                     .ThenInclude(w => w.Type)
                 .Include(s => s.Order).ToList();

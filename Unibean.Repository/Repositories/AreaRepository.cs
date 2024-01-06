@@ -52,7 +52,7 @@ public class AreaRepository : IAreaRepository
                 || EF.Functions.Like(t.District.City.CityName, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
                 && (districtIds.Count == 0 || districtIds.Contains(t.DistrictId))
-                && t.Status.Equals(true))
+                && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 
             var result = query
@@ -86,7 +86,7 @@ public class AreaRepository : IAreaRepository
         {
             using var db = new UnibeanDBContext();
             area = db.Areas
-            .Where(s => s.Id.Equals(id) && s.Status.Equals(true))
+            .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(a => a.District)
             .ThenInclude(d => d.City)
             .FirstOrDefault();

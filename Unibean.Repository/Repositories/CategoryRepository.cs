@@ -49,7 +49,7 @@ public class CategoryRepository : ICategoryRepository
                 .Where(t => (EF.Functions.Like(t.CategoryName, "%" + search + "%")
                 || EF.Functions.Like(t.FileName, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
-                && t.Status.Equals(true))
+                && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 
             var result = query
@@ -81,7 +81,7 @@ public class CategoryRepository : ICategoryRepository
         {
             using var db = new UnibeanDBContext();
             category = db.Categories
-            .Where(s => s.Id.Equals(id) && s.Status.Equals(true))
+            .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .FirstOrDefault();
         }
         catch (Exception ex)

@@ -49,7 +49,7 @@ public class LevelRepository : ILevelRepository
                 .Where(t => (EF.Functions.Like(t.LevelName, "%" + search + "%")
                 || EF.Functions.Like(t.FileName, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
-                && t.Status.Equals(true))
+                && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 
             var result = query
@@ -81,7 +81,7 @@ public class LevelRepository : ILevelRepository
         {
             using var db = new UnibeanDBContext();
             level = db.Levels
-            .Where(s => s.Id.Equals(id) && s.Status.Equals(true))
+            .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .FirstOrDefault();
         }
         catch (Exception ex)

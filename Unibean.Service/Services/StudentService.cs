@@ -13,6 +13,7 @@ using Unibean.Service.Utilities.FireBase;
 using BCryptNet = BCrypt.Net.BCrypt;
 using System.Linq.Dynamic.Core;
 using Unibean.Service.Models.Orders;
+using Unibean.Service.Models.VoucherItems;
 
 namespace Unibean.Service.Services;
 
@@ -206,13 +207,13 @@ public class StudentService : IStudentService
                 // Take the challenge
                 studentChallengeService.Update(studentRepository
                     .GetById(student.Id).StudentChallenges
-                    .Where(s => s.Status.Equals(true)
+                    .Where(s => (bool)s.Status
                     && s.IsCompleted.Equals(false)
                     && s.Challenge.Type.TypeName.Equals("Welcome")), 1);
 
                 studentChallengeService.Update(studentRepository
                     .GetById(creation.InviteCode).StudentChallenges
-                    .Where(s => s.Status.Equals(true)
+                    .Where(s => (bool)s.Status
                     && s.IsCompleted.Equals(false)
                     && s.Challenge.Type.TypeName.Equals("Spread")), 1);
             }
@@ -271,13 +272,13 @@ public class StudentService : IStudentService
                 // Take the challenge
                 studentChallengeService.Update(studentRepository
                     .GetById(entity.Id).StudentChallenges
-                    .Where(s => s.Status.Equals(true)
+                    .Where(s => (bool)s.Status
                     && s.IsCompleted.Equals(false)
                     && s.Challenge.Type.TypeName.Equals("Welcome")), 1);
 
                 studentChallengeService.Update(studentRepository
                     .GetById(creation.InviteCode).StudentChallenges
-                    .Where(s => s.Status.Equals(true)
+                    .Where(s => (bool)s.Status
                     && s.IsCompleted.Equals(false)
                     && s.Challenge.Type.TypeName.Equals("Spread")), 1);
             }
@@ -402,6 +403,18 @@ public class StudentService : IStudentService
         {
             return orderService.GetAll
                 (stationIds, new List<string> { id }, stateIds, propertySort, isAsc, search, page, limit);
+        }
+        throw new InvalidParameterException("Not found student");
+    }
+
+    public PagedResultModel<VoucherItemModel> GetVoucherListByStudentId
+        (List<string> campaignIds, List<string> voucherIds, List<string> brandIds, string id, string propertySort, bool isAsc, string search, int page, int limit)
+    {
+        Student entity = studentRepository.GetById(id);
+
+        if (entity != null)
+        {
+            return null;
         }
         throw new InvalidParameterException("Not found student");
     }

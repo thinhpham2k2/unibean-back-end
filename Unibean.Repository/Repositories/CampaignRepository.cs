@@ -12,7 +12,7 @@ public class CampaignRepository : ICampaignRepository
         {
             using var db = new UnibeanDBContext();
             campaign = db.Campaigns
-            .Where(s => s.Id.Equals(id) && s.Status.Equals(true))
+            .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .FirstOrDefault();
         }
         catch (Exception ex)

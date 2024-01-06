@@ -3,6 +3,7 @@ using Unibean.Service.Models.Orders;
 using Unibean.Service.Models.StudentChallenges;
 using Unibean.Service.Models.Students;
 using Unibean.Service.Models.Transactions;
+using Unibean.Service.Models.VoucherItems;
 
 namespace Unibean.Service.Services.Interfaces;
 
@@ -28,6 +29,9 @@ public interface IStudentService
 
     PagedResultModel<OrderModel> GetOrderListByStudentId
         (List<string> stationIds, List<string> stateIds, string id, string propertySort, bool isAsc, string search, int page, int limit);
+
+    PagedResultModel<VoucherItemModel> GetVoucherListByStudentId
+        (List<string> campaignIds, List<string> voucherIds, List<string> brandIds, string id, string propertySort, bool isAsc, string search, int page, int limit);
 
     Task<StudentModel> Update(string id, UpdateStudentModel update);
 }

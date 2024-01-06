@@ -20,7 +20,7 @@ public class PaymentTransactionRepository : IPaymentTransactionRepository
                 || EF.Functions.Like(p.Description, "%" + search + "%"))
                 && (walletIds.Count == 0 || walletIds.Contains(p.WalletId))
                 && (paymentIds.Count == 0 || paymentIds.Contains(p.PaymentId))
-                && p.Status.Equals(true))
+                && (bool)p.Status)
                 .Include(s => s.Wallet)
                     .ThenInclude(w => w.Type)
                 .Include(s => s.Payment).ToList();
