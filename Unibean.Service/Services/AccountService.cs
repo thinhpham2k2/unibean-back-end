@@ -215,13 +215,13 @@ public class AccountService : IAccountService
                 // Take the challenge
                 studentChallengeService.Update(studentRepository
                     .GetById(student.Id).StudentChallenges
-                    .Where(s => s.Status.Equals(true) 
+                    .Where(s => (bool)s.Status 
                     && s.IsCompleted.Equals(false) 
                     && s.Challenge.Type.TypeName.Equals("Welcome")), 1);
 
                 studentChallengeService.Update(studentRepository
                     .GetById(creation.InviteCode).StudentChallenges
-                    .Where(s => s.Status.Equals(true) 
+                    .Where(s => (bool)s.Status 
                     && s.IsCompleted.Equals(false) 
                     && s.Challenge.Type.TypeName.Equals("Spread")), 1);
             }

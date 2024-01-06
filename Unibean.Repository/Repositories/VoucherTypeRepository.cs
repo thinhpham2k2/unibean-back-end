@@ -49,7 +49,7 @@ public class VoucherTypeRepository : IVoucherTypeRepository
                 .Where(t => (EF.Functions.Like(t.TypeName, "%" + search + "%")
                 || EF.Functions.Like(t.FileName, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
-                && t.Status.Equals(true))
+                && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 
             var result = query
@@ -81,7 +81,7 @@ public class VoucherTypeRepository : IVoucherTypeRepository
         {
             using var db = new UnibeanDBContext();
             type = db.VoucherTypes
-            .Where(s => s.Id.Equals(id) && s.Status.Equals(true))
+            .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .FirstOrDefault();
         }
         catch (Exception ex)

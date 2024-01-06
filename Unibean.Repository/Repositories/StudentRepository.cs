@@ -14,14 +14,14 @@ public class StudentRepository : IStudentRepository
         {
             using var db = new UnibeanDBContext();
             creation.LevelId = db.Levels.Where(l 
-                => l.Status.Equals(true)).OrderBy(l => l.Condition).FirstOrDefault().Id;
+                => (bool)l.Status).OrderBy(l => l.Condition).FirstOrDefault().Id;
 
             creation = db.Students.Add(creation).Entity;
 
             if (creation != null)
             {
                 // Create wallet
-                foreach (var type in db.WalletTypes.Where(s => s.Status.Equals(true)))
+                foreach (var type in db.WalletTypes.Where(s => (bool)s.Status))
                 {
                     db.Wallets.Add(new Wallet
                     {
@@ -38,7 +38,7 @@ public class StudentRepository : IStudentRepository
                 }
 
                 // Create student challenge
-                foreach (var challenge in db.Challenges.Where(s => s.Status.Equals(true)))
+                foreach (var challenge in db.Challenges.Where(s => (bool)s.Status))
                 {
                     db.StudentChallenges.Add(new StudentChallenge
                     {
@@ -73,7 +73,7 @@ public class StudentRepository : IStudentRepository
         {
             using var db = new UnibeanDBContext();
             student = db.Students
-                .Where(s => s.Id.Equals(inviteCode) && s.Status.Equals(true)).FirstOrDefault();
+                .Where(s => s.Id.Equals(inviteCode) && (bool)s.Status).FirstOrDefault();
         }
         catch (Exception ex)
         {
@@ -120,7 +120,7 @@ public class StudentRepository : IStudentRepository
                 && (majorIds.Count == 0 || majorIds.Contains(s.MajorId))
                 && (campusIds.Count == 0 || campusIds.Contains(s.CampusId))
                 && (isVerify == null || isVerify.Equals(s.Account.IsVerify))
-                && s.Status.Equals(true))
+                && (bool)s.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 
             var result = query
@@ -131,7 +131,7 @@ public class StudentRepository : IStudentRepository
                .Include(b => b.Major)
                .Include(b => b.Campus)
                .Include(b => b.Account)
-               .Include(s => s.Wallets.Where(w => w.Status.Equals(true)))
+               .Include(s => s.Wallets.Where(w => (bool)w.Status))
                    .ThenInclude(w => w.Type)
                .ToList();
 
@@ -159,21 +159,21 @@ public class StudentRepository : IStudentRepository
         {
             using var db = new UnibeanDBContext();
             student = db.Students
-            .Where(s => s.Id.Equals(id) && s.Status.Equals(true))
+            .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(b => b.Level)
             .Include(b => b.Gender)
             .Include(b => b.Major)
             .Include(b => b.Campus)
             .Include(b => b.Account)
-            .Include(s => s.Activities.Where(a => a.Status.Equals(true)))
+            .Include(s => s.Activities.Where(a => (bool)a.Status))
                 .ThenInclude(a => a.Type)
-            .Include(s => s.Wallets.Where(w => w.Status.Equals(true)))
+            .Include(s => s.Wallets.Where(w => (bool)w.Status))
                 .ThenInclude(w => w.Type)
-            .Include(s => s.Wishlists.Where(w => w.Status.Equals(true)))
-            .Include(s => s.Inviters.Where(i => i.Status.Equals(true)))
-            .Include(s => s.Invitees.Where(i => i.Status.Equals(true)))
+            .Include(s => s.Wishlists.Where(w => (bool)w.Status))
+            .Include(s => s.Inviters.Where(i => (bool)i.Status))
+            .Include(s => s.Invitees.Where(i => (bool)i.Status))
                 .ThenInclude(i => i.Inviter)
-            .Include(s => s.StudentChallenges.Where(s => s.Status.Equals(true)))
+            .Include(s => s.StudentChallenges.Where(s => (bool)s.Status))
                 .ThenInclude(s => s.Challenge)
                     .ThenInclude(c => c.Type)
             .FirstOrDefault();

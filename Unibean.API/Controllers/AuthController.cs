@@ -14,7 +14,7 @@ using Unibean.Service.Services.Interfaces;
 namespace Unibean.API.Controllers;
 
 [ApiController]
-[Tags("Authentication API")]
+[Tags("🔐Authentication API")]
 [Route("api/v1/auths")]
 public class AuthController : ControllerBase
 {

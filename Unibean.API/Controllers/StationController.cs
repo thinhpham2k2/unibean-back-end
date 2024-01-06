@@ -1,59 +1,59 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
-using Unibean.Service.Models.Exceptions;
-using Unibean.Service.Models.Majors;
 using Unibean.Service.Models.Parameters;
 using Unibean.Service.Services.Interfaces;
+using Unibean.Service.Models.Stations;
+using Unibean.Service.Models.Exceptions;
+using Unibean.Repository.Entities;
 
 namespace Unibean.API.Controllers;
 
 [ApiController]
-[Tags("📚Major API")]
-[Route("api/v1/majors")]
-public class MajorController : ControllerBase
+[Tags("🏣Station API")]
+[Route("api/v1/stations")]
+public class StationController : ControllerBase
 {
-    private readonly IMajorService majorService;
+    private readonly IStationService stationService;
 
-    public MajorController(IMajorService majorService)
+    public StationController(IStationService stationService)
     {
-        this.majorService = majorService;
+        this.stationService = stationService;
     }
 
     /// <summary>
-    /// Get major list
+    /// Get station list
     /// </summary>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
-    [AllowAnonymous]
-    [ProducesResponseType(typeof(PagedResultModel<MajorModel>),
+    [Authorize(Roles = "Admin, Brand, Store, Student")]
+    [ProducesResponseType(typeof(PagedResultModel<StationModel>),
         (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public ActionResult<PagedResultModel<MajorModel>> GetList(
+    public ActionResult<PagedResultModel<StationModel>> GetList(
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         string propertySort = paging.Sort.Split(",")[0];
-        var propertyInfo = typeof(Major).GetProperty(propertySort);
+        var propertyInfo = typeof(Station).GetProperty(propertySort);
         if (propertySort != null && propertyInfo != null)
         {
-            PagedResultModel<MajorModel>
-                result = majorService.GetAll
+            PagedResultModel<StationModel>
+                result = stationService.GetAll
                 (propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }
-        return BadRequest("Invalid property of major");
+        return BadRequest("Invalid property of station");
     }
 
     /// <summary>
-    /// Get major by id
+    /// Get station by id
     /// </summary>
     [HttpGet("{id}")]
-    [AllowAnonymous]
-    [ProducesResponseType(typeof(MajorModel), (int)HttpStatusCode.OK)]
+    [Authorize(Roles = "Admin, Brand, Store, Student")]
+    [ProducesResponseType(typeof(StationModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public IActionResult GetById(string id)
     {
@@ -61,7 +61,7 @@ public class MajorController : ControllerBase
 
         try
         {
-            return Ok(majorService.GetById(id));
+            return Ok(stationService.GetById(id));
         }
         catch (InvalidParameterException e)
         {
@@ -70,22 +70,22 @@ public class MajorController : ControllerBase
     }
 
     /// <summary>
-    /// Create major
+    /// Create station
     /// </summary>
     [HttpPost]
     [Authorize(Roles = "Admin")]
-    [ProducesResponseType(typeof(MajorModel), (int)HttpStatusCode.Created)]
+    [ProducesResponseType(typeof(StationModel), (int)HttpStatusCode.Created)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public async Task<ActionResult> Create([FromForm] CreateMajorModel creation)
+    public async Task<ActionResult> Create([FromForm] CreateStationModel creation)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         try
         {
-            var major = await majorService.Add(creation);
-            if (major != null)
+            var station = await stationService.Add(creation);
+            if (station != null)
             {
-                return StatusCode(StatusCodes.Status201Created, major);
+                return StatusCode(StatusCodes.Status201Created, station);
             }
             return NotFound("Create fail");
         }
@@ -96,22 +96,22 @@ public class MajorController : ControllerBase
     }
 
     /// <summary>
-    /// Update major
+    /// Update station
     /// </summary>
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin")]
-    [ProducesResponseType(typeof(MajorModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(StationModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public async Task<ActionResult> Update(string id, [FromForm] UpdateMajorModel update)
+    public async Task<ActionResult> Update(string id, [FromForm] UpdateStationModel update)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         try
         {
-            var major = await majorService.Update(id, update);
-            if (major != null)
+            var station = await stationService.Update(id, update);
+            if (station != null)
             {
-                return StatusCode(StatusCodes.Status200OK, major);
+                return StatusCode(StatusCodes.Status200OK, station);
             }
             return NotFound("Update fail");
         }
@@ -122,7 +122,7 @@ public class MajorController : ControllerBase
     }
 
     /// <summary>
-    /// Delete major
+    /// Delete station
     /// </summary>
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin")]
@@ -134,7 +134,7 @@ public class MajorController : ControllerBase
 
         try
         {
-            majorService.Delete(id);
+            stationService.Delete(id);
             return StatusCode(StatusCodes.Status204NoContent);
         }
         catch (InvalidParameterException e)

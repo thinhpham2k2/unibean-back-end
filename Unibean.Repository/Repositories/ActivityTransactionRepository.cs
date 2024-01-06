@@ -20,7 +20,7 @@ public class ActivityTransactionRepository : IActivityTransactionRepository
                 || EF.Functions.Like(a.Description, "%" + search + "%"))
                 && (walletIds.Count == 0 || walletIds.Contains(a.WalletId))
                 && (activityIds.Count == 0 || activityIds.Contains(a.ActivityId))
-                && a.Status.Equals(true))
+                && (bool)a.Status)
                 .Include(s => s.Wallet)
                     .ThenInclude(w => w.Type)
                 .Include(s => s.Activity)

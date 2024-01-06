@@ -1,4 +1,7 @@
-﻿namespace Unibean.Service.Models.Orders;
+﻿using Unibean.Service.Models.OrderDetails;
+using Unibean.Service.Models.OrderStates;
+
+namespace Unibean.Service.Models.Orders;
 
 public class OrderModel
 {
@@ -12,4 +15,7 @@ public class OrderModel
     public string Description { get; set; }
     public bool? State { get; set; }
     public bool? Status { get; set; }
+    public string StateCurrent { get; set; }
+    public virtual ICollection<OrderDetailModel> OrderDetails { get; set; }
+    public virtual ICollection<OrderStateModel> StateDetails { get; set; }
 }

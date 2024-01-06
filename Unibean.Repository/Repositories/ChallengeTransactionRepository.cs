@@ -17,7 +17,7 @@ public class ChallengeTransactionRepository : IChallengeTransactionRepository
             if (creation != null)
             {
                 // Update wallet balance
-                var wallet = db.Wallets.Where(w => w.Status.Equals(true) && w.Id.Equals(creation.WalletId))
+                var wallet = db.Wallets.Where(w => (bool)w.Status && w.Id.Equals(creation.WalletId))
                     .FirstOrDefault();
                 wallet.Balance += creation.Amount;
                 wallet.DateUpdated = DateTime.Now;
@@ -46,7 +46,7 @@ public class ChallengeTransactionRepository : IChallengeTransactionRepository
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
                 && (walletIds.Count == 0 || walletIds.Contains(t.WalletId))
                 && (challengeIds.Count == 0 || challengeIds.Contains(t.ChallengeId))
-                && t.Status.Equals(true))
+                && (bool)t.Status)
                 .Include(s => s.Wallet)
                     .ThenInclude(w => w.Type)
                 .Include(s => s.Challenge)
@@ -66,7 +66,7 @@ public class ChallengeTransactionRepository : IChallengeTransactionRepository
         {
             using var db = new UnibeanDBContext();
             challengeTransaction = db.ChallengeTransactions
-            .Where(s => s.Id.Equals(id) && s.Status.Equals(true))
+            .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.Wallet)
                 .ThenInclude(w => w.Type)
             .Include(s => s.Challenge)

@@ -5,12 +5,13 @@ using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Service.Models.Areas;
 using Unibean.Service.Models.Exceptions;
+using Unibean.Service.Models.Parameters;
 using Unibean.Service.Services.Interfaces;
 
 namespace Unibean.API.Controllers;
 
 [ApiController]
-[Tags("Area API")]
+[Tags("🗺️Area API")]
 [Route("api/v1/areas")]
 public class AreaController : ControllerBase
 {
@@ -25,10 +26,7 @@ public class AreaController : ControllerBase
     /// Get area list
     /// </summary>
     /// <param name="districtIds">Filter by district Id.</param>
-    /// <param name="sort">Sorting criteria for the results.</param>
-    /// <param name="search">Search query.</param>
-    /// <param name="page">Current page in the paginated results.</param>
-    /// <param name="limit">Number of results per page.</param>
+    /// <param name="paging">Paging parameter.</param>
     [HttpGet]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(PagedResultModel<AreaModel>),
@@ -36,20 +34,17 @@ public class AreaController : ControllerBase
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public ActionResult<PagedResultModel<AreaModel>> GetList(
         [FromQuery] List<string> districtIds,
-        [FromQuery] string sort = "Id,desc",
-        [FromQuery] string search = "",
-        [FromQuery] int page = 1,
-        [FromQuery] int limit = 10)
+        [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
-        string propertySort = sort.Split(",")[0];
+        string propertySort = paging.Sort.Split(",")[0];
         var propertyInfo = typeof(Area).GetProperty(propertySort);
         if (propertySort != null && propertyInfo != null)
         {
             PagedResultModel<AreaModel>
                 result = areaService.GetAll
-                (districtIds, propertySort, sort.Split(",")[1].Equals("asc"), search, page, limit);
+                (districtIds, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }
         return BadRequest("Invalid property of area");

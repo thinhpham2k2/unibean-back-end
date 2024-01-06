@@ -18,7 +18,7 @@ public class ChallengeRepository : IChallengeRepository
             if (creation != null)
             {
                 // Create student challenge
-                foreach (var student in db.Students.Where(s => s.Status.Equals(true)))
+                foreach (var student in db.Students.Where(s => (bool)s.Status))
                 {
                     db.StudentChallenges.Add(new StudentChallenge
                     {
@@ -74,7 +74,7 @@ public class ChallengeRepository : IChallengeRepository
                 || EF.Functions.Like(t.Type.TypeName, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
                 && (typeIds.Count == 0 || typeIds.Contains(t.TypeId))
-                && t.Status.Equals(true))
+                && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 
             var result = query
@@ -107,7 +107,7 @@ public class ChallengeRepository : IChallengeRepository
         {
             using var db = new UnibeanDBContext();
             challenge = db.Challenges
-            .Where(s => s.Id.Equals(id) && s.Status.Equals(true))
+            .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(c => c.Type)
             .FirstOrDefault();
         }

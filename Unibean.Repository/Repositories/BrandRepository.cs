@@ -18,7 +18,7 @@ public class BrandRepository : IBrandRepository
             if(creation != null)
             {
                 // Create wallet
-                foreach (var type in db.WalletTypes.Where(s => s.Status.Equals(true)))
+                foreach (var type in db.WalletTypes.Where(s => (bool)s.Status))
                 {
                     db.Wallets.Add(new Wallet
                     {
@@ -72,15 +72,15 @@ public class BrandRepository : IBrandRepository
                 || EF.Functions.Like(p.Address, "%" + search + "%")
                 || EF.Functions.Like(p.CoverFileName, "%" + search + "%")
                 || EF.Functions.Like(p.Description, "%" + search + "%"))
-                && p.Status.Equals(true))
+                && (bool)p.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 
             var result = query
                .Skip((page - 1) * limit)
                .Take(limit)
                .Include(b => b.Account)
-               .Include(s => s.Wishlists.Where(w => w.Status.Equals(true)))
-               .Include(s => s.Wallets.Where(w => w.Status.Equals(true)))
+               .Include(s => s.Wishlists.Where(w => (bool)w.Status))
+               .Include(s => s.Wallets.Where(w => (bool)w.Status))
                    .ThenInclude(w => w.Type)
                .ToList();
 
@@ -108,16 +108,16 @@ public class BrandRepository : IBrandRepository
         {
             using var db = new UnibeanDBContext();
             brand = db.Brands
-            .Where(s => s.Id.Equals(id) && s.Status.Equals(true))
+            .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.Account)
-            .Include(s => s.Wishlists.Where(w => w.Status.Equals(true)))
-            .Include(s => s.Wallets.Where(w => w.Status.Equals(true)))
+            .Include(s => s.Wishlists.Where(w => (bool)w.Status))
+            .Include(s => s.Wallets.Where(w => (bool)w.Status))
                 .ThenInclude(w => w.Type)
-            .Include(s => s.Campaigns.Where(c => c.Status.Equals(true)))
+            .Include(s => s.Campaigns.Where(c => (bool)c.Status))
                 .ThenInclude(c => c.Type)
-            .Include(s => s.Stores.Where(s => s.Status.Equals(true)))
+            .Include(s => s.Stores.Where(s => (bool)s.Status))
                 .ThenInclude(s => s.Area)
-            .Include(s => s.Vouchers.Where(s => s.Status.Equals(true)))
+            .Include(s => s.Vouchers.Where(s => (bool)s.Status))
                 .ThenInclude(s => s.Type)
             .FirstOrDefault();
         }

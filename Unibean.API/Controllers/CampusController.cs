@@ -5,12 +5,13 @@ using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Service.Models.Campuses;
 using Unibean.Service.Models.Exceptions;
+using Unibean.Service.Models.Parameters;
 using Unibean.Service.Services.Interfaces;
 
 namespace Unibean.API.Controllers;
 
 [ApiController]
-[Tags("Campus API")]
+[Tags("🏫Campus API")]
 [Route("api/v1/campuses")]
 public class CampusController : ControllerBase
 {
@@ -26,10 +27,7 @@ public class CampusController : ControllerBase
     /// </summary>
     /// <param name="universityIds">Filter by university Id.</param>
     /// <param name="areaIds">Filter by area Id.</param>
-    /// <param name="sort">Sorting criteria for the results.</param>
-    /// <param name="search">Search query.</param>
-    /// <param name="page">Current page in the paginated results.</param>
-    /// <param name="limit">Number of results per page.</param>
+    /// <param name="paging">Paging parameter.</param>
     [HttpGet]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(PagedResultModel<CampusModel>),
@@ -38,20 +36,17 @@ public class CampusController : ControllerBase
     public ActionResult<PagedResultModel<CampusModel>> GetList(
         [FromQuery] List<string> universityIds,
         [FromQuery] List<string> areaIds,
-        [FromQuery] string sort = "Id,desc",
-        [FromQuery] string search = "",
-        [FromQuery] int page = 1,
-        [FromQuery] int limit = 10)
+        [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
-        string propertySort = sort.Split(",")[0];
+        string propertySort = paging.Sort.Split(",")[0];
         var propertyInfo = typeof(Campus).GetProperty(propertySort);
         if (propertySort != null && propertyInfo != null)
         {
             PagedResultModel<CampusModel>
                 result = campusService.GetAll
-                (universityIds, areaIds, propertySort, sort.Split(",")[1].Equals("asc"), search, page, limit);
+                (universityIds, areaIds, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }
         return BadRequest("Invalid property of campus");

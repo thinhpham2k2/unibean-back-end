@@ -12,7 +12,8 @@ using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Utilities.FireBase;
 using BCryptNet = BCrypt.Net.BCrypt;
 using System.Linq.Dynamic.Core;
-using System.Text;
+using Unibean.Service.Models.Orders;
+using Unibean.Service.Models.VoucherItems;
 
 namespace Unibean.Service.Services;
 
@@ -44,6 +45,8 @@ public class StudentService : IStudentService
 
     private readonly IActivityTransactionService activityTransactionService;
 
+    private readonly IOrderService orderService;
+
     public StudentService(IStudentRepository studentRepository,
         IFireBaseService fireBaseService,
         IAccountRepository accountRepository,
@@ -53,7 +56,8 @@ public class StudentService : IStudentService
         IChallengeTransactionService challengeTransactionService,
         IOrderTransactionService orderTransactionService,
         IPaymentTransactionService paymentTransactionService,
-        IActivityTransactionService activityTransactionService)
+        IActivityTransactionService activityTransactionService,
+        IOrderService orderService)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -149,6 +153,7 @@ public class StudentService : IStudentService
         this.orderTransactionService = orderTransactionService;
         this.paymentTransactionService = paymentTransactionService;
         this.activityTransactionService = activityTransactionService;
+        this.orderService = orderService;
     }
 
     public async Task<StudentModel> Add(CreateStudentModel creation)
@@ -202,13 +207,13 @@ public class StudentService : IStudentService
                 // Take the challenge
                 studentChallengeService.Update(studentRepository
                     .GetById(student.Id).StudentChallenges
-                    .Where(s => s.Status.Equals(true)
+                    .Where(s => (bool)s.Status
                     && s.IsCompleted.Equals(false)
                     && s.Challenge.Type.TypeName.Equals("Welcome")), 1);
 
                 studentChallengeService.Update(studentRepository
                     .GetById(creation.InviteCode).StudentChallenges
-                    .Where(s => s.Status.Equals(true)
+                    .Where(s => (bool)s.Status
                     && s.IsCompleted.Equals(false)
                     && s.Challenge.Type.TypeName.Equals("Spread")), 1);
             }
@@ -267,13 +272,13 @@ public class StudentService : IStudentService
                 // Take the challenge
                 studentChallengeService.Update(studentRepository
                     .GetById(entity.Id).StudentChallenges
-                    .Where(s => s.Status.Equals(true)
+                    .Where(s => (bool)s.Status
                     && s.IsCompleted.Equals(false)
                     && s.Challenge.Type.TypeName.Equals("Welcome")), 1);
 
                 studentChallengeService.Update(studentRepository
                     .GetById(creation.InviteCode).StudentChallenges
-                    .Where(s => s.Status.Equals(true)
+                    .Where(s => (bool)s.Status
                     && s.IsCompleted.Equals(false)
                     && s.Challenge.Type.TypeName.Equals("Spread")), 1);
             }
@@ -334,6 +339,25 @@ public class StudentService : IStudentService
         throw new InvalidParameterException("Not found student");
     }
 
+    public PagedResultModel<StudentChallengeModel> GetChallengeByStudentId
+        (string id, bool? isCompleted, bool? isClaimed, string propertySort, bool isAsc, string search, int page, int limit)
+    {
+        Student entity = studentRepository.GetById(id);
+
+        if (entity != null)
+        {
+            PagedResultModel<StudentChallengeModel> result = studentChallengeService.GetAll
+                (new List<string> { id }, new(), propertySort, isAsc, search, page, limit);
+
+            result.Result = result.Result
+                .Where(c => (isCompleted == null || c.IsCompleted.Equals(isCompleted))
+                && (isClaimed == null || c.IsClaimed.Equals(isClaimed))).ToList();
+
+            return result;
+        }
+        throw new InvalidParameterException("Not found student");
+    }
+
     public PagedResultModel<TransactionModel> GetHistoryTransactionByStudentId
         (string id, string propertySort, bool isAsc, string search, int page, int limit)
     {
@@ -370,12 +394,29 @@ public class StudentService : IStudentService
         throw new InvalidParameterException("Not found student");
     }
 
-    public static bool CompareStrings(string str1, string str2)
+    public PagedResultModel<OrderModel> GetOrderListByStudentId
+        (List<string> stationIds, List<string> stateIds, string id, string propertySort, bool isAsc, string search, int page, int limit)
     {
-        return string.Equals(
-            str1.Normalize(NormalizationForm.FormD),
-            str2.Normalize(NormalizationForm.FormD),
-            StringComparison.OrdinalIgnoreCase);
+        Student entity = studentRepository.GetById(id);
+
+        if (entity != null)
+        {
+            return orderService.GetAll
+                (stationIds, new List<string> { id }, stateIds, propertySort, isAsc, search, page, limit);
+        }
+        throw new InvalidParameterException("Not found student");
+    }
+
+    public PagedResultModel<VoucherItemModel> GetVoucherListByStudentId
+        (List<string> campaignIds, List<string> voucherIds, List<string> brandIds, string id, string propertySort, bool isAsc, string search, int page, int limit)
+    {
+        Student entity = studentRepository.GetById(id);
+
+        if (entity != null)
+        {
+            return null;
+        }
+        throw new InvalidParameterException("Not found student");
     }
 
     public async Task<StudentModel> Update(string id, UpdateStudentModel update)

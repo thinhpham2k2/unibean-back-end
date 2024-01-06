@@ -50,7 +50,7 @@ public class RoleRepository : IRoleRepository
                 .Where(r => (EF.Functions.Like(r.RoleName, "%" + search + "%")
                 || EF.Functions.Like(r.FileName, "%" + search + "%")
                 || EF.Functions.Like(r.Description, "%" + search + "%"))
-                && r.Status.Equals(true))
+                && (bool)r.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 
             var result = query
@@ -82,7 +82,7 @@ public class RoleRepository : IRoleRepository
         {
             using var db = new UnibeanDBContext();
             role = db.Roles
-            .Where(s => s.Id.Equals(id) && s.Status.Equals(true))
+            .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .FirstOrDefault();
         }
         catch (Exception ex)
@@ -99,7 +99,7 @@ public class RoleRepository : IRoleRepository
         {
             using var db = new UnibeanDBContext();
             role = db.Roles
-            .Where(s => s.RoleName.Equals(roleName) && s.Status.Equals(true))
+            .Where(s => s.RoleName.Equals(roleName) && (bool)s.Status)
             .FirstOrDefault();
         }
         catch (Exception ex)

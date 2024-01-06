@@ -6,6 +6,7 @@ public class OrderStateModel
     public string OrderId { get; set; }
     public string StateId { get; set; }
     public string StateName { get; set; }
+    public string StateImage { get; set; }
     public DateTime? DateCreated { get; set; }
     public string Description { get; set; }
     public bool? State { get; set; }
