@@ -274,7 +274,7 @@ public class StudentController : ControllerBase
     /// <param name="typeIds">Filter by voucher type Id.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/vouchers")]
-    //[Authorize(Roles = "Admin, Brand, Store, Student")]
+    [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(PagedResultModel<VoucherItemModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public ActionResult<PagedResultModel<OrderModel>> GetVoucherListByStudentId(string id,
