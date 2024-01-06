@@ -201,17 +201,15 @@ builder.Services.AddSingleton<IJwtService, JwtService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+app.UseDeveloperExceptionPage();
+app.UseSwagger();
+app.UseSwaggerUI(c
+    =>
 {
-    app.UseDeveloperExceptionPage();
-    app.UseSwagger();
-    app.UseSwaggerUI(c
-        =>
-    {
-        c.InjectStylesheet("/swagger/css/swagger-ui.css");
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Unibean REST API v1");
-    });
-}
+    c.InjectStylesheet("/swagger/css/swagger-ui.css");
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Unibean REST API v1");
+});
+
 app.UseStaticFiles();
 app.UseRouting();
 
