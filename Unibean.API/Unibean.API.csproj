@@ -10,7 +10,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Content Remove="wwwroot\swagger\css\swagger-ui.css" />
+	  <Content Remove="wwwroot\swagger-ui\css\swagger-ui.css" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -24,7 +24,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Include="wwwroot\swagger\css\swagger-ui.css" />
+	  <None Include="wwwroot\swagger-ui\css\swagger-ui.css" />
 	</ItemGroup>
 
 </Project>
