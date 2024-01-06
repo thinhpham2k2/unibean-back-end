@@ -271,6 +271,7 @@ public class StudentController : ControllerBase
     /// <param name="campaignIds">Filter by campaign Id.</param>
     /// <param name="voucherIds">Filter by voucher Id.</param>
     /// <param name="brandIds">Filter by brand Id.</param>
+    /// <param name="typeIds">Filter by voucher type Id.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/vouchers")]
     //[Authorize(Roles = "Admin, Brand, Store, Student")]
@@ -280,6 +281,7 @@ public class StudentController : ControllerBase
         [FromQuery] List<string> campaignIds,
         [FromQuery] List<string> voucherIds,
         [FromQuery] List<string> brandIds,
+        [FromQuery] List<string> typeIds,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -292,7 +294,7 @@ public class StudentController : ControllerBase
             {
                 PagedResultModel<VoucherItemModel>
                 result = studentService.GetVoucherListByStudentId
-                    (campaignIds, voucherIds, brandIds, id, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
+                    (campaignIds, voucherIds, brandIds, typeIds, id, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
             return BadRequest("Invalid property of voucher");

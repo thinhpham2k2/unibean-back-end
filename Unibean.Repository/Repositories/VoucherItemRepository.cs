@@ -40,7 +40,8 @@ public class VoucherItemRepository : IVoucherItemRepository
     }
 
     public PagedResultModel<VoucherItem> GetAll
-        (List<string> campaignIds, List<string> voucherIds, List<string> brandIds, List<string> studentIds, string propertySort, bool isAsc, string search, int page, int limit)
+        (List<string> campaignIds, List<string> voucherIds, List<string> brandIds, List<string> typeIds, List<string> studentIds, 
+        string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<VoucherItem> pagedResult = new();
         try
@@ -57,8 +58,9 @@ public class VoucherItemRepository : IVoucherItemRepository
                 && (campaignIds.Count == 0 || campaignIds.Contains(t.CampaignId))
                 && (voucherIds.Count == 0 || voucherIds.Contains(t.VoucherId))
                 && (brandIds.Count == 0 || brandIds.Contains(t.Voucher.BrandId))
-                && (studentIds.Count == 0 || studentIds.Contains(t.Activities.Where(a 
-                    => (bool)a.Status).FirstOrDefault().StudentId))
+                && (typeIds.Count == 0 || typeIds.Contains(t.Voucher.TypeId))
+                && (studentIds.Count == 0 || studentIds.Contains(t.Activities.FirstOrDefault(a
+                    => (bool)a.Status).StudentId))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 
@@ -71,12 +73,9 @@ public class VoucherItemRepository : IVoucherItemRepository
                     .ThenInclude(v => v.Type)
                .Include(s => s.Voucher)
                     .ThenInclude(v => v.Brand)
-               .Include(s => s.Activities)
-                    .ThenInclude(a => a.Type)
+                        .ThenInclude(b => b.Account)
                .Include(s => s.Activities)
                     .ThenInclude(a => a.Student)
-               .Include(s => s.Activities)
-                    .ThenInclude(a => a.Store)
                .ToList();
 
             pagedResult = new PagedResultModel<VoucherItem>
@@ -110,6 +109,13 @@ public class VoucherItemRepository : IVoucherItemRepository
                 .ThenInclude(v => v.Type)
             .Include(s => s.Voucher)
                 .ThenInclude(v => v.Brand)
+                    .ThenInclude(b => b.Account)
+            .Include(s => s.Activities)
+                .ThenInclude(a => a.Type)
+            .Include(s => s.Activities)
+                .ThenInclude(a => a.Student)
+            .Include(s => s.Activities)
+                .ThenInclude(a => a.Store)
             .FirstOrDefault();
         }
         catch (Exception ex)

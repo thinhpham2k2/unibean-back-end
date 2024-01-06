@@ -206,7 +206,7 @@ app.UseSwagger();
 app.UseSwaggerUI(c
     =>
 {
-    c.InjectStylesheet("/swagger-ui/css/swagger-ui.css");
+    c.InjectStylesheet("/css/swagger/swagger-ui.css");
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Unibean REST API v1");
 });
 

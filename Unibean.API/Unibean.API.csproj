@@ -10,10 +10,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Content Remove="wwwroot\swagger-ui\css\swagger-ui.css" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="DateOnlyTimeOnly.AspNet.Swashbuckle" Version="2.1.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.25" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
@@ -24,7 +20,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Include="wwwroot\swagger-ui\css\swagger-ui.css" />
+		<Folder Include="wwwroot\css\swagger\swagger-ui.css" />
 	</ItemGroup>
-
+	
 </Project>

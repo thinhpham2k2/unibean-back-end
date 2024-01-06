@@ -10,7 +10,8 @@ public interface IVoucherItemRepository
     void Delete(string id);
 
     PagedResultModel<VoucherItem> GetAll
-        (List<string> campaignIds, List<string> voucherIds, List<string> brandIds, List<string> studentIds, string propertySort, bool isAsc, string search, int page, int limit);
+        (List<string> campaignIds, List<string> voucherIds, List<string> brandIds, List<string> typeIds, List<string> studentIds, 
+        string propertySort, bool isAsc, string search, int page, int limit);
 
     VoucherItem GetById(string id);
 
