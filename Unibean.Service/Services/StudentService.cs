@@ -47,6 +47,8 @@ public class StudentService : IStudentService
 
     private readonly IOrderService orderService;
 
+    private readonly IVoucherItemService voucherItemService;
+
     public StudentService(IStudentRepository studentRepository,
         IFireBaseService fireBaseService,
         IAccountRepository accountRepository,
@@ -57,7 +59,8 @@ public class StudentService : IStudentService
         IOrderTransactionService orderTransactionService,
         IPaymentTransactionService paymentTransactionService,
         IActivityTransactionService activityTransactionService,
-        IOrderService orderService)
+        IOrderService orderService,
+        IVoucherItemService voucherItemService)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -154,6 +157,7 @@ public class StudentService : IStudentService
         this.paymentTransactionService = paymentTransactionService;
         this.activityTransactionService = activityTransactionService;
         this.orderService = orderService;
+        this.voucherItemService = voucherItemService;
     }
 
     public async Task<StudentModel> Add(CreateStudentModel creation)
@@ -395,7 +399,8 @@ public class StudentService : IStudentService
     }
 
     public PagedResultModel<OrderModel> GetOrderListByStudentId
-        (List<string> stationIds, List<string> stateIds, string id, string propertySort, bool isAsc, string search, int page, int limit)
+        (List<string> stationIds, List<string> stateIds, string id, 
+        string propertySort, bool isAsc, string search, int page, int limit)
     {
         Student entity = studentRepository.GetById(id);
 
@@ -408,13 +413,16 @@ public class StudentService : IStudentService
     }
 
     public PagedResultModel<VoucherItemModel> GetVoucherListByStudentId
-        (List<string> campaignIds, List<string> voucherIds, List<string> brandIds, string id, string propertySort, bool isAsc, string search, int page, int limit)
+        (List<string> campaignIds, List<string> voucherIds, List<string> brandIds, List<string> typeIds, 
+        string id, string propertySort, bool isAsc, string search, int page, int limit)
     {
         Student entity = studentRepository.GetById(id);
 
         if (entity != null)
         {
-            return null;
+            return voucherItemService.GetAll
+                (campaignIds, voucherIds, brandIds, typeIds, new List<string> { id }, 
+                propertySort, isAsc, search, page, limit);
         }
         throw new InvalidParameterException("Not found student");
     }

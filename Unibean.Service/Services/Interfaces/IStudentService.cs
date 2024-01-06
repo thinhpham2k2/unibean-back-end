@@ -31,7 +31,8 @@ public interface IStudentService
         (List<string> stationIds, List<string> stateIds, string id, string propertySort, bool isAsc, string search, int page, int limit);
 
     PagedResultModel<VoucherItemModel> GetVoucherListByStudentId
-        (List<string> campaignIds, List<string> voucherIds, List<string> brandIds, string id, string propertySort, bool isAsc, string search, int page, int limit);
+        (List<string> campaignIds, List<string> voucherIds, List<string> brandIds, List<string> typeIds,
+        string id, string propertySort, bool isAsc, string search, int page, int limit);
 
     Task<StudentModel> Update(string id, UpdateStudentModel update);
 }

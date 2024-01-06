@@ -24,7 +24,7 @@ public class OrderService : IOrderService
             cfg.CreateMap<Order, OrderModel>()
             .ForMember(o => o.StudentName, opt => opt.MapFrom(src => src.Student.FullName))
             .ForMember(o => o.StationName, opt => opt.MapFrom(src => src.Station.StationName))
-            .ForMember(o => o.StateCurrent, opt => opt.MapFrom(src => src.OrderStates.Select(s 
+            .ForMember(o => o.StateCurrent, opt => opt.MapFrom(src => src.OrderStates.Select(s
                 => s.State).OrderByDescending(s => s.Id).FirstOrDefault().StateName))
             .ForMember(o => o.StateDetails, opt => opt.MapFrom(src => src.OrderStates))
             .ReverseMap();
@@ -32,7 +32,7 @@ public class OrderService : IOrderService
             .ReverseMap();
             cfg.CreateMap<OrderDetail, OrderDetailModel>()
             .ForMember(d => d.ProductName, opt => opt.MapFrom(src => src.Product.ProductName))
-            .ForMember(d => d.ProductImage, opt => opt.MapFrom(src => src.Product.Images.Where(i 
+            .ForMember(d => d.ProductImage, opt => opt.MapFrom(src => src.Product.Images.Where(i
                 => i.IsCover.Equals(true)).FirstOrDefault().Url))
             .ReverseMap();
             cfg.CreateMap<OrderState, OrderStateModel>()
@@ -41,7 +41,7 @@ public class OrderService : IOrderService
             .ForMember(s => s.State, opt => opt.MapFrom(src => src.States))
             .ReverseMap();
         });
-       mapper = new Mapper(config);
+        mapper = new Mapper(config);
         this.orderRepository = orderRepository;
     }
 

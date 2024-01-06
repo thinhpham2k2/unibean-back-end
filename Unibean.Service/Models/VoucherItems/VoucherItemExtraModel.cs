@@ -1,6 +1,6 @@
 ﻿namespace Unibean.Service.Models.VoucherItems;
 
-public class VoucherItemModel
+public class VoucherItemExtraModel
 {
     public string Id { get; set; }
     public string VoucherId { get; set; }
@@ -14,6 +14,11 @@ public class VoucherItemModel
     public string BrandId { get; set; }
     public string BrandName { get; set; }
     public string BrandImage { get; set; }
+    public string CampaignId { get; set; }
+    public string CampaignName { get; set; }
+    public string CampaignImage { get; set; }
+    public string UsedAt { get; set; }
+    public string VoucherCode { get; set; }
     public decimal? Price { get; set; }
     public decimal? Rate { get; set; }
     public bool? IsBought { get; set; }
@@ -22,7 +27,8 @@ public class VoucherItemModel
     public DateOnly? ExpireOn { get; set; }
     public DateTime? DateCreated { get; set; }
     public DateTime? DateBought { get; set; }
-    public DateTime? DateUsed{ get; set; }
+    public DateTime? DateUsed { get; set; }
+    public string Condition { get; set; }
     public string Description { get; set; }
     public bool? State { get; set; }
     public bool? Status { get; set; }
