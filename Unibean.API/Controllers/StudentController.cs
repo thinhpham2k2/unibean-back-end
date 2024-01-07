@@ -249,11 +249,12 @@ public class StudentController : ControllerBase
         {
             string propertySort = paging.Sort.Split(",")[0];
             var propertyInfo = typeof(Order).GetProperty(propertySort);
-            if (propertySort != null && propertyInfo != null)
+            if (propertySort != null && propertyInfo != null || propertySort.Equals("StateCurrent"))
             {
                 PagedResultModel<OrderModel>
                 result = studentService.GetOrderListByStudentId
-                    (stationIds, stateIds, id, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
+                    (stationIds, stateIds, id, propertySort.Equals("StateCurrent")
+                        ? "OrderStates.Max(s => s.StateId)" : propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
             return BadRequest("Invalid property of order");
