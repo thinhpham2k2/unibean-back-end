@@ -18,9 +18,5 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Unibean.Service\Unibean.Service.csproj" />
 	</ItemGroup>
-
-	<ItemGroup>
-		<Folder Include="wwwroot\css\swagger\swagger-ui.css" />
-	</ItemGroup>
 	
 </Project>
