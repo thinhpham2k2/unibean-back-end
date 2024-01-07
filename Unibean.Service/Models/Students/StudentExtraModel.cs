@@ -1,9 +1,4 @@
-﻿using Unibean.Service.Models.Orders;
-using Unibean.Service.Models.StudentChallenges;
-using Unibean.Service.Models.Transactions;
-using Unibean.Service.Models.VoucherItems;
-
-namespace Unibean.Service.Models.Students;
+﻿namespace Unibean.Service.Models.Students;
 
 public class StudentExtraModel
 {

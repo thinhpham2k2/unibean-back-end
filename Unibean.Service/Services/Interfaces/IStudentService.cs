@@ -34,5 +34,5 @@ public interface IStudentService
         (List<string> campaignIds, List<string> voucherIds, List<string> brandIds, List<string> typeIds,
         string id, string propertySort, bool isAsc, string search, int page, int limit);
 
-    Task<StudentModel> Update(string id, UpdateStudentModel update);
+    Task<StudentExtraModel> Update(string id, UpdateStudentModel update);
 }

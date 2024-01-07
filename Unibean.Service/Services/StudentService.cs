@@ -427,7 +427,7 @@ public class StudentService : IStudentService
         throw new InvalidParameterException("Not found student");
     }
 
-    public async Task<StudentModel> Update(string id, UpdateStudentModel update)
+    public async Task<StudentExtraModel> Update(string id, UpdateStudentModel update)
     {
         Student entity = studentRepository.GetById(id);
         if (entity != null)
@@ -449,7 +449,7 @@ public class StudentService : IStudentService
             entity.Account.DateUpdated = DateTime.Now;
             accountRepository.Update(entity.Account);
 
-            return mapper.Map<StudentModel>(studentRepository.Update(entity));
+            return mapper.Map<StudentExtraModel>(studentRepository.Update(entity));
         }
         throw new InvalidParameterException("Not found student");
     }
