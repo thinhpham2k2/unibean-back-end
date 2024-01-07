@@ -222,7 +222,7 @@ public class BrandService : IBrandService
         throw new InvalidParameterException("Not found brand");
     }
 
-    public async Task<BrandModel> Update(string id, UpdateBrandModel update)
+    public async Task<BrandExtraModel> Update(string id, UpdateBrandModel update)
     {
         Brand entity = brandRepository.GetById(id);
         if (entity != null)
@@ -256,7 +256,7 @@ public class BrandService : IBrandService
             entity.Account.Description = update.Description;
             accountRepository.Update(entity.Account);
 
-            return mapper.Map<BrandModel>(brandRepository.Update(entity));
+            return mapper.Map<BrandExtraModel>(brandRepository.Update(entity));
         }
         throw new InvalidParameterException("Not found brand");
     }

@@ -114,7 +114,7 @@ public class StudentController : ControllerBase
     /// </summary>
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin")]
-    [ProducesResponseType(typeof(StudentModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(StudentExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public async Task<ActionResult> Update(string id, [FromForm] UpdateStudentModel update)
     {

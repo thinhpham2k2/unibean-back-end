@@ -15,7 +15,7 @@ public interface IBrandService
 
     BrandExtraModel GetById(string id, JwtRequestModel request);
 
-    Task<BrandModel> Update(string id, UpdateBrandModel update);
+    Task<BrandExtraModel> Update(string id, UpdateBrandModel update);
 
     BrandModel AddGoogle(CreateBrandGoogleModel creation);
 }
