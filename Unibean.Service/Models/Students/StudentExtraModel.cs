@@ -5,12 +5,16 @@ public class StudentExtraModel
     public string Id { get; set; }
     public string LevelId { get; set; }
     public string LevelName { get; set; }
+    public string LevelImage { get; set; }
     public string GenderId { get; set; }
     public string GenderName { get; set; }
+    public string GenderImage { get; set; }
     public string MajorId { get; set; }
     public string MajorName { get; set; }
+    public string MajorImage { get; set; }
     public string CampusId { get; set; }
     public string CampusName { get; set; }
+    public string CampusImage { get; set; }
     public string AccountId { get; set; }
     public string UserName { get; set; }
     public string StudentCardFront { get; set; }

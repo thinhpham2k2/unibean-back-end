@@ -83,9 +83,13 @@ public class StudentService : IStudentService
             .ReverseMap();
             cfg.CreateMap<Student, StudentExtraModel>()
             .ForMember(s => s.LevelName, opt => opt.MapFrom(src => src.Level.LevelName))
+            .ForMember(s => s.LevelImage, opt => opt.MapFrom(src => src.Level.Image))
             .ForMember(s => s.GenderName, opt => opt.MapFrom(src => src.Gender.GenderName))
+            .ForMember(s => s.GenderImage, opt => opt.MapFrom(src => src.Gender.Image))
             .ForMember(s => s.MajorName, opt => opt.MapFrom(src => src.Major.MajorName))
+            .ForMember(s => s.MajorImage, opt => opt.MapFrom(src => src.Major.Image))
             .ForMember(s => s.CampusName, opt => opt.MapFrom(src => src.Campus.CampusName))
+            .ForMember(s => s.CampusImage, opt => opt.MapFrom(src => src.Campus.Image))
             .ForMember(s => s.InviteCode, opt => opt.MapFrom(src => src.Id))
             .ForMember(s => s.UserName, opt => opt.MapFrom(src => src.Account.UserName))
             .ForMember(s => s.Email, opt => opt.MapFrom(src => src.Account.Email))
@@ -396,6 +400,16 @@ public class StudentService : IStudentService
             };
         }
         throw new InvalidParameterException("Not found student");
+    }
+
+    public OrderExtraModel GetOrderByOrderId(string id, string orderId)
+    {
+        OrderExtraModel order = orderService.GetById(orderId);
+        if (order != null && order.StudentId.Equals(id))
+        {
+            return mapper.Map<OrderExtraModel>(order);
+        }
+        throw new InvalidParameterException("Not found order");
     }
 
     public PagedResultModel<OrderModel> GetOrderListByStudentId

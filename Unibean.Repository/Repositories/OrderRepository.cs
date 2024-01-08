@@ -64,7 +64,7 @@ public class OrderRepository : IOrderRepository
                .Include(o => o.Station)
                .Include(o => o.OrderDetails.Where(d => (bool)d.Status))
                     .ThenInclude(o => o.Product)
-                        .ThenInclude(p => p.Images)
+                        .ThenInclude(p => p.Images.Where(i => (bool)i.Status))
                .Include(o => o.OrderStates.Where(s => (bool)s.Status))
                     .ThenInclude(o => o.State)
                .ToList();
@@ -98,7 +98,7 @@ public class OrderRepository : IOrderRepository
             .Include(o => o.Station)
             .Include(o => o.OrderDetails.Where(d => (bool)d.Status))
                 .ThenInclude(o => o.Product)
-                    .ThenInclude(p => p.Images)
+                    .ThenInclude(p => p.Images.Where(i => (bool)i.Status))
             .Include(o => o.OrderStates.Where(s => (bool)s.Status))
                 .ThenInclude(o => o.State)
             .FirstOrDefault();

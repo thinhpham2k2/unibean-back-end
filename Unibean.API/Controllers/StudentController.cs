@@ -10,6 +10,7 @@ using Unibean.Service.Models.StudentChallenges;
 using Unibean.Service.Models.Students;
 using Unibean.Service.Models.Transactions;
 using Unibean.Service.Models.VoucherItems;
+using Unibean.Service.Services;
 using Unibean.Service.Services.Interfaces;
 
 namespace Unibean.API.Controllers;
@@ -165,7 +166,7 @@ public class StudentController : ControllerBase
     /// <param name="isClaimed">Filter by challenge claim status.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/challenges")]
-    [Authorize(Roles = "Admin, Brand, Store, Student")]
+    [Authorize(Roles = "Admin, Student")]
     [ProducesResponseType(typeof(PagedResultModel<StudentChallengeModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public ActionResult<PagedResultModel<StudentChallengeModel>> GetChallengeByStudentId(string id,
@@ -200,7 +201,7 @@ public class StudentController : ControllerBase
     /// <param name="id">Student id.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/histories")]
-    [Authorize(Roles = "Admin, Brand, Store, Student")]
+    [Authorize(Roles = "Admin, Student")]
     [ProducesResponseType(typeof(PagedResultModel<TransactionModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public ActionResult<PagedResultModel<TransactionModel>> GetHistoryTransactionByStudentId(string id,
@@ -235,7 +236,7 @@ public class StudentController : ControllerBase
     /// <param name="stateIds">Filter by state Id.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/orders")]
-    [Authorize(Roles = "Admin, Brand, Store, Student")]
+    [Authorize(Roles = "Admin, Student")]
     [ProducesResponseType(typeof(PagedResultModel<OrderModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public ActionResult<PagedResultModel<OrderModel>> GetOrderListByStudentId(string id,
@@ -275,7 +276,7 @@ public class StudentController : ControllerBase
     /// <param name="typeIds">Filter by voucher type Id.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/vouchers")]
-    [Authorize(Roles = "Admin, Brand, Store, Student")]
+    [Authorize(Roles = "Admin, Student")]
     [ProducesResponseType(typeof(PagedResultModel<VoucherItemModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public ActionResult<PagedResultModel<OrderModel>> GetVoucherListByStudentId(string id,
@@ -299,6 +300,29 @@ public class StudentController : ControllerBase
                 return Ok(result);
             }
             return BadRequest("Invalid property of voucher");
+        }
+        catch (InvalidParameterException e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Get order details by student id
+    /// </summary>
+    /// <param name="id">Student id.</param>
+    /// <param name="orderId">Order id.</param>
+    [HttpGet("{id}/orders/{orderId}")]
+    [Authorize(Roles = "Admin, Student")]
+    [ProducesResponseType(typeof(OrderExtraModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    public IActionResult GetOrderById(string id, string orderId)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            return Ok(studentService.GetOrderByOrderId(id, orderId));
         }
         catch (InvalidParameterException e)
         {
