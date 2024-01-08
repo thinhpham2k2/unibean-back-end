@@ -2,6 +2,7 @@
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
+using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.OrderDetails;
 using Unibean.Service.Models.Orders;
 using Unibean.Service.Models.OrderStates;
@@ -22,13 +23,22 @@ public class OrderService : IOrderService
                =>
         {
             cfg.CreateMap<Order, OrderModel>()
+            .ForMember(o => o.OrderImage, opt => opt.MapFrom(src 
+                => src.OrderDetails.FirstOrDefault().Product.Images.Where(i
+                => (bool)i.IsCover).FirstOrDefault().Url))
+            .ForMember(o => o.StudentName, opt => opt.MapFrom(src => src.Student.FullName))
+            .ForMember(o => o.StationName, opt => opt.MapFrom(src => src.Station.StationName))
+            .ForMember(o => o.StateCurrent, opt => opt.MapFrom(src => src.OrderStates.Select(s
+                => s.State).OrderByDescending(s => s.Id).FirstOrDefault().StateName))
+            .ReverseMap();
+            cfg.CreateMap<PagedResultModel<Order>, PagedResultModel<OrderModel>>()
+            .ReverseMap();
+            cfg.CreateMap<Order, OrderExtraModel>()
             .ForMember(o => o.StudentName, opt => opt.MapFrom(src => src.Student.FullName))
             .ForMember(o => o.StationName, opt => opt.MapFrom(src => src.Station.StationName))
             .ForMember(o => o.StateCurrent, opt => opt.MapFrom(src => src.OrderStates.Select(s
                 => s.State).OrderByDescending(s => s.Id).FirstOrDefault().StateName))
             .ForMember(o => o.StateDetails, opt => opt.MapFrom(src => src.OrderStates))
-            .ReverseMap();
-            cfg.CreateMap<PagedResultModel<Order>, PagedResultModel<OrderModel>>()
             .ReverseMap();
             cfg.CreateMap<OrderDetail, OrderDetailModel>()
             .ForMember(d => d.ProductName, opt => opt.MapFrom(src => src.Product.ProductName))
@@ -50,5 +60,15 @@ public class OrderService : IOrderService
     {
         return mapper.Map<PagedResultModel<OrderModel>>(orderRepository.GetAll
             (stationIds, studentIds, stateIds, propertySort, isAsc, search, page, limit));
+    }
+
+    public OrderExtraModel GetById(string id)
+    {
+        Order entity = orderRepository.GetById(id);
+        if (entity != null)
+        {
+            return mapper.Map<OrderExtraModel>(entity);
+        }
+        throw new InvalidParameterException("Not found order");
     }
 }

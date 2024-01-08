@@ -21,6 +21,8 @@ public interface IStudentService
 
     StudentExtraModel GetById(string id);
 
+    OrderExtraModel GetOrderByOrderId(string id, string orderId);
+
     PagedResultModel<StudentChallengeModel> GetChallengeByStudentId
         (string id, bool? isCompleted, bool? isClaimed, string propertySort, bool isAsc, string search, int page, int limit);
 
