@@ -42,6 +42,10 @@ public class CreateStudentModel
     [Required(ErrorMessage = "Student card back image is required")]
     public IFormFile StudentCardBack { get; set; }
 
+    [ValidCode]
+    [Required(ErrorMessage = "Student code is required")]
+    [StringLength(50, MinimumLength = 3,
+        ErrorMessage = "The length of student code is from 3 to 50 characters")]
     public string Code { get; set; }
 
     [ValidInviteCode]

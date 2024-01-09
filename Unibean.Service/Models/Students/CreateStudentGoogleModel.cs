@@ -33,6 +33,10 @@ public class CreateStudentGoogleModel
             ErrorMessage = "The length of full name is from 3 to 255 characters")]
     public string FullName { get; set; }
 
+    [ValidCode]
+    [Required(ErrorMessage = "Student code is required")]
+    [StringLength(50, MinimumLength = 3,
+        ErrorMessage = "The length of student code is from 3 to 50 characters")]
     public string Code { get; set; }
 
     [ValidInviteCode]

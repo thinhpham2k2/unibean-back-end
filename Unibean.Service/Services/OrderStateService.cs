@@ -1,7 +1,5 @@
-﻿using AutoMapper;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using Unibean.Repository.Entities;
-using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.OrderStates;
@@ -11,8 +9,6 @@ namespace Unibean.Service.Services;
 
 public class OrderStateService : IOrderStateService
 {
-    private readonly Mapper mapper;
-
     private readonly IStateRepository stateRepository;
 
     private readonly IOrderRepository orderRepository;
@@ -23,24 +19,12 @@ public class OrderStateService : IOrderStateService
         IOrderStateRepository orderStateRepository,
         IStateRepository stateRepository)
     {
-        var config = new MapperConfiguration(cfg
-                =>
-        {
-            cfg.CreateMap<OrderState, OrderStateModel>()
-            .ForMember(s => s.StateName, opt => opt.MapFrom(src => src.State.StateName))
-            .ForMember(s => s.StateImage, opt => opt.MapFrom(src => src.State.Image))
-            .ForMember(s => s.State, opt => opt.MapFrom(src => src.States))
-            .ReverseMap();
-            cfg.CreateMap<PagedResultModel<OrderState>, PagedResultModel<OrderStateModel>>()
-            .ReverseMap();
-        });
-        mapper = new Mapper(config);
         this.orderRepository = orderRepository;
         this.orderStateRepository = orderStateRepository;
         this.stateRepository = stateRepository;
     }
 
-    public OrderStateModel Add(string id, CreateOrderStateModel creation)
+    public string Add(string id, CreateOrderStateModel creation)
     {
         Order entity = orderRepository.GetById(id);
         if (entity != null)
@@ -54,10 +38,9 @@ public class OrderStateService : IOrderStateService
                         => s.Id).Where(s => string.Compare(s, stateIds.Max()) > 0 
                         && string.Compare(s, creation.StateId) <= 0).ToList();
 
-                    OrderState orderState = new();
                     stateIds.ForEach(s =>
                     {
-                        orderState = orderStateRepository.Add(new OrderState
+                        orderStateRepository.Add(new OrderState
                         {
                             Id = Ulid.NewUlid().ToString(),
                             OrderId = id,
@@ -69,7 +52,7 @@ public class OrderStateService : IOrderStateService
                         });
                     });
 
-                    return mapper.Map<OrderStateModel>(orderState);
+                    return "Created successfully";
                 }
                 else
                 {
@@ -80,10 +63,9 @@ public class OrderStateService : IOrderStateService
             {
                 stateIds = stateRepository.GetAll("Id", true, "", 1, 100).Result.Select(s
                         => s.Id).Where(s => string.Compare(s, creation.StateId) <= 0).ToList();
-                OrderState orderState = new();
                 stateIds.ForEach(s =>
                 {
-                    orderState = orderStateRepository.Add(new OrderState
+                    orderStateRepository.Add(new OrderState
                     {
                         Id = Ulid.NewUlid().ToString(),
                         OrderId = id,
@@ -95,7 +77,7 @@ public class OrderStateService : IOrderStateService
                     });
                 });
 
-                return mapper.Map<OrderStateModel>(orderState);
+                return "Created successfully";
             }
         }
         throw new InvalidParameterException("Invalid order");

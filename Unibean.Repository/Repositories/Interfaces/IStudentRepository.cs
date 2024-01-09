@@ -9,6 +9,8 @@ public interface IStudentRepository
 
     bool CheckInviteCode(string inviteCode);
 
+    bool CheckCodeDuplicate(string code);
+
     void Delete(string id);
 
     PagedResultModel<Student> GetAll

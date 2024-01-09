@@ -5,11 +5,12 @@ namespace Unibean.Service.Models.Levels;
 
 public class UpdateLevelModel
 {
-    [Required(ErrorMessage = " Level's name is required")]
+    [Required(ErrorMessage = "Level's name is required")]
     [StringLength(255, MinimumLength = 3,
             ErrorMessage = "The length of level's name is from 3 to 255 characters")]
     public string LevelName { get; set; }
 
+    [Required(ErrorMessage = "Condition is required")]
     [Range(0, (double)decimal.MaxValue, ErrorMessage = "The condition must be positive")]
     public decimal? Condition { get; set; }
 

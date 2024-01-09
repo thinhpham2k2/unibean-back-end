@@ -26,8 +26,6 @@ public class UpdateStudentModel
 
     public IFormFile Avatar { get; set; }
 
-    public string Code { get; set; }
-
     public string Address { get; set; }
 
     [Required(ErrorMessage = "State is required")]

@@ -66,6 +66,22 @@ public class StudentRepository : IStudentRepository
         return creation;
     }
 
+    public bool CheckCodeDuplicate(string code)
+    {
+        Student student = new();
+        try
+        {
+            using var db = new UnibeanDBContext();
+            student = db.Students
+                .Where(a => a.Code.Equals(code)).FirstOrDefault();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return student == null;
+    }
+
     public bool CheckInviteCode(string inviteCode)
     {
         Student student = new();
