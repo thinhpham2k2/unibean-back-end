@@ -6,14 +6,16 @@ namespace Unibean.Service.Validations;
 
 public class ValidDistrict : ValidationAttribute
 {
-    private readonly IDistrictRepository districtRepo = new DistrictRepository();
-
+    private new const string ErrorMessage = "Invalid district"; 
+    
+    private readonly IDistrictRepository districtRepo = new DistrictRepository(); 
+    
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
         if (districtRepo.GetById(value.ToString()) != null)
         {
             return ValidationResult.Success;
         }
-        return new ValidationResult("Invalid district");
+        return new ValidationResult(ErrorMessage);
     }
 }

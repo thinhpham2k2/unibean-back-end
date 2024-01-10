@@ -6,8 +6,7 @@ public class ValidBirthday : ValidationAttribute
 {
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
-        DateTime birthday;
-        if (DateTime.TryParse(value.ToString(), out birthday))
+        if (DateTime.TryParse(value.ToString(), out DateTime birthday))
         {
             if (birthday > DateTime.Now.AddYears(-100) && birthday < DateTime.Now.AddYears(-18))
             {

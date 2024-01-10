@@ -6,6 +6,8 @@ namespace Unibean.Service.Validations;
 
 public class ValidRole : ValidationAttribute
 {
+    private new const string ErrorMessage = "Invalid role";
+
     private readonly IRoleRepository roleRepository = new RoleRepository();
 
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
@@ -14,6 +16,6 @@ public class ValidRole : ValidationAttribute
         {
             return ValidationResult.Success;
         }
-        return new ValidationResult("Invalid role");
+        return new ValidationResult(ErrorMessage);
     }
 }

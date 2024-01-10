@@ -6,6 +6,8 @@ namespace Unibean.Service.Validations;
 
 public class ValidLevel : ValidationAttribute
 {
+    private new const string ErrorMessage = "Invalid level";
+
     private readonly ILevelRepository levelRepo = new LevelRepository();
 
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
@@ -14,6 +16,6 @@ public class ValidLevel : ValidationAttribute
         {
             return ValidationResult.Success;
         }
-        return new ValidationResult("Invalid level");
+        return new ValidationResult(ErrorMessage);
     }
 }

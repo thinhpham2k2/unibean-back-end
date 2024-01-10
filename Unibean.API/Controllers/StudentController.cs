@@ -280,7 +280,7 @@ public class StudentController : ControllerBase
 
         try
         {
-            return Ok();
+            return Ok(create);
         }
         catch (InvalidParameterException e)
         {

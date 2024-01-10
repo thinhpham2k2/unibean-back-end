@@ -6,6 +6,7 @@ namespace Unibean.Service.Validations;
 
 public class ValidAccount : ValidationAttribute
 {
+    private new const string ErrorMessage = "Invalid account";
     private readonly IAccountRepository accountRepo = new AccountRepository();
 
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
@@ -14,6 +15,6 @@ public class ValidAccount : ValidationAttribute
         {
             return ValidationResult.Success;
         }
-        return new ValidationResult("Invalid account");
+        return new ValidationResult(ErrorMessage);
     }
 }

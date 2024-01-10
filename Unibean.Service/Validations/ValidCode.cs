@@ -6,6 +6,8 @@ namespace Unibean.Service.Validations;
 
 public class ValidCode : ValidationAttribute
 {
+    private new const string ErrorMessage = "Student code is already in use";
+
     private readonly IStudentRepository studentRepo = new StudentRepository();
 
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
@@ -15,6 +17,6 @@ public class ValidCode : ValidationAttribute
         {
             return ValidationResult.Success;
         }
-        return new ValidationResult("Student code is already in use");
+        return new ValidationResult(ErrorMessage);
     }
 }

@@ -6,14 +6,16 @@ namespace Unibean.Service.Validations;
 
 public class ValidCity : ValidationAttribute
 {
-    private readonly ICityRepository cityRepo = new CityRepository();
-
+    private new const string ErrorMessage = "Invalid city"; 
+    
+    private readonly ICityRepository cityRepo = new CityRepository(); 
+    
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
         if (cityRepo.GetById(value.ToString()) != null)
         {
             return ValidationResult.Success;
         }
-        return new ValidationResult("Invalid city");
+        return new ValidationResult(ErrorMessage);
     }
 }

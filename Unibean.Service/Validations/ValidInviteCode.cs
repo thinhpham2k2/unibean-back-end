@@ -8,6 +8,8 @@ namespace Unibean.Service.Validations;
 
 public class ValidInviteCode : ValidationAttribute
 {
+    private new const string ErrorMessage = "Invalid invite code";
+
     private readonly IStudentRepository studentRepo = new StudentRepository();
 
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
@@ -17,6 +19,6 @@ public class ValidInviteCode : ValidationAttribute
         {
             return ValidationResult.Success;
         }
-        return new ValidationResult("Invalid invite code");
+        return new ValidationResult(ErrorMessage);
     }
 }

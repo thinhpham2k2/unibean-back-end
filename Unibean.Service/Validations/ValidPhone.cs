@@ -7,6 +7,8 @@ namespace Unibean.Service.Validations;
 
 public class ValidPhone : ValidationAttribute
 {
+    private new const string ErrorMessage = "Invalid phone number";
+
     private readonly IAccountRepository accountRepository = new AccountRepository();
 
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
@@ -20,6 +22,6 @@ public class ValidPhone : ValidationAttribute
             }
             return new ValidationResult("Phone is already in use");
         }
-        return new ValidationResult("Invalid phone number");
+        return new ValidationResult(ErrorMessage);
     }
 }

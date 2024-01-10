@@ -6,6 +6,8 @@ namespace Unibean.Service.Validations;
 
 public class ValidOrder : ValidationAttribute
 {
+    private new const string ErrorMessage = "Invalid order";
+
     private readonly IOrderRepository orderRepo = new OrderRepository();
 
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
@@ -14,6 +16,6 @@ public class ValidOrder : ValidationAttribute
         {
             return ValidationResult.Success;
         }
-        return new ValidationResult("Invalid order");
+        return new ValidationResult(ErrorMessage);
     }
 }

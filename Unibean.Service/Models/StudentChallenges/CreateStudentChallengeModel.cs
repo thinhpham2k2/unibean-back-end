@@ -13,11 +13,11 @@ public class CreateStudentChallengeModel
     [Required(ErrorMessage = "Student is required")]
     public string StudentId { get; set; }
 
-    [Required(ErrorMessage = "Condition is required")]
+    [Required(ErrorMessage = "Amount is required")]
     [Range(0, (double)decimal.MaxValue, ErrorMessage = "The amount must be positive")]
     public decimal? Amount { get; set; }
 
-    [Required(ErrorMessage = "Condition is required")]
+    [Required(ErrorMessage = "Current is required")]
     [Range(0, (double)decimal.MaxValue, ErrorMessage = "The current must be positive")]
     public decimal? Current { get; set; }
 

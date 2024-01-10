@@ -4,15 +4,15 @@ using Unibean.Repository.Repositories;
 
 namespace Unibean.Service.Validations;
 
-public class ValidCampaign : ValidationAttribute
+public class ValidProduct : ValidationAttribute
 {
-    private new const string ErrorMessage = "Invalid campaign"; 
+    private new const string ErrorMessage = "Invalid product"; 
     
-    private readonly ICampaignRepository campaignRepo = new CampaignRepository(); 
+    private readonly IProductRepository productRepo = new ProductRepository(); 
     
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
-        if (campaignRepo.GetById(value.ToString()) != null)
+        if (productRepo.GetById(value.ToString()) != null)
         {
             return ValidationResult.Success;
         }
