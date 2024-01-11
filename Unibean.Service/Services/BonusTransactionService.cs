@@ -2,6 +2,6 @@
 
 namespace Unibean.Service.Services;
 
-public class CampaignGenderService : ICampaignGenderService
+public class BonusTransactionService : IBonusTransactionService
 {
 }

@@ -3,12 +3,6 @@
 public class StudentExtraModel
 {
     public string Id { get; set; }
-    public string LevelId { get; set; }
-    public string LevelName { get; set; }
-    public string LevelImage { get; set; }
-    public string GenderId { get; set; }
-    public string GenderName { get; set; }
-    public string GenderImage { get; set; }
     public string MajorId { get; set; }
     public string MajorName { get; set; }
     public string MajorImage { get; set; }
@@ -23,6 +17,7 @@ public class StudentExtraModel
     public string FileNameBack { get; set; }
     public string FullName { get; set; }
     public string Code { get; set; }
+    public string Gender { get; set; }
     public string InviteCode { get; set; }
     public string Email { get; set; }
     public DateOnly? DateOfBirth { get; set; }

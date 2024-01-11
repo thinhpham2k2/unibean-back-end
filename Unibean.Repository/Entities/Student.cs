@@ -4,22 +4,17 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Unibean.Repository.Entities;
 
+public enum Gender
+{
+    Nữ = 1, Nam = 2
+}
+
 [Table("tbl_student")]
 public class Student
 {
     [Key]
     [Column("id", TypeName = "char(26)")]
     public string Id { get; set; }
-
-    [Column("level_id", TypeName = "char(26)")]
-    public string LevelId { get; set; }
-
-    public Level Level { get; set; }
-
-    [Column("gender_id", TypeName = "char(26)")]
-    public string GenderId { get; set; }
-
-    public Gender Gender { get; set; }
 
     [Column("major_id", TypeName = "char(26)")]
     public string MajorId { get; set; }
@@ -56,6 +51,9 @@ public class Student
     [Column("code")]
     public string Code { get; set; }
 
+    [Column("gender", TypeName = "enum('Nữ', 'Nam')")]
+    public Gender? Gender { get; set; }
+
     [Column("date_of_birth")]
     public DateOnly? DateOfBirth { get; set; }
 
@@ -86,7 +84,7 @@ public class Student
 
     public virtual ICollection<Wallet> Wallets { get; set; }
 
-    public virtual ICollection<Payment> Payments { get; set; }
+    public virtual ICollection<Bonus> Bonuses { get; set; }
 
     public virtual ICollection<Wishlist> Wishlists { get; set; }
 

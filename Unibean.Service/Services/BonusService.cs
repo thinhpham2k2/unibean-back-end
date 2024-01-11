@@ -2,6 +2,6 @@
 
 namespace Unibean.Service.Services;
 
-public class PaymentService : IPaymentService
+public class BonusService :IBonusService
 {
 }

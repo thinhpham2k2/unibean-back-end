@@ -6,15 +6,10 @@ namespace Unibean.Service.Models.Students;
 
 public class UpdateStudentModel
 {
-
     [Required(ErrorMessage = "Full name is required")]
     [StringLength(255, MinimumLength = 3,
             ErrorMessage = "The length of full name is from 3 to 255 characters")]
     public string FullName { get; set; }
-
-    [ValidGender]
-    [Required(ErrorMessage = "Gender is required")]
-    public string GenderId { get; set; }
 
     [ValidMajor]
     [Required(ErrorMessage = "Major is required")]
@@ -23,6 +18,10 @@ public class UpdateStudentModel
     [ValidCampus]
     [Required(ErrorMessage = "Campus is required")]
     public string CampusId { get; set; }
+
+    [ValidGender]
+    [Required(ErrorMessage = "Gender is required")]
+    public int Gender { get; set; }
 
     public IFormFile Avatar { get; set; }
 

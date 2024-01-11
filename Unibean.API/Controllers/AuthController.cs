@@ -102,7 +102,7 @@ public class AuthController : ControllerBase
             string role = (user.GetType().GetProperty("RoleName").GetValue(user) ?? string.Empty).ToString();
             if (isVerify)
             {
-                JwtResponseModel response = new JwtResponseModel();
+                JwtResponseModel response = new();
                 
                 var claims = new List<Claim>
                 {

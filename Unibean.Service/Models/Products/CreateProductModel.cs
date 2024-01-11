@@ -10,10 +10,6 @@ public class CreateProductModel
     [Required(ErrorMessage = "Category is required")]
     public string CategoryId { get; set; }
 
-    [ValidLevel]
-    [Required(ErrorMessage = "Level is required")]
-    public string LevelId { get; set; }
-
     [Required(ErrorMessage = "Product's name is required")]
     [StringLength(255, MinimumLength = 3,
             ErrorMessage = "The length of product's name is from 3 to 255 characters")]

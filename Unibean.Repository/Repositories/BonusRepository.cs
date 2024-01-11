@@ -2,6 +2,6 @@
 
 namespace Unibean.Repository.Repositories;
 
-public class CampaignGenderRepository : ICampaignGenderRepository
+public class BonusRepository : IBonusRepository
 {
 }

@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Unibean.Repository.Entities;
 
-[Table("tbl_payment_transaction")]
-public class PaymentTransaction
+[Table("tbl_bonus_transaction")]
+public class BonusTransaction
 {
     [Key]
     [Column("id", TypeName = "char(26)")]
@@ -15,10 +15,10 @@ public class PaymentTransaction
 
     public Wallet Wallet { get; set; }
 
-    [Column("payment_id", TypeName = "char(26)")]
-    public string PaymentId { get; set; }
+    [Column("bonus_id", TypeName = "char(26)")]
+    public string BonusId { get; set; }
 
-    public Payment Payment { get; set; }
+    public Bonus Bonus { get; set; }
 
     [Column("amount", TypeName = "decimal(38,2)")]
     public decimal? Amount { get; set; }

@@ -16,11 +16,6 @@ public class Product
 
     public Category Category { get; set; }
 
-    [Column("level_id", TypeName = "char(26)")]
-    public string LevelId { get; set; }
-
-    public Level Level { get; set; }
-
     [MaxLength(255)]
     [Column("product_name")]
     public string ProductName { get; set; }

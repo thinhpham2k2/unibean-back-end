@@ -1,5 +1,5 @@
 ﻿namespace Unibean.Repository.Repositories.Interfaces;
 
-public interface ICampaignGenderRepository
+public interface IBonusTransactionRepository
 {
 }

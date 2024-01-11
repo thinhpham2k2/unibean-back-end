@@ -24,7 +24,6 @@ public class CreateOrderModel
     [Required(ErrorMessage = "State is required")]
     public bool? State { get; set; }
 
-    [ValidDetail]
     [Required(ErrorMessage = "Order's details is required")]
     public List<CreateDetailModel> OrderDetails { get; set; }
 }

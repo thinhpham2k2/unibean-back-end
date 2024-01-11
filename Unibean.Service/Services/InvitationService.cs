@@ -1,10 +1,7 @@
 ﻿using AutoMapper;
 using Unibean.Repository.Entities;
-using Unibean.Repository.Paging;
-using Unibean.Repository.Repositories;
 using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Service.Models.Invitations;
-using Unibean.Service.Models.Types;
 using Unibean.Service.Services.Interfaces;
 
 namespace Unibean.Service.Services;

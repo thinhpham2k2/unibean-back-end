@@ -2,6 +2,6 @@
 
 namespace Unibean.Repository.Repositories;
 
-public class PaymentRepository : IPaymentRepository
+public class BonusTransactionRepository : IBonusTransactionRepository
 {
 }
