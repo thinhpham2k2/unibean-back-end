@@ -12,6 +12,20 @@ namespace Unibean.API.Controllers;
 public class ValidationController : ControllerBase
 {
     /// <summary>
+    /// Code validation
+    /// </summary>
+    [AllowAnonymous]
+    [HttpPost("code")]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    public IActionResult CodeValidation([FromBody] CodeModel code)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        return Ok(code.Code + " is valid");
+    }
+
+    /// <summary>
     /// Email validation
     /// </summary>
     [AllowAnonymous]

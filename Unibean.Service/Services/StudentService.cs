@@ -41,7 +41,7 @@ public class StudentService : IStudentService
 
     private readonly IOrderTransactionService orderTransactionService;
 
-    private readonly IPaymentTransactionService paymentTransactionService;
+    private readonly IBonusTransactionService bankTransactionService;
 
     private readonly IActivityTransactionService activityTransactionService;
 
@@ -57,7 +57,7 @@ public class StudentService : IStudentService
         IRoleService roleService,
         IChallengeTransactionService challengeTransactionService,
         IOrderTransactionService orderTransactionService,
-        IPaymentTransactionService paymentTransactionService,
+        IBonusTransactionService bankTransactionService,
         IActivityTransactionService activityTransactionService,
         IOrderService orderService,
         IVoucherItemService voucherItemService)
@@ -66,8 +66,6 @@ public class StudentService : IStudentService
                 =>
         {
             cfg.CreateMap<Student, StudentModel>()
-            .ForMember(s => s.LevelName, opt => opt.MapFrom(src => src.Level.LevelName))
-            .ForMember(s => s.GenderName, opt => opt.MapFrom(src => src.Gender.GenderName))
             .ForMember(s => s.MajorName, opt => opt.MapFrom(src => src.Major.MajorName))
             .ForMember(s => s.CampusName, opt => opt.MapFrom(src => src.Campus.CampusName))
             .ForMember(s => s.InviteCode, opt => opt.MapFrom(src => src.Id))
@@ -82,10 +80,6 @@ public class StudentService : IStudentService
             .ForMember(s => s.RedWallet, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Balance))
             .ReverseMap();
             cfg.CreateMap<Student, StudentExtraModel>()
-            .ForMember(s => s.LevelName, opt => opt.MapFrom(src => src.Level.LevelName))
-            .ForMember(s => s.LevelImage, opt => opt.MapFrom(src => src.Level.Image))
-            .ForMember(s => s.GenderName, opt => opt.MapFrom(src => src.Gender.GenderName))
-            .ForMember(s => s.GenderImage, opt => opt.MapFrom(src => src.Gender.Image))
             .ForMember(s => s.MajorName, opt => opt.MapFrom(src => src.Major.MajorName))
             .ForMember(s => s.MajorImage, opt => opt.MapFrom(src => src.Major.Image))
             .ForMember(s => s.CampusName, opt => opt.MapFrom(src => src.Campus.CampusName))
@@ -144,7 +138,6 @@ public class StudentService : IStudentService
             // Map Update Student Model
             cfg.CreateMap<Student, UpdateStudentModel>()
             .ReverseMap()
-            .ForMember(t => t.Gender, opt => opt.MapFrom(src => (string)null))
             .ForMember(t => t.Major, opt => opt.MapFrom(src => (string)null))
             .ForMember(t => t.Campus, opt => opt.MapFrom(src => (string)null))
             .ForMember(s => s.DateUpdated, opt => opt.MapFrom(src => DateTime.Now));
@@ -158,7 +151,7 @@ public class StudentService : IStudentService
         this.roleService = roleService;
         this.challengeTransactionService = challengeTransactionService;
         this.orderTransactionService = orderTransactionService;
-        this.paymentTransactionService = paymentTransactionService;
+        this.bankTransactionService = bankTransactionService;
         this.activityTransactionService = activityTransactionService;
         this.orderService = orderService;
         this.voucherItemService = voucherItemService;
@@ -224,6 +217,15 @@ public class StudentService : IStudentService
                     .Where(s => (bool)s.Status
                     && s.IsCompleted.Equals(false)
                     && s.Challenge.Type.TypeName.Equals("Spread")), 1);
+            }
+
+            if ((bool)creation.IsVerify)
+            {
+                studentChallengeService.Update(studentRepository
+                .GetById(student.Id).StudentChallenges
+                .Where(s => (bool)s.Status
+                && s.IsCompleted.Equals(false)
+                && s.Challenge.Type.TypeName.Equals("Verify")), 1);
             }
         }
 
@@ -331,10 +333,10 @@ public class StudentService : IStudentService
     }
 
     public PagedResultModel<StudentModel> GetAll
-        (List<string> levelIds, List<string> genderIds, List<string> majorIds, List<string> campusIds, bool? isVerify, string propertySort, bool isAsc, string search, int page, int limit)
+        (List<string> majorIds, List<string> campusIds, bool? isVerify, string propertySort, bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<StudentModel>>
-            (studentRepository.GetAll(levelIds, genderIds, majorIds, campusIds, isVerify, propertySort, isAsc, search, page, limit));
+            (studentRepository.GetAll(majorIds, campusIds, isVerify, propertySort, isAsc, search, page, limit));
     }
 
     public StudentExtraModel GetById(string id)
@@ -377,7 +379,7 @@ public class StudentService : IStudentService
                 (studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search)
                 .Concat(orderTransactionService.GetAll
                 (studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search))
-                .Concat(paymentTransactionService.GetAll
+                .Concat(bankTransactionService.GetAll
                 (studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search))
                 .Concat(activityTransactionService.GetAll
                 (studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search))
@@ -413,7 +415,7 @@ public class StudentService : IStudentService
     }
 
     public PagedResultModel<OrderModel> GetOrderListByStudentId
-        (List<string> stationIds, List<string> stateIds, string id, 
+        (List<string> stationIds, List<string> stateIds, string id,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         Student entity = studentRepository.GetById(id);
@@ -427,7 +429,7 @@ public class StudentService : IStudentService
     }
 
     public PagedResultModel<VoucherItemModel> GetVoucherListByStudentId
-        (List<string> campaignIds, List<string> voucherIds, List<string> brandIds, List<string> typeIds, 
+        (List<string> campaignIds, List<string> voucherIds, List<string> brandIds, List<string> typeIds,
         string id, string propertySort, bool isAsc, string search, int page, int limit)
     {
         Student entity = studentRepository.GetById(id);
@@ -435,7 +437,7 @@ public class StudentService : IStudentService
         if (entity != null)
         {
             return voucherItemService.GetAll
-                (campaignIds, voucherIds, brandIds, typeIds, new List<string> { id }, 
+                (campaignIds, voucherIds, brandIds, typeIds, new List<string> { id },
                 propertySort, isAsc, search, page, limit);
         }
         throw new InvalidParameterException("Not found student");

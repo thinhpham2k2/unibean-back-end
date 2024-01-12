@@ -52,7 +52,6 @@ public class ProductRepository : IProductRepository
                 || EF.Functions.Like(t.Category.CategoryName, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
                 && (categoryIds.Count == 0 || categoryIds.Contains(t.CategoryId))
-                && (levelIds.Count == 0 || levelIds.Contains(t.LevelId))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 
@@ -60,7 +59,6 @@ public class ProductRepository : IProductRepository
                .Skip((page - 1) * limit)
                .Take(limit)
                .Include(s => s.Category)
-               .Include(s => s.Level)
                .Include(s => s.Images.Where(i => (bool)i.Status))
                .ToList();
 
@@ -90,7 +88,6 @@ public class ProductRepository : IProductRepository
             product = db.Products
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.Category)
-            .Include(s => s.Level)
             .Include(s => s.Images.Where(i => (bool)i.Status))
             .Include(s => s.OrderDetails.Where(d => (bool)d.Status))
             .FirstOrDefault();

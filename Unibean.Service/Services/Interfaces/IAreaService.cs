@@ -1,6 +1,5 @@
 ﻿using Unibean.Repository.Paging;
 using Unibean.Service.Models.Areas;
-using Unibean.Service.Models.Types;
 
 namespace Unibean.Service.Services.Interfaces;
 

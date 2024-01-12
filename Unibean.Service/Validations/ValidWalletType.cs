@@ -6,6 +6,8 @@ namespace Unibean.Service.Validations;
 
 public class ValidWalletType : ValidationAttribute
 {
+    private new const string ErrorMessage = "Invalid wallet type";
+
     private readonly IWalletTypeRepository typeRepo = new WalletTypeRepository();
 
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
@@ -14,6 +16,6 @@ public class ValidWalletType : ValidationAttribute
         {
             return ValidationResult.Success;
         }
-        return new ValidationResult("Invalid wallet type");
+        return new ValidationResult(ErrorMessage);
     }
 }

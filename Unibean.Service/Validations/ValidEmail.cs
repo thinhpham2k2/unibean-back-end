@@ -6,6 +6,8 @@ namespace Unibean.Service.Validations;
 
 public class ValidEmail : ValidationAttribute
 {
+    private new const string ErrorMessage = "Email is already in use";
+
     private readonly IAccountRepository accountRepository = new AccountRepository();
 
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
@@ -15,6 +17,6 @@ public class ValidEmail : ValidationAttribute
         {
             return ValidationResult.Success;
         }
-        return new ValidationResult("Email is already in use");
+        return new ValidationResult(ErrorMessage);
     }
 }

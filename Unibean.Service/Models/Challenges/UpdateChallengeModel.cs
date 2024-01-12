@@ -15,9 +15,11 @@ public class UpdateChallengeModel
             ErrorMessage = "The length of challenge's name is from 3 to 255 characters")]
     public string ChallengeName { get; set; }
 
+    [Required(ErrorMessage = "Amount is required")]
     [Range(0, (double)decimal.MaxValue, ErrorMessage = "The amount must be positive")]
     public decimal? Amount { get; set; }
 
+    [Required(ErrorMessage = "Condition is required")]
     [Range(0, (double)decimal.MaxValue, ErrorMessage = "The condition must be positive")]
     public decimal? Condition { get; set; }
 

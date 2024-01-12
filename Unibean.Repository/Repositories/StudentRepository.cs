@@ -13,8 +13,6 @@ public class StudentRepository : IStudentRepository
         try
         {
             using var db = new UnibeanDBContext();
-            creation.LevelId = db.Levels.Where(l 
-                => (bool)l.Status).OrderBy(l => l.Condition).FirstOrDefault().Id;
 
             creation = db.Students.Add(creation).Entity;
 
@@ -66,6 +64,22 @@ public class StudentRepository : IStudentRepository
         return creation;
     }
 
+    public bool CheckCodeDuplicate(string code)
+    {
+        Student student = new();
+        try
+        {
+            using var db = new UnibeanDBContext();
+            student = db.Students
+                .Where(a => a.Code.Equals(code)).FirstOrDefault();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return student == null;
+    }
+
     public bool CheckInviteCode(string inviteCode)
     {
         Student student = new();
@@ -99,7 +113,7 @@ public class StudentRepository : IStudentRepository
     }
 
     public PagedResultModel<Student> GetAll
-        (List<string> levelIds, List<string> genderIds, List<string> majorIds, List<string> campusIds,
+        (List<string> majorIds, List<string> campusIds,
         bool? isVerify, string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<Student> pagedResult = new();
@@ -111,12 +125,9 @@ public class StudentRepository : IStudentRepository
                 || EF.Functions.Like(s.FullName, "%" + search + "%")
                 || EF.Functions.Like(s.Code, "%" + search + "%")
                 || EF.Functions.Like(s.Address, "%" + search + "%")
-                || EF.Functions.Like(s.Level.LevelName, "%" + search + "%")
-                || EF.Functions.Like(s.Gender.GenderName, "%" + search + "%")
+                || EF.Functions.Like((string)(object)s.Gender, "%" + search + "%")
                 || EF.Functions.Like(s.Major.MajorName, "%" + search + "%")
                 || EF.Functions.Like(s.Campus.CampusName, "%" + search + "%"))
-                && (levelIds.Count == 0 || levelIds.Contains(s.LevelId))
-                && (genderIds.Count == 0 || genderIds.Contains(s.GenderId))
                 && (majorIds.Count == 0 || majorIds.Contains(s.MajorId))
                 && (campusIds.Count == 0 || campusIds.Contains(s.CampusId))
                 && (isVerify == null || isVerify.Equals(s.Account.IsVerify))
@@ -126,8 +137,6 @@ public class StudentRepository : IStudentRepository
             var result = query
                .Skip((page - 1) * limit)
                .Take(limit)
-               .Include(b => b.Level)
-               .Include(b => b.Gender)
                .Include(b => b.Major)
                .Include(b => b.Campus)
                .Include(b => b.Account)
@@ -160,13 +169,10 @@ public class StudentRepository : IStudentRepository
             using var db = new UnibeanDBContext();
             student = db.Students
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
-            .Include(b => b.Level)
-            .Include(b => b.Gender)
             .Include(b => b.Major)
             .Include(b => b.Campus)
             .Include(b => b.Account)
             .Include(s => s.Activities.Where(a => (bool)a.Status))
-                .ThenInclude(a => a.Type)
             .Include(s => s.Wallets.Where(w => (bool)w.Status))
                 .ThenInclude(w => w.Type)
             .Include(s => s.Wishlists.Where(w => (bool)w.Status))

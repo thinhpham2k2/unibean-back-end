@@ -52,7 +52,7 @@ public class Wallet
 
     public virtual ICollection<ActivityTransaction> ActivityTransactions { get; set; }
 
-    public virtual ICollection<PaymentTransaction> PaymentTransactions { get; set; }
+    public virtual ICollection<BonusTransaction> BonusTransactions { get; set; }
 
     public virtual ICollection<WalletTransaction> WalletTransactions { get; set; }
 

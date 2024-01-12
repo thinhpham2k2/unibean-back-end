@@ -10,7 +10,6 @@ using Unibean.Service.Models.StudentChallenges;
 using Unibean.Service.Models.Students;
 using Unibean.Service.Models.Transactions;
 using Unibean.Service.Models.VoucherItems;
-using Unibean.Service.Services;
 using Unibean.Service.Services.Interfaces;
 
 namespace Unibean.API.Controllers;
@@ -30,10 +29,8 @@ public class StudentController : ControllerBase
     /// <summary>
     /// Get student list
     /// </summary>
-    /// <param name="levelIds">Filter by level Id.</param>
-    /// <param name="genderIds">Filter by gender Id.</param>
     /// <param name="majorIds">Filter by major Id.</param>
-    /// <param name="stationIds">Filter by station Id.</param>
+    /// <param name="campusIds">Filter by campus Id.</param>
     /// <param name="isVerify">Filter by student verification status.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
@@ -42,10 +39,8 @@ public class StudentController : ControllerBase
         (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public ActionResult<PagedResultModel<StudentModel>> GetList(
-        [FromQuery] List<string> levelIds,
-        [FromQuery] List<string> genderIds,
         [FromQuery] List<string> majorIds,
-        [FromQuery] List<string> stationIds,
+        [FromQuery] List<string> campusIds,
         [FromQuery] bool? isVerify,
         [FromQuery] PagingModel paging)
     {
@@ -57,7 +52,7 @@ public class StudentController : ControllerBase
         {
             PagedResultModel<StudentModel>
                 result = studentService.GetAll
-                (levelIds, genderIds, majorIds, stationIds, isVerify, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
+                (majorIds, campusIds, isVerify, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }
         return BadRequest("Invalid property of student");
@@ -267,6 +262,52 @@ public class StudentController : ControllerBase
     }
 
     /// <summary>
+    /// Create order
+    /// </summary>
+    /// <param name="id">Student id.</param>
+    /// <param name="create">Create order.</param>
+    [HttpPost("{id}/orders")]
+    [Authorize(Roles = "Student")]
+    [ProducesResponseType(typeof(OrderExtraModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    public IActionResult CreateOrder(string id, [FromBody] CreateOrderModel create)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            return StatusCode(StatusCodes.Status201Created, create);
+        }
+        catch (InvalidParameterException e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Get order details by student id
+    /// </summary>
+    /// <param name="id">Student id.</param>
+    /// <param name="orderId">Order id.</param>
+    [HttpGet("{id}/orders/{orderId}")]
+    [Authorize(Roles = "Admin, Student")]
+    [ProducesResponseType(typeof(OrderExtraModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    public IActionResult GetOrderById(string id, string orderId)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            return Ok(studentService.GetOrderByOrderId(id, orderId));
+        }
+        catch (InvalidParameterException e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
     /// Get voucher list by student id
     /// </summary>
     /// <param name="id">Student id.</param>
@@ -300,29 +341,6 @@ public class StudentController : ControllerBase
                 return Ok(result);
             }
             return BadRequest("Invalid property of voucher");
-        }
-        catch (InvalidParameterException e)
-        {
-            return BadRequest(e.Message);
-        }
-    }
-
-    /// <summary>
-    /// Get order details by student id
-    /// </summary>
-    /// <param name="id">Student id.</param>
-    /// <param name="orderId">Order id.</param>
-    [HttpGet("{id}/orders/{orderId}")]
-    [Authorize(Roles = "Admin, Student")]
-    [ProducesResponseType(typeof(OrderExtraModel), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public IActionResult GetOrderById(string id, string orderId)
-    {
-        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
-
-        try
-        {
-            return Ok(studentService.GetOrderByOrderId(id, orderId));
         }
         catch (InvalidParameterException e)
         {

@@ -1,19 +1,21 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Unibean.Repository.Repositories.Interfaces;
-using Unibean.Repository.Repositories;
+using Type = Unibean.Repository.Entities.Type;
 
 namespace Unibean.Service.Validations;
 
 public class ValidType : ValidationAttribute
 {
-    private readonly ITypeRepository typeRepo = new TypeRepository();
-
+    private new const string ErrorMessage = "Invalid activity type"; 
+    
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
-        if (typeRepo.GetById(value.ToString()) != null)
+        if (int.TryParse(value.ToString(), out int type))
         {
-            return ValidationResult.Success;
+            if (Enum.IsDefined(typeof(Type), type))
+            {
+                return ValidationResult.Success;
+            }
         }
-        return new ValidationResult("Invalid activity type");
+        return new ValidationResult(ErrorMessage);
     }
 }

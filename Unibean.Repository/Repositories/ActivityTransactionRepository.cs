@@ -16,7 +16,7 @@ public class ActivityTransactionRepository : IActivityTransactionRepository
             result = db.ActivityTransactions
                 .Where(a => (EF.Functions.Like(a.Activity.VoucherItem.Voucher.VoucherName, "%" + search + "%")
                 || EF.Functions.Like(a.Wallet.Type.TypeName, "%" + search + "%")
-                || EF.Functions.Like(a.Activity.Type.TypeName, "%" + search + "%")
+                || EF.Functions.Like((string)(object)a.Activity.Type, "%" + search + "%")
                 || EF.Functions.Like(a.Description, "%" + search + "%"))
                 && (walletIds.Count == 0 || walletIds.Contains(a.WalletId))
                 && (activityIds.Count == 0 || activityIds.Contains(a.ActivityId))

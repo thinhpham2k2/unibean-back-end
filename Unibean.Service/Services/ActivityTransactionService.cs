@@ -23,7 +23,7 @@ public class ActivityTransactionService : IActivityTransactionService
             .ForMember(t => t.RequestId, opt => opt.MapFrom(src => src.ActivityId))
             .ForMember(t => t.WalletType, opt => opt.MapFrom(src => src.Wallet.Type.TypeName))
             .ForMember(t => t.WalletImage, opt => opt.MapFrom(src => src.Wallet.Type.Image))
-            .ForMember(t => t.TypeName, opt => opt.MapFrom(src => src.Activity.Type.TypeName))
+            .ForMember(t => t.TypeName, opt => opt.MapFrom(src => src.Activity.Type))
             .ForMember(t => t.DateCreated, opt => opt.MapFrom(src => src.Activity.DateCreated))
             .ReverseMap();
         });

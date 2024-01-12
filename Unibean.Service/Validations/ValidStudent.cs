@@ -6,6 +6,7 @@ namespace Unibean.Service.Validations;
 
 public class ValidStudent : ValidationAttribute
 {
+    private new const string ErrorMessage = "Invalid student";
     private readonly IStudentRepository studentRepo = new StudentRepository();
 
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
@@ -14,6 +15,6 @@ public class ValidStudent : ValidationAttribute
         {
             return ValidationResult.Success;
         }
-        return new ValidationResult("Invalid student");
+        return new ValidationResult(ErrorMessage);
     }
 }

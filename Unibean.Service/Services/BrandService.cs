@@ -51,10 +51,8 @@ public class BrandService : IBrandService
             .ForMember(p => p.LogoFileName, opt => opt.MapFrom(src => src.Account.FileName))
             .ForMember(p => p.Email, opt => opt.MapFrom(src => src.Account.Email))
             .ForMember(p => p.Phone, opt => opt.MapFrom(src => src.Account.Phone))
-            .ForMember(p => p.GreenWallet, opt => opt.MapFrom(src => src.Wallets.Where(w
-                => w.Type.TypeName.Equals("Green bean")).FirstOrDefault().Balance))
-            .ForMember(p => p.RedWallet, opt => opt.MapFrom(src => src.Wallets.Where(w
-                => w.Type.TypeName.Equals("Red bean")).FirstOrDefault().Balance))
+            .ForMember(p => p.GreenWallet, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Balance))
+            .ForMember(p => p.RedWallet, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Balance))
             .ReverseMap();
             cfg.CreateMap<PagedResultModel<Brand>, PagedResultModel<BrandModel>>()
             .ForMember(p => p.Result, opt => opt.Ignore())
@@ -67,10 +65,8 @@ public class BrandService : IBrandService
             .ForMember(p => p.Email, opt => opt.MapFrom(src => src.Account.Email))
             .ForMember(p => p.Phone, opt => opt.MapFrom(src => src.Account.Phone))
             .ForMember(p => p.NumberOfFollowers, opt => opt.MapFrom(src => src.Wishlists.Count))
-            .ForMember(p => p.GreenWallet, opt => opt.MapFrom(src => src.Wallets.Where(w
-                => w.Type.TypeName.Equals("Green bean")).FirstOrDefault().Balance))
-            .ForMember(p => p.RedWallet, opt => opt.MapFrom(src => src.Wallets.Where(w
-                => w.Type.TypeName.Equals("Red bean")).FirstOrDefault().Balance))
+            .ForMember(p => p.GreenWallet, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Balance))
+            .ForMember(p => p.RedWallet, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Balance))
             .ReverseMap();
             cfg.CreateMap<Campaign, CampaignModel>()
             .ForMember(c => c.TypeName, opt => opt.MapFrom(src => src.Type.TypeName))

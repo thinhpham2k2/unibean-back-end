@@ -6,6 +6,8 @@ namespace Unibean.Service.Validations;
 
 public class ValidMajor : ValidationAttribute
 {
+    private new const string ErrorMessage = "Invalid major";
+
     private readonly IMajorRepository majorRepo = new MajorRepository();
 
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
@@ -14,6 +16,6 @@ public class ValidMajor : ValidationAttribute
         {
             return ValidationResult.Success;
         }
-        return new ValidationResult("Invalid major");
+        return new ValidationResult(ErrorMessage);
     }
 }

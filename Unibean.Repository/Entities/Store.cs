@@ -62,4 +62,6 @@ public class Store
     public virtual ICollection<Activity> Activities { get; set; }
 
     public virtual ICollection<CampaignStore> CampaignStores { get; set; }
+
+    public virtual ICollection<Bonus> Bonuses { get; set; }
 }

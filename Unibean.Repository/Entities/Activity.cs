@@ -3,6 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Unibean.Repository.Entities;
 
+public enum Type
+{
+    Buy = 1, Use = 2
+}
+
 [Table("tbl_activity")]
 public class Activity
 {
@@ -20,15 +25,13 @@ public class Activity
 
     public Student Student { get; set; }
 
-    [Column("type_id", TypeName = "char(26)")]
-    public string TypeId { get; set; }
-
-    public Type Type { get; set; }
-
     [Column("voucher_item_id", TypeName = "char(26)")]
     public string VoucherItemId { get; set; }
 
     public VoucherItem VoucherItem { get; set; }
+
+    [Column("type", TypeName = "enum('Buy', 'Use')")]
+    public Type? Type { get; set; }
 
     [Column("description", TypeName = "text")]
     public string Description { get; set; }

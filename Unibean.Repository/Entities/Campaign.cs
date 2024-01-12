@@ -74,8 +74,6 @@ public class Campaign
 
     public virtual ICollection<CampaignCampus> CampaignCampuses { get; set; }
 
-    public virtual ICollection<CampaignGender> CampaignGenders { get; set; }
-
     public virtual ICollection<CampaignMajor> CampaignMajors { get; set; }
 
     public virtual ICollection<CampaignStore> CampaignStores { get; set; }

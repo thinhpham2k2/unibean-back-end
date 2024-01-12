@@ -21,10 +21,6 @@ public class CreateStudentAccountModel
     [Compare(nameof(Password), ErrorMessage = "Passwords do not match")]
     public string PasswordConfirmed { get; set; }
 
-    [ValidGender]
-    [Required(ErrorMessage = "Gender is required")]
-    public string GenderId { get; set; }
-
     [ValidMajor]
     [Required(ErrorMessage = "Major is required")]
     public string MajorId { get; set; }
@@ -44,7 +40,15 @@ public class CreateStudentAccountModel
     [Required(ErrorMessage = "Student card back image is required")]
     public IFormFile StudentCardBack { get; set; }
 
+    [ValidCode]
+    [Required(ErrorMessage = "Student code is required")]
+    [StringLength(50, MinimumLength = 3,
+        ErrorMessage = "The length of student code is from 3 to 50 characters")]
     public string Code { get; set; }
+
+    [ValidGender]
+    [Required(ErrorMessage = "Gender is required")]
+    public int Gender { get; set; }
 
     [ValidInviteCode]
     public string InviteCode { get; set; }

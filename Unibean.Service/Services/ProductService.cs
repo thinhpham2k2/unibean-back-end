@@ -24,30 +24,23 @@ public class ProductService : IProductService
 
     private readonly IImageRepository imageRepository;
 
-    private readonly IStudentRepository studentRepository;
-
     public ProductService(IProductRepository productRepository,
         IFireBaseService fireBaseService,
-        IImageRepository imageRepository,
-        IStudentRepository studentRepository)
+        IImageRepository imageRepository)
     {
         var config = new MapperConfiguration(cfg
                 =>
         {
             cfg.CreateMap<Product, ProductModel>()
             .ForMember(p => p.CategoryName, opt => opt.MapFrom(src => src.Category.CategoryName))
-            .ForMember(p => p.LevelName, opt => opt.MapFrom(src => src.Level.LevelName))
             .ForMember(p => p.ProductImage, opt => opt.MapFrom(src => src.Images.Where(i
                 => (bool)i.IsCover).FirstOrDefault().Url))
             .ReverseMap();
             cfg.CreateMap<PagedResultModel<Product>, PagedResultModel<ProductModel>>()
-            .ForMember(p => p.Result, opt => opt.Ignore())
             .ReverseMap();
             cfg.CreateMap<Product, ProductExtraModel>()
             .ForMember(p => p.CategoryName, opt => opt.MapFrom(src => src.Category.CategoryName))
             .ForMember(p => p.CategoryImage, opt => opt.MapFrom(src => src.Category.Image))
-            .ForMember(p => p.LevelName, opt => opt.MapFrom(src => src.Level.LevelName))
-            .ForMember(p => p.LevelImage, opt => opt.MapFrom(src => src.Level.Image))
             .ForMember(p => p.ProductImages, opt => opt.MapFrom(src => src.Images.Select(i => i.Url).ToList()))
             .ForMember(p => p.NumOfSold, opt => opt.MapFrom(src => src.OrderDetails.Count))
             .ReverseMap();
@@ -60,7 +53,6 @@ public class ProductService : IProductService
             cfg.CreateMap<Product, UpdateProductModel>()
             .ReverseMap()
             .ForMember(t => t.Category, opt => opt.MapFrom(src => (string)null))
-            .ForMember(t => t.Level, opt => opt.MapFrom(src => (string)null))
             .ForMember(p => p.Images, opt => opt.MapFrom(src => (string)null))
             .ForMember(p => p.DateUpdated, opt => opt.MapFrom(src => DateTime.Now));
         });
@@ -68,7 +60,6 @@ public class ProductService : IProductService
         this.productRepository = productRepository;
         this.fireBaseService = fireBaseService;
         this.imageRepository = imageRepository;
-        this.studentRepository = studentRepository;
     }
 
     public async Task<ProductModel> Add(CreateProductModel creation)
@@ -133,29 +124,8 @@ public class ProductService : IProductService
         (List<string> categoryIds, List<string> levelIds, string propertySort, bool isAsc,
         string search, int page, int limit, JwtRequestModel request)
     {
-        if (request.Role.Equals("Student"))
-        {
-            PagedResultModel<Product> result = productRepository.GetAll
-                (categoryIds, levelIds, propertySort, isAsc, search, page, limit);
-            PagedResultModel<ProductModel> pages = mapper.Map<PagedResultModel<ProductModel>>(result); ;
-            Student student = studentRepository.GetById(request.UserId);
-
-            pages.Result = result.Result.Select(r =>
-            {
-                return mapper.Map<Product, ProductModel>(r, opt
-                    => opt.AfterMap((src, dest)
-                    => dest.IsLocked = src.Level.Condition > (student != null ? student.Level.Condition : -1)));
-            }).ToList();
-
-            return pages;
-        }
-        else
-        {
-            return mapper.Map<PagedResultModel<Product>, PagedResultModel<ProductModel>>
-                (productRepository.GetAll(categoryIds, levelIds, propertySort, isAsc, search, page, limit), opt
-                => opt.AfterMap((src, dest)
-                => dest.Result = mapper.Map<List<ProductModel>>(src.Result)));
-        }
+        return mapper.Map<PagedResultModel<ProductModel>>(productRepository.GetAll
+            (categoryIds, levelIds, propertySort, isAsc, search, page, limit));
     }
 
     public ProductExtraModel GetById(string id, JwtRequestModel request)
@@ -163,16 +133,6 @@ public class ProductService : IProductService
         Product entity = productRepository.GetById(id);
         if (entity != null)
         {
-            if (request.Role.Equals("Student"))
-            {
-                ProductExtraModel extra = mapper.Map<ProductExtraModel>(entity);
-                Student student = studentRepository.GetById(request.UserId);
-
-                extra.IsLocked = entity.Level.Condition >
-                    (student != null ? student.Level.Condition : -1);
-
-                return extra;
-            }
             return mapper.Map<ProductExtraModel>(entity);
         }
         throw new InvalidParameterException("Not found product");

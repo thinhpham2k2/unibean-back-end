@@ -7,6 +7,9 @@ namespace Unibean.Service.Validations;
 
 public class ValidUserName : ValidationAttribute
 {
+    private new const string ErrorMessage = "Username must contain lowercase " +
+                    "letters or numbers, and be between 5 and 50 characters in length";
+
     private readonly IAccountRepository accountRepository = new AccountRepository();
 
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
@@ -20,7 +23,6 @@ public class ValidUserName : ValidationAttribute
             }
             return new ValidationResult("User name is already in use");
         }
-        return new ValidationResult("Username must contain lowercase " +
-                    "letters or numbers, and be between 5 and 50 characters in length");
+        return new ValidationResult(ErrorMessage);
     }
 }

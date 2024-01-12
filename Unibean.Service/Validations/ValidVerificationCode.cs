@@ -7,6 +7,8 @@ public class ValidVerificationCode : ValidationAttribute
 {
     public string OtherProperty { get; }
 
+    private new const string ErrorMessage = "Invalid verification code";
+
     public ValidVerificationCode(string otherProperty)
     {
         OtherProperty = otherProperty;
@@ -27,11 +29,11 @@ public class ValidVerificationCode : ValidationAttribute
             {
                 return ValidationResult.Success;
             }
-            return new ValidationResult("Invalid verification code");
+            return new ValidationResult(ErrorMessage);
         }
         catch
         {
-            return new ValidationResult("Invalid verification code");
+            return new ValidationResult(ErrorMessage);
         }
     }
 }

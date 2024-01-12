@@ -5,5 +5,5 @@ namespace Unibean.Service.Services.Interfaces;
 
 public interface IOrderStateService
 {
-    OrderStateModel Add(string id, CreateOrderStateModel creation);
+    string Add(string id, CreateOrderStateModel creation);
 }

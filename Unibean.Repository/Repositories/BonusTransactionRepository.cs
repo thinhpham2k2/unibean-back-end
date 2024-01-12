@@ -1,0 +1,39 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Unibean.Repository.Entities;
+using Unibean.Repository.Repositories.Interfaces;
+
+namespace Unibean.Repository.Repositories;
+
+public class BonusTransactionRepository : IBonusTransactionRepository
+{
+    public List<BonusTransaction> GetAll
+        (List<string> walletIds, List<string> bonusIds, string search)
+    {
+        List<BonusTransaction> result;
+        try
+        {
+            using var db = new UnibeanDBContext();
+            result = db.BonusTransactions
+                .Where(a => (EF.Functions.Like(a.Bonus.Brand.BrandName, "%" + search + "%")
+                || EF.Functions.Like(a.Bonus.Store.StoreName, "%" + search + "%")
+                || EF.Functions.Like(a.Bonus.Student.FullName, "%" + search + "%")
+                || EF.Functions.Like(a.Description, "%" + search + "%"))
+                && (walletIds.Count == 0 || walletIds.Contains(a.WalletId))
+                && (bonusIds.Count == 0 || bonusIds.Contains(a.BonusId))
+                && (bool)a.Status)
+                .Include(s => s.Wallet)
+                    .ThenInclude(w => w.Type)
+                .Include(s => s.Bonus)
+                    .ThenInclude(a => a.Brand)
+                .Include(s => s.Bonus)
+                    .ThenInclude(a => a.Student)
+                .Include(s => s.Bonus)
+                    .ThenInclude(a => a.Store).ToList();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return result;
+    }
+}

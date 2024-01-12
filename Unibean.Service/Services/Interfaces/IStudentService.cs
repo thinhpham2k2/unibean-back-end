@@ -16,8 +16,8 @@ public interface IStudentService
     void Delete(string id);
 
     PagedResultModel<StudentModel> GetAll
-        (List<string> levelIds, List<string> genderIds, List<string> majorIds, List<string> campusIds,
-        bool? isVerify, string propertySort, bool isAsc, string search, int page, int limit);
+        (List<string> majorIds, List<string> campusIds, bool? isVerify, 
+        string propertySort, bool isAsc, string search, int page, int limit);
 
     StudentExtraModel GetById(string id);
 

@@ -1,19 +1,21 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Unibean.Repository.Repositories.Interfaces;
-using Unibean.Repository.Repositories;
+using Unibean.Repository.Entities;
 
 namespace Unibean.Service.Validations;
 
 public class ValidGender : ValidationAttribute
 {
-    private readonly IGenderRepository genderRepo = new GenderRepository();
+    private new const string ErrorMessage = "Invalid gender";
 
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
-        if (genderRepo.GetById(value.ToString()) != null)
+        if (int.TryParse(value.ToString(), out int gender))
         {
-            return ValidationResult.Success;
+            if (Enum.IsDefined(typeof(Gender), gender))
+            {
+                return ValidationResult.Success;
+            }
         }
-        return new ValidationResult("Invalid gender");
+        return new ValidationResult(ErrorMessage);
     }
 }

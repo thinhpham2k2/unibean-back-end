@@ -6,10 +6,6 @@ namespace Unibean.Service.Models.Students;
 
 public class CreateStudentGoogleModel
 {
-    [ValidGender]
-    [Required(ErrorMessage = "Gender is required")]
-    public string GenderId { get; set; }
-
     [ValidMajor]
     [Required(ErrorMessage = "Major is required")]
     public string MajorId { get; set; }
@@ -33,7 +29,18 @@ public class CreateStudentGoogleModel
             ErrorMessage = "The length of full name is from 3 to 255 characters")]
     public string FullName { get; set; }
 
+    [ValidCode]
+    [Required(ErrorMessage = "Student code is required")]
+    [StringLength(50, MinimumLength = 3,
+        ErrorMessage = "The length of student code is from 3 to 50 characters")]
     public string Code { get; set; }
+
+    /// <summary>
+    /// Nữ = 1, Nam = 2
+    /// </summary>
+    [ValidGender]
+    [Required(ErrorMessage = "Gender is required")]
+    public int Gender { get; set; }
 
     [ValidInviteCode]
     public string InviteCode { get; set; }
