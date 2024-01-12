@@ -4,7 +4,6 @@ using MoreLinq;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
-using Unibean.Service.Models.Authens;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Products;
 using Unibean.Service.Services.Interfaces;
@@ -121,14 +120,14 @@ public class ProductService : IProductService
     }
 
     public PagedResultModel<ProductModel> GetAll
-        (List<string> categoryIds, List<string> levelIds, string propertySort, bool isAsc,
-        string search, int page, int limit, JwtRequestModel request)
+        (List<string> categoryIds, string propertySort, bool isAsc,
+        string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<ProductModel>>(productRepository.GetAll
-            (categoryIds, levelIds, propertySort, isAsc, search, page, limit));
+            (categoryIds, propertySort, isAsc, search, page, limit));
     }
 
-    public ProductExtraModel GetById(string id, JwtRequestModel request)
+    public ProductExtraModel GetById(string id)
     {
         Product entity = productRepository.GetById(id);
         if (entity != null)

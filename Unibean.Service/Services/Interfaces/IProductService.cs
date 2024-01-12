@@ -11,10 +11,10 @@ public interface IProductService
     void Delete(string id);
 
     PagedResultModel<ProductModel> GetAll
-        (List<string> categoryIds, List<string> levelIds, string propertySort, 
-        bool isAsc, string search, int page, int limit, JwtRequestModel request);
+        (List<string> categoryIds, string propertySort, 
+        bool isAsc, string search, int page, int limit);
 
-    ProductExtraModel GetById(string id, JwtRequestModel request);
+    ProductExtraModel GetById(string id);
 
     Task<ProductExtraModel> Update(string id, UpdateProductModel update);
 }

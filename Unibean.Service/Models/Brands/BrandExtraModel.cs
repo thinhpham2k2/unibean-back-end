@@ -1,7 +1,6 @@
 ﻿using Unibean.Service.Models.Campaigns;
 using Unibean.Service.Models.Stores;
 using Unibean.Service.Models.Vouchers;
-using Unibean.Service.Models.Wallets;
 
 namespace Unibean.Service.Models.Brands;
 

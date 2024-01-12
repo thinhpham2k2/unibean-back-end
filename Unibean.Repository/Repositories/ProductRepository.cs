@@ -40,7 +40,7 @@ public class ProductRepository : IProductRepository
     }
 
     public PagedResultModel<Product> GetAll
-        (List<string> categoryIds, List<string> levelIds, string propertySort,
+        (List<string> categoryIds, string propertySort,
         bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<Product> pagedResult = new();
