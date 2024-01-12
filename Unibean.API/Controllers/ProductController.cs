@@ -17,20 +17,15 @@ public class ProductController : ControllerBase
 {
     private readonly IProductService productService;
 
-    private readonly IJwtService jwtService;
-
-    public ProductController(IProductService productService,
-        IJwtService jwtService)
+    public ProductController(IProductService productService)
     {
         this.productService = productService;
-        this.jwtService = jwtService;
     }
 
     /// <summary>
     /// Get product list
     /// </summary>
     /// <param name="categoryIds">Filter by category Id.</param>
-    /// <param name="levelIds">Filter by level Id.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
@@ -39,12 +34,9 @@ public class ProductController : ControllerBase
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public ActionResult<PagedResultModel<ProductModel>> GetList(
         [FromQuery] List<string> categoryIds,
-        [FromQuery] List<string> levelIds,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
-
-        string jwtToken = HttpContext.Request.Headers["Authorization"];
 
         string propertySort = paging.Sort.Split(",")[0];
         var propertyInfo = typeof(Product).GetProperty(propertySort);
@@ -52,8 +44,8 @@ public class ProductController : ControllerBase
         {
             PagedResultModel<ProductModel>
                 result = productService.GetAll
-                (categoryIds, levelIds, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
-                paging.Search, paging.Page, paging.Limit, jwtService.GetJwtRequest(jwtToken.Split(" ")[1]));
+                (categoryIds, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }
         return BadRequest("Invalid property of product");
@@ -70,11 +62,9 @@ public class ProductController : ControllerBase
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
-        string jwtToken = HttpContext.Request.Headers["Authorization"];
-
         try
         {
-            return Ok(productService.GetById(id, jwtService.GetJwtRequest(jwtToken.Split(" ")[1])));
+            return Ok(productService.GetById(id));
         }
         catch (InvalidParameterException e)
         {
