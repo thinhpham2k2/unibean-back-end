@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Type = Unibean.Repository.Entities.Type;
 
 namespace Unibean.Service.Validations;
 
@@ -10,7 +11,7 @@ public class ValidType : ValidationAttribute
     {
         if (int.TryParse(value.ToString(), out int type))
         {
-            if (new List<int> { 1, 2 }.Contains(type))
+            if (Enum.IsDefined(typeof(Type), type))
             {
                 return ValidationResult.Success;
             }

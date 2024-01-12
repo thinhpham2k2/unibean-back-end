@@ -22,6 +22,8 @@ public class UnibeanDBContext : DbContext
     public virtual DbSet<ActivityTransaction> ActivityTransactions { get; set; }
     public virtual DbSet<Admin> Admins { get; set; }
     public virtual DbSet<Area> Areas { get; set; }
+    public virtual DbSet<Bonus> Bonuses { get; set; }
+    public virtual DbSet<BonusTransaction> BonusTransactions { get; set; }
     public virtual DbSet<Brand> Brands { get; set; }
     public virtual DbSet<Campaign> Campaigns { get; set; }
     public virtual DbSet<CampaignCampus> CampaignCampuses { get; set; }

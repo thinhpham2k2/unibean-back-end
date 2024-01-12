@@ -35,6 +35,9 @@ public class CreateStudentGoogleModel
         ErrorMessage = "The length of student code is from 3 to 50 characters")]
     public string Code { get; set; }
 
+    /// <summary>
+    /// Nữ = 1, Nam = 2
+    /// </summary>
     [ValidGender]
     [Required(ErrorMessage = "Gender is required")]
     public int Gender { get; set; }

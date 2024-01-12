@@ -41,7 +41,7 @@ public class StudentService : IStudentService
 
     private readonly IOrderTransactionService orderTransactionService;
 
-    private readonly IBonusService bonusService;
+    private readonly IBonusTransactionService bankTransactionService;
 
     private readonly IActivityTransactionService activityTransactionService;
 
@@ -57,7 +57,7 @@ public class StudentService : IStudentService
         IRoleService roleService,
         IChallengeTransactionService challengeTransactionService,
         IOrderTransactionService orderTransactionService,
-        IBonusService bonusService,
+        IBonusTransactionService bankTransactionService,
         IActivityTransactionService activityTransactionService,
         IOrderService orderService,
         IVoucherItemService voucherItemService)
@@ -151,7 +151,7 @@ public class StudentService : IStudentService
         this.roleService = roleService;
         this.challengeTransactionService = challengeTransactionService;
         this.orderTransactionService = orderTransactionService;
-        this.bonusService = bonusService;
+        this.bankTransactionService = bankTransactionService;
         this.activityTransactionService = activityTransactionService;
         this.orderService = orderService;
         this.voucherItemService = voucherItemService;
@@ -217,6 +217,15 @@ public class StudentService : IStudentService
                     .Where(s => (bool)s.Status
                     && s.IsCompleted.Equals(false)
                     && s.Challenge.Type.TypeName.Equals("Spread")), 1);
+            }
+
+            if ((bool)creation.IsVerify)
+            {
+                studentChallengeService.Update(studentRepository
+                .GetById(student.Id).StudentChallenges
+                .Where(s => (bool)s.Status
+                && s.IsCompleted.Equals(false)
+                && s.Challenge.Type.TypeName.Equals("Verify")), 1);
             }
         }
 
@@ -370,8 +379,8 @@ public class StudentService : IStudentService
                 (studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search)
                 .Concat(orderTransactionService.GetAll
                 (studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search))
-                //.Concat(paymentTransactionService.GetAll
-                //(studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search))
+                .Concat(bankTransactionService.GetAll
+                (studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search))
                 .Concat(activityTransactionService.GetAll
                 (studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search))
                 .AsQueryable()
@@ -406,7 +415,7 @@ public class StudentService : IStudentService
     }
 
     public PagedResultModel<OrderModel> GetOrderListByStudentId
-        (List<string> stationIds, List<string> stateIds, string id, 
+        (List<string> stationIds, List<string> stateIds, string id,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         Student entity = studentRepository.GetById(id);
@@ -420,7 +429,7 @@ public class StudentService : IStudentService
     }
 
     public PagedResultModel<VoucherItemModel> GetVoucherListByStudentId
-        (List<string> campaignIds, List<string> voucherIds, List<string> brandIds, List<string> typeIds, 
+        (List<string> campaignIds, List<string> voucherIds, List<string> brandIds, List<string> typeIds,
         string id, string propertySort, bool isAsc, string search, int page, int limit)
     {
         Student entity = studentRepository.GetById(id);
@@ -428,7 +437,7 @@ public class StudentService : IStudentService
         if (entity != null)
         {
             return voucherItemService.GetAll
-                (campaignIds, voucherIds, brandIds, typeIds, new List<string> { id }, 
+                (campaignIds, voucherIds, brandIds, typeIds, new List<string> { id },
                 propertySort, isAsc, search, page, limit);
         }
         throw new InvalidParameterException("Not found student");

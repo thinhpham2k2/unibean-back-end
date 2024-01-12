@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Unibean.Repository.Entities;
 
 namespace Unibean.Service.Validations;
 
@@ -10,7 +11,7 @@ public class ValidGender : ValidationAttribute
     {
         if (int.TryParse(value.ToString(), out int gender))
         {
-            if (new List<int> { 1, 2 }.Contains(gender))
+            if (Enum.IsDefined(typeof(Gender), gender))
             {
                 return ValidationResult.Success;
             }

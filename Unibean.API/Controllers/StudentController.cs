@@ -276,7 +276,7 @@ public class StudentController : ControllerBase
 
         try
         {
-            return Ok(create);
+            return StatusCode(StatusCodes.Status201Created, create);
         }
         catch (InvalidParameterException e)
         {

@@ -173,7 +173,6 @@ public class StudentRepository : IStudentRepository
             .Include(b => b.Campus)
             .Include(b => b.Account)
             .Include(s => s.Activities.Where(a => (bool)a.Status))
-                .ThenInclude(a => a.Type)
             .Include(s => s.Wallets.Where(w => (bool)w.Status))
                 .ThenInclude(w => w.Type)
             .Include(s => s.Wishlists.Where(w => (bool)w.Status))
