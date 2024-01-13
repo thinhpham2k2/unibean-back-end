@@ -13,7 +13,46 @@ public class OrderRepository : IOrderRepository
         try
         {
             using var db = new UnibeanDBContext();
+
+            creation.OrderDetails = creation.OrderDetails.Select(
+                o =>
+            {
+                o.OrderId = creation.Id;
+                o.Price = db.Products.Where(s
+                    => s.Id.Equals(o.ProductId) && (bool)s.Status).FirstOrDefault().Price;
+                o.Amount = o.Price * o.Quantity;
+                return o;
+            }).ToList();
+
+            creation.OrderStates = new List<OrderState>() { new OrderState
+            {
+                Id = Ulid.NewUlid().ToString(),
+                OrderId = creation.Id,
+                StateId = db.States.Where(s => (bool)s.Status).FirstOrDefault().Id,
+                DateCreated = DateTime.Now,
+                Description = creation.Description,
+                States = true,
+                Status = true
+            }};
+
+            // Update product quantity
+            foreach (var detail in creation.OrderDetails)
+            {
+                Product product = db.Products.Where(s
+                    => s.Id.Equals(detail.ProductId) && (bool)s.Status).FirstOrDefault();
+                if (product != null && product.Quantity >= detail.Quantity)
+                {
+                    product.Quantity -= detail.Quantity;
+                    db.Products.Update(product);
+                }
+                else
+                {
+                    throw new Exception("Invalid product or quantity");
+                }
+            }
+
             creation = db.Orders.Add(creation).Entity;
+
             db.SaveChanges();
         }
         catch (Exception ex)

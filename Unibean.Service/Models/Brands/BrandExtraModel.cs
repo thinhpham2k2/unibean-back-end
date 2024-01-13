@@ -1,4 +1,4 @@
-﻿using Unibean.Service.Models.Campaigns;
+﻿    using Unibean.Service.Models.Campaigns;
 using Unibean.Service.Models.Stores;
 using Unibean.Service.Models.Vouchers;
 
@@ -32,7 +32,4 @@ public class BrandExtraModel
     public bool? IsFavor { get; set; }
     public decimal? GreenWallet { get; set; }
     public decimal? RedWallet { get; set; }
-    public List<CampaignModel> Campaigns { get; set; }
-    public List<StoreModel> Stores { get; set; }
-    public List<VoucherModel> Vouchers { get; set; }
 }

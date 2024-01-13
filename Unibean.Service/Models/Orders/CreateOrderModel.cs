@@ -6,10 +6,6 @@ namespace Unibean.Service.Models.Orders;
 
 public class CreateOrderModel
 {
-    [ValidStudent]
-    [Required(ErrorMessage = "Student is required")]
-    public string StudentId { get; set; }
-
     [ValidStation]
     [Required(ErrorMessage = "Station is required")]
     public string StationId { get; set; }
@@ -24,6 +20,7 @@ public class CreateOrderModel
     [Required(ErrorMessage = "State is required")]
     public bool? State { get; set; }
 
+    [ValidDetail]
     [Required(ErrorMessage = "Order's details is required")]
     public List<CreateDetailModel> OrderDetails { get; set; }
 }

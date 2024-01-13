@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using System.Linq.Dynamic.Core;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
@@ -7,6 +8,7 @@ using Unibean.Service.Models.Brands;
 using Unibean.Service.Models.Campaigns;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Stores;
+using Unibean.Service.Models.Transactions;
 using Unibean.Service.Models.Vouchers;
 using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Utilities.FireBase;
@@ -26,20 +28,32 @@ public class BrandService : IBrandService
 
     private readonly IFireBaseService fireBaseService;
 
-    private readonly IWalletService walletService;
-
-    private readonly IWalletTypeService walletTypeService;
-
     private readonly IRoleService roleService;
 
     private readonly IAccountRepository accountRepository;
 
+    private readonly ICampaignService campaignService;
+
+    private readonly IStoreService storeService;
+
+    private readonly IVoucherService voucherService;
+
+    private readonly IBonusTransactionService bonusTransactionService;
+
+    private readonly IWalletTransactionService walletTransactionService;
+
+    private readonly IRequestTransactionService requestTransactionService;
+
     public BrandService(IBrandRepository brandRepository,
         IFireBaseService fireBaseService,
-        IWalletService walletService,
-        IWalletTypeService walletTypeService,
         IRoleService roleService,
-        IAccountRepository accountRepository)
+        IAccountRepository accountRepository,
+        ICampaignService campaignService,
+        IStoreService storeService,
+        IVoucherService voucherService,
+        IBonusTransactionService bonusTransactionService,
+        IWalletTransactionService walletTransactionService,
+        IRequestTransactionService requestTransactionService)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -67,15 +81,6 @@ public class BrandService : IBrandService
             .ForMember(p => p.NumberOfFollowers, opt => opt.MapFrom(src => src.Wishlists.Count))
             .ForMember(p => p.GreenWallet, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Balance))
             .ForMember(p => p.RedWallet, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Balance))
-            .ReverseMap();
-            cfg.CreateMap<Campaign, CampaignModel>()
-            .ForMember(c => c.TypeName, opt => opt.MapFrom(src => src.Type.TypeName))
-            .ReverseMap();
-            cfg.CreateMap<Store, StoreModel>()
-            .ForMember(s => s.AreaName, opt => opt.MapFrom(src => src.Area.AreaName))
-            .ReverseMap();
-            cfg.CreateMap<Voucher, VoucherModel>()
-            .ForMember(s => s.TypeName, opt => opt.MapFrom(src => src.Type.TypeName))
             .ReverseMap();
             // Map Create Brand Google Model
             cfg.CreateMap<Brand, CreateBrandGoogleModel>()
@@ -113,10 +118,14 @@ public class BrandService : IBrandService
         mapper = new Mapper(config);
         this.brandRepository = brandRepository;
         this.fireBaseService = fireBaseService;
-        this.walletService = walletService;
-        this.walletTypeService = walletTypeService;
         this.roleService = roleService;
         this.accountRepository = accountRepository;
+        this.campaignService = campaignService;
+        this.storeService = storeService;
+        this.voucherService = voucherService;
+        this.bonusTransactionService = bonusTransactionService;
+        this.walletTransactionService = walletTransactionService;
+        this.requestTransactionService = requestTransactionService;
     }
 
     public async Task<BrandModel> Add(CreateBrandModel creation)
@@ -189,8 +198,8 @@ public class BrandService : IBrandService
             PagedResultModel<BrandModel> pages = mapper.Map<PagedResultModel<BrandModel>>(result);
             pages.Result = result.Result.Select(r =>
             {
-                return mapper.Map<Brand, BrandModel>(r, opt 
-                    => opt.AfterMap((src, dest) 
+                return mapper.Map<Brand, BrandModel>(r, opt
+                    => opt.AfterMap((src, dest)
                     => dest.IsFavor = src.Wishlists.Where(w => w.StudentId.Equals(request.UserId))?.Count() > 0));
             }).ToList();
 
@@ -199,8 +208,8 @@ public class BrandService : IBrandService
         else
         {
             return mapper.Map<PagedResultModel<Brand>, PagedResultModel<BrandModel>>
-                (brandRepository.GetAll(propertySort, isAsc, search, page, limit), opt 
-                => opt.AfterMap((src, dest) 
+                (brandRepository.GetAll(propertySort, isAsc, search, page, limit), opt
+                => opt.AfterMap((src, dest)
                 => dest.Result = mapper.Map<List<BrandModel>>(src.Result)));
         }
     }
@@ -210,12 +219,61 @@ public class BrandService : IBrandService
         Brand entity = brandRepository.GetById(id);
         if (entity != null)
         {
-            return request.Role.Equals("Student") ? mapper.Map<Brand, BrandExtraModel>(entity, opt 
+            return request.Role.Equals("Student") ? mapper.Map<Brand, BrandExtraModel>(entity, opt
                 => opt.AfterMap((src, dest) => dest.IsFavor = src.Wishlists.Where(w
-                => w.StudentId.Equals(request.UserId)).Any())) 
+                => w.StudentId.Equals(request.UserId)).Any()))
                 : mapper.Map<BrandExtraModel>(entity);
         }
         throw new InvalidParameterException("Not found brand");
+    }
+
+    public PagedResultModel<CampaignModel> GetCampaignListByBrandId
+        (string id, List<string> typeIds, string propertySort, bool isAsc, string search, int page, int limit)
+    {
+        return mapper.Map<PagedResultModel<CampaignModel>>
+        (campaignService.GetAll(new() { id }, typeIds, propertySort, isAsc, search, page, limit));
+    }
+
+    public PagedResultModel<TransactionModel> GetHistoryTransactionListByStudentId
+        (string id, string propertySort, bool isAsc, string search, int page, int limit)
+    {
+        var query = bonusTransactionService.GetAll
+            (brandRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search)
+            .Concat(walletTransactionService.GetAll
+            (brandRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search))
+            .Concat(requestTransactionService.GetAll
+            (brandRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search))
+            .AsQueryable()
+            .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
+
+        var result = query
+            .Skip((page - 1) * limit)
+            .Take(limit)
+            .ToList();
+
+        return new()
+        {
+            CurrentPage = page,
+            PageSize = limit,
+            PageCount = (int)Math.Ceiling((double)query.Count() / limit),
+            Result = result,
+            RowCount = result.Count,
+            TotalCount = query.Count()
+        };
+    }
+
+    public PagedResultModel<StoreModel> GetStoreListByBrandId
+        (string id, List<string> areaIds, string propertySort, bool isAsc, string search, int page, int limit)
+    {
+        return mapper.Map<PagedResultModel<StoreModel>>
+        (storeService.GetAll(new() { id }, areaIds, propertySort, isAsc, search, page, limit));
+    }
+
+    public PagedResultModel<VoucherModel> GetVoucherListByBrandId
+        (string id, List<string> typeIds, string propertySort, bool isAsc, string search, int page, int limit)
+    {
+        return mapper.Map<PagedResultModel<VoucherModel>>
+        (voucherService.GetAll(new() { id }, typeIds, propertySort, isAsc, search, page, limit));
     }
 
     public async Task<BrandExtraModel> Update(string id, UpdateBrandModel update)
