@@ -23,10 +23,10 @@ public interface IStudentService
 
     OrderExtraModel GetOrderByOrderId(string id, string orderId);
 
-    PagedResultModel<StudentChallengeModel> GetChallengeByStudentId
+    PagedResultModel<StudentChallengeModel> GetChallengeListByStudentId
         (string id, bool? isCompleted, bool? isClaimed, string propertySort, bool isAsc, string search, int page, int limit);
 
-    PagedResultModel<TransactionModel> GetHistoryTransactionByStudentId
+    PagedResultModel<TransactionModel> GetHistoryTransactionListByStudentId
         (string id, string propertySort, bool isAsc, string search, int page, int limit);
 
     PagedResultModel<OrderModel> GetOrderListByStudentId

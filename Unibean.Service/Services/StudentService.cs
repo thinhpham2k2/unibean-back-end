@@ -41,7 +41,7 @@ public class StudentService : IStudentService
 
     private readonly IOrderTransactionService orderTransactionService;
 
-    private readonly IBonusTransactionService bankTransactionService;
+    private readonly IBonusTransactionService bonusTransactionService;
 
     private readonly IActivityTransactionService activityTransactionService;
 
@@ -57,7 +57,7 @@ public class StudentService : IStudentService
         IRoleService roleService,
         IChallengeTransactionService challengeTransactionService,
         IOrderTransactionService orderTransactionService,
-        IBonusTransactionService bankTransactionService,
+        IBonusTransactionService bonusTransactionService,
         IActivityTransactionService activityTransactionService,
         IOrderService orderService,
         IVoucherItemService voucherItemService)
@@ -151,7 +151,7 @@ public class StudentService : IStudentService
         this.roleService = roleService;
         this.challengeTransactionService = challengeTransactionService;
         this.orderTransactionService = orderTransactionService;
-        this.bankTransactionService = bankTransactionService;
+        this.bonusTransactionService = bonusTransactionService;
         this.activityTransactionService = activityTransactionService;
         this.orderService = orderService;
         this.voucherItemService = voucherItemService;
@@ -349,7 +349,7 @@ public class StudentService : IStudentService
         throw new InvalidParameterException("Not found student");
     }
 
-    public PagedResultModel<StudentChallengeModel> GetChallengeByStudentId
+    public PagedResultModel<StudentChallengeModel> GetChallengeListByStudentId
         (string id, bool? isCompleted, bool? isClaimed, string propertySort, bool isAsc, string search, int page, int limit)
     {
         Student entity = studentRepository.GetById(id);
@@ -357,7 +357,7 @@ public class StudentService : IStudentService
         if (entity != null)
         {
             PagedResultModel<StudentChallengeModel> result = studentChallengeService.GetAll
-                (new List<string> { id }, new(), propertySort, isAsc, search, page, limit);
+                (new() { id }, new(), propertySort, isAsc, search, page, limit);
 
             result.Result = result.Result
                 .Where(c => (isCompleted == null || c.IsCompleted.Equals(isCompleted))
@@ -368,7 +368,7 @@ public class StudentService : IStudentService
         throw new InvalidParameterException("Not found student");
     }
 
-    public PagedResultModel<TransactionModel> GetHistoryTransactionByStudentId
+    public PagedResultModel<TransactionModel> GetHistoryTransactionListByStudentId
         (string id, string propertySort, bool isAsc, string search, int page, int limit)
     {
         Student entity = studentRepository.GetById(id);
@@ -379,7 +379,7 @@ public class StudentService : IStudentService
                 (studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search)
                 .Concat(orderTransactionService.GetAll
                 (studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search))
-                .Concat(bankTransactionService.GetAll
+                .Concat(bonusTransactionService.GetAll
                 (studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search))
                 .Concat(activityTransactionService.GetAll
                 (studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search))
@@ -423,7 +423,7 @@ public class StudentService : IStudentService
         if (entity != null)
         {
             return orderService.GetAll
-                (stationIds, new List<string> { id }, stateIds, propertySort, isAsc, search, page, limit);
+                (stationIds, new() { id }, stateIds, propertySort, isAsc, search, page, limit);
         }
         throw new InvalidParameterException("Not found student");
     }
@@ -437,7 +437,7 @@ public class StudentService : IStudentService
         if (entity != null)
         {
             return voucherItemService.GetAll
-                (campaignIds, voucherIds, brandIds, typeIds, new List<string> { id },
+                (campaignIds, voucherIds, brandIds, typeIds, new() { id },
                 propertySort, isAsc, search, page, limit);
         }
         throw new InvalidParameterException("Not found student");

@@ -164,7 +164,7 @@ public class StudentController : ControllerBase
     [Authorize(Roles = "Admin, Student")]
     [ProducesResponseType(typeof(PagedResultModel<StudentChallengeModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public ActionResult<PagedResultModel<StudentChallengeModel>> GetChallengeByStudentId(string id,
+    public ActionResult<PagedResultModel<StudentChallengeModel>> GetChallengeListByStudentId(string id,
         [FromQuery] bool? isCompleted,
         [FromQuery] bool? isClaimed,
         [FromQuery] PagingModel paging)
@@ -178,7 +178,7 @@ public class StudentController : ControllerBase
             if (propertySort != null && propertyInfo != null)
             {
                 PagedResultModel<StudentChallengeModel>
-                result = studentService.GetChallengeByStudentId
+                result = studentService.GetChallengeListByStudentId
                     (id, isCompleted, isClaimed, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
@@ -199,7 +199,7 @@ public class StudentController : ControllerBase
     [Authorize(Roles = "Admin, Student")]
     [ProducesResponseType(typeof(PagedResultModel<TransactionModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public ActionResult<PagedResultModel<TransactionModel>> GetHistoryTransactionByStudentId(string id,
+    public ActionResult<PagedResultModel<TransactionModel>> GetHistoryTransactionListByStudentId(string id,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -211,7 +211,7 @@ public class StudentController : ControllerBase
             if (propertySort != null && propertyInfo != null)
             {
                 PagedResultModel<TransactionModel>
-                result = studentService.GetHistoryTransactionByStudentId
+                result = studentService.GetHistoryTransactionListByStudentId
                     (id, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
