@@ -11,6 +11,7 @@ using Unibean.Service.Models.Stores;
 using Unibean.Service.Models.Transactions;
 using Unibean.Service.Models.Vouchers;
 using Unibean.Service.Services.Interfaces;
+using Unibean.Service.Validations;
 
 namespace Unibean.API.Controllers;
 
@@ -165,7 +166,7 @@ public class BrandController : ControllerBase
     [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType(typeof(PagedResultModel<CampaignModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public ActionResult<PagedResultModel<CampaignModel>> GetCampaignListByBrandId(string id,
+    public ActionResult<PagedResultModel<CampaignModel>> GetCampaignListByBrandId([ValidBrand] string id,
         [FromQuery] List<string> typeIds,
         [FromQuery] PagingModel paging)
     {
@@ -199,7 +200,7 @@ public class BrandController : ControllerBase
     [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType(typeof(PagedResultModel<TransactionModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public ActionResult<PagedResultModel<TransactionModel>> GetHistoryTransactionByStudentId(string id,
+    public ActionResult<PagedResultModel<TransactionModel>> GetHistoryTransactionByStudentId([ValidBrand] string id,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -233,7 +234,7 @@ public class BrandController : ControllerBase
     [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType(typeof(PagedResultModel<StoreModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public ActionResult<PagedResultModel<StoreModel>> GetStoreListByBrandId(string id,
+    public ActionResult<PagedResultModel<StoreModel>> GetStoreListByBrandId([ValidBrand] string id,
         [FromQuery] List<string> areaIds,
         [FromQuery] PagingModel paging)
     {
@@ -268,7 +269,7 @@ public class BrandController : ControllerBase
     [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType(typeof(PagedResultModel<VoucherModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public ActionResult<PagedResultModel<VoucherModel>> GetVoucherListByBrandId(string id,
+    public ActionResult<PagedResultModel<VoucherModel>> GetVoucherListByBrandId([ValidBrand] string id,
         [FromQuery] List<string> typeIds,
         [FromQuery] PagingModel paging)
     {

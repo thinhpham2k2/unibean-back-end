@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
-using Unibean.Repository.Repositories;
 using Unibean.Repository.Repositories.Interfaces;
-using Unibean.Service.Models.Campaigns;
 using Unibean.Service.Models.Vouchers;
 using Unibean.Service.Services.Interfaces;
 
@@ -23,6 +21,8 @@ public class VoucherService : IVoucherService
             cfg.CreateMap<Voucher, VoucherModel>()
             .ForMember(c => c.BrandName, opt => opt.MapFrom(src => src.Brand.BrandName))
             .ForMember(c => c.TypeName, opt => opt.MapFrom(src => src.Type.TypeName))
+            .ReverseMap();
+            cfg.CreateMap<PagedResultModel<Voucher>, PagedResultModel<VoucherModel>>()
             .ReverseMap();
         });
         mapper = new Mapper(config);

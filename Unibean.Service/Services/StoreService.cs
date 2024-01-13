@@ -29,6 +29,8 @@ public class StoreService : IStoreService
             .ForMember(s => s.Email, opt => opt.MapFrom(src => src.Account.Email))
             .ForMember(s => s.Phone, opt => opt.MapFrom(src => src.Account.Phone))
             .ReverseMap();
+            cfg.CreateMap<PagedResultModel<Store>, PagedResultModel<StoreModel>>()
+            .ReverseMap();
         });
         mapper = new Mapper(config);
         this.storeRepository = storeRepository;

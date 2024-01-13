@@ -16,14 +16,19 @@ public class OrderService : IOrderService
 
     private readonly IOrderRepository orderRepository;
 
-    public OrderService(
-        IOrderRepository orderRepository)
+    private readonly IStudentRepository studentRepository;
+
+    private readonly IOrderTransactionRepository orderTransactionRepository;
+
+    public OrderService(IOrderRepository orderRepository,
+        IStudentRepository studentRepository,
+        IOrderTransactionRepository orderTransactionRepository)
     {
         var config = new MapperConfiguration(cfg
                =>
         {
             cfg.CreateMap<Order, OrderModel>()
-            .ForMember(o => o.OrderImage, opt => opt.MapFrom(src 
+            .ForMember(o => o.OrderImage, opt => opt.MapFrom(src
                 => src.OrderDetails.FirstOrDefault().Product.Images.Where(i
                 => (bool)i.IsCover).FirstOrDefault().Url))
             .ForMember(o => o.StudentName, opt => opt.MapFrom(src => src.Student.FullName))
@@ -50,9 +55,59 @@ public class OrderService : IOrderService
             .ForMember(s => s.StateImage, opt => opt.MapFrom(src => src.State.Image))
             .ForMember(s => s.State, opt => opt.MapFrom(src => src.States))
             .ReverseMap();
+            // Map Create Order Model
+            cfg.CreateMap<Order, CreateOrderModel>()
+            .ReverseMap()
+            .ForMember(o => o.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
+            .ForMember(o => o.DateCreated, opt => opt.MapFrom(src => DateTime.Now))
+            .ForMember(o => o.Status, opt => opt.MapFrom(src => true));
+            // Map Create Order Details Model
+            cfg.CreateMap<OrderDetail, CreateDetailModel>()
+            .ReverseMap()
+            .ForMember(d => d.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
+            .ForMember(o => o.Status, opt => opt.MapFrom(src => true));
         });
         mapper = new Mapper(config);
         this.orderRepository = orderRepository;
+        this.studentRepository = studentRepository;
+        this.orderTransactionRepository = orderTransactionRepository;
+    }
+
+    public OrderModel Add(string id, CreateOrderModel creation)
+    {
+        Student student = studentRepository.GetById(id);
+        if (student != null)
+        {
+            Wallet wallet = student.Wallets.Skip(1).FirstOrDefault();
+            if (wallet != null)
+            {
+                if (wallet.Balance >= creation.Amount)
+                {
+                    Order order = mapper.Map<Order>(creation);
+                    order.StudentId = student.Id;
+                    order = orderRepository.Add(order);
+                    if (order != null)
+                    {
+                        orderTransactionRepository.Add(new OrderTransaction
+                        {
+                            Id = Ulid.NewUlid().ToString(),
+                            OrderId = order.Id,
+                            WalletId = wallet.Id,
+                            Amount = -creation.Amount,
+                            Rate = 1,
+                            Description = creation.Description,
+                            State = true,
+                            Status = true
+                        });
+                        return mapper.Map<OrderModel>(order);
+                    }
+                    throw new InvalidParameterException("Create fail");
+                }
+                throw new InvalidParameterException("Red bean wallet balance is not enough");
+            }
+            throw new InvalidParameterException("Red bean wallet is invalid");
+        }
+        throw new InvalidParameterException("Invalid student");
     }
 
     public PagedResultModel<OrderModel> GetAll

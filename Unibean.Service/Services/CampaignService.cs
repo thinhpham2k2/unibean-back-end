@@ -23,6 +23,8 @@ public class CampaignService : ICampaignService
             .ForMember(c => c.Acronym, opt => opt.MapFrom(src => src.Brand.Acronym))
             .ForMember(c => c.TypeName, opt => opt.MapFrom(src => src.Type.TypeName))
             .ReverseMap();
+            cfg.CreateMap<PagedResultModel<Campaign>, PagedResultModel<CampaignModel>>()
+            .ReverseMap();
         });
         mapper = new Mapper(config);
         this.campaignRepository = campaignRepository;

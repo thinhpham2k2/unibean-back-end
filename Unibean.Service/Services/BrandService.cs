@@ -230,70 +230,50 @@ public class BrandService : IBrandService
     public PagedResultModel<CampaignModel> GetCampaignListByBrandId
         (string id, List<string> typeIds, string propertySort, bool isAsc, string search, int page, int limit)
     {
-        Brand entity = brandRepository.GetById(id);
-        if (entity != null)
-        {
-            return mapper.Map<PagedResultModel<CampaignModel>>
-            (campaignService.GetAll(new() { id }, typeIds, propertySort, isAsc, search, page, limit));
-        }
-        throw new InvalidParameterException("Not found brand");
+        return mapper.Map<PagedResultModel<CampaignModel>>
+        (campaignService.GetAll(new() { id }, typeIds, propertySort, isAsc, search, page, limit));
     }
 
     public PagedResultModel<TransactionModel> GetHistoryTransactionListByStudentId
         (string id, string propertySort, bool isAsc, string search, int page, int limit)
     {
-        Brand entity = brandRepository.GetById(id);
-        if (entity != null)
+        var query = bonusTransactionService.GetAll
+            (brandRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search)
+            .Concat(walletTransactionService.GetAll
+            (brandRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search))
+            .Concat(requestTransactionService.GetAll
+            (brandRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search))
+            .AsQueryable()
+            .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
+
+        var result = query
+            .Skip((page - 1) * limit)
+            .Take(limit)
+            .ToList();
+
+        return new()
         {
-            var query = bonusTransactionService.GetAll
-                (brandRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search)
-                .Concat(walletTransactionService.GetAll
-                (brandRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search))
-                .Concat(requestTransactionService.GetAll
-                (brandRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search))
-                .AsQueryable()
-                .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
-
-            var result = query
-                .Skip((page - 1) * limit)
-                .Take(limit)
-                .ToList();
-
-            return new()
-            {
-                CurrentPage = page,
-                PageSize = limit,
-                PageCount = (int)Math.Ceiling((double)query.Count() / limit),
-                Result = result,
-                RowCount = result.Count,
-                TotalCount = query.Count()
-            };
-        }
-        throw new InvalidParameterException("Not found brand");
+            CurrentPage = page,
+            PageSize = limit,
+            PageCount = (int)Math.Ceiling((double)query.Count() / limit),
+            Result = result,
+            RowCount = result.Count,
+            TotalCount = query.Count()
+        };
     }
 
     public PagedResultModel<StoreModel> GetStoreListByBrandId
         (string id, List<string> areaIds, string propertySort, bool isAsc, string search, int page, int limit)
     {
-        Brand entity = brandRepository.GetById(id);
-        if (entity != null)
-        {
-            return mapper.Map<PagedResultModel<StoreModel>>
-            (storeService.GetAll(new() { id }, areaIds, propertySort, isAsc, search, page, limit));
-        }
-        throw new InvalidParameterException("Not found brand");
+        return mapper.Map<PagedResultModel<StoreModel>>
+        (storeService.GetAll(new() { id }, areaIds, propertySort, isAsc, search, page, limit));
     }
 
     public PagedResultModel<VoucherModel> GetVoucherListByBrandId
         (string id, List<string> typeIds, string propertySort, bool isAsc, string search, int page, int limit)
     {
-        Brand entity = brandRepository.GetById(id);
-        if (entity != null)
-        {
-            return mapper.Map<PagedResultModel<VoucherModel>>
-            (voucherService.GetAll(new() { id }, typeIds, propertySort, isAsc, search, page, limit));
-        }
-        throw new InvalidParameterException("Not found brand");
+        return mapper.Map<PagedResultModel<VoucherModel>>
+        (voucherService.GetAll(new() { id }, typeIds, propertySort, isAsc, search, page, limit));
     }
 
     public async Task<BrandExtraModel> Update(string id, UpdateBrandModel update)
