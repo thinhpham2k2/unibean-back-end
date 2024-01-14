@@ -66,7 +66,9 @@ public class BrandService : IBrandService
             .ForMember(p => p.Email, opt => opt.MapFrom(src => src.Account.Email))
             .ForMember(p => p.Phone, opt => opt.MapFrom(src => src.Account.Phone))
             .ForMember(p => p.GreenWallet, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Balance))
+            .ForMember(p => p.GreenWalletImage, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Type.Image))
             .ForMember(p => p.RedWallet, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Balance))
+            .ForMember(p => p.RedWalletImage, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Type.Image))
             .ReverseMap();
             cfg.CreateMap<PagedResultModel<Brand>, PagedResultModel<BrandModel>>()
             .ForMember(p => p.Result, opt => opt.Ignore())
@@ -80,7 +82,9 @@ public class BrandService : IBrandService
             .ForMember(p => p.Phone, opt => opt.MapFrom(src => src.Account.Phone))
             .ForMember(p => p.NumberOfFollowers, opt => opt.MapFrom(src => src.Wishlists.Count))
             .ForMember(p => p.GreenWallet, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Balance))
+            .ForMember(p => p.GreenWalletImage, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Type.Image))
             .ForMember(p => p.RedWallet, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Balance))
+            .ForMember(p => p.RedWalletImage, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Type.Image))
             .ReverseMap();
             // Map Create Brand Google Model
             cfg.CreateMap<Brand, CreateBrandGoogleModel>()

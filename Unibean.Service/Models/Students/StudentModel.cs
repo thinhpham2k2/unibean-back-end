@@ -32,5 +32,7 @@ public class StudentModel
     public bool? State { get; set; }
     public bool? Status { get; set; }
     public decimal? GreenWallet { get; set; }
+    public string GreenWalletImage { get; set; }
     public decimal? RedWallet { get; set; }
+    public string RedWalletImage { get; set; }
 }
