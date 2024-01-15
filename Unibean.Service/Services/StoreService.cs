@@ -4,6 +4,7 @@ using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Stores;
+using Unibean.Service.Models.Vouchers;
 using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Utilities.FireBase;
 using BCryptNet = BCrypt.Net.BCrypt;
@@ -26,10 +27,13 @@ public class StoreService : IStoreService
 
     private readonly IAccountRepository accountRepository;
 
-    public StoreService(IStoreRepository storeRepository, 
+    private readonly IVoucherService voucherService;
+
+    public StoreService(IStoreRepository storeRepository,
         IFireBaseService fireBaseService,
         IRoleService roleService,
-        IAccountRepository accountRepository)
+        IAccountRepository accountRepository,
+        IVoucherService voucherService)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -88,6 +92,7 @@ public class StoreService : IStoreService
         this.fireBaseService = fireBaseService;
         this.roleService = roleService;
         this.accountRepository = accountRepository;
+        this.voucherService = voucherService;
     }
 
     public async Task<StoreModel> Add(CreateStoreModel creation)
@@ -146,6 +151,14 @@ public class StoreService : IStoreService
             return mapper.Map<StoreExtraModel>(entity);
         }
         throw new InvalidParameterException("Not found store");
+    }
+
+    public PagedResultModel<VoucherModel> GetVoucherListByStoreId
+        (string id, List<string> campaignIds, List<string> typeIds, 
+        string propertySort, bool isAsc, string search, int page, int limit)
+    {
+        return mapper.Map<PagedResultModel<VoucherModel>>
+            (voucherService.GetAllByStore(new() { id }, campaignIds, typeIds, propertySort, isAsc, search, page, limit));
     }
 
     public async Task<StoreExtraModel> Update(string id, UpdateStoreModel update)

@@ -1,5 +1,6 @@
 ﻿using Unibean.Repository.Paging;
 using Unibean.Service.Models.Stores;
+using Unibean.Service.Models.Vouchers;
 
 namespace Unibean.Service.Services.Interfaces;
 
@@ -14,6 +15,10 @@ public interface IStoreService
         bool isAsc, string search, int page, int limit);
 
     StoreExtraModel GetById(string id);
+
+    PagedResultModel<VoucherModel> GetVoucherListByStoreId
+        (string id, List<string> campaignIds, List<string> typeIds, 
+        string propertySort, bool isAsc, string search, int page, int limit);
 
     Task<StoreExtraModel> Update(string id, UpdateStoreModel update);
 }
