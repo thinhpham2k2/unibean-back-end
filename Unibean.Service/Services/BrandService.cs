@@ -117,7 +117,9 @@ public class BrandService : IBrandService
             cfg.CreateMap<Brand, UpdateBrandModel>()
             .ReverseMap()
             .ForMember(p => p.CoverPhoto, opt => opt.Ignore())
-            .ForMember(p => p.DateUpdated, opt => opt.MapFrom(src => DateTime.Now));
+            .ForMember(p => p.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
+            .ForPath(p => p.Account.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
+            .ForPath(p => p.Account.Description, opt => opt.MapFrom(src => src.Description));
         });
         mapper = new Mapper(config);
         this.brandRepository = brandRepository;
@@ -310,9 +312,6 @@ public class BrandService : IBrandService
                 entity.Account.Avatar = f.URL;
                 entity.Account.FileName = f.FileName;
             }
-            entity.Account.DateUpdated = DateTime.Now;
-            entity.Account.Description = update.Description;
-            accountRepository.Update(entity.Account);
 
             return mapper.Map<BrandExtraModel>(brandRepository.Update(entity));
         }

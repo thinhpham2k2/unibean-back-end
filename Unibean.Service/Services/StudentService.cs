@@ -81,6 +81,7 @@ public class StudentService : IStudentService
             .ForMember(s => s.RedWallet, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Balance))
             .ForMember(s => s.RedWalletImage, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Type.Image))
             .ReverseMap();
+            // Map Student Extra Model
             cfg.CreateMap<Student, StudentExtraModel>()
             .ForMember(s => s.MajorName, opt => opt.MapFrom(src => src.Major.MajorName))
             .ForMember(s => s.MajorImage, opt => opt.MapFrom(src => src.Major.Image))
@@ -144,7 +145,8 @@ public class StudentService : IStudentService
             .ReverseMap()
             .ForMember(t => t.Major, opt => opt.MapFrom(src => (string)null))
             .ForMember(t => t.Campus, opt => opt.MapFrom(src => (string)null))
-            .ForMember(s => s.DateUpdated, opt => opt.MapFrom(src => DateTime.Now));
+            .ForMember(s => s.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
+            .ForPath(s => s.Account.DateUpdated, opt => opt.MapFrom(src => DateTime.Now));
         });
         mapper = new Mapper(config);
         this.studentRepository = studentRepository;
@@ -441,9 +443,6 @@ public class StudentService : IStudentService
                 entity.Account.Avatar = f.URL;
                 entity.Account.FileName = f.FileName;
             }
-
-            entity.Account.DateUpdated = DateTime.Now;
-            accountRepository.Update(entity.Account);
 
             return mapper.Map<StudentExtraModel>(studentRepository.Update(entity));
         }
