@@ -3,6 +3,7 @@ using System.Linq.Dynamic.Core;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
+using Type = Unibean.Repository.Entities.Type;
 
 namespace Unibean.Repository.Repositories;
 
@@ -48,7 +49,7 @@ public class ActivityRepository : IActivityRepository
         {
             using var db = new UnibeanDBContext();
             var query = db.Activities
-                .Where(t => (EF.Functions.Like(t.Type, "%" + search + "%")
+                .Where(t => (EF.Functions.Like((string)(object)t.Type, "%" + search + "%")
                 || EF.Functions.Like(t.Store.StoreName, "%" + search + "%")
                 || EF.Functions.Like(t.Store.Address, "%" + search + "%")
                 || EF.Functions.Like(t.Student.FullName, "%" + search + "%")
@@ -124,7 +125,7 @@ public class ActivityRepository : IActivityRepository
         {
             using var db = new UnibeanDBContext();
             result = db.Activities
-                .Where(t => (EF.Functions.Like(t.Type, "%" + search + "%")
+                .Where(t => (EF.Functions.Like((string)(object)t.Type, "%" + search + "%")
                 || EF.Functions.Like(t.Store.StoreName, "%" + search + "%")
                 || EF.Functions.Like(t.Store.Address, "%" + search + "%")
                 || EF.Functions.Like(t.Student.FullName, "%" + search + "%")
@@ -133,7 +134,7 @@ public class ActivityRepository : IActivityRepository
                 && (storeIds.Count == 0 || storeIds.Contains(t.StoreId))
                 && (studentIds.Count == 0 || studentIds.Contains(t.StudentId))
                 && (voucherIds.Count == 0 || voucherIds.Contains(t.VoucherItemId))
-                && (bool)t.Status)
+                && (bool)t.Status && t.Type.Equals(Type.Use))
                .Include(s => s.ActivityTransactions.Where(a => (bool)a.Status && a.Amount > 0))
                     .ThenInclude(a => a.Wallet)
                         .ThenInclude(w => w.Type)

@@ -20,12 +20,12 @@ public class BonusService : IBonusService
         {
             cfg.CreateMap<Bonus, StoreTransactionModel>()
             .ForMember(t => t.StudentName, opt => opt.MapFrom(src => src.Student.FullName))
-            .ForMember(t => t.Activity, opt => opt.MapFrom(src => " đã nhận được bonus tại "))
+            .ForMember(t => t.Activity, opt => opt.MapFrom(src => " nhận được bonus tại "))
             .ForMember(t => t.StoreName, opt => opt.MapFrom(src => src.Store.StoreName))
             .ForMember(t => t.Amount, opt => opt.MapFrom(src => src.BonusTransactions.FirstOrDefault().Amount))
             .ForMember(t => t.Rate, opt => opt.MapFrom(src => src.BonusTransactions.FirstOrDefault().Rate))
             .ForMember(t => t.WalletId, opt => opt.MapFrom(src => src.BonusTransactions.FirstOrDefault().WalletId))
-            .ForMember(t => t.WalletType, opt => opt.MapFrom(src => src.BonusTransactions.FirstOrDefault().Wallet.Type))
+            .ForMember(t => t.WalletType, opt => opt.MapFrom(src => src.BonusTransactions.FirstOrDefault().Wallet.Type.TypeName))
             .ForMember(t => t.WalletImage, opt => opt.MapFrom(src => src.BonusTransactions.FirstOrDefault().Wallet.Type.Image))
             .ReverseMap();
         });

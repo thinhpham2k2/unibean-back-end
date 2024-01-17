@@ -1,5 +1,6 @@
 ﻿using Unibean.Repository.Paging;
 using Unibean.Service.Models.Stores;
+using Unibean.Service.Models.Transactions;
 using Unibean.Service.Models.Vouchers;
 
 namespace Unibean.Service.Services.Interfaces;
@@ -15,6 +16,9 @@ public interface IStoreService
         bool isAsc, string search, int page, int limit);
 
     StoreExtraModel GetById(string id);
+
+    PagedResultModel<StoreTransactionModel> GetHistoryTransactionListByStoreId
+        (string id, string propertySort, bool isAsc, string search, int page, int limit);
 
     PagedResultModel<VoucherModel> GetVoucherListByStoreId
         (string id, List<string> campaignIds, List<string> typeIds, 

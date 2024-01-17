@@ -19,12 +19,12 @@ public class ActivityService : IActivityService
         {
             cfg.CreateMap<Activity, StoreTransactionModel>()
             .ForMember(t => t.StudentName, opt => opt.MapFrom(src => src.Student.FullName))
-            .ForMember(t => t.Activity, opt => opt.MapFrom(src => " đã sử dụng " + src.VoucherItem.Voucher.VoucherName + " tại "))
+            .ForMember(t => t.Activity, opt => opt.MapFrom(src => " sử dụng " + src.VoucherItem.Voucher.VoucherName + " tại "))
             .ForMember(t => t.StoreName, opt => opt.MapFrom(src => src.Store.StoreName))
             .ForMember(t => t.Amount, opt => opt.MapFrom(src => src.ActivityTransactions.FirstOrDefault().Amount))
             .ForMember(t => t.Rate, opt => opt.MapFrom(src => src.ActivityTransactions.FirstOrDefault().Rate))
             .ForMember(t => t.WalletId, opt => opt.MapFrom(src => src.ActivityTransactions.FirstOrDefault().WalletId))
-            .ForMember(t => t.WalletType, opt => opt.MapFrom(src => src.ActivityTransactions.FirstOrDefault().Wallet.Type))
+            .ForMember(t => t.WalletType, opt => opt.MapFrom(src => src.ActivityTransactions.FirstOrDefault().Wallet.Type.TypeName))
             .ForMember(t => t.WalletImage, opt => opt.MapFrom(src => src.ActivityTransactions.FirstOrDefault().Wallet.Type.Image))
             .ReverseMap();
         });
