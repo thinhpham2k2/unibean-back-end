@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
+using System.Linq.Dynamic.Core;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
+using Unibean.Repository.Repositories;
 using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Stores;
+using Unibean.Service.Models.Transactions;
 using Unibean.Service.Models.Vouchers;
 using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Utilities.FireBase;
@@ -29,11 +32,17 @@ public class StoreService : IStoreService
 
     private readonly IVoucherService voucherService;
 
+    private readonly IActivityService activityService;
+
+    private readonly IBonusService bonusService;
+
     public StoreService(IStoreRepository storeRepository,
         IFireBaseService fireBaseService,
         IRoleService roleService,
         IAccountRepository accountRepository,
-        IVoucherService voucherService)
+        IVoucherService voucherService,
+        IActivityService activityService,
+        IBonusService bonusService)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -93,6 +102,8 @@ public class StoreService : IStoreService
         this.roleService = roleService;
         this.accountRepository = accountRepository;
         this.voucherService = voucherService;
+        this.activityService = activityService;
+        this.bonusService = bonusService;
     }
 
     public async Task<StoreModel> Add(CreateStoreModel creation)
@@ -153,12 +164,39 @@ public class StoreService : IStoreService
         throw new InvalidParameterException("Not found store");
     }
 
+    public PagedResultModel<StoreTransactionModel> GetHistoryTransactionListByStoreId
+        (string id, string propertySort, bool isAsc, string search, int page, int limit)
+    {
+        var query = activityService.GetList
+            (new() { id }, new(), new(), search)
+            .Concat(bonusService.GetList
+            (new(), new() { id }, new(), search))
+            .AsQueryable()
+            .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
+
+        var result = query
+            .Skip((page - 1) * limit)
+            .Take(limit)
+            .ToList();
+
+        return new()
+        {
+            CurrentPage = page,
+            PageSize = limit,
+            PageCount = (int)Math.Ceiling((double)query.Count() / limit),
+            Result = result,
+            RowCount = result.Count,
+            TotalCount = query.Count()
+        };
+    }
+
     public PagedResultModel<VoucherModel> GetVoucherListByStoreId
-        (string id, List<string> campaignIds, List<string> typeIds, 
+        (string id, List<string> campaignIds, List<string> typeIds,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<VoucherModel>>
-            (voucherService.GetAllByStore(new() { id }, campaignIds, typeIds, propertySort, isAsc, search, page, limit));
+            (voucherService.GetAllByStore
+            (new() { id }, campaignIds, typeIds, propertySort, isAsc, search, page, limit));
     }
 
     public async Task<StoreExtraModel> Update(string id, UpdateStoreModel update)

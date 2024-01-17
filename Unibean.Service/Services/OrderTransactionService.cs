@@ -31,7 +31,8 @@ public class OrderTransactionService : IOrderTransactionService
         this.orderTransactionRepo = orderTransactionRepo;
     }
 
-    public List<TransactionModel> GetAll(List<string> walletIds, List<string> orderIds, string search)
+    public List<TransactionModel> GetAll
+        (List<string> walletIds, List<string> orderIds, string search)
     {
         return mapper.Map<List<TransactionModel>>(orderTransactionRepo.GetAll
             (walletIds, orderIds, search));

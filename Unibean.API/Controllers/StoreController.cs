@@ -6,6 +6,7 @@ using Unibean.Repository.Paging;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Parameters;
 using Unibean.Service.Models.Stores;
+using Unibean.Service.Models.Transactions;
 using Unibean.Service.Models.Vouchers;
 using Unibean.Service.Services;
 using Unibean.Service.Services.Interfaces;
@@ -144,6 +145,40 @@ public class StoreController : ControllerBase
         {
             storeService.Delete(id);
             return StatusCode(StatusCodes.Status204NoContent);
+        }
+        catch (InvalidParameterException e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Get history transaction by store id
+    /// </summary>
+    /// <param name="id">Store id.</param>
+    /// <param name="paging">Paging parameter.</param>
+    [HttpGet("{id}/histories")]
+    [Authorize(Roles = "Admin, Brand, Store")]
+    [ProducesResponseType(typeof(PagedResultModel<StoreTransactionModel>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    public ActionResult<PagedResultModel<VoucherModel>> GetHistoryTransactionByStoreId([ValidStore] string id,
+        [FromQuery] PagingModel paging)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            string propertySort = paging.Sort.Split(",")[0];
+            var propertyInfo = typeof(StoreTransactionModel).GetProperty(propertySort);
+            if (propertySort != null && propertyInfo != null)
+            {
+                PagedResultModel<StoreTransactionModel>
+                result = storeService.GetHistoryTransactionListByStoreId
+                    (id, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                    paging.Search, paging.Page, paging.Limit);
+                return Ok(result);
+            }
+            return BadRequest("Invalid property of history transaction");
         }
         catch (InvalidParameterException e)
         {
