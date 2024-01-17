@@ -30,7 +30,8 @@ public class RequestTransactionService : IRequestTransactionService
         this.requestTransactionRepository = requestTransactionRepository;
     }
 
-    public List<TransactionModel> GetAll(List<string> walletIds, List<string> requestIds, string search)
+    public List<TransactionModel> GetAll
+        (List<string> walletIds, List<string> requestIds, string search)
     {
         return mapper.Map<List<TransactionModel>>(requestTransactionRepository.GetAll
             (walletIds, requestIds, search));

@@ -30,7 +30,8 @@ public class ChallengeTransactionService : IChallengeTransactionService
         this.challengeTransRepo = challengeTransRepo;
     }
 
-    public List<TransactionModel> GetAll(List<string> walletIds, List<string> challengeIds, string search)
+    public List<TransactionModel> GetAll
+        (List<string> walletIds, List<string> challengeIds, string search)
     {
         return mapper.Map<List<TransactionModel>>(challengeTransRepo.GetAll
             (walletIds, challengeIds, search));

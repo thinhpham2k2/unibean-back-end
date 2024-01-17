@@ -31,7 +31,8 @@ public class ActivityTransactionService : IActivityTransactionService
         this.activityTransactionRepo = activityTransactionRepo;
     }
 
-    public List<TransactionModel> GetAll(List<string> walletIds, List<string> activityIds, string search)
+    public List<TransactionModel> GetAll
+        (List<string> walletIds, List<string> activityIds, string search)
     {
         return mapper.Map<List<TransactionModel>>(activityTransactionRepo.GetAll
             (walletIds, activityIds, search));
