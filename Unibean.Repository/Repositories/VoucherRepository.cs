@@ -62,6 +62,7 @@ public class VoucherRepository : IVoucherRepository
                .Take(limit)
                .Include(s => s.Brand)
                .Include(s => s.Type)
+               .Include(s => s.VoucherItems.Where(v => (bool)v.Status))
                .ToList();
 
             pagedResult = new PagedResultModel<Voucher>
@@ -108,6 +109,7 @@ public class VoucherRepository : IVoucherRepository
                .Take(limit)
                .Include(s => s.Brand)
                .Include(s => s.Type)
+               .Include(s => s.VoucherItems.Where(v => (bool)v.Status))
                .ToList();
 
             pagedResult = new PagedResultModel<Voucher>
@@ -137,6 +139,12 @@ public class VoucherRepository : IVoucherRepository
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.Brand)
             .Include(s => s.Type)
+            .Include(s => s.VoucherItems.Where(v => (bool)v.Status))
+                .ThenInclude(v => v.Campaign)
+                    .ThenInclude(c => c.Brand)
+            .Include(s => s.VoucherItems.Where(v => (bool)v.Status))
+                .ThenInclude(v => v.Campaign)
+                    .ThenInclude(c => c.Type)
             .FirstOrDefault();
         }
         catch (Exception ex)

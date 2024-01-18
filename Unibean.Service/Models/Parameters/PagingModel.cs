@@ -12,7 +12,7 @@ public class PagingModel
     /// </summary>
     [FromQuery(Name = "sort")]
     [DefaultValue("Id,desc")]
-    [Required(ErrorMessage = "Sort property is required")]
+    [Required(ErrorMessage = "sort property is required")]
     public string Sort { get; set; }
 
     /// <summary>
@@ -27,7 +27,7 @@ public class PagingModel
     /// </summary>
     [DefaultValue("1")]
     [FromQuery(Name = "page")]
-    [Required(ErrorMessage = "Page is required")]
+    [Required(ErrorMessage = "page is required")]
     [Range(1, int.MaxValue, ErrorMessage = "The page must be positive")]
     public int Page { get; set; }
 
@@ -36,7 +36,7 @@ public class PagingModel
     /// </summary>
     [DefaultValue("10")]
     [FromQuery(Name = "limit")]
-    [Required(ErrorMessage = "Limit is required")]
+    [Required(ErrorMessage = "limit is required")]
     [Range(1, int.MaxValue, ErrorMessage = "The limit must be positive")]
     public int Limit { get; set; }
 }

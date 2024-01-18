@@ -94,7 +94,8 @@ public class StoreService : IStoreService
             .ReverseMap()
             .ForMember(s => s.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
             .ForPath(s => s.Account.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
-            .ForPath(s => s.Account.Description, opt => opt.MapFrom(src => src.Description));
+            .ForPath(s => s.Account.Description, opt => opt.MapFrom(src => src.Description))
+            .ForPath(s => s.Account.State, opt => opt.MapFrom(src => src.State));
         });
         mapper = new Mapper(config);
         this.storeRepository = storeRepository;

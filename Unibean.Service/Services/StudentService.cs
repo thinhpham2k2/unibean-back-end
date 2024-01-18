@@ -14,6 +14,7 @@ using BCryptNet = BCrypt.Net.BCrypt;
 using System.Linq.Dynamic.Core;
 using Unibean.Service.Models.Orders;
 using Unibean.Service.Models.VoucherItems;
+using Microsoft.AspNetCore.Http;
 
 namespace Unibean.Service.Services;
 
@@ -146,7 +147,8 @@ public class StudentService : IStudentService
             .ForMember(t => t.Major, opt => opt.MapFrom(src => (string)null))
             .ForMember(t => t.Campus, opt => opt.MapFrom(src => (string)null))
             .ForMember(s => s.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
-            .ForPath(s => s.Account.DateUpdated, opt => opt.MapFrom(src => DateTime.Now));
+            .ForPath(s => s.Account.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
+            .ForPath(s => s.Account.State, opt => opt.MapFrom(src => src.State));
         });
         mapper = new Mapper(config);
         this.studentRepository = studentRepository;
@@ -423,6 +425,11 @@ public class StudentService : IStudentService
         return voucherItemService.GetAll
             (campaignIds, voucherIds, brandIds, typeIds, new() { id },
             propertySort, isAsc, search, page, limit);
+    }
+
+    public List<string> GetWishlistsByStudentId(string id)
+    {
+        return mapper.Map<List<string>>(studentRepository.GetById(id).Wishlists.Select(w => w.BrandId).Distinct());
     }
 
     public async Task<StudentExtraModel> Update(string id, UpdateStudentModel update)
