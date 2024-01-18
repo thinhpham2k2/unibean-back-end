@@ -1,6 +1,8 @@
-﻿namespace Unibean.Service.Models.Vouchers;
+﻿using Unibean.Service.Models.Campaigns;
 
-public class VoucherModel
+namespace Unibean.Service.Models.Vouchers;
+
+public class VoucherExtraModel
 {
     public string Id { get; set; }
     public string BrandId { get; set; }
@@ -21,4 +23,5 @@ public class VoucherModel
     public bool? State { get; set; }
     public bool? Status { get; set; }
     public int? NumberOfItem { get; set; }
+    public virtual ICollection<CampaignModel> Campaigns { get; set; }
 }
