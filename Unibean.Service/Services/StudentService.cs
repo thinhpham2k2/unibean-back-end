@@ -146,7 +146,8 @@ public class StudentService : IStudentService
             .ForMember(t => t.Major, opt => opt.MapFrom(src => (string)null))
             .ForMember(t => t.Campus, opt => opt.MapFrom(src => (string)null))
             .ForMember(s => s.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
-            .ForPath(s => s.Account.DateUpdated, opt => opt.MapFrom(src => DateTime.Now));
+            .ForPath(s => s.Account.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
+            .ForPath(s => s.Account.State, opt => opt.MapFrom(src => src.State));
         });
         mapper = new Mapper(config);
         this.studentRepository = studentRepository;

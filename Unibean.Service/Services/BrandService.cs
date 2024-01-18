@@ -119,7 +119,8 @@ public class BrandService : IBrandService
             .ForMember(p => p.CoverPhoto, opt => opt.Ignore())
             .ForMember(p => p.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
             .ForPath(p => p.Account.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
-            .ForPath(p => p.Account.Description, opt => opt.MapFrom(src => src.Description));
+            .ForPath(p => p.Account.Description, opt => opt.MapFrom(src => src.Description))
+            .ForPath(p => p.Account.State, opt => opt.MapFrom(src => src.State));
         });
         mapper = new Mapper(config);
         this.brandRepository = brandRepository;
