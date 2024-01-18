@@ -36,5 +36,7 @@ public interface IStudentService
         (List<string> campaignIds, List<string> voucherIds, List<string> brandIds, List<string> typeIds,
         string id, string propertySort, bool isAsc, string search, int page, int limit);
 
+    List<string> GetWishlistsByStudentId(string id);
+
     Task<StudentExtraModel> Update(string id, UpdateStudentModel update);
 }

@@ -352,4 +352,26 @@ public class StudentController : ControllerBase
             return BadRequest(e.Message);
         }
     }
+
+    /// <summary>
+    /// Get wishlists by student id
+    /// </summary>
+    /// <param name="id">Student id.</param>
+    [HttpGet("{id}/wishlists")]
+    [Authorize(Roles = "Admin, Student")]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    public ActionResult<List<string>> GetWishlistsByStudentId([ValidStudent] string id)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            return Ok(studentService.GetWishlistsByStudentId(id));
+        }
+        catch (InvalidParameterException e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
 }
