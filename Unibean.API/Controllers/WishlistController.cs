@@ -54,7 +54,7 @@ public class WishlistController : ControllerBase
     }
 
     /// <summary>
-    /// Update wishlist
+    /// Create wishlist
     /// </summary>
     [HttpPost]
     [Authorize(Roles = "Admin, Student")]
