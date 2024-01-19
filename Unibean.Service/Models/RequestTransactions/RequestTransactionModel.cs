@@ -4,6 +4,8 @@ public class RequestTransactionModel
 {
     public string Id { get; set; }
     public string WalletId { get; set; }
+    public string WalletType { get; set; }
+    public string WalletImage { get; set; }
     public string RequestId { get; set; }
     public decimal? Amount { get; set; }
     public decimal? Rate { get; set; }

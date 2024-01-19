@@ -6,7 +6,10 @@ using Unibean.Repository.Paging;
 using Unibean.Service.Models.Admins;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Parameters;
+using Unibean.Service.Models.Requests;
+using Unibean.Service.Services;
 using Unibean.Service.Services.Interfaces;
+using Unibean.Service.Validations;
 
 namespace Unibean.API.Controllers;
 
@@ -17,9 +20,13 @@ public class AdminController : ControllerBase
 {
     private readonly IAdminService adminService;
 
-    public AdminController(IAdminService adminService)
+    private readonly IRequestService requestService;
+
+    public AdminController(IAdminService adminService, 
+        IRequestService requestService)
     {
         this.adminService = adminService;
+        this.requestService = requestService;
     }
 
     /// <summary>
@@ -136,6 +143,32 @@ public class AdminController : ControllerBase
         {
             adminService.Delete(id);
             return StatusCode(StatusCodes.Status204NoContent);
+        }
+        catch (InvalidParameterException e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Create request
+    /// </summary>
+    [HttpPost("{id}/requests")]
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType(typeof(RequestModel), (int)HttpStatusCode.Created)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    public IActionResult Create([ValidAdmin] string id, [FromBody] CreateRequestModel creation)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            var request = requestService.Add(id, creation);
+            if (request != null)
+            {
+                return StatusCode(StatusCodes.Status201Created, request);
+            }
+            return NotFound("Create fail");
         }
         catch (InvalidParameterException e)
         {
