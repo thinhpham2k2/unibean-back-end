@@ -7,7 +7,6 @@ using Unibean.Service.Models.Admins;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Parameters;
 using Unibean.Service.Models.Requests;
-using Unibean.Service.Services;
 using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Validations;
 
@@ -157,7 +156,7 @@ public class AdminController : ControllerBase
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(RequestModel), (int)HttpStatusCode.Created)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public IActionResult Create([ValidAdmin] string id, [FromBody] CreateRequestModel creation)
+    public IActionResult CreateRequest([ValidAdmin] string id, [FromBody] CreateRequestModel creation)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 

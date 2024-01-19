@@ -14,10 +14,12 @@ public class RequestRepository : IRequestRepository
         {
             using var db = new UnibeanDBContext();
 
+            // Get green bean wallet brand
             var wallet = db.Brands
                     .Where(s => s.Id.Equals(creation.BrandId) && (bool)s.Status)
                     .Include(b => b.Wallets).FirstOrDefault().Wallets.FirstOrDefault();
 
+            // Create request transactions
             creation.RequestTransactions = new List<RequestTransaction>() {
                 new RequestTransaction
             {

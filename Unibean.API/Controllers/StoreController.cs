@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
+using Unibean.Service.Models.Bonuses;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Parameters;
 using Unibean.Service.Models.Stores;
 using Unibean.Service.Models.Transactions;
 using Unibean.Service.Models.Vouchers;
-using Unibean.Service.Services;
 using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Validations;
 
@@ -21,9 +21,13 @@ public class StoreController : ControllerBase
 {
     private readonly IStoreService storeService;
 
-    public StoreController(IStoreService storeService)
+    private readonly IBonusService bonusService;
+
+    public StoreController(IStoreService storeService, 
+        IBonusService bonusService)
     {
         this.storeService = storeService;
+        this.bonusService = bonusService;
     }
 
     /// <summary>
@@ -145,6 +149,32 @@ public class StoreController : ControllerBase
         {
             storeService.Delete(id);
             return StatusCode(StatusCodes.Status204NoContent);
+        }
+        catch (InvalidParameterException e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Create bonus
+    /// </summary>
+    [HttpPost("{id}/bonuses")]
+    [Authorize(Roles = "Brand, Store")]
+    [ProducesResponseType(typeof(BonusModel), (int)HttpStatusCode.Created)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    public IActionResult CreateBonus([ValidStore] string id, [FromBody] CreateBonusModel creation)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            var bonus = bonusService.Add(id, creation);
+            if (bonus != null)
+            {
+                return StatusCode(StatusCodes.Status201Created, bonus);
+            }
+            return NotFound("Create fail");
         }
         catch (InvalidParameterException e)
         {
