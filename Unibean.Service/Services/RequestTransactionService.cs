@@ -24,6 +24,7 @@ public class RequestTransactionService : IRequestTransactionService
             .ForMember(t => t.WalletType, opt => opt.MapFrom(src => src.Wallet.Type.TypeName))
             .ForMember(t => t.WalletImage, opt => opt.MapFrom(src => src.Wallet.Type.Image))
             .ForMember(t => t.TypeName, opt => opt.MapFrom(src => "Nạp đậu"))
+            .ForMember(t => t.DateCreated, opt => opt.MapFrom(src => src.Request.DateCreated))
             .ReverseMap();
         });
         mapper = new Mapper(config);

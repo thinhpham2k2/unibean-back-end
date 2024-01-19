@@ -13,7 +13,56 @@ public class BonusRepository : IBonusRepository
         try
         {
             using var db = new UnibeanDBContext();
+
+            // Get green bean wallet student
+            var studentWallet = db.Students
+                    .Where(s => s.Id.Equals(creation.StudentId) && (bool)s.Status)
+                    .Include(b => b.Wallets).FirstOrDefault().Wallets.FirstOrDefault();
+
+            // Get green bean wallet brand
+            var brandWallet = db.Brands
+                    .Where(s => s.Id.Equals(creation.BrandId) && (bool)s.Status)
+                    .Include(b => b.Wallets).FirstOrDefault().Wallets.FirstOrDefault();
+
+            creation.BonusTransactions = new List<BonusTransaction>() {
+                new BonusTransaction
+            {
+                Id = Ulid.NewUlid().ToString(),
+                BonusId = creation.Id,
+                WalletId = studentWallet.Id,
+                Amount = creation.Amount,
+                Rate = 1,
+                Description = creation.Description,
+                State = creation.State,
+                Status = creation.Status,
+            },
+                new BonusTransaction
+            {
+                Id = Ulid.NewUlid().ToString(),
+                BonusId = creation.Id,
+                WalletId = brandWallet.Id,
+                Amount = -creation.Amount,
+                Rate = 1,
+                Description = creation.Description,
+                State = creation.State,
+                Status = creation.Status,
+            }};
+
             creation = db.Bonuses.Add(creation).Entity;
+
+            if (creation != null)
+            {
+                // Update student wallet balance
+                studentWallet.Balance += creation.Amount;
+                studentWallet.DateUpdated = DateTime.Now;
+
+                // Update brand wallet balance
+                brandWallet.Balance -= creation.Amount;
+                brandWallet.DateUpdated = DateTime.Now;
+
+                db.Wallets.UpdateRange(studentWallet, brandWallet);
+            }
+
             db.SaveChanges();
         }
         catch (Exception ex)
@@ -40,7 +89,7 @@ public class BonusRepository : IBonusRepository
     }
 
     public PagedResultModel<Bonus> GetAll
-        (List<string> brandIds, List<string> storeIds, List<string> studentIds, 
+        (List<string> brandIds, List<string> storeIds, List<string> studentIds,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<Bonus> pagedResult = new();
@@ -99,8 +148,11 @@ public class BonusRepository : IBonusRepository
                 .ThenInclude(a => a.Wallet)
                     .ThenInclude(w => w.Type)
             .Include(s => s.Brand)
+                .ThenInclude(b => b.Account)
             .Include(s => s.Store)
+                .ThenInclude(s => s.Account)
             .Include(s => s.Student)
+                .ThenInclude(s => s.Account)
             .FirstOrDefault();
         }
         catch (Exception ex)
