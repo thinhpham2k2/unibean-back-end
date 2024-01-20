@@ -237,19 +237,19 @@ public class BrandService : IBrandService
     public PagedResultModel<CampaignModel> GetCampaignListByBrandId
         (string id, List<string> typeIds, string propertySort, bool isAsc, string search, int page, int limit)
     {
-        return mapper.Map<PagedResultModel<CampaignModel>>
-            (campaignService.GetAll(new() { id }, typeIds, propertySort, isAsc, search, page, limit));
+        return mapper.Map<PagedResultModel<CampaignModel>>(campaignService
+            .GetAll(new() { id }, typeIds, new(), new(), new(), propertySort, isAsc, search, page, limit));
     }
 
     public PagedResultModel<TransactionModel> GetHistoryTransactionListByStudentId
-        (string id, string propertySort, bool isAsc, string search, int page, int limit)
+        (string id, List<string> walletTypeIds, string propertySort, bool isAsc, string search, int page, int limit)
     {
         var query = bonusTransactionService.GetAll
-            (brandRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search)
+            (brandRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), walletTypeIds, search)
             .Concat(walletTransactionService.GetAll
-            (brandRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search))
+            (brandRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), walletTypeIds, search))
             .Concat(requestTransactionService.GetAll
-            (brandRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search))
+            (brandRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), walletTypeIds, search))
             .AsQueryable()
             .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 

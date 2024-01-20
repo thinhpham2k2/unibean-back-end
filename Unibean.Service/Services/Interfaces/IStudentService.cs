@@ -24,13 +24,16 @@ public interface IStudentService
     OrderExtraModel GetOrderByOrderId(string id, string orderId);
 
     PagedResultModel<StudentChallengeModel> GetChallengeListByStudentId
-        (string id, bool? isCompleted, bool? isClaimed, string propertySort, bool isAsc, string search, int page, int limit);
+        (string id, bool? isCompleted, bool? isClaimed, string propertySort, 
+        bool isAsc, string search, int page, int limit);
 
     PagedResultModel<TransactionModel> GetHistoryTransactionListByStudentId
-        (string id, string propertySort, bool isAsc, string search, int page, int limit);
+        (string id, List<TransactionType> typeIds, string propertySort, 
+        bool isAsc, string search, int page, int limit);
 
     PagedResultModel<OrderModel> GetOrderListByStudentId
-        (List<string> stationIds, List<string> stateIds, string id, string propertySort, bool isAsc, string search, int page, int limit);
+        (List<string> stationIds, List<string> stateIds, string id, 
+        string propertySort, bool isAsc, string search, int page, int limit);
 
     PagedResultModel<VoucherItemModel> GetVoucherListByStudentId
         (List<string> campaignIds, List<string> voucherIds, List<string> brandIds, List<string> typeIds,

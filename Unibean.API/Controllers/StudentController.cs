@@ -10,6 +10,7 @@ using Unibean.Service.Models.StudentChallenges;
 using Unibean.Service.Models.Students;
 using Unibean.Service.Models.Transactions;
 using Unibean.Service.Models.VoucherItems;
+using Unibean.Service.Services;
 using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Validations;
 
@@ -199,12 +200,14 @@ public class StudentController : ControllerBase
     /// Get history transaction by student id
     /// </summary>
     /// <param name="id">Student id.</param>
+    /// <param name="typeIds">Filter by transaction type Id --- ActivityTransaction = 1, OrderTransaction = 2, ChallengeTransaction = 3, BonusTransaction = 4</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/histories")]
     [Authorize(Roles = "Admin, Student")]
     [ProducesResponseType(typeof(PagedResultModel<TransactionModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public ActionResult<PagedResultModel<TransactionModel>> GetHistoryTransactionListByStudentId([ValidStudent] string id,
+        [FromQuery] List<TransactionType> typeIds,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -217,7 +220,7 @@ public class StudentController : ControllerBase
             {
                 PagedResultModel<TransactionModel>
                 result = studentService.GetHistoryTransactionListByStudentId
-                    (id, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
+                    (id, typeIds, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
             return BadRequest("Invalid property of transaction");

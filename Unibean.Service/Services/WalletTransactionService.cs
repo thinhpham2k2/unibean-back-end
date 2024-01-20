@@ -32,9 +32,9 @@ public class WalletTransactionService : IWalletTransactionService
     }
 
     public List<TransactionModel> GetAll
-        (List<string> walletIds, List<string> campaignIds, string search)
+        (List<string> walletIds, List<string> campaignIds, List<string> walletTypeIds, string search)
     {
         return mapper.Map<List<TransactionModel>>(walletTransactionRepository.GetAll
-            (walletIds, campaignIds, search));
+            (walletIds, campaignIds, walletTypeIds, search));
     }
 }

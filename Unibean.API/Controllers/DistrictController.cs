@@ -28,7 +28,7 @@ public class DistrictController : ControllerBase
     /// <param name="cityIds">Filter by city Id.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
-    [Authorize(Roles = "Admin, Brand, Store, Student")]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(PagedResultModel<DistrictModel>),
         (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
@@ -54,7 +54,7 @@ public class DistrictController : ControllerBase
     /// Get district by id
     /// </summary>
     [HttpGet("{id}")]
-    [Authorize(Roles = "Admin, Brand, Store, Student")]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(DistrictModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public IActionResult GetById(string id)

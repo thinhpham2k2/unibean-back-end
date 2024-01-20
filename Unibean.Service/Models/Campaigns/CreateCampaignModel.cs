@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using Unibean.Service.Models.CampaignCampuses;
 using Unibean.Service.Models.CampaignMajors;
 using Unibean.Service.Models.CampaignStores;
+using Unibean.Service.Models.VoucherItems;
 using Unibean.Service.Validations;
 
 namespace Unibean.Service.Models.Campaigns;
@@ -66,4 +67,7 @@ public class CreateCampaignModel
     [ValidCampaignCampus]
     [Required(ErrorMessage = "Campaign campuses is required")]
     public ICollection<CreateCampaignCampusModel> CampaignCampuses { get; set; }
+
+    [Required(ErrorMessage = "Vouchers is required")]
+    public ICollection<CreateVoucherItemModel> Vouchers { get; set; }
 }

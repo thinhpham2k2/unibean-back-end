@@ -26,7 +26,7 @@ public interface IBrandService
         (string id, List<string> typeIds, string propertySort, bool isAsc, string search, int page, int limit);
 
     PagedResultModel<TransactionModel> GetHistoryTransactionListByStudentId
-        (string id, string propertySort, bool isAsc, string search, int page, int limit);
+        (string id, List<string> walletTypeIds, string propertySort, bool isAsc, string search, int page, int limit);
 
     PagedResultModel<StoreModel> GetStoreListByBrandId
         (string id, List<string> areaIds, string propertySort, bool isAsc, string search, int page, int limit);

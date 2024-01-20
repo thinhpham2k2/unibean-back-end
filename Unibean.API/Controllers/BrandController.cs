@@ -195,12 +195,14 @@ public class BrandController : ControllerBase
     /// Get history transaction by brand id
     /// </summary>
     /// <param name="id">Brand id.</param>
+    /// <param name="walletTypeIds">Filter by wallet type Id.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/histories")]
     [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType(typeof(PagedResultModel<TransactionModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public ActionResult<PagedResultModel<TransactionModel>> GetHistoryTransactionByStudentId([ValidBrand] string id,
+        [FromQuery] List<string> walletTypeIds,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -213,7 +215,7 @@ public class BrandController : ControllerBase
             {
                 PagedResultModel<TransactionModel>
                 result = brandService.GetHistoryTransactionListByStudentId
-                    (id, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
+                    (id, walletTypeIds, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
             return BadRequest("Invalid property of transaction");

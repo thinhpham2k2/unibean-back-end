@@ -41,7 +41,7 @@ public class VoucherService : IVoucherService
             .ReverseMap();
             cfg.CreateMap<Campaign, CampaignModel>()
             .ForMember(c => c.BrandName, opt => opt.MapFrom(src => src.Brand.BrandName))
-            .ForMember(c => c.Acronym, opt => opt.MapFrom(src => src.Brand.Acronym))
+            .ForMember(c => c.BrandAcronym, opt => opt.MapFrom(src => src.Brand.Acronym))
             .ForMember(c => c.TypeName, opt => opt.MapFrom(src => src.Type.TypeName))
             .ReverseMap();
             cfg.CreateMap<Voucher, UpdateVoucherModel>()

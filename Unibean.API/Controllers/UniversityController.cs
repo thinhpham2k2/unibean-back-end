@@ -27,7 +27,7 @@ public class UniversityController : ControllerBase
     /// </summary>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
-    [Authorize(Roles = "Admin, Brand, Store, Student")]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(PagedResultModel<UniversityModel>),
         (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
@@ -52,7 +52,7 @@ public class UniversityController : ControllerBase
     /// Get university by id
     /// </summary>
     [HttpGet("{id}")]
-    [Authorize(Roles = "Admin, Brand, Store, Student")]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(UniversityModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public IActionResult GetById(string id)

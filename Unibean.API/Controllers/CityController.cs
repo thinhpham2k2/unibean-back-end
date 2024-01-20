@@ -27,7 +27,7 @@ public class CityController : ControllerBase
     /// </summary>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
-    [Authorize(Roles = "Admin, Brand, Store, Student")]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(PagedResultModel<CityModel>),
         (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
@@ -52,7 +52,7 @@ public class CityController : ControllerBase
     /// Get city by id
     /// </summary>
     [HttpGet("{id}")]
-    [Authorize(Roles = "Admin, Brand, Store, Student")]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(CityModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public IActionResult GetById(string id)

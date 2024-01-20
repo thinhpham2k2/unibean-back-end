@@ -14,9 +14,16 @@ using BCryptNet = BCrypt.Net.BCrypt;
 using System.Linq.Dynamic.Core;
 using Unibean.Service.Models.Orders;
 using Unibean.Service.Models.VoucherItems;
-using Microsoft.AspNetCore.Http;
 
 namespace Unibean.Service.Services;
+
+public enum TransactionType
+{
+    ActivityTransaction = 1,
+    OrderTransaction = 2,
+    ChallengeTransaction = 3,
+    BonusTransaction = 4
+}
 
 public class StudentService : IStudentService
 {
@@ -371,16 +378,24 @@ public class StudentService : IStudentService
     }
 
     public PagedResultModel<TransactionModel> GetHistoryTransactionListByStudentId
-        (string id, string propertySort, bool isAsc, string search, int page, int limit)
+        (string id, List<TransactionType> typeIds, string propertySort, bool isAsc, string search, int page, int limit)
     {
-        var query = challengeTransactionService.GetAll
-            (studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search)
-            .Concat(orderTransactionService.GetAll
-            (studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search))
-            .Concat(bonusTransactionService.GetAll
-            (studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search))
-            .Concat(activityTransactionService.GetAll
-            (studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search))
+        var query = (typeIds.Contains(TransactionType.ChallengeTransaction) || typeIds.Count == 0 ? 
+            challengeTransactionService.GetAll
+            (studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search) : new())
+
+            .Concat(typeIds.Contains(TransactionType.OrderTransaction) || typeIds.Count == 0 ? 
+            orderTransactionService.GetAll
+            (studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search) : new())
+
+            .Concat(typeIds.Contains(TransactionType.BonusTransaction) || typeIds.Count == 0 ?
+            bonusTransactionService.GetAll
+            (studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), new(), search) : new())
+
+            .Concat(typeIds.Contains(TransactionType.ActivityTransaction) || typeIds.Count == 0 ?
+            activityTransactionService.GetAll
+            (studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search) : new())
+
             .AsQueryable()
             .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 

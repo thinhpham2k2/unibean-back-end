@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
+using System.Linq;
 using System.Linq.Dynamic.Core;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
-using Unibean.Repository.Repositories;
 using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Stores;
@@ -13,6 +13,12 @@ using Unibean.Service.Utilities.FireBase;
 using BCryptNet = BCrypt.Net.BCrypt;
 
 namespace Unibean.Service.Services;
+
+public enum StoreTransactionType
+{
+    ActivityTransaction = 1,
+    BonusTransaction = 2
+}
 
 public class StoreService : IStoreService
 {
@@ -166,12 +172,14 @@ public class StoreService : IStoreService
     }
 
     public PagedResultModel<StoreTransactionModel> GetHistoryTransactionListByStoreId
-        (string id, string propertySort, bool isAsc, string search, int page, int limit)
+        (string id, List<StoreTransactionType> typeIds, string propertySort, bool isAsc, string search, int page, int limit)
     {
-        var query = activityService.GetList
-            (new() { id }, new(), new(), search)
-            .Concat(bonusService.GetList
-            (new(), new() { id }, new(), search))
+        var query = (typeIds.Contains(StoreTransactionType.ActivityTransaction) || typeIds.Count == 0 ?
+            activityService.GetList
+            (new() { id }, new(), new(), search) : new())
+            .Concat(typeIds.Contains(StoreTransactionType.BonusTransaction) || typeIds.Count == 0 ?
+            bonusService.GetList
+            (new(), new() { id }, new(), search) : new())
             .AsQueryable()
             .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 
