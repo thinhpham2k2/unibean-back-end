@@ -31,7 +31,8 @@ public class WalletTransactionRepository : IWalletTransactionRepository
         return creation;
     }
 
-    public List<WalletTransaction> GetAll(List<string> walletIds, List<string> campaignIds, string search)
+    public List<WalletTransaction> GetAll
+        (List<string> walletIds, List<string> campaignIds, List<string> walletTypeIds, string search)
     {
         List<WalletTransaction> result;
         try
@@ -44,6 +45,7 @@ public class WalletTransactionRepository : IWalletTransactionRepository
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
                 && (walletIds.Count == 0 || walletIds.Contains(t.WalletId))
                 && (campaignIds.Count == 0 || campaignIds.Contains(t.CampaignId))
+                && (walletTypeIds.Count == 0 || walletTypeIds.Contains(t.Wallet.TypeId))
                 && (bool)t.Status)
                 .Include(s => s.Wallet)
                     .ThenInclude(w => w.Type)

@@ -31,7 +31,8 @@ public class RequestTransactionRepository : IRequestTransactionRepository
         return creation;
     }
 
-    public List<RequestTransaction> GetAll(List<string> walletIds, List<string> requestIds, string search)
+    public List<RequestTransaction> GetAll
+        (List<string> walletIds, List<string> requestIds, List<string> walletTypeIds, string search)
     {
         List<RequestTransaction> result;
         try
@@ -45,6 +46,7 @@ public class RequestTransactionRepository : IRequestTransactionRepository
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
                 && (walletIds.Count == 0 || walletIds.Contains(t.WalletId))
                 && (requestIds.Count == 0 || requestIds.Contains(t.RequestId))
+                && (walletTypeIds.Count == 0 || walletTypeIds.Contains(t.Wallet.TypeId))
                 && (bool)t.Status)
                 .Include(s => s.Request)
                     .ThenInclude(w => w.Admin)

@@ -22,5 +22,5 @@ public class CreateOrderModel
 
     [ValidDetail]
     [Required(ErrorMessage = "Order's details is required")]
-    public List<CreateDetailModel> OrderDetails { get; set; }
+    public ICollection<CreateDetailModel> OrderDetails { get; set; }
 }

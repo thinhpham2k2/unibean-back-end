@@ -31,9 +31,9 @@ public class BonusTransactionService : IBonusTransactionService
     }
 
     public List<TransactionModel> GetAll
-        (List<string> walletIds, List<string> bonusIds, string search)
+        (List<string> walletIds, List<string> bonusIds, List<string> walletTypeIds, string search)
     {
         return mapper.Map<List<TransactionModel>>(bonusTransactionRepository.GetAll
-            (walletIds, bonusIds, search));
+            (walletIds, bonusIds, walletTypeIds, search));
     }
 }

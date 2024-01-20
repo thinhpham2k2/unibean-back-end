@@ -18,7 +18,7 @@ public interface IStoreService
     StoreExtraModel GetById(string id);
 
     PagedResultModel<StoreTransactionModel> GetHistoryTransactionListByStoreId
-        (string id, string propertySort, bool isAsc, string search, int page, int limit);
+        (string id, List<StoreTransactionType> typeIds, string propertySort, bool isAsc, string search, int page, int limit);
 
     PagedResultModel<VoucherModel> GetVoucherListByStoreId
         (string id, List<string> campaignIds, List<string> typeIds, 

@@ -29,7 +29,7 @@ public class CampusController : ControllerBase
     /// <param name="areaIds">Filter by area Id.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
-    [Authorize(Roles = "Admin, Brand, Store, Student")]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(PagedResultModel<CampusModel>),
         (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
@@ -56,7 +56,7 @@ public class CampusController : ControllerBase
     /// Get campus by id
     /// </summary>
     [HttpGet("{id}")]
-    [Authorize(Roles = "Admin, Brand, Store, Student")]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(CampusModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public IActionResult GetById(string id)

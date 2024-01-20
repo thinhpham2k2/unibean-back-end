@@ -1,13 +1,15 @@
 ﻿namespace Unibean.Service.Models.Campaigns;
 
-public class CampaignModel
+public class CampaignExtraModel
 {
     public string Id { get; set; }
     public string BrandId { get; set; }
     public string BrandName { get; set; }
     public string BrandAcronym { get; set; }
+    public string BrandLogo { get; set; }
     public string TypeId { get; set; }
     public string TypeName { get; set; }
+    public string TypeImage { get; set; }
     public string CampaignName { get; set; }
     public string Image { get; set; }
     public string ImageName { get; set; }
@@ -25,4 +27,7 @@ public class CampaignModel
     public string Description { get; set; }
     public bool? State { get; set; }
     public bool? Status { get; set; }
+    public int? NumberOfParticipants { get; set; }
+    public decimal? UsageCost { get; set; }
+    public decimal? TotalCost { get; set; }
 }

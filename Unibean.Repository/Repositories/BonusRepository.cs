@@ -15,14 +15,16 @@ public class BonusRepository : IBonusRepository
             using var db = new UnibeanDBContext();
 
             // Get green bean wallet student
-            var studentWallet = db.Students
+            var student = db.Students
                     .Where(s => s.Id.Equals(creation.StudentId) && (bool)s.Status)
-                    .Include(b => b.Wallets).FirstOrDefault().Wallets.FirstOrDefault();
+                    .Include(b => b.Wallets).FirstOrDefault();
+            var studentWallet = student.Wallets.FirstOrDefault();
 
             // Get green bean wallet brand
-            var brandWallet = db.Brands
+            var brand = db.Brands
                     .Where(s => s.Id.Equals(creation.BrandId) && (bool)s.Status)
-                    .Include(b => b.Wallets).FirstOrDefault().Wallets.FirstOrDefault();
+                    .Include(b => b.Wallets).FirstOrDefault();
+            var brandWallet = brand.Wallets.FirstOrDefault();
 
             creation.BonusTransactions = new List<BonusTransaction>() {
                 new BonusTransaction
@@ -53,13 +55,17 @@ public class BonusRepository : IBonusRepository
             if (creation != null)
             {
                 // Update student wallet balance
+                student.TotalIncome += creation.Amount;
                 studentWallet.Balance += creation.Amount;
                 studentWallet.DateUpdated = DateTime.Now;
 
                 // Update brand wallet balance
+                brand.TotalSpending += creation.Amount;
                 brandWallet.Balance -= creation.Amount;
                 brandWallet.DateUpdated = DateTime.Now;
 
+                db.Students.Update(student);
+                db.Brands.Update(brand);
                 db.Wallets.UpdateRange(studentWallet, brandWallet);
             }
 

@@ -15,9 +15,10 @@ public class RequestRepository : IRequestRepository
             using var db = new UnibeanDBContext();
 
             // Get green bean wallet brand
-            var wallet = db.Brands
+            var brand = db.Brands
                     .Where(s => s.Id.Equals(creation.BrandId) && (bool)s.Status)
-                    .Include(b => b.Wallets).FirstOrDefault().Wallets.FirstOrDefault();
+                    .Include(b => b.Wallets).FirstOrDefault();
+            var wallet = brand.Wallets.FirstOrDefault();
 
             // Create request transactions
             creation.RequestTransactions = new List<RequestTransaction>() {
@@ -38,8 +39,11 @@ public class RequestRepository : IRequestRepository
             if (creation != null)
             {
                 // Update wallet balance
+                brand.TotalIncome += creation.Amount;
                 wallet.Balance += creation.Amount;
                 wallet.DateUpdated = DateTime.Now;
+
+                db.Brands.Update(brand);
                 db.Wallets.Update(wallet);
             }
             db.SaveChanges();

@@ -20,7 +20,7 @@ public class CampaignService : ICampaignService
         {
             cfg.CreateMap<Campaign, CampaignModel>()
             .ForMember(c => c.BrandName, opt => opt.MapFrom(src => src.Brand.BrandName))
-            .ForMember(c => c.Acronym, opt => opt.MapFrom(src => src.Brand.Acronym))
+            .ForMember(c => c.BrandAcronym, opt => opt.MapFrom(src => src.Brand.Acronym))
             .ForMember(c => c.TypeName, opt => opt.MapFrom(src => src.Type.TypeName))
             .ReverseMap();
             cfg.CreateMap<PagedResultModel<Campaign>, PagedResultModel<CampaignModel>>()
@@ -30,11 +30,31 @@ public class CampaignService : ICampaignService
         this.campaignRepository = campaignRepository;
     }
 
-    public PagedResultModel<CampaignModel> GetAll
-        (List<string> brandIds, List<string> typeIds, string propertySort,
-        bool isAsc, string search, int page, int limit)
+    public Task<CampaignExtraModel> Add(CreateCampaignModel creation)
     {
-        return mapper.Map<PagedResultModel<CampaignModel>>
-            (campaignRepository.GetAll(brandIds, typeIds, propertySort, isAsc, search, page, limit));
+        throw new NotImplementedException();
+    }
+
+    public void Delete(string id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public PagedResultModel<CampaignModel> GetAll
+        (List<string> brandIds, List<string> typeIds, List<string> storeIds, List<string> majorIds,
+        List<string> campusIds, string propertySort, bool isAsc, string search, int page, int limit)
+    {
+        return mapper.Map<PagedResultModel<CampaignModel>>(campaignRepository
+            .GetAll(brandIds, typeIds, storeIds, majorIds, campusIds, propertySort, isAsc, search, page, limit));
+    }
+
+    public CampaignExtraModel GetById(string id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<CampaignExtraModel> Update(string id, UpdateCampaignModel update)
+    {
+        throw new NotImplementedException();
     }
 }

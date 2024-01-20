@@ -49,7 +49,6 @@ public class ActivityTransactionRepository : IActivityTransactionRepository
                 .Include(s => s.Wallet)
                     .ThenInclude(w => w.Type)
                 .Include(s => s.Activity)
-                    .ThenInclude(a => a.Type)
                 .Include(s => s.Activity)
                     .ThenInclude(a => a.VoucherItem)
                         .ThenInclude(v => v.Voucher).ToList();
@@ -72,7 +71,6 @@ public class ActivityTransactionRepository : IActivityTransactionRepository
             .Include(s => s.Wallet)
                 .ThenInclude(w => w.Type)
             .Include(s => s.Activity)
-                .ThenInclude(a => a.Type)
             .Include(s => s.Activity)
                 .ThenInclude(a => a.VoucherItem)
                     .ThenInclude(v => v.Voucher)
