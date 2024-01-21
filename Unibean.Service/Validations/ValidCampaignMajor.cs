@@ -17,8 +17,6 @@ public class ValidCampaignMajor : ValidationAttribute
                 List<string> majorIds = create.CampaignMajors.Select(c => c.MajorId).ToList();
                 if (majorIds.Count.Equals(majorIds.Distinct().ToList().Count) && majorIds.Count > 0)
                 {
-                    Console.WriteLine(majorIds.Count);
-                    Console.WriteLine(majorIds.Distinct().ToList().Count);
                     return ValidationResult.Success;
                 }
             }

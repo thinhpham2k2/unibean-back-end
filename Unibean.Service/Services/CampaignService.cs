@@ -86,6 +86,7 @@ public class CampaignService : ICampaignService
             .ReverseMap()
             .ForMember(c => c.Type, opt => opt.MapFrom(src => (string)null))
             .ForMember(c => c.Image, opt => opt.Ignore())
+            .ForMember(c => c.ImageName, opt => opt.Ignore())
             .ForMember(c => c.DateUpdated, opt => opt.MapFrom(src => DateTime.Now));
         });
         mapper = new Mapper(config);
@@ -150,7 +151,10 @@ public class CampaignService : ICampaignService
                 }
                 campaignRepository.Delete(id);
             }
-            throw new InvalidParameterException("An ongoing campaign cannot be deleted");
+            else
+            {
+                throw new InvalidParameterException("An ongoing campaign cannot be deleted");
+            }
         }
         else
         {
