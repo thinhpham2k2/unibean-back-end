@@ -19,17 +19,20 @@ public class ValidConstraint : ValidationAttribute
     {
         if (validationContext.ObjectInstance is CreateCampaignModel create)
         {
-            List<string> storeArea = create.CampaignStores
-                .Select(c => storeRepository.GetById(c.StoreId)).Select(s => s.AreaId).ToList();
-
-            List<string> campusArea = create.CampaignCampuses
-                .Select(c => campusRepository.GetById(c.CampusId)).Select(c => c.AreaId).ToList();
-
-            if (campusArea.All(a => storeArea.Contains(a)))
+            if (create.CampaignStores != null && create.CampaignCampuses != null)
             {
-                return ValidationResult.Success;
+                List<string> storeArea = create.CampaignStores
+                    .Select(c => storeRepository.GetById(c.StoreId)).Select(s => s.AreaId).ToList();
+
+                List<string> campusArea = create.CampaignCampuses
+                    .Select(c => campusRepository.GetById(c.CampusId)).Select(c => c.AreaId).ToList();
+
+                if (campusArea.All(a => storeArea.Contains(a)))
+                {
+                    return ValidationResult.Success;
+                }
+                return new ValidationResult(ErrorMessage1);
             }
-            return new ValidationResult(ErrorMessage1);
         }
         return new ValidationResult(ErrorMessage);
     }

@@ -11,10 +11,13 @@ public class ValidCampaignStore : ValidationAttribute
     {
         if (validationContext.ObjectInstance is CreateCampaignModel create)
         {
-            List<string> storeIds = create.CampaignStores.Select(c => c.StoreId).ToList();
-            if (storeIds.Count.Equals(storeIds.Distinct().ToList().Count) && storeIds.Count > 0)
+            if (create.CampaignStores != null)
             {
-                return ValidationResult.Success;
+                List<string> storeIds = create.CampaignStores.Select(c => c.StoreId).ToList();
+                if (storeIds.Count.Equals(storeIds.Distinct().ToList().Count) && storeIds.Count > 0)
+                {
+                    return ValidationResult.Success;
+                }
             }
         }
         return new ValidationResult(ErrorMessage);

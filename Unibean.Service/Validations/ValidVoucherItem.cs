@@ -11,10 +11,13 @@ public class ValidVoucherItem : ValidationAttribute
     {
         if (validationContext.ObjectInstance is CreateCampaignModel create)
         {
-            List<string> voucherIds = create.Vouchers.Select(c => c.VoucherId).ToList();
-            if (voucherIds.Count.Equals(voucherIds.Distinct().ToList().Count) && voucherIds.Count > 0)
+            if (create.Vouchers != null)
             {
-                return ValidationResult.Success;
+                List<string> voucherIds = create.Vouchers.Select(c => c.VoucherId).ToList();
+                if (voucherIds.Count.Equals(voucherIds.Distinct().ToList().Count) && voucherIds.Count > 0)
+                {
+                    return ValidationResult.Success;
+                }
             }
         }
         return new ValidationResult(ErrorMessage);
