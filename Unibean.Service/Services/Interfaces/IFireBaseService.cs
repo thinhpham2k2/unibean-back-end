@@ -7,6 +7,8 @@ public interface IFireBaseService
 {
     Task<FireBaseFile> UploadFileAsync(IFormFile fileUpload, string folder);
 
+    string PushNotificationToTopic(string topic);
+
     Task<bool> RemoveFileAsync(string fileName, string folder);
 
     Task<string> GetLinkAsync(string fileName, string folder);
