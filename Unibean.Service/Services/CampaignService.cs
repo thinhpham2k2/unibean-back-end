@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FirebaseAdmin.Messaging;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
@@ -134,7 +135,28 @@ public class CampaignService : ICampaignService
             }
         }
 
-        return mapper.Map<CampaignExtraModel>(campaignRepository.Add(campaign));
+        campaign = campaignRepository.Add(campaign);
+        if (campaign != null)
+        {
+            fireBaseService.PushNotificationToStudent(new Message
+            {
+                Data = new Dictionary<string, string>()
+            {
+                { "brandId", campaign.BrandId },
+                { "campaignId", campaign.Id },
+            },
+                //Token = registrationToken,
+                Topic = campaign.BrandId,
+                Notification = new Notification()
+                {
+                    Title = campaign.Brand.BrandName + " tạo chiến dịch mới!",
+                    Body = "Chiến dịch " + campaign.CampaignName,
+                    ImageUrl = campaign.Image
+                }
+            });
+        }
+
+        return mapper.Map<CampaignExtraModel>(campaign);
     }
 
     public void Delete(string id)

@@ -104,6 +104,7 @@ public class CampaignRepository : ICampaignRepository
             }
 
             creation = db.Campaigns.Add(creation).Entity;
+            creation.Brand = brand;
 
             if (creation != null)
             {

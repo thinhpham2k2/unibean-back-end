@@ -5,12 +5,9 @@ using FirebaseAdmin;
 using FirebaseAdmin.Messaging;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using System.IO;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Utilities.FireBase;
-using static System.Net.WebRequestMethods;
 
 namespace Unibean.Service.Services;
 
@@ -45,6 +42,26 @@ public class FireBaseService : IFireBaseService
         {
             Console.WriteLine(ex.Message);
             return null;
+        }
+    }
+
+    public void PushNotificationToStudent(Message message)
+    {
+        try
+        {
+            if (FirebaseApp.DefaultInstance == null)
+            {
+                FirebaseApp.Create(new AppOptions()
+                {
+                    Credential = GoogleCredential.FromFile("private_key.json"),
+                });
+            }
+
+            FirebaseMessaging.DefaultInstance.SendAsync(message);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
         }
     }
 
