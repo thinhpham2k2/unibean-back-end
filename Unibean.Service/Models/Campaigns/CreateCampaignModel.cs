@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using Unibean.Service.Models.CampaignCampuses;
 using Unibean.Service.Models.CampaignMajors;
@@ -68,6 +69,7 @@ public class CreateCampaignModel
     [Required(ErrorMessage = "Campaign campuses is required")]
     public ICollection<CreateCampaignCampusModel> CampaignCampuses { get; set; }
 
+    [ValidVoucherItem]
     [Required(ErrorMessage = "Vouchers is required")]
     public ICollection<CreateVoucherItemModel> Vouchers { get; set; }
 }

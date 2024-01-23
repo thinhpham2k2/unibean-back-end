@@ -1,8 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
+using Unibean.Service.Models.Parameters;
 using Unibean.Service.Validations;
 
 namespace Unibean.Service.Models.VoucherItems;
 
+[ModelBinder(typeof(MetadataValueModelBinder))]
 public class CreateVoucherItemModel
 {
     [ValidVoucher]

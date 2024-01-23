@@ -21,11 +21,15 @@ public class AdminController : ControllerBase
 
     private readonly IRequestService requestService;
 
-    public AdminController(IAdminService adminService, 
-        IRequestService requestService)
+    private readonly IFireBaseService fireBaseService;
+
+    public AdminController(IAdminService adminService,
+        IRequestService requestService,
+        IFireBaseService fireBaseService)
     {
         this.adminService = adminService;
         this.requestService = requestService;
+        this.fireBaseService = fireBaseService;
     }
 
     /// <summary>
@@ -168,6 +172,26 @@ public class AdminController : ControllerBase
                 return StatusCode(StatusCodes.Status201Created, request);
             }
             return NotFound("Create fail");
+        }
+        catch (InvalidParameterException e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Push noification to topic
+    /// </summary>
+    [HttpPost("notification")]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.Created)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    public IActionResult PushNoification([FromBody] string topic)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            return StatusCode(StatusCodes.Status201Created, fireBaseService.PushNotificationToTopic(topic));
         }
         catch (InvalidParameterException e)
         {

@@ -1,6 +1,9 @@
 ﻿using Firebase.Auth;
 using Firebase.Auth.Providers;
 using Firebase.Storage;
+using FirebaseAdmin;
+using FirebaseAdmin.Messaging;
+using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Http;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Services.Interfaces;
@@ -40,6 +43,59 @@ public class FireBaseService : IFireBaseService
             Console.WriteLine(ex.Message);
             return null;
         }
+    }
+
+    public void PushNotificationToStudent(Message message)
+    {
+        try
+        {
+            if (FirebaseApp.DefaultInstance == null)
+            {
+                FirebaseApp.Create(new AppOptions()
+                {
+                    Credential = GoogleCredential.FromFile("private_key.json"),
+                });
+            }
+
+            FirebaseMessaging.DefaultInstance.SendAsync(message);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    public string PushNotificationToTopic(string topic)
+    {
+        if (FirebaseApp.DefaultInstance == null)
+        {
+            FirebaseApp.Create(new AppOptions()
+            {
+                Credential = GoogleCredential.FromFile("private_key.json"),
+            });
+        }
+
+        // This registration token comes from the client FCM SDKs.
+        // See documentation on defining a message payload.
+        var message = new Message()
+        {
+            Data = new Dictionary<string, string>()
+            {
+                { "myData", "2024" },
+            },
+            //Token = registrationToken,
+            Topic = topic,
+            Notification = new Notification()
+            {
+                Title = "Test from code 1",
+                Body = "Here is your test!",
+                ImageUrl = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/accounts%2FUB.png?alt=media&token=15664825-9e64-490c-9c50-211a6b022775"
+            }
+        };
+
+        // Send a message to the device corresponding to the provided
+        // registration token.
+        return FirebaseMessaging.DefaultInstance.SendAsync(message).Result;
     }
 
     public async Task<bool> RemoveFileAsync(string fileName, string folder)

@@ -11,10 +11,13 @@ public class ValidCampaignCampus : ValidationAttribute
     {
         if (validationContext.ObjectInstance is CreateCampaignModel create)
         {
-            List<string> campusIds = create.CampaignCampuses.Select(c => c.CampusId).ToList();
-            if (campusIds.Count.Equals(campusIds.Distinct().ToList().Count) && campusIds.Count > 0)
+            if (create.CampaignCampuses != null)
             {
-                return ValidationResult.Success;
+                List<string> campusIds = create.CampaignCampuses.Select(c => c.CampusId).ToList();
+                if (campusIds.Count.Equals(campusIds.Distinct().ToList().Count) && campusIds.Count > 0)
+                {
+                    return ValidationResult.Success;
+                }
             }
         }
         return new ValidationResult(ErrorMessage);

@@ -1,8 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
+using Unibean.Service.Models.Parameters;
 using Unibean.Service.Validations;
 
 namespace Unibean.Service.Models.CampaignCampuses;
 
+[ModelBinder(typeof(MetadataValueModelBinder))]
 public class CreateCampaignCampusModel
 {
     [ValidCampus]

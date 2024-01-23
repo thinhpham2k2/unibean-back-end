@@ -70,7 +70,7 @@ public class CampaignRepository : ICampaignRepository
                 WalletId = creation.Wallets.FirstOrDefault().Id,
                 Amount = creation.TotalIncome,
                 Rate = 1,
-                Description = creation.Description,
+                DateCreated = creation.DateCreated,
                 State = creation.State,
                 Status = creation.Status,
             },
@@ -82,7 +82,7 @@ public class CampaignRepository : ICampaignRepository
                 WalletId = brandRedWallet.Id,
                 Amount = amount > 0 ? -creation.TotalIncome : -brandRedWallet.Balance,
                 Rate = 1,
-                Description = creation.Description,
+                DateCreated = creation.DateCreated,
                 State = creation.State,
                 Status = creation.Status,
             }};
@@ -97,13 +97,14 @@ public class CampaignRepository : ICampaignRepository
                     WalletId = brandGreenWallet.Id,
                     Amount = amount,
                     Rate = 1,
-                    Description = creation.Description,
+                    DateCreated = creation.DateCreated,
                     State = creation.State,
                     Status = creation.Status,
                 });
             }
 
             creation = db.Campaigns.Add(creation).Entity;
+            creation.Brand = brand;
 
             if (creation != null)
             {

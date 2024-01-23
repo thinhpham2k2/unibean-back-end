@@ -19,25 +19,26 @@ public class ValidTotalIncome : ValidationAttribute
     {
         if (validationContext.ObjectInstance is CreateCampaignModel create)
         {
-            if (decimal.TryParse(value.ToString(), out decimal amount))
+            if (create.Vouchers != null)
             {
-                var voucherCost = create.Vouchers.Select(v
-                    =>
+                if (decimal.TryParse(value.ToString(), out decimal amount))
                 {
-                    var voucher = voucherRepo.GetById(v.VoucherId);
-                    return v.Quantity * voucher.Price * voucher.Rate;
-                }).Sum();
-
-                if(amount.Equals(voucherCost))
-                {
-                    var brand = brandRepo.GetById(create.BrandId);
-                    if (brand != null)
+                    if (amount.Equals(create.Vouchers.Select(v
+                        =>
                     {
-                        if (amount <= brand.Wallets.Select(w => w.Balance).Sum())
+                        var voucher = voucherRepo.GetById(v.VoucherId);
+                        return voucher != null ? v.Quantity * voucher.Price * voucher.Rate : 0;
+                    }).Sum()))
+                    {
+                        var brand = brandRepo.GetById(create.BrandId);
+                        if (brand != null)
                         {
-                            return ValidationResult.Success;
+                            if (amount <= brand.Wallets.Select(w => w.Balance).Sum())
+                            {
+                                return ValidationResult.Success;
+                            }
+                            return new ValidationResult(ErrorMessage1);
                         }
-                        return new ValidationResult(ErrorMessage1);
                     }
                 }
             }
