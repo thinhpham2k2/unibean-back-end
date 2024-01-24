@@ -12,6 +12,10 @@ public interface IMajorRepository
     PagedResultModel<Major> GetAll
         (string propertySort, bool isAsc, string search, int page, int limit);
 
+    PagedResultModel<Major> GetAllByCampaign
+        (List<string> campaignIds, string propertySort, 
+        bool isAsc, string search, int page, int limit);
+
     Major GetById(string id);
 
     Major Update(Major update);

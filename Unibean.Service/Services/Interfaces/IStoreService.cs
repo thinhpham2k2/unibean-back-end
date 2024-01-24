@@ -15,6 +15,10 @@ public interface IStoreService
         (List<string> brandIds, List<string> areaIds, string propertySort,
         bool isAsc, string search, int page, int limit);
 
+    PagedResultModel<StoreModel> GetAllByCampaign
+        (List<string> campaignIds, List<string> brandIds, List<string> areaIds,
+        string propertySort, bool isAsc, string search, int page, int limit);
+
     StoreExtraModel GetById(string id);
 
     PagedResultModel<StoreTransactionModel> GetHistoryTransactionListByStoreId

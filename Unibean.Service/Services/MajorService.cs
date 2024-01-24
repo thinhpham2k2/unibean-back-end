@@ -81,6 +81,13 @@ public class MajorService : IMajorService
         return mapper.Map<PagedResultModel<MajorModel>>(majorRepository.GetAll(propertySort, isAsc, search, page, limit));
     }
 
+    public PagedResultModel<MajorModel> GetAllByCampaign
+        (List<string> campaignIds, string propertySort, bool isAsc, string search, int page, int limit)
+    {
+        return mapper.Map<PagedResultModel<MajorModel>>
+            (majorRepository.GetAllByCampaign(campaignIds, propertySort, isAsc, search, page, limit));
+    }
+
     public MajorModel GetById(string id)
     {
         Major entity = majorRepository.GetById(id);

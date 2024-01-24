@@ -13,6 +13,10 @@ public interface IStoreRepository
         (List<string> brandIds, List<string> areaIds, string propertySort, 
         bool isAsc, string search, int page, int limit);
 
+    PagedResultModel<Store> GetAllByCampaign
+        (List<string> campaignIds, List<string> brandIds, List<string> areaIds, 
+        string propertySort, bool isAsc, string search, int page, int limit);
+
     Store GetById(string id);
 
     Store Update(Store update);

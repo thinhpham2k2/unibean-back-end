@@ -7,7 +7,11 @@ using Unibean.Service.Models.CampaignCampuses;
 using Unibean.Service.Models.CampaignMajors;
 using Unibean.Service.Models.Campaigns;
 using Unibean.Service.Models.CampaignStores;
+using Unibean.Service.Models.Campuses;
 using Unibean.Service.Models.Exceptions;
+using Unibean.Service.Models.Majors;
+using Unibean.Service.Models.Stores;
+using Unibean.Service.Models.Vouchers;
 using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Utilities.FireBase;
 
@@ -25,9 +29,21 @@ public class CampaignService : ICampaignService
 
     private readonly IFireBaseService fireBaseService;
 
+    private readonly IVoucherService voucherService;
+
+    private readonly IStoreService storeService;
+
+    private readonly IMajorService majorService;
+
+    private readonly ICampusService campusService;
+
     public CampaignService(ICampaignRepository campaignRepository,
         IVoucherRepository voucherRepository,
-        IFireBaseService fireBaseService)
+        IFireBaseService fireBaseService,
+        IVoucherService voucherService,
+        IStoreService storeService,
+        IMajorService majorService,
+        ICampusService campusService)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -94,6 +110,10 @@ public class CampaignService : ICampaignService
         this.campaignRepository = campaignRepository;
         this.voucherRepository = voucherRepository;
         this.fireBaseService = fireBaseService;
+        this.voucherService = voucherService;
+        this.storeService = storeService;
+        this.majorService = majorService;
+        this.campusService = campusService;
     }
 
     public async Task<CampaignExtraModel> Add(CreateCampaignModel creation)
@@ -200,6 +220,38 @@ public class CampaignService : ICampaignService
             return mapper.Map<CampaignExtraModel>(entity);
         }
         throw new InvalidParameterException("Not found campaign");
+    }
+
+    public PagedResultModel<CampusModel> GetCampusListByCampaignId
+        (string id, List<string> universityIds, List<string> areaIds, 
+        string propertySort, bool isAsc, string search, int page, int limit)
+    {
+        return campusService.GetAllByCampaign
+            (new() { id }, universityIds, areaIds, propertySort, isAsc, search, page, limit);
+    }
+
+    public PagedResultModel<MajorModel> GetMajorListByCampaignId
+        (string id, string propertySort, bool isAsc, 
+        string search, int page, int limit)
+    {
+        return majorService.GetAllByCampaign
+            (new() { id }, propertySort, isAsc, search, page, limit);
+    }
+
+    public PagedResultModel<StoreModel> GetStoreListByCampaignId
+        (string id, List<string> brandIds, List<string> areaIds, string propertySort, 
+        bool isAsc, string search, int page, int limit)
+    {
+        return storeService.GetAllByCampaign
+            (new() { id }, brandIds, areaIds, propertySort, isAsc, search, page, limit);
+    }
+
+    public PagedResultModel<VoucherModel> GetVoucherListByCampaignId
+        (string id, List<string> typeIds, string propertySort, 
+        bool isAsc, string search, int page, int limit)
+    {
+        return voucherService.GetAllByCampaign
+            (new() { id }, typeIds, propertySort, isAsc, search, page, limit);
     }
 
     public async Task<CampaignExtraModel> Update(string id, UpdateCampaignModel update)

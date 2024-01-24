@@ -237,8 +237,7 @@ public class BrandService : IBrandService
     public PagedResultModel<CampaignModel> GetCampaignListByBrandId
         (string id, List<string> typeIds, string propertySort, bool isAsc, string search, int page, int limit)
     {
-        return mapper.Map<PagedResultModel<CampaignModel>>(campaignService
-            .GetAll(new() { id }, typeIds, new(), new(), new(), propertySort, isAsc, search, page, limit));
+        return campaignService.GetAll(new() { id }, typeIds, new(), new(), new(), propertySort, isAsc, search, page, limit);
     }
 
     public PagedResultModel<TransactionModel> GetHistoryTransactionListByStudentId
@@ -272,15 +271,13 @@ public class BrandService : IBrandService
     public PagedResultModel<StoreModel> GetStoreListByBrandId
         (string id, List<string> areaIds, string propertySort, bool isAsc, string search, int page, int limit)
     {
-        return mapper.Map<PagedResultModel<StoreModel>>
-            (storeService.GetAll(new() { id }, areaIds, propertySort, isAsc, search, page, limit));
+        return storeService.GetAll(new() { id }, areaIds, propertySort, isAsc, search, page, limit);
     }
 
     public PagedResultModel<VoucherModel> GetVoucherListByBrandId
         (string id, List<string> typeIds, string propertySort, bool isAsc, string search, int page, int limit)
     {
-        return mapper.Map<PagedResultModel<VoucherModel>>
-            (voucherService.GetAll(new() { id }, typeIds, propertySort, isAsc, search, page, limit));
+        return voucherService.GetAll(new() { id }, typeIds, propertySort, isAsc, search, page, limit);
     }
 
     public async Task<BrandExtraModel> Update(string id, UpdateBrandModel update)

@@ -12,6 +12,10 @@ public interface IMajorService
     PagedResultModel<MajorModel> GetAll
         (string propertySort, bool isAsc, string search, int page, int limit);
 
+    PagedResultModel<MajorModel> GetAllByCampaign
+        (List<string> campaignIds, string propertySort,
+        bool isAsc, string search, int page, int limit);
+
     MajorModel GetById(string id);
 
     Task<MajorModel> Update(string id, UpdateMajorModel update);

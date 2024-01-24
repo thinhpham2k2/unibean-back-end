@@ -83,6 +83,50 @@ public class StoreRepository : IStoreRepository
         return pagedResult;
     }
 
+    public PagedResultModel<Store> GetAllByCampaign
+        (List<string> campaignIds, List<string> brandIds, List<string> areaIds, 
+        string propertySort, bool isAsc, string search, int page, int limit)
+    {
+        PagedResultModel<Store> pagedResult = new();
+        try
+        {
+            using var db = new UnibeanDBContext();
+            var query = db.Campaigns
+                .Where(c => (campaignIds.Count == 0 || campaignIds.Contains(c.Id))
+                && (brandIds.Count == 0 || brandIds.Contains(c.BrandId))
+                && (bool)c.Status)
+                .SelectMany(c => c.CampaignStores.Where(c => (bool)c.Status).Select(v => v.Store)).Distinct()
+                .Where(t => (EF.Functions.Like(t.StoreName, "%" + search + "%")
+                || EF.Functions.Like(t.Address, "%" + search + "%")
+                || EF.Functions.Like(t.Description, "%" + search + "%"))
+                && (areaIds.Count == 0 || areaIds.Contains(t.AreaId)))
+                .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
+
+            var result = query
+               .Skip((page - 1) * limit)
+               .Take(limit)
+               .Include(s => s.Brand)
+               .Include(s => s.Area)
+               .Include(s => s.Account)
+               .ToList();
+
+            pagedResult = new PagedResultModel<Store>
+            {
+                CurrentPage = page,
+                PageSize = limit,
+                PageCount = (int)Math.Ceiling((double)query.Count() / limit),
+                Result = result,
+                RowCount = result.Count,
+                TotalCount = query.Count()
+            };
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return pagedResult;
+    }
+
     public Store GetById(string id)
     {
         Store store = new();

@@ -1,5 +1,9 @@
 ﻿using Unibean.Repository.Paging;
 using Unibean.Service.Models.Campaigns;
+using Unibean.Service.Models.Campuses;
+using Unibean.Service.Models.Majors;
+using Unibean.Service.Models.Stores;
+using Unibean.Service.Models.Vouchers;
 
 namespace Unibean.Service.Services.Interfaces;
 
@@ -14,6 +18,22 @@ public interface ICampaignService
         List<string> campusIds, string propertySort, bool isAsc, string search, int page, int limit);
 
     CampaignExtraModel GetById(string id);
+
+    PagedResultModel<CampusModel> GetCampusListByCampaignId
+        (string id, List<string> universityIds, List<string> areaIds,
+        string propertySort, bool isAsc, string search, int page, int limit);
+
+    PagedResultModel<MajorModel> GetMajorListByCampaignId
+        (string id, string propertySort, bool isAsc, 
+        string search, int page, int limit);
+
+    PagedResultModel<StoreModel> GetStoreListByCampaignId
+        (string id, List<string> brandIds, List<string> areaIds,
+        string propertySort, bool isAsc, string search, int page, int limit);
+
+    PagedResultModel<VoucherModel> GetVoucherListByCampaignId
+        (string id, List<string> typeIds, string propertySort,
+        bool isAsc, string search, int page, int limit);
 
     Task<CampaignExtraModel> Update(string id, UpdateCampaignModel update);
 }
