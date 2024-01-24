@@ -102,6 +102,14 @@ public class VoucherService : IVoucherService
             (voucherRepository.GetAll(brandIds, typeIds, propertySort, isAsc, search, page, limit));
     }
 
+    public PagedResultModel<VoucherModel> GetAllByCampaign
+        (List<string> campaignIds, List<string> typeIds, string propertySort, 
+        bool isAsc, string search, int page, int limit)
+    {
+        return mapper.Map<PagedResultModel<VoucherModel>>
+            (voucherRepository.GetAllByCampaign(campaignIds, typeIds, propertySort, isAsc, search, page, limit));
+    }
+
     public PagedResultModel<VoucherModel> GetAllByStore
         (List<string> storeIds, List<string> campaignIds, List<string> typeIds, 
         string propertySort, bool isAsc, string search, int page, int limit)

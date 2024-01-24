@@ -8,6 +8,7 @@ using Unibean.Service.Models.CampaignMajors;
 using Unibean.Service.Models.Campaigns;
 using Unibean.Service.Models.CampaignStores;
 using Unibean.Service.Models.Exceptions;
+using Unibean.Service.Models.Vouchers;
 using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Utilities.FireBase;
 
@@ -25,9 +26,12 @@ public class CampaignService : ICampaignService
 
     private readonly IFireBaseService fireBaseService;
 
+    private readonly IVoucherService voucherService;
+
     public CampaignService(ICampaignRepository campaignRepository,
         IVoucherRepository voucherRepository,
-        IFireBaseService fireBaseService)
+        IFireBaseService fireBaseService,
+        IVoucherService voucherService)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -94,6 +98,7 @@ public class CampaignService : ICampaignService
         this.campaignRepository = campaignRepository;
         this.voucherRepository = voucherRepository;
         this.fireBaseService = fireBaseService;
+        this.voucherService = voucherService;
     }
 
     public async Task<CampaignExtraModel> Add(CreateCampaignModel creation)
@@ -200,6 +205,15 @@ public class CampaignService : ICampaignService
             return mapper.Map<CampaignExtraModel>(entity);
         }
         throw new InvalidParameterException("Not found campaign");
+    }
+
+    public PagedResultModel<VoucherModel> GetVoucherListByCampaignId
+        (string id, List<string> typeIds, string propertySort, 
+        bool isAsc, string search, int page, int limit)
+    {
+        return mapper.Map<PagedResultModel<VoucherModel>>
+            (voucherService.GetAllByCampaign
+            (new() { id }, typeIds, propertySort, isAsc, search, page, limit));
     }
 
     public async Task<CampaignExtraModel> Update(string id, UpdateCampaignModel update)
