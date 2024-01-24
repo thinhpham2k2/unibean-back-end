@@ -8,6 +8,7 @@ using Unibean.Service.Models.CampaignMajors;
 using Unibean.Service.Models.Campaigns;
 using Unibean.Service.Models.CampaignStores;
 using Unibean.Service.Models.Exceptions;
+using Unibean.Service.Models.Stores;
 using Unibean.Service.Models.Vouchers;
 using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Utilities.FireBase;
@@ -28,10 +29,13 @@ public class CampaignService : ICampaignService
 
     private readonly IVoucherService voucherService;
 
+    private readonly IStoreService storeService;
+
     public CampaignService(ICampaignRepository campaignRepository,
         IVoucherRepository voucherRepository,
         IFireBaseService fireBaseService,
-        IVoucherService voucherService)
+        IVoucherService voucherService,
+        IStoreService storeService)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -99,6 +103,7 @@ public class CampaignService : ICampaignService
         this.voucherRepository = voucherRepository;
         this.fireBaseService = fireBaseService;
         this.voucherService = voucherService;
+        this.storeService = storeService;
     }
 
     public async Task<CampaignExtraModel> Add(CreateCampaignModel creation)
@@ -207,13 +212,20 @@ public class CampaignService : ICampaignService
         throw new InvalidParameterException("Not found campaign");
     }
 
+    public PagedResultModel<StoreModel> GetStoreListByCampaignId
+        (string id, List<string> brandIds, List<string> areaIds, string propertySort, 
+        bool isAsc, string search, int page, int limit)
+    {
+        return storeService.GetAllByCampaign
+            (new() { id }, brandIds, areaIds, propertySort, isAsc, search, page, limit);
+    }
+
     public PagedResultModel<VoucherModel> GetVoucherListByCampaignId
         (string id, List<string> typeIds, string propertySort, 
         bool isAsc, string search, int page, int limit)
     {
-        return mapper.Map<PagedResultModel<VoucherModel>>
-            (voucherService.GetAllByCampaign
-            (new() { id }, typeIds, propertySort, isAsc, search, page, limit));
+        return voucherService.GetAllByCampaign
+            (new() { id }, typeIds, propertySort, isAsc, search, page, limit);
     }
 
     public async Task<CampaignExtraModel> Update(string id, UpdateCampaignModel update)

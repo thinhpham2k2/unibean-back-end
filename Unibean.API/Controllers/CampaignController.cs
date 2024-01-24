@@ -6,6 +6,7 @@ using Unibean.Repository.Paging;
 using Unibean.Service.Models.Campaigns;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Parameters;
+using Unibean.Service.Models.Stores;
 using Unibean.Service.Models.Vouchers;
 using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Validations;
@@ -149,6 +150,44 @@ public class CampaignController : ControllerBase
         {
             campaignService.Delete(id);
             return StatusCode(StatusCodes.Status204NoContent);
+        }
+        catch (InvalidParameterException e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Get store list by campaign id
+    /// </summary>
+    /// <param name="id">Campaign id.</param>
+    /// <param name="brandIds">Filter by brand Id.</param>
+    /// <param name="areaIds">Filter by area Id.</param>
+    /// <param name="paging">Paging parameter.</param>
+    [HttpGet("{id}/stores")]
+    [Authorize(Roles = "Admin, Brand, Store, Student")]
+    [ProducesResponseType(typeof(PagedResultModel<StoreModel>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    public ActionResult<PagedResultModel<StoreModel>> GetStoreListByStoreId([ValidCampaign] string id,
+        [FromQuery] List<string> brandIds,
+        [FromQuery] List<string> areaIds,
+        [FromQuery] PagingModel paging)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            string propertySort = paging.Sort.Split(",")[0];
+            var propertyInfo = typeof(Store).GetProperty(propertySort);
+            if (propertySort != null && propertyInfo != null)
+            {
+                PagedResultModel<StoreModel>
+                result = campaignService.GetStoreListByCampaignId
+                    (id, brandIds, areaIds, propertySort, paging.Sort.Split(",")[1].Equals("asc"),
+                    paging.Search, paging.Page, paging.Limit);
+                return Ok(result);
+            }
+            return BadRequest("Invalid property of store");
         }
         catch (InvalidParameterException e)
         {

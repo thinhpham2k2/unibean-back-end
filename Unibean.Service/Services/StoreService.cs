@@ -2,6 +2,7 @@
 using System.Linq.Dynamic.Core;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
+using Unibean.Repository.Repositories;
 using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Stores;
@@ -160,6 +161,15 @@ public class StoreService : IStoreService
             (storeRepository.GetAll(brandIds, areaIds, propertySort, isAsc, search, page, limit));
     }
 
+    public PagedResultModel<StoreModel> GetAllByCampaign
+        (List<string> campaignIds, List<string> brandIds, List<string> areaIds, 
+        string propertySort, bool isAsc, string search, int page, int limit)
+    {
+        return mapper.Map<PagedResultModel<StoreModel>>
+            (storeRepository.GetAllByCampaign(campaignIds, brandIds, areaIds, 
+            propertySort, isAsc, search, page, limit));
+    }
+
     public StoreExtraModel GetById(string id)
     {
         Store entity = storeRepository.GetById(id);
@@ -202,9 +212,8 @@ public class StoreService : IStoreService
         (string id, List<string> campaignIds, List<string> typeIds,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
-        return mapper.Map<PagedResultModel<VoucherModel>>
-            (voucherService.GetAllByStore
-            (new() { id }, campaignIds, typeIds, propertySort, isAsc, search, page, limit));
+        return voucherService.GetAllByStore
+            (new() { id }, campaignIds, typeIds, propertySort, isAsc, search, page, limit);
     }
 
     public async Task<StoreExtraModel> Update(string id, UpdateStoreModel update)

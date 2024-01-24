@@ -444,7 +444,7 @@ public class StudentService : IStudentService
 
     public List<string> GetWishlistsByStudentId(string id)
     {
-        return mapper.Map<List<string>>(studentRepository.GetById(id).Wishlists.Select(w => w.BrandId).Distinct());
+        return studentRepository.GetById(id).Wishlists.Select(w => w.BrandId).Distinct().ToList();
     }
 
     public async Task<StudentExtraModel> Update(string id, UpdateStudentModel update)
