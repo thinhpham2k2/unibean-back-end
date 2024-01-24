@@ -4,7 +4,9 @@ using System.Net;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Service.Models.Campaigns;
+using Unibean.Service.Models.Campuses;
 using Unibean.Service.Models.Exceptions;
+using Unibean.Service.Models.Majors;
 using Unibean.Service.Models.Parameters;
 using Unibean.Service.Models.Stores;
 using Unibean.Service.Models.Vouchers;
@@ -150,6 +152,78 @@ public class CampaignController : ControllerBase
         {
             campaignService.Delete(id);
             return StatusCode(StatusCodes.Status204NoContent);
+        }
+        catch (InvalidParameterException e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Get campus list by campaign id
+    /// </summary>
+    /// <param name="id">Campaign id.</param>
+    /// <param name="universityIds">Filter by university Id.</param>
+    /// <param name="areaIds">Filter by area Id.</param>
+    /// <param name="paging">Paging parameter.</param>
+    [HttpGet("{id}/campuses")]
+    [Authorize(Roles = "Admin, Brand, Store, Student")]
+    [ProducesResponseType(typeof(PagedResultModel<CampusModel>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    public ActionResult<PagedResultModel<CampusModel>> GetCampusListByStoreId([ValidCampaign] string id,
+        [FromQuery] List<string> universityIds,
+        [FromQuery] List<string> areaIds,
+        [FromQuery] PagingModel paging)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            string propertySort = paging.Sort.Split(",")[0];
+            var propertyInfo = typeof(Campus).GetProperty(propertySort);
+            if (propertySort != null && propertyInfo != null)
+            {
+                PagedResultModel<CampusModel>
+                result = campaignService.GetCampusListByCampaignId
+                    (id, universityIds, areaIds, propertySort, paging.Sort.Split(",")[1].Equals("asc"),
+                    paging.Search, paging.Page, paging.Limit);
+                return Ok(result);
+            }
+            return BadRequest("Invalid property of campus");
+        }
+        catch (InvalidParameterException e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Get major list by campaign id
+    /// </summary>
+    /// <param name="id">Campaign id.</param>
+    /// <param name="paging">Paging parameter.</param>
+    [HttpGet("{id}/majors")]
+    [Authorize(Roles = "Admin, Brand, Store, Student")]
+    [ProducesResponseType(typeof(PagedResultModel<MajorModel>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    public ActionResult<PagedResultModel<MajorModel>> GetMajorListByStoreId([ValidCampaign] string id,
+        [FromQuery] PagingModel paging)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            string propertySort = paging.Sort.Split(",")[0];
+            var propertyInfo = typeof(Major).GetProperty(propertySort);
+            if (propertySort != null && propertyInfo != null)
+            {
+                PagedResultModel<MajorModel>
+                result = campaignService.GetMajorListByCampaignId
+                    (id, propertySort, paging.Sort.Split(",")[1].Equals("asc"),
+                    paging.Search, paging.Page, paging.Limit);
+                return Ok(result);
+            }
+            return BadRequest("Invalid property of major");
         }
         catch (InvalidParameterException e)
         {

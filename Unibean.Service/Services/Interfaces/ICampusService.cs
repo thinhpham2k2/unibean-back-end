@@ -12,6 +12,10 @@ public interface ICampusService
     PagedResultModel<CampusModel> GetAll
         (List<string> universityIds, List<string> areaIds, string propertySort, bool isAsc, string search, int page, int limit);
 
+    PagedResultModel<CampusModel> GetAllByCampaign
+        (List<string> campaignIds, List<string> universityIds, List<string> areaIds, 
+        string propertySort, bool isAsc, string search, int page, int limit);
+
     CampusModel GetById(string id);
 
     Task<CampusModel> Update(string id, UpdateCampusModel update);

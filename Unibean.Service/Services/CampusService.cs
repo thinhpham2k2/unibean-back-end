@@ -81,9 +81,20 @@ public class CampusService : ICampusService
         }
     }
 
-    public PagedResultModel<CampusModel> GetAll(List<string> universityIds, List<string> areaIds, string propertySort, bool isAsc, string search, int page, int limit)
+    public PagedResultModel<CampusModel> GetAll
+        (List<string> universityIds, List<string> areaIds, string propertySort, 
+        bool isAsc, string search, int page, int limit)
     {
-        return mapper.Map<PagedResultModel<CampusModel>>(campusRepository.GetAll(universityIds, areaIds, propertySort, isAsc, search, page, limit));
+        return mapper.Map<PagedResultModel<CampusModel>>(campusRepository.GetAll
+            (universityIds, areaIds, propertySort, isAsc, search, page, limit));
+    }
+
+    public PagedResultModel<CampusModel> GetAllByCampaign
+        (List<string> campaignIds, List<string> universityIds, List<string> areaIds, 
+        string propertySort, bool isAsc, string search, int page, int limit)
+    {
+        return mapper.Map<PagedResultModel<CampusModel>>(campusRepository.GetAllByCampaign
+            (campaignIds, universityIds, areaIds, propertySort, isAsc, search, page, limit));
     }
 
     public CampusModel GetById(string id)

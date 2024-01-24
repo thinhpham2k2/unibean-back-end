@@ -39,7 +39,9 @@ public class CampusRepository : ICampusRepository
         }
     }
 
-    public PagedResultModel<Campus> GetAll(List<string> universityIds, List<string> areaIds, string propertySort, bool isAsc, string search, int page, int limit)
+    public PagedResultModel<Campus> GetAll
+        (List<string> universityIds, List<string> areaIds, string propertySort, 
+        bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<Campus> pagedResult = new();
         try
@@ -57,6 +59,54 @@ public class CampusRepository : ICampusRepository
                 && (universityIds.Count == 0 || universityIds.Contains(t.UniversityId))
                 && (areaIds.Count == 0 || areaIds.Contains(t.AreaId))
                 && (bool)t.Status)
+                .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
+
+            var result = query
+               .Skip((page - 1) * limit)
+               .Take(limit)
+               .Include(s => s.University)
+               .Include(s => s.Area)
+               .ToList();
+
+            pagedResult = new PagedResultModel<Campus>
+            {
+                CurrentPage = page,
+                PageSize = limit,
+                PageCount = (int)Math.Ceiling((double)query.Count() / limit),
+                Result = result,
+                RowCount = result.Count,
+                TotalCount = query.Count()
+            };
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return pagedResult;
+    }
+
+    public PagedResultModel<Campus> GetAllByCampaign
+        (List<string> campaignIds, List<string> universityIds, List<string> areaIds, 
+        string propertySort, bool isAsc, string search, int page, int limit)
+    {
+        PagedResultModel<Campus> pagedResult = new();
+        try
+        {
+            using var db = new UnibeanDBContext();
+            var query = db.Campaigns
+                .Where(c => (campaignIds.Count == 0 || campaignIds.Contains(c.Id))
+                && (bool)c.Status)
+                .SelectMany(c => c.CampaignCampuses.Where(c => (bool)c.Status).Select(v => v.Campus)).Distinct()
+                .Where(t => (EF.Functions.Like(t.CampusName, "%" + search + "%")
+                || EF.Functions.Like(t.University.UniversityName, "%" + search + "%")
+                || EF.Functions.Like(t.Area.AreaName, "%" + search + "%")
+                || EF.Functions.Like(t.Address, "%" + search + "%")
+                || EF.Functions.Like(t.Phone, "%" + search + "%")
+                || EF.Functions.Like(t.Email, "%" + search + "%")
+                || EF.Functions.Like(t.FileName, "%" + search + "%")
+                || EF.Functions.Like(t.Description, "%" + search + "%"))
+                && (universityIds.Count == 0 || universityIds.Contains(t.UniversityId))
+                && (areaIds.Count == 0 || areaIds.Contains(t.AreaId)))
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 
             var result = query

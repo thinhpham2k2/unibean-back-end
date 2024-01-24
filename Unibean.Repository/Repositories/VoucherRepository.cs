@@ -90,11 +90,10 @@ public class VoucherRepository : IVoucherRepository
         try
         {
             using var db = new UnibeanDBContext();
-
             var query = db.Campaigns
                 .Where(c => (campaignIds.Count == 0 || campaignIds.Contains(c.Id))
                 && (bool)c.Status)
-                .SelectMany(c => c.VoucherItems.Select(v => v.Voucher)).Distinct()
+                .SelectMany(c => c.VoucherItems.Where(c => (bool)c.Status).Select(v => v.Voucher)).Distinct()
                 .Where(t => (EF.Functions.Like(t.VoucherName, "%" + search + "%")
                 || EF.Functions.Like(t.Condition, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))

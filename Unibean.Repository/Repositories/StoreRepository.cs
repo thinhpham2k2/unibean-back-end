@@ -91,12 +91,11 @@ public class StoreRepository : IStoreRepository
         try
         {
             using var db = new UnibeanDBContext();
-
             var query = db.Campaigns
                 .Where(c => (campaignIds.Count == 0 || campaignIds.Contains(c.Id))
                 && (brandIds.Count == 0 || brandIds.Contains(c.BrandId))
                 && (bool)c.Status)
-                .SelectMany(c => c.CampaignStores.Select(v => v.Store)).Distinct()
+                .SelectMany(c => c.CampaignStores.Where(c => (bool)c.Status).Select(v => v.Store)).Distinct()
                 .Where(t => (EF.Functions.Like(t.StoreName, "%" + search + "%")
                 || EF.Functions.Like(t.Address, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
