@@ -47,7 +47,6 @@ public class DistrictRepository : IDistrictRepository
             using var db = new UnibeanDBContext();
             var query = db.Districts
                 .Where(t => (EF.Functions.Like(t.DistrictName, "%" + search + "%")
-                || EF.Functions.Like(t.FileName, "%" + search + "%")
                 || EF.Functions.Like(t.City.CityName, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
                 && (cityIds.Count == 0 || cityIds.Contains(t.CityId))

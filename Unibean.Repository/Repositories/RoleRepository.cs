@@ -48,7 +48,6 @@ public class RoleRepository : IRoleRepository
             using var db = new UnibeanDBContext();
             var query = db.Roles
                 .Where(r => (EF.Functions.Like(r.RoleName, "%" + search + "%")
-                || EF.Functions.Like(r.FileName, "%" + search + "%")
                 || EF.Functions.Like(r.Description, "%" + search + "%"))
                 && (bool)r.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));

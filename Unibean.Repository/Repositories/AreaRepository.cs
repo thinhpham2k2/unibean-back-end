@@ -47,7 +47,6 @@ public class AreaRepository : IAreaRepository
             using var db = new UnibeanDBContext();
             var query = db.Areas
                 .Where(t => (EF.Functions.Like(t.AreaName, "%" + search + "%")
-                || EF.Functions.Like(t.FileName, "%" + search + "%")
                 || EF.Functions.Like(t.District.DistrictName, "%" + search + "%")
                 || EF.Functions.Like(t.District.City.CityName, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))

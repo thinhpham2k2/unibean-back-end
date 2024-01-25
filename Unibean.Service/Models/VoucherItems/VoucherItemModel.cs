@@ -6,6 +6,7 @@ public class VoucherItemModel
     public string VoucherId { get; set; }
     public string VoucherName { get; set; }
     public string VoucherImage { get; set; }
+    public string VoucherCode { get; set; }
     public string TypeId { get; set; }
     public string TypeName { get; set; }
     public string TypeImage { get; set; }
