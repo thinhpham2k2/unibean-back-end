@@ -8,4 +8,6 @@ public interface IVoucherItemService
     PagedResultModel<VoucherItemModel> GetAll
         (List<string> campaignIds, List<string> voucherIds, List<string> brandIds, List<string> typeIds, List<string> studentIds, 
         string propertySort, bool isAsc, string search, int page, int limit);
+
+    VoucherItemExtraModel GetById(string id);
 }

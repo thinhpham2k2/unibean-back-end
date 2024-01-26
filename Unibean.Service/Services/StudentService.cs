@@ -420,7 +420,7 @@ public class StudentService : IStudentService
         OrderExtraModel order = orderService.GetById(orderId);
         if (order != null && order.StudentId.Equals(id))
         {
-            return mapper.Map<OrderExtraModel>(order);
+            return order;
         }
         throw new InvalidParameterException("Not found order");
     }
@@ -431,6 +431,16 @@ public class StudentService : IStudentService
     {
         return orderService.GetAll
             (stationIds, new() { id }, stateIds, propertySort, isAsc, search, page, limit);
+    }
+
+    public VoucherItemExtraModel GetVoucherItemByVoucherId(string id, string voucherId)
+    {
+        VoucherItemExtraModel voucher = voucherItemService.GetById(voucherId);
+        if (voucher != null && !voucher.StudentId.IsNullOrEmpty() && voucher.StudentId.Equals(id))
+        {
+            return voucher;
+        }
+        throw new InvalidParameterException("Not found voucher item");
     }
 
     public PagedResultModel<VoucherItemModel> GetVoucherListByStudentId

@@ -74,8 +74,10 @@ public class VoucherItemRepository : IVoucherItemRepository
                .Include(s => s.Voucher)
                     .ThenInclude(v => v.Brand)
                         .ThenInclude(b => b.Account)
-               .Include(s => s.Activities)
+               .Include(s => s.Activities.Where(a => (bool)a.Status))
                     .ThenInclude(a => a.Student)
+               .Include(s => s.Activities.Where(a => (bool)a.Status))
+                    .ThenInclude(a => a.Store)
                .ToList();
 
             pagedResult = new PagedResultModel<VoucherItem>
@@ -110,11 +112,9 @@ public class VoucherItemRepository : IVoucherItemRepository
             .Include(s => s.Voucher)
                 .ThenInclude(v => v.Brand)
                     .ThenInclude(b => b.Account)
-            .Include(s => s.Activities)
-                .ThenInclude(a => a.Type)
-            .Include(s => s.Activities)
+            .Include(s => s.Activities.Where(a => (bool)a.Status))
                 .ThenInclude(a => a.Student)
-            .Include(s => s.Activities)
+            .Include(s => s.Activities.Where(a => (bool)a.Status))
                 .ThenInclude(a => a.Store)
             .FirstOrDefault();
         }

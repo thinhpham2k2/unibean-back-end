@@ -357,6 +357,29 @@ public class StudentController : ControllerBase
     }
 
     /// <summary>
+    /// Get voucher item by student id
+    /// </summary>
+    /// <param name="id">Student id.</param>
+    /// <param name="voucherId">Voucher id.</param>
+    [HttpGet("{id}/vouchers/{voucherId}")]
+    [Authorize(Roles = "Admin, Student")]
+    [ProducesResponseType(typeof(VoucherItemExtraModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    public IActionResult GetVoucherById([ValidStudent] string id, string voucherId)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            return Ok(studentService.GetVoucherItemByVoucherId(id, voucherId));
+        }
+        catch (InvalidParameterException e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
     /// Get wishlists by student id
     /// </summary>
     /// <param name="id">Student id.</param>

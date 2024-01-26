@@ -35,6 +35,8 @@ public interface IStudentService
         (List<string> stationIds, List<string> stateIds, string id, 
         string propertySort, bool isAsc, string search, int page, int limit);
 
+    VoucherItemExtraModel GetVoucherItemByVoucherId(string id, string voucherId);
+
     PagedResultModel<VoucherItemModel> GetVoucherListByStudentId
         (List<string> campaignIds, List<string> voucherIds, List<string> brandIds, List<string> typeIds,
         string id, string propertySort, bool isAsc, string search, int page, int limit);
