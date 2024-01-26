@@ -161,6 +161,10 @@ public class BrandController : ControllerBase
     /// </summary>
     /// <param name="id">Brand id.</param>
     /// <param name="typeIds">Filter by campaign type Id.</param>
+    /// <param name="storeIds">Filter by store Id.</param>
+    /// <param name="majorIds">Filter by major Id.</param>
+    /// <param name="campusIds">Filter by campus Id.</param>
+    /// <param name="state">Filter by campaign state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/campaigns")]
     [Authorize(Roles = "Admin, Brand")]
@@ -168,6 +172,10 @@ public class BrandController : ControllerBase
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public ActionResult<PagedResultModel<CampaignModel>> GetCampaignListByBrandId([ValidBrand] string id,
         [FromQuery] List<string> typeIds,
+        [FromQuery] List<string> storeIds,
+        [FromQuery] List<string> majorIds,
+        [FromQuery] List<string> campusIds,
+        [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -180,7 +188,8 @@ public class BrandController : ControllerBase
             {
                 PagedResultModel<CampaignModel>
                 result = brandService.GetCampaignListByBrandId
-                    (id, typeIds, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
+                    (id, typeIds, storeIds, majorIds, campusIds, state, propertySort,
+                    paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
             return BadRequest("Invalid property of campaign");

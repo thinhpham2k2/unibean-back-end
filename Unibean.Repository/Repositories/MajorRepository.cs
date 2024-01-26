@@ -47,7 +47,6 @@ public class MajorRepository : IMajorRepository
             using var db = new UnibeanDBContext();
             var query = db.Majors
                 .Where(t => (EF.Functions.Like(t.MajorName, "%" + search + "%")
-                || EF.Functions.Like(t.FileName, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));

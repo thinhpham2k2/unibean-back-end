@@ -47,7 +47,6 @@ public class CityRepository : ICityRepository
             using var db = new UnibeanDBContext();
             var query = db.Cities
                 .Where(t => (EF.Functions.Like(t.CityName, "%" + search + "%")
-                || EF.Functions.Like(t.FileName, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));

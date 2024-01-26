@@ -47,7 +47,6 @@ public class ChallengeTypeRepository : IChallengeTypeRepository
             using var db = new UnibeanDBContext();
             var query = db.ChallengeTypes
                 .Where(t => (EF.Functions.Like(t.TypeName, "%" + search + "%")
-                || EF.Functions.Like(t.FileName, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));

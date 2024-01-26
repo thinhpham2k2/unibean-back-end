@@ -54,7 +54,6 @@ public class CampusRepository : ICampusRepository
                 || EF.Functions.Like(t.Address, "%" + search + "%")
                 || EF.Functions.Like(t.Phone, "%" + search + "%")
                 || EF.Functions.Like(t.Email, "%" + search + "%")
-                || EF.Functions.Like(t.FileName, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
                 && (universityIds.Count == 0 || universityIds.Contains(t.UniversityId))
                 && (areaIds.Count == 0 || areaIds.Contains(t.AreaId))

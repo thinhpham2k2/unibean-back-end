@@ -47,7 +47,6 @@ public class CategoryRepository : ICategoryRepository
             using var db = new UnibeanDBContext();
             var query = db.Categories
                 .Where(t => (EF.Functions.Like(t.CategoryName, "%" + search + "%")
-                || EF.Functions.Like(t.FileName, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));

@@ -28,7 +28,4 @@ public class UpdateCampaignModel
     [StringLength(int.MaxValue, MinimumLength = 3,
             ErrorMessage = "The length of description must be 3 characters or more")]
     public string Description { get; set; }
-
-    [Required(ErrorMessage = "State is required")]
-    public bool? State { get; set; }
 }

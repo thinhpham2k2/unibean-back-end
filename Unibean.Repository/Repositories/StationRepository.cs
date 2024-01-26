@@ -51,7 +51,6 @@ public class StationRepository : IStationRepository
                 || EF.Functions.Like(t.Address, "%" + search + "%")
                 || EF.Functions.Like(t.Phone, "%" + search + "%")
                 || EF.Functions.Like(t.Email, "%" + search + "%")
-                || EF.Functions.Like(t.FileName, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));

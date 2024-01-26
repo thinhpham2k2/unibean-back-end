@@ -53,9 +53,6 @@ public class CreateCampaignModel
             ErrorMessage = "The length of description must be 3 characters or more")]
     public string Description { get; set; }
 
-    [Required(ErrorMessage = "State is required")]
-    public bool? State { get; set; }
-
     [ValidCampaignMajor]
     [Required(ErrorMessage = "Campaign majors is required")]
     public ICollection<CreateCampaignMajorModel> CampaignMajors { get; set; }
