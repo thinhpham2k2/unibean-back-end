@@ -15,7 +15,7 @@ public interface ICampaignService
 
     PagedResultModel<CampaignModel> GetAll
         (List<string> brandIds, List<string> typeIds, List<string> storeIds, List<string> majorIds,
-        List<string> campusIds, string propertySort, bool isAsc, string search, int page, int limit);
+        List<string> campusIds, bool? state, string propertySort, bool isAsc, string search, int page, int limit);
 
     CampaignExtraModel GetById(string id);
 
@@ -24,7 +24,7 @@ public interface ICampaignService
         string propertySort, bool isAsc, string search, int page, int limit);
 
     PagedResultModel<MajorModel> GetMajorListByCampaignId
-        (string id, string propertySort, bool isAsc, 
+        (string id, string propertySort, bool isAsc,
         string search, int page, int limit);
 
     PagedResultModel<StoreModel> GetStoreListByCampaignId
@@ -36,4 +36,6 @@ public interface ICampaignService
         bool isAsc, string search, int page, int limit);
 
     Task<CampaignExtraModel> Update(string id, UpdateCampaignModel update);
+
+    CampaignExtraModel UpdateState(string id);
 }

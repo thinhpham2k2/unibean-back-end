@@ -3,7 +3,6 @@ using Unibean.Service.Models.Authens;
 using Unibean.Service.Models.Brands;
 using Unibean.Service.Models.Campaigns;
 using Unibean.Service.Models.Stores;
-using Unibean.Service.Models.StudentChallenges;
 using Unibean.Service.Models.Transactions;
 using Unibean.Service.Models.Vouchers;
 
@@ -23,7 +22,8 @@ public interface IBrandService
     BrandExtraModel GetById(string id, JwtRequestModel request);
 
     PagedResultModel<CampaignModel> GetCampaignListByBrandId
-        (string id, List<string> typeIds, string propertySort, bool isAsc, string search, int page, int limit);
+        (string id, List<string> typeIds, List<string> storeIds, List<string> majorIds, List<string> campusIds,
+        bool? state, string propertySort, bool isAsc, string search, int page, int limit);
 
     PagedResultModel<TransactionModel> GetHistoryTransactionListByStudentId
         (string id, List<string> walletTypeIds, string propertySort, bool isAsc, string search, int page, int limit);

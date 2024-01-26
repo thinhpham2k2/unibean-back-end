@@ -235,9 +235,10 @@ public class BrandService : IBrandService
     }
 
     public PagedResultModel<CampaignModel> GetCampaignListByBrandId
-        (string id, List<string> typeIds, string propertySort, bool isAsc, string search, int page, int limit)
+        (string id, List<string> typeIds, List<string> storeIds, List<string> majorIds, List<string> campusIds,
+        bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
-        return campaignService.GetAll(new() { id }, typeIds, new(), new(), new(), propertySort, isAsc, search, page, limit);
+        return campaignService.GetAll(new() { id }, typeIds, storeIds, majorIds, campusIds, state, propertySort, isAsc, search, page, limit);
     }
 
     public PagedResultModel<TransactionModel> GetHistoryTransactionListByStudentId

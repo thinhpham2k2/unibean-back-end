@@ -97,6 +97,7 @@ public class CampaignService : ICampaignService
             .ForMember(c => c.TotalSpending, opt => opt.MapFrom(src => 0))
             .ForMember(c => c.DateCreated, opt => opt.MapFrom(src => DateTime.Now))
             .ForMember(c => c.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
+            .ForMember(c => c.State, opt => opt.MapFrom(src => false))
             .ForMember(c => c.Status, opt => opt.MapFrom(src => true));
             // Map Update Campaign Model
             cfg.CreateMap<Campaign, UpdateCampaignModel>()
@@ -115,6 +116,8 @@ public class CampaignService : ICampaignService
         this.majorService = majorService;
         this.campusService = campusService;
     }
+
+
 
     public async Task<CampaignExtraModel> Add(CreateCampaignModel creation)
     {
@@ -155,28 +158,7 @@ public class CampaignService : ICampaignService
             }
         }
 
-        campaign = campaignRepository.Add(campaign);
-        if (campaign != null)
-        {
-            fireBaseService.PushNotificationToStudent(new Message
-            {
-                Data = new Dictionary<string, string>()
-            {
-                { "brandId", campaign.BrandId },
-                { "campaignId", campaign.Id },
-            },
-                //Token = registrationToken,
-                Topic = campaign.BrandId,
-                Notification = new Notification()
-                {
-                    Title = campaign.Brand.BrandName + " tạo chiến dịch mới!",
-                    Body = "Chiến dịch " + campaign.CampaignName,
-                    ImageUrl = campaign.Image
-                }
-            });
-        }
-
-        return mapper.Map<CampaignExtraModel>(campaign);
+        return mapper.Map<CampaignExtraModel>(campaignRepository.Add(campaign));
     }
 
     public void Delete(string id)
@@ -206,10 +188,10 @@ public class CampaignService : ICampaignService
 
     public PagedResultModel<CampaignModel> GetAll
         (List<string> brandIds, List<string> typeIds, List<string> storeIds, List<string> majorIds,
-        List<string> campusIds, string propertySort, bool isAsc, string search, int page, int limit)
+        List<string> campusIds, bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<CampaignModel>>(campaignRepository
-            .GetAll(brandIds, typeIds, storeIds, majorIds, campusIds, propertySort, isAsc, search, page, limit));
+            .GetAll(brandIds, typeIds, storeIds, majorIds, campusIds, state, propertySort, isAsc, search, page, limit));
     }
 
     public CampaignExtraModel GetById(string id)
@@ -223,7 +205,7 @@ public class CampaignService : ICampaignService
     }
 
     public PagedResultModel<CampusModel> GetCampusListByCampaignId
-        (string id, List<string> universityIds, List<string> areaIds, 
+        (string id, List<string> universityIds, List<string> areaIds,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         return campusService.GetAllByCampaign
@@ -231,7 +213,7 @@ public class CampaignService : ICampaignService
     }
 
     public PagedResultModel<MajorModel> GetMajorListByCampaignId
-        (string id, string propertySort, bool isAsc, 
+        (string id, string propertySort, bool isAsc,
         string search, int page, int limit)
     {
         return majorService.GetAllByCampaign
@@ -239,7 +221,7 @@ public class CampaignService : ICampaignService
     }
 
     public PagedResultModel<StoreModel> GetStoreListByCampaignId
-        (string id, List<string> brandIds, List<string> areaIds, string propertySort, 
+        (string id, List<string> brandIds, List<string> areaIds, string propertySort,
         bool isAsc, string search, int page, int limit)
     {
         return storeService.GetAllByCampaign
@@ -247,7 +229,7 @@ public class CampaignService : ICampaignService
     }
 
     public PagedResultModel<VoucherModel> GetVoucherListByCampaignId
-        (string id, List<string> typeIds, string propertySort, 
+        (string id, List<string> typeIds, string propertySort,
         bool isAsc, string search, int page, int limit)
     {
         return voucherService.GetAllByCampaign
@@ -271,6 +253,39 @@ public class CampaignService : ICampaignService
                 entity.ImageName = f.FileName;
             }
             return mapper.Map<CampaignExtraModel>(campaignRepository.Update(entity));
+        }
+        throw new InvalidParameterException("Not found campaign");
+    }
+
+    public CampaignExtraModel UpdateState(string id)
+    {
+        Campaign entity = campaignRepository.GetById(id);
+        if (entity != null)
+        {
+            if (!(bool)entity.State)
+            {
+                entity.State = true;
+
+                fireBaseService.PushNotificationToStudent(new Message
+                {
+                    Data = new Dictionary<string, string>()
+                    {
+                        { "brandId", entity.BrandId },
+                        { "campaignId", entity.Id },
+                    },
+                    //Token = registrationToken,
+                    Topic = entity.BrandId,
+                    Notification = new Notification()
+                    {
+                        Title = entity.Brand.BrandName + " tạo chiến dịch mới!",
+                        Body = "Chiến dịch " + entity.CampaignName,
+                        ImageUrl = entity.Image
+                    }
+                });
+
+                return mapper.Map<CampaignExtraModel>(campaignRepository.Update(entity));
+            }
+            throw new InvalidParameterException("This campaign has been approved");
         }
         throw new InvalidParameterException("Not found campaign");
     }
