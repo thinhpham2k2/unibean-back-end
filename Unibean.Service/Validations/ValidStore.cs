@@ -6,13 +6,14 @@ namespace Unibean.Service.Validations;
 
 public class ValidStore : ValidationAttribute
 {
-    private new const string ErrorMessage = "Invalid store";
+    private new const string ErrorMessage = "Cửa hàng không hợp lệ";
 
     private readonly IStoreRepository storeRepo = new StoreRepository();
 
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
-        if (storeRepo.GetById(value.ToString()) != null)
+        var store = storeRepo.GetById(value.ToString());
+        if (store != null && (bool)store.State)
         {
             return ValidationResult.Success;
         }

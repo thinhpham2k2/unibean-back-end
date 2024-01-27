@@ -9,7 +9,7 @@ namespace Unibean.Service.Validations;
 
 public class ValidAmount : ValidationAttribute
 {
-    private new const string ErrorMessage = "Invalid amount";
+    private new const string ErrorMessage = "Số tiền không hợp lệ";
 
     private readonly IProductRepository productRepo = new ProductRepository();
 
@@ -24,7 +24,7 @@ public class ValidAmount : ValidationAttribute
                 foreach (CreateDetailModel detail in detailList)
                 {
                     Product product = productRepo.GetById(detail.ProductId);
-                    if (product != null)
+                    if (product != null && (bool)product.State)
                     {
                         amount -= (decimal)(product.Price * detail.Quantity);
                     }

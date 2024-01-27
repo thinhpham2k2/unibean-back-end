@@ -5,7 +5,7 @@ namespace Unibean.Service.Validations;
 
 public class ValidGender : ValidationAttribute
 {
-    private new const string ErrorMessage = "Invalid gender";
+    private new const string ErrorMessage = "Giới tính không phù hợp";
 
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {

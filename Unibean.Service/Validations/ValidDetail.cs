@@ -5,7 +5,7 @@ namespace Unibean.Service.Validations;
 
 public class ValidDetail : ValidationAttribute
 {
-    private new const string ErrorMessage = "Invalid detail";
+    private new const string ErrorMessage = "Chi tiết đơn hàng không hợp lệ";
 
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {

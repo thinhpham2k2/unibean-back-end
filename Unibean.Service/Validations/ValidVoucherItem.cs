@@ -5,7 +5,7 @@ namespace Unibean.Service.Validations;
 
 public class ValidVoucherItem : ValidationAttribute
 {
-    private new const string ErrorMessage = "Invalid vouchers";
+    private new const string ErrorMessage = "Khuyến mãi không hợp lệ";
 
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {

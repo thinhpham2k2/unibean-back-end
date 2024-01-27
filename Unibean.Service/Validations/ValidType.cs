@@ -5,7 +5,7 @@ namespace Unibean.Service.Validations;
 
 public class ValidType : ValidationAttribute
 {
-    private new const string ErrorMessage = "Invalid activity type"; 
+    private new const string ErrorMessage = "Loại hoạt động không hợp lệ"; 
     
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {

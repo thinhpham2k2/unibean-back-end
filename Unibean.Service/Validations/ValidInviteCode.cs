@@ -8,7 +8,7 @@ namespace Unibean.Service.Validations;
 
 public class ValidInviteCode : ValidationAttribute
 {
-    private new const string ErrorMessage = "Invalid invite code";
+    private new const string ErrorMessage = "Mã mời không hợp lệ";
 
     private readonly IStudentRepository studentRepo = new StudentRepository();
 

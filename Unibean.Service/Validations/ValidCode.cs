@@ -6,7 +6,7 @@ namespace Unibean.Service.Validations;
 
 public class ValidCode : ValidationAttribute
 {
-    private new const string ErrorMessage = "Student code is already in use";
+    private new const string ErrorMessage = "Mã sinh viên đã được sử dụng";
 
     private readonly IStudentRepository studentRepo = new StudentRepository();
 

@@ -6,13 +6,14 @@ namespace Unibean.Service.Validations;
 
 public class ValidArea : ValidationAttribute
 {
-    private new const string ErrorMessage = "Invalid area"; 
+    private new const string ErrorMessage = "Khu vực không hợp lệ"; 
     
     private readonly IAreaRepository areaRepo = new AreaRepository(); 
     
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
-        if (areaRepo.GetById(value.ToString()) != null)
+        var area = areaRepo.GetById(value.ToString());
+        if (area != null && (bool)area.State)
         {
             return ValidationResult.Success;
         }

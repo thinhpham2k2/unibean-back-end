@@ -4,9 +4,9 @@ namespace Unibean.Service.Validations;
 
 public class ValidStartOn : ValidationAttribute
 {
-    private new const string ErrorMessage = "Invalid start day";
+    private new const string ErrorMessage = "Ngày bắt đầu không hợp lệ";
 
-    private const string ErrorMessage1 = "The start date must be one day from today onward";
+    private const string ErrorMessage1 = "Ngày bắt đầu phải là một ngày kể từ hôm nay trở đi";
 
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {

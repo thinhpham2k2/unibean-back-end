@@ -6,13 +6,14 @@ namespace Unibean.Service.Validations;
 
 public class ValidChallengeType : ValidationAttribute
 {
-    private new const string ErrorMessage = "Invalid challenge type"; 
+    private new const string ErrorMessage = "Loại thử thách không hợp lệ"; 
     
     private readonly IChallengeTypeRepository challengeTypeRepo = new ChallengeTypeRepository(); 
     
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
-        if (challengeTypeRepo.GetById(value.ToString()) != null)
+        var type = challengeTypeRepo.GetById(value.ToString());
+        if (type != null && (bool)type.State)
         {
             return ValidationResult.Success;
         }

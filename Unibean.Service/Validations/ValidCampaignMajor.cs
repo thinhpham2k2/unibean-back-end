@@ -6,7 +6,7 @@ namespace Unibean.Service.Validations;
 
 public class ValidCampaignMajor : ValidationAttribute
 {
-    private new const string ErrorMessage = "Invalid campaign majors";
+    private new const string ErrorMessage = "Danh sách chuyên ngành không hợp lệ";
 
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {

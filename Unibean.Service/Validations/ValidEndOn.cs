@@ -5,9 +5,9 @@ namespace Unibean.Service.Validations;
 
 public class ValidEndOn : ValidationAttribute
 {
-    private new const string ErrorMessage = "Invalid end day";
+    private new const string ErrorMessage = "Ngày kết thúc không hợp lệ";
 
-    private const string ErrorMessage1 = "The end date must be some day from the start date";
+    private const string ErrorMessage1 = "Ngày kết thúc phải có sau hoặc cùng ngày bắt đầu";
 
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {

@@ -5,7 +5,7 @@ namespace Unibean.Service.Validations;
 
 public class ValidCampaignCampus : ValidationAttribute
 {
-    private new const string ErrorMessage = "Invalid campaign campuses";
+    private new const string ErrorMessage = "Danh sách cơ sở không hợp lệ";
 
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {

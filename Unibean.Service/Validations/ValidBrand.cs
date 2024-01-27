@@ -6,13 +6,14 @@ namespace Unibean.Service.Validations;
 
 public class ValidBrand : ValidationAttribute
 {
-    private new const string ErrorMessage = "Invalid brand"; 
+    private new const string ErrorMessage = "Thương hiệu không hợp lệ"; 
     
     private readonly IBrandRepository brandRepo = new BrandRepository(); 
     
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
-        if (brandRepo.GetById(value.ToString()) != null)
+        var brand = brandRepo.GetById(value.ToString());
+        if (brand != null && (bool)brand.State)
         {
             return ValidationResult.Success;
         }

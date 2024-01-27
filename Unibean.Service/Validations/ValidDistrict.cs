@@ -6,13 +6,14 @@ namespace Unibean.Service.Validations;
 
 public class ValidDistrict : ValidationAttribute
 {
-    private new const string ErrorMessage = "Invalid district"; 
+    private new const string ErrorMessage = "Quận không hợp lệ"; 
     
     private readonly IDistrictRepository districtRepo = new DistrictRepository(); 
     
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
-        if (districtRepo.GetById(value.ToString()) != null)
+        var dis = districtRepo.GetById(value.ToString());
+        if (dis != null && (bool)dis.State)
         {
             return ValidationResult.Success;
         }

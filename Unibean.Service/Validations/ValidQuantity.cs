@@ -8,7 +8,7 @@ namespace Unibean.Service.Validations;
 
 public class ValidQuantity : ValidationAttribute
 {
-    private new const string ErrorMessage = "Invalid quantity";
+    private new const string ErrorMessage = "Số lượng không hợp lệ";
 
     private readonly IProductRepository productRepo = new ProductRepository();
 
@@ -19,13 +19,13 @@ public class ValidQuantity : ValidationAttribute
             if (validationContext.ObjectInstance is CreateDetailModel create)
             {
                 Product product = productRepo.GetById(create.ProductId);
-                if (product != null)
+                if (product != null && (bool)product.State)
                 {
                     if (product.Quantity >= quantity)
                     {
                         return ValidationResult.Success;
                     }
-                    return new ValidationResult("Quantity of the " + product.ProductName + " is not enough");
+                    return new ValidationResult("Số lượng của " + product.ProductName + " không đủ");
                 }
                 return new ValidationResult(ErrorMessage);
             }

@@ -6,13 +6,14 @@ namespace Unibean.Service.Validations;
 
 public class ValidWalletType : ValidationAttribute
 {
-    private new const string ErrorMessage = "Invalid wallet type";
+    private new const string ErrorMessage = "Loại ví không hợp lệ";
 
     private readonly IWalletTypeRepository typeRepo = new WalletTypeRepository();
 
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
-        if (typeRepo.GetById(value.ToString()) != null)
+        var type = typeRepo.GetById(value.ToString());
+        if (type != null && (bool)type.State)
         {
             return ValidationResult.Success;
         }

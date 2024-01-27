@@ -6,13 +6,14 @@ namespace Unibean.Service.Validations;
 
 public class ValidCampaignType : ValidationAttribute
 {
-    private new const string ErrorMessage = "Invalid campaign type";
+    private new const string ErrorMessage = "Loại chiến dịch không hợp lệ";
 
     private readonly ICampaignTypeRepository campaignTypeRepo = new CampaignTypeRepository();
 
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
-        if (campaignTypeRepo.GetById(value.ToString()) != null)
+        var type = campaignTypeRepo.GetById(value.ToString());
+        if (type != null && (bool)type.State)
         {
             return ValidationResult.Success;
         }
