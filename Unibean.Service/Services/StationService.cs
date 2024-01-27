@@ -77,10 +77,11 @@ public class StationService : IStationService
         }
     }
 
-    public PagedResultModel<StationModel> GetAll(string propertySort, bool isAsc, string search, int page, int limit)
+    public PagedResultModel<StationModel> GetAll
+        (bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<StationModel>>(stationRepository.GetAll
-            (propertySort, isAsc, search, page, limit));
+            (state, propertySort, isAsc, search, page, limit));
     }
 
     public StationModel GetById(string id)

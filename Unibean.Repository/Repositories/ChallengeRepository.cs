@@ -63,7 +63,8 @@ public class ChallengeRepository : IChallengeRepository
     }
 
     public PagedResultModel<Challenge> GetAll
-        (List<string> typeIds, string propertySort, bool isAsc, string search, int page, int limit)
+        (List<string> typeIds, bool? state, string propertySort, 
+        bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<Challenge> pagedResult = new();
         try
@@ -74,6 +75,7 @@ public class ChallengeRepository : IChallengeRepository
                 || EF.Functions.Like(t.Type.TypeName, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
                 && (typeIds.Count == 0 || typeIds.Contains(t.TypeId))
+                && (state == null || state.Equals(t.State))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 

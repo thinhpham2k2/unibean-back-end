@@ -25,6 +25,7 @@ public class StateController : ControllerBase
     /// <summary>
     /// Get state list
     /// </summary>
+    /// <param name="state">Filter by state state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
@@ -32,6 +33,7 @@ public class StateController : ControllerBase
         (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public ActionResult<PagedResultModel<StateModel>> GetList(
+        [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -42,7 +44,8 @@ public class StateController : ControllerBase
         {
             PagedResultModel<StateModel>
                 result = stateService.GetAll
-                (propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
+                (state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }
         return BadRequest("Invalid property of state");

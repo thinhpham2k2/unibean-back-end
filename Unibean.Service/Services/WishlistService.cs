@@ -36,12 +36,12 @@ public class WishlistService : IWishlistService
     }
 
     public PagedResultModel<WishlistModel> GetAll
-        (List<string> studentIds, List<string> brandIds, string propertySort,
-        bool isAsc, string search, int page, int limit)
+        (List<string> studentIds, List<string> brandIds, bool? state,
+        string propertySort, bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<WishlistModel>>
             (wishlistRepository.GetAll(studentIds, brandIds,
-            propertySort, isAsc, search, page, limit));
+            state, propertySort, isAsc, search, page, limit));
     }
 
     public WishlistModel UpdateWishlist(UpdateWishlistModel update)

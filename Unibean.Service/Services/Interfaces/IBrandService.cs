@@ -17,7 +17,8 @@ public interface IBrandService
     void Delete(string id);
 
     PagedResultModel<BrandModel> GetAll
-        (string propertySort, bool isAsc, string search, int page, int limit, JwtRequestModel request);
+        (bool? state, string propertySort, bool isAsc, string search, 
+        int page, int limit, JwtRequestModel request);
 
     BrandExtraModel GetById(string id, JwtRequestModel request);
 
@@ -26,13 +27,16 @@ public interface IBrandService
         bool? state, string propertySort, bool isAsc, string search, int page, int limit);
 
     PagedResultModel<TransactionModel> GetHistoryTransactionListByStudentId
-        (string id, List<string> walletTypeIds, string propertySort, bool isAsc, string search, int page, int limit);
+        (string id, List<string> walletTypeIds, bool? state, string propertySort, 
+        bool isAsc, string search, int page, int limit);
 
     PagedResultModel<StoreModel> GetStoreListByBrandId
-        (string id, List<string> areaIds, string propertySort, bool isAsc, string search, int page, int limit);
+        (string id, List<string> areaIds, bool? state, string propertySort, bool isAsc, 
+        string search, int page, int limit);
 
     PagedResultModel<VoucherModel> GetVoucherListByBrandId
-        (string id, List<string> typeIds, string propertySort, bool isAsc, string search, int page, int limit);
+        (string id, List<string> typeIds, bool? state, string propertySort, bool isAsc, 
+        string search, int page, int limit);
 
     Task<BrandExtraModel> Update(string id, UpdateBrandModel update);
 }

@@ -115,10 +115,10 @@ public class AdminService : IAdminService
     }
 
     public PagedResultModel<AdminModel> GetAll
-        (string propertySort, bool isAsc, string search, int page, int limit)
+        (bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<AdminModel>>
-            (adminRepository.GetAll(propertySort, isAsc, search, page, limit));
+            (adminRepository.GetAll(state, propertySort, isAsc, search, page, limit));
     }
 
     public AdminModel GetById(string id)

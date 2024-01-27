@@ -76,16 +76,20 @@ public class MajorService : IMajorService
         }
     }
 
-    public PagedResultModel<MajorModel> GetAll(string propertySort, bool isAsc, string search, int page, int limit)
+    public PagedResultModel<MajorModel> GetAll
+        (bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
-        return mapper.Map<PagedResultModel<MajorModel>>(majorRepository.GetAll(propertySort, isAsc, search, page, limit));
+        return mapper.Map<PagedResultModel<MajorModel>>(
+            majorRepository.GetAll(state, propertySort, isAsc, search, page, limit));
     }
 
     public PagedResultModel<MajorModel> GetAllByCampaign
-        (List<string> campaignIds, string propertySort, bool isAsc, string search, int page, int limit)
+        (List<string> campaignIds, bool? state, string propertySort, 
+        bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<MajorModel>>
-            (majorRepository.GetAllByCampaign(campaignIds, propertySort, isAsc, search, page, limit));
+            (majorRepository.GetAllByCampaign(campaignIds, state, 
+            propertySort, isAsc, search, page, limit));
     }
 
     public MajorModel GetById(string id)

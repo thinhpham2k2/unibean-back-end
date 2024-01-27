@@ -10,16 +10,16 @@ public interface IVoucherService
     void Delete(string id);
 
     PagedResultModel<VoucherModel> GetAll
-        (List<string> brandIds, List<string> typeIds, string propertySort,
-        bool isAsc, string search, int page, int limit);
+        (List<string> brandIds, List<string> typeIds, bool? state, 
+        string propertySort, bool isAsc, string search, int page, int limit);
 
     PagedResultModel<VoucherModel> GetAllByCampaign
-        (List<string> campaignIds, List<string> typeIds, string propertySort,
-        bool isAsc, string search, int page, int limit);
+        (List<string> campaignIds, List<string> typeIds, bool? state, 
+        string propertySort, bool isAsc, string search, int page, int limit);
 
     PagedResultModel<VoucherModel> GetAllByStore
-        (List<string> storeIds, List<string> campaignIds, List<string> typeIds,
-        string propertySort, bool isAsc, string search, int page, int limit);
+        (List<string> storeIds, List<string> campaignIds, List<string> typeIds, 
+        bool? state, string propertySort, bool isAsc, string search, int page, int limit);
 
     VoucherExtraModel GetById(string id);
 

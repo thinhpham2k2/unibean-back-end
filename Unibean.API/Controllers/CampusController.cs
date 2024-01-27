@@ -27,6 +27,7 @@ public class CampusController : ControllerBase
     /// </summary>
     /// <param name="universityIds">Filter by university Id.</param>
     /// <param name="areaIds">Filter by area Id.</param>
+    /// <param name="state">Filter by campus state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
     [AllowAnonymous]
@@ -36,6 +37,7 @@ public class CampusController : ControllerBase
     public ActionResult<PagedResultModel<CampusModel>> GetList(
         [FromQuery] List<string> universityIds,
         [FromQuery] List<string> areaIds,
+        [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -46,7 +48,8 @@ public class CampusController : ControllerBase
         {
             PagedResultModel<CampusModel>
                 result = campusService.GetAll
-                (universityIds, areaIds, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
+                (universityIds, areaIds, state, propertySort, 
+                paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }
         return BadRequest("Invalid property of campus");

@@ -41,8 +41,8 @@ public class ActivityRepository : IActivityRepository
     }
 
     public PagedResultModel<Activity> GetAll
-        (List<string> storeIds, List<string> studentIds, List<string> voucherIds, 
-        string propertySort, bool isAsc, string search, int page, int limit)
+        (List<string> storeIds, List<string> studentIds, List<string> voucherIds,
+        bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<Activity> pagedResult = new();
         try
@@ -58,6 +58,7 @@ public class ActivityRepository : IActivityRepository
                 && (storeIds.Count == 0 || storeIds.Contains(t.StoreId))
                 && (studentIds.Count == 0 || studentIds.Contains(t.StudentId))
                 && (voucherIds.Count == 0 || voucherIds.Contains(t.VoucherItemId))
+                && (state == null || state.Equals(t.State))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 

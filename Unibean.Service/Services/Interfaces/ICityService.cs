@@ -10,7 +10,7 @@ public interface ICityService
     void Delete(string id);
 
     PagedResultModel<CityModel> GetAll
-        (string propertySort, bool isAsc, string search, int page, int limit);
+        (bool? state, string propertySort, bool isAsc, string search, int page, int limit);
 
     CityModel GetById(string id);
 

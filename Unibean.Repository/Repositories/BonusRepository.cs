@@ -95,7 +95,7 @@ public class BonusRepository : IBonusRepository
     }
 
     public PagedResultModel<Bonus> GetAll
-        (List<string> brandIds, List<string> storeIds, List<string> studentIds,
+        (List<string> brandIds, List<string> storeIds, List<string> studentIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<Bonus> pagedResult = new();
@@ -111,6 +111,7 @@ public class BonusRepository : IBonusRepository
                 && (brandIds.Count == 0 || brandIds.Contains(t.BrandId))
                 && (storeIds.Count == 0 || storeIds.Contains(t.StoreId))
                 && (studentIds.Count == 0 || studentIds.Contains(t.StudentId))
+                && (state == null || state.Equals(t.State))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 

@@ -10,7 +10,7 @@ public interface IVoucherTypeRepository
     void Delete(string id);
 
     PagedResultModel<VoucherType> GetAll
-        (string propertySort, bool isAsc, string search, int page, int limit);
+        (bool? state, string propertySort, bool isAsc, string search, int page, int limit);
 
     VoucherType GetById(string id);
 

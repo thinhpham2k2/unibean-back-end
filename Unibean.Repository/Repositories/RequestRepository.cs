@@ -72,8 +72,8 @@ public class RequestRepository : IRequestRepository
     }
 
     public PagedResultModel<Request> GetAll
-        (List<string> brandIds, List<string> adminIds, string propertySort,
-        bool isAsc, string search, int page, int limit)
+        (List<string> brandIds, List<string> adminIds, bool? state, 
+        string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<Request> pagedResult = new();
         try
@@ -86,6 +86,7 @@ public class RequestRepository : IRequestRepository
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
                 && (brandIds.Count == 0 || brandIds.Contains(t.BrandId))
                 && (adminIds.Count == 0 || adminIds.Contains(t.AdminId))
+                && (state == null || state.Equals(t.State))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 

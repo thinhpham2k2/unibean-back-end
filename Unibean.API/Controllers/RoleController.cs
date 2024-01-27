@@ -25,6 +25,7 @@ public class RoleController : ControllerBase
     /// <summary>
     /// Get role list
     /// </summary>
+    /// <param name="state">Filter by role state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
     [Authorize(Roles = "Admin")]
@@ -32,6 +33,7 @@ public class RoleController : ControllerBase
         (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public ActionResult<PagedResultModel<RoleModel>> GetList(
+        [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -42,7 +44,8 @@ public class RoleController : ControllerBase
         {
             PagedResultModel<RoleModel>
                 result = roleService.GetAll
-                (propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
+                (state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }
         return BadRequest("Invalid property of role");

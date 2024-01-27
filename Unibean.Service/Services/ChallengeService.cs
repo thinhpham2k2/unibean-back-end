@@ -80,10 +80,11 @@ public class ChallengeService : IChallengeService
     }
 
     public PagedResultModel<ChallengeModel> GetAll
-        (List<string> typeIds, string propertySort, bool isAsc, string search, int page, int limit)
+        (List<string> typeIds, bool? state, string propertySort, 
+        bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<ChallengeModel>>(challengeRepository.GetAll
-            (typeIds, propertySort, isAsc, search, page, limit));
+            (typeIds, state, propertySort, isAsc, search, page, limit));
     }
 
     public ChallengeModel GetById(string id)

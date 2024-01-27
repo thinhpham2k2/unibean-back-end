@@ -84,11 +84,11 @@ public class BonusService : IBonusService
     }
 
     public PagedResultModel<BonusModel> GetAll
-        (List<string> brandIds, List<string> storeIds, List<string> studentIds, 
+        (List<string> brandIds, List<string> storeIds, List<string> studentIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<BonusModel>>(bonusRepository
-            .GetAll(brandIds, storeIds, studentIds, propertySort, isAsc, search, page, limit));
+            .GetAll(brandIds, storeIds, studentIds, state, propertySort, isAsc, search, page, limit));
     }
 
     public BonusExtraModel GetById(string id)

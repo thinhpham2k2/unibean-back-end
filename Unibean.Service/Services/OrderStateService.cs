@@ -34,7 +34,7 @@ public class OrderStateService : IOrderStateService
             {
                 if (string.Compare(stateIds.Max(), creation.StateId) < 0)
                 {
-                    stateIds = stateRepository.GetAll("Id", true, "", 1, 100).Result.Select(s 
+                    stateIds = stateRepository.GetAll(true, "Id", true, "", 1, 100).Result.Select(s 
                         => s.Id).Where(s => string.Compare(s, stateIds.Max()) > 0 
                         && string.Compare(s, creation.StateId) <= 0).ToList();
 
@@ -61,7 +61,7 @@ public class OrderStateService : IOrderStateService
             }
             else
             {
-                stateIds = stateRepository.GetAll("Id", true, "", 1, 100).Result.Select(s
+                stateIds = stateRepository.GetAll(true, "Id", true, "", 1, 100).Result.Select(s
                         => s.Id).Where(s => string.Compare(s, creation.StateId) <= 0).ToList();
                 stateIds.ForEach(s =>
                 {

@@ -26,6 +26,7 @@ public class DistrictController : ControllerBase
     /// Get district list
     /// </summary>
     /// <param name="cityIds">Filter by city Id.</param>
+    /// <param name="state">Filter by district state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
     [AllowAnonymous]
@@ -34,6 +35,7 @@ public class DistrictController : ControllerBase
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public ActionResult<PagedResultModel<DistrictModel>> GetList(
         [FromQuery] List<string> cityIds,
+        [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -44,7 +46,8 @@ public class DistrictController : ControllerBase
         {
             PagedResultModel<DistrictModel>
                 result = districtService.GetAll
-                (cityIds, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
+                (cityIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }
         return BadRequest("Invalid property of district");

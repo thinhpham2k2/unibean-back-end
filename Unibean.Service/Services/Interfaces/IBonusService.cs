@@ -9,7 +9,7 @@ public interface IBonusService
     BonusExtraModel Add(string id, CreateBonusModel creation);
 
     PagedResultModel<BonusModel> GetAll
-        (List<string> brandIds, List<string> storeIds, List<string> studentIds,
+        (List<string> brandIds, List<string> storeIds, List<string> studentIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit);
 
     BonusExtraModel GetById(string id);

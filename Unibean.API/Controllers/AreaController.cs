@@ -26,6 +26,7 @@ public class AreaController : ControllerBase
     /// Get area list
     /// </summary>
     /// <param name="districtIds">Filter by district Id.</param>
+    /// <param name="state">Filter by area state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
     [AllowAnonymous]
@@ -34,6 +35,7 @@ public class AreaController : ControllerBase
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public ActionResult<PagedResultModel<AreaModel>> GetList(
         [FromQuery] List<string> districtIds,
+        [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -44,7 +46,8 @@ public class AreaController : ControllerBase
         {
             PagedResultModel<AreaModel>
                 result = areaService.GetAll
-                (districtIds, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
+                (districtIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }
         return BadRequest("Invalid property of area");

@@ -8,8 +8,8 @@ public interface IOrderService
     OrderModel Add(string id, CreateOrderModel creation);
 
     PagedResultModel<OrderModel> GetAll
-        (List<string> stationIds, List<string> studentIds, List<string> stateIds, 
-        string propertySort, bool isAsc, string search, int page, int limit);
+        (List<string> stationIds, List<string> studentIds, List<string> stateIds,
+        bool? state, string propertySort, bool isAsc, string search, int page, int limit);
 
     OrderExtraModel GetById(string id);
 }

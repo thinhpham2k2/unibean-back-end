@@ -26,6 +26,7 @@ public class ProductController : ControllerBase
     /// Get product list
     /// </summary>
     /// <param name="categoryIds">Filter by category Id.</param>
+    /// <param name="state">Filter by product state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
@@ -34,6 +35,7 @@ public class ProductController : ControllerBase
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public ActionResult<PagedResultModel<ProductModel>> GetList(
         [FromQuery] List<string> categoryIds,
+        [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -44,7 +46,7 @@ public class ProductController : ControllerBase
         {
             PagedResultModel<ProductModel>
                 result = productService.GetAll
-                (categoryIds, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                (categoryIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
                 paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }

@@ -40,7 +40,8 @@ public class RoleRepository : IRoleRepository
         }
     }
 
-    public PagedResultModel<Role> GetAll(string propertySort, bool isAsc, string search, int page, int limit)
+    public PagedResultModel<Role> GetAll
+        (bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<Role> pagedResult = new();
         try
@@ -49,6 +50,7 @@ public class RoleRepository : IRoleRepository
             var query = db.Roles
                 .Where(r => (EF.Functions.Like(r.RoleName, "%" + search + "%")
                 || EF.Functions.Like(r.Description, "%" + search + "%"))
+                && (state == null || state.Equals(r.State))
                 && (bool)r.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 

@@ -155,19 +155,20 @@ public class StoreService : IStoreService
     }
 
     public PagedResultModel<StoreModel> GetAll
-        (List<string> brandIds, List<string> areaIds, string propertySort, bool isAsc, string search, int page, int limit)
-    {
-        return mapper.Map<PagedResultModel<StoreModel>>
-            (storeRepository.GetAll(brandIds, areaIds, propertySort, isAsc, search, page, limit));
-    }
-
-    public PagedResultModel<StoreModel> GetAllByCampaign
-        (List<string> campaignIds, List<string> brandIds, List<string> areaIds, 
+        (List<string> brandIds, List<string> areaIds, bool? state, 
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<StoreModel>>
-            (storeRepository.GetAllByCampaign(campaignIds, brandIds, areaIds, 
-            propertySort, isAsc, search, page, limit));
+            (storeRepository.GetAll(brandIds, areaIds, state, propertySort, isAsc, search, page, limit));
+    }
+
+    public PagedResultModel<StoreModel> GetAllByCampaign
+        (List<string> campaignIds, List<string> brandIds, List<string> areaIds,
+        bool? state, string propertySort, bool isAsc, string search, int page, int limit)
+    {
+        return mapper.Map<PagedResultModel<StoreModel>>
+            (storeRepository.GetAllByCampaign(campaignIds, brandIds, areaIds,
+            state, propertySort, isAsc, search, page, limit));
     }
 
     public StoreExtraModel GetById(string id)
@@ -181,7 +182,8 @@ public class StoreService : IStoreService
     }
 
     public PagedResultModel<StoreTransactionModel> GetHistoryTransactionListByStoreId
-        (string id, List<StoreTransactionType> typeIds, string propertySort, bool isAsc, string search, int page, int limit)
+        (string id, List<StoreTransactionType> typeIds, bool? state,
+        string propertySort, bool isAsc, string search, int page, int limit)
     {
         var query = (typeIds.Contains(StoreTransactionType.ActivityTransaction) || typeIds.Count == 0 ?
             activityService.GetList
@@ -190,6 +192,7 @@ public class StoreService : IStoreService
             bonusService.GetList
             (new(), new() { id }, new(), search) : new())
             .AsQueryable()
+            .Where(t => state == null || state.Equals(t.State))
             .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 
         var result = query
@@ -209,11 +212,11 @@ public class StoreService : IStoreService
     }
 
     public PagedResultModel<VoucherModel> GetVoucherListByStoreId
-        (string id, List<string> campaignIds, List<string> typeIds,
+        (string id, List<string> campaignIds, List<string> typeIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         return voucherService.GetAllByStore
-            (new() { id }, campaignIds, typeIds, propertySort, isAsc, search, page, limit);
+            (new() { id }, campaignIds, typeIds, state, propertySort, isAsc, search, page, limit);
     }
 
     public async Task<StoreExtraModel> Update(string id, UpdateStoreModel update)

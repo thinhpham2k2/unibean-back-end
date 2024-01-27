@@ -10,7 +10,7 @@ public interface ICategoryRepository
     void Delete(string id);
 
     PagedResultModel<Category> GetAll
-        (string propertySort, bool isAsc, string search, int page, int limit);
+        (bool? state, string propertySort, bool isAsc, string search, int page, int limit);
 
     Category GetById(string id);
 

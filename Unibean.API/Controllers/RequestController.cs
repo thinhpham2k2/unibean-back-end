@@ -27,6 +27,7 @@ public class RequestController : ControllerBase
     /// </summary>
     /// <param name="brandIds">Filter by brand Id.</param>
     /// <param name="adminIds">Filter by admin Id.</param>
+    /// <param name="state">Filter by request state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
     [Authorize(Roles = "Admin, Brand, Store")]
@@ -36,6 +37,7 @@ public class RequestController : ControllerBase
     public ActionResult<PagedResultModel<RequestModel>> GetList(
         [FromQuery] List<string> brandIds,
         [FromQuery] List<string> adminIds,
+        [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -46,7 +48,7 @@ public class RequestController : ControllerBase
         {
             PagedResultModel<RequestModel>
                 result = requestService.GetAll
-                (brandIds, adminIds, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                (brandIds, adminIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
                 paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }

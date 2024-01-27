@@ -76,9 +76,11 @@ public class CategoryService : ICategoryService
         }
     }
 
-    public PagedResultModel<CategoryModel> GetAll(string propertySort, bool isAsc, string search, int page, int limit)
+    public PagedResultModel<CategoryModel> GetAll
+        (bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
-        return mapper.Map<PagedResultModel<CategoryModel>>(categoryRepository.GetAll(propertySort, isAsc, search, page, limit));
+        return mapper.Map<PagedResultModel<CategoryModel>>(
+            categoryRepository.GetAll(state, propertySort, isAsc, search, page, limit));
     }
 
     public CategoryModel GetById(string id)

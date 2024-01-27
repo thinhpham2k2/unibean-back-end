@@ -111,10 +111,11 @@ public class OrderService : IOrderService
     }
 
     public PagedResultModel<OrderModel> GetAll
-        (List<string> stationIds, List<string> studentIds, List<string> stateIds, string propertySort, bool isAsc, string search, int page, int limit)
+        (List<string> stationIds, List<string> studentIds, List<string> stateIds,
+        bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<OrderModel>>(orderRepository.GetAll
-            (stationIds, studentIds, stateIds, propertySort, isAsc, search, page, limit));
+            (stationIds, studentIds, stateIds, state, propertySort, isAsc, search, page, limit));
     }
 
     public OrderExtraModel GetById(string id)

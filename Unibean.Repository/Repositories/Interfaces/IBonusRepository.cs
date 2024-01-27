@@ -10,7 +10,7 @@ public interface IBonusRepository
     void Delete(string id);
 
     PagedResultModel<Bonus> GetAll
-        (List<string> brandIds, List<string> storeIds, List<string> studentIds, 
+        (List<string> brandIds, List<string> storeIds, List<string> studentIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit);
 
     List<Bonus> GetList

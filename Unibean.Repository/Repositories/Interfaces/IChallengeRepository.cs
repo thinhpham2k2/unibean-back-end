@@ -10,7 +10,8 @@ public interface IChallengeRepository
     void Delete(string id);
 
     PagedResultModel<Challenge> GetAll
-        (List<string> typeIds, string propertySort, bool isAsc, string search, int page, int limit);
+        (List<string> typeIds, bool? state, string propertySort, 
+        bool isAsc, string search, int page, int limit);
 
     Challenge GetById(string id);
 

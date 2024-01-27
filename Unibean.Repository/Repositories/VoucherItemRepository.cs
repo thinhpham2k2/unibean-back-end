@@ -40,7 +40,8 @@ public class VoucherItemRepository : IVoucherItemRepository
     }
 
     public PagedResultModel<VoucherItem> GetAll
-        (List<string> campaignIds, List<string> voucherIds, List<string> brandIds, List<string> typeIds, List<string> studentIds, 
+        (List<string> campaignIds, List<string> voucherIds, List<string> brandIds, 
+        List<string> typeIds, List<string> studentIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<VoucherItem> pagedResult = new();
@@ -61,6 +62,7 @@ public class VoucherItemRepository : IVoucherItemRepository
                 && (typeIds.Count == 0 || typeIds.Contains(t.Voucher.TypeId))
                 && (studentIds.Count == 0 || studentIds.Contains(t.Activities.FirstOrDefault(a
                     => (bool)a.Status).StudentId))
+                && (state == null || state.Equals(t.State))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 

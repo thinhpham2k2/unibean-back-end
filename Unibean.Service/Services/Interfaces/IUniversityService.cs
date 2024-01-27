@@ -10,7 +10,7 @@ public interface IUniversityService
     void Delete(string id);
 
     PagedResultModel<UniversityModel> GetAll
-        (string propertySort, bool isAsc, string search, int page, int limit);
+        (bool? state, string propertySort, bool isAsc, string search, int page, int limit);
 
     UniversityModel GetById(string id);
 

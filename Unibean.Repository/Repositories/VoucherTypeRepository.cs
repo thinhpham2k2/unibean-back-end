@@ -39,7 +39,8 @@ public class VoucherTypeRepository : IVoucherTypeRepository
         }
     }
 
-    public PagedResultModel<VoucherType> GetAll(string propertySort, bool isAsc, string search, int page, int limit)
+    public PagedResultModel<VoucherType> GetAll
+        (bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<VoucherType> pagedResult = new();
         try
@@ -48,6 +49,7 @@ public class VoucherTypeRepository : IVoucherTypeRepository
             var query = db.VoucherTypes
                 .Where(t => (EF.Functions.Like(t.TypeName, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
+                && (state == null || state.Equals(t.State))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 

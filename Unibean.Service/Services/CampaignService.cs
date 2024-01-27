@@ -122,8 +122,6 @@ public class CampaignService : ICampaignService
         this.discordService = discordService;
     }
 
-
-
     public async Task<CampaignExtraModel> Add(CreateCampaignModel creation)
     {
         Campaign campaign = mapper.Map<Campaign>(creation);
@@ -254,7 +252,8 @@ public class CampaignService : ICampaignService
         List<string> campusIds, bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<CampaignModel>>(campaignRepository
-            .GetAll(brandIds, typeIds, storeIds, majorIds, campusIds, state, propertySort, isAsc, search, page, limit));
+            .GetAll(brandIds, typeIds, storeIds, majorIds, campusIds, state, 
+            propertySort, isAsc, search, page, limit));
     }
 
     public CampaignExtraModel GetById(string id)
@@ -268,35 +267,36 @@ public class CampaignService : ICampaignService
     }
 
     public PagedResultModel<CampusModel> GetCampusListByCampaignId
-        (string id, List<string> universityIds, List<string> areaIds,
+        (string id, List<string> universityIds, List<string> areaIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         return campusService.GetAllByCampaign
-            (new() { id }, universityIds, areaIds, propertySort, isAsc, search, page, limit);
+            (new() { id }, universityIds, areaIds, state, 
+            propertySort, isAsc, search, page, limit);
     }
 
     public PagedResultModel<MajorModel> GetMajorListByCampaignId
-        (string id, string propertySort, bool isAsc,
-        string search, int page, int limit)
+        (string id, bool? state, string propertySort, 
+        bool isAsc, string search, int page, int limit)
     {
         return majorService.GetAllByCampaign
-            (new() { id }, propertySort, isAsc, search, page, limit);
+            (new() { id }, state, propertySort, isAsc, search, page, limit);
     }
 
     public PagedResultModel<StoreModel> GetStoreListByCampaignId
-        (string id, List<string> brandIds, List<string> areaIds, string propertySort,
-        bool isAsc, string search, int page, int limit)
+        (string id, List<string> brandIds, List<string> areaIds, bool? state, 
+        string propertySort, bool isAsc, string search, int page, int limit)
     {
         return storeService.GetAllByCampaign
-            (new() { id }, brandIds, areaIds, propertySort, isAsc, search, page, limit);
+            (new() { id }, brandIds, areaIds, state, propertySort, isAsc, search, page, limit);
     }
 
     public PagedResultModel<VoucherModel> GetVoucherListByCampaignId
-        (string id, List<string> typeIds, string propertySort,
-        bool isAsc, string search, int page, int limit)
+        (string id, List<string> typeIds, bool? state, 
+        string propertySort, bool isAsc, string search, int page, int limit)
     {
         return voucherService.GetAllByCampaign
-            (new() { id }, typeIds, propertySort, isAsc, search, page, limit);
+            (new() { id }, typeIds, state, propertySort, isAsc, search, page, limit);
     }
 
     public async Task<CampaignExtraModel> Update(string id, UpdateCampaignModel update)

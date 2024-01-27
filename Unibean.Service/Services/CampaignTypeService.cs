@@ -76,9 +76,11 @@ public class CampaignTypeService : ICampaignTypeService
         }
     }
 
-    public PagedResultModel<CampaignTypeModel> GetAll(string propertySort, bool isAsc, string search, int page, int limit)
+    public PagedResultModel<CampaignTypeModel> GetAll
+        (bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
-        return mapper.Map<PagedResultModel<CampaignTypeModel>>(campaignTypeRepository.GetAll(propertySort, isAsc, search, page, limit));
+        return mapper.Map<PagedResultModel<CampaignTypeModel>>(
+            campaignTypeRepository.GetAll(state, propertySort, isAsc, search, page, limit));
     }
 
     public CampaignTypeModel GetById(string id)

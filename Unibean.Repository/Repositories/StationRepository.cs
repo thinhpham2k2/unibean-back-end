@@ -40,7 +40,7 @@ public class StationRepository : IStationRepository
     }
 
     public PagedResultModel<Station> GetAll
-        (string propertySort, bool isAsc, string search, int page, int limit)
+        (bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<Station> pagedResult = new();
         try
@@ -52,6 +52,7 @@ public class StationRepository : IStationRepository
                 || EF.Functions.Like(t.Phone, "%" + search + "%")
                 || EF.Functions.Like(t.Email, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
+                && (state == null || state.Equals(t.State))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 
