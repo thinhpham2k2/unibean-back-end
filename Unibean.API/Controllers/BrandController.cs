@@ -34,6 +34,7 @@ public class BrandController : ControllerBase
     /// <summary>
     /// Get brand list
     /// </summary>
+    /// <param name="state">Filter by brand state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
@@ -41,6 +42,7 @@ public class BrandController : ControllerBase
         (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public ActionResult<PagedResultModel<BrandModel>> GetList(
+        [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -53,7 +55,8 @@ public class BrandController : ControllerBase
         {
             PagedResultModel<BrandModel>
                 result = brandService.GetAll
-                (propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit, jwtService.GetJwtRequest(jwtToken.Split(" ")[1]));
+                (state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, 
+                paging.Page, paging.Limit, jwtService.GetJwtRequest(jwtToken.Split(" ")[1]));
             return Ok(result);
         }
         return BadRequest("Invalid property of brand");
@@ -205,6 +208,7 @@ public class BrandController : ControllerBase
     /// </summary>
     /// <param name="id">Brand id.</param>
     /// <param name="walletTypeIds">Filter by wallet type Id.</param>
+    /// <param name="state">Filter by history transaction state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/histories")]
     [Authorize(Roles = "Admin, Brand")]
@@ -212,6 +216,7 @@ public class BrandController : ControllerBase
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public ActionResult<PagedResultModel<TransactionModel>> GetHistoryTransactionByStudentId([ValidBrand] string id,
         [FromQuery] List<string> walletTypeIds,
+        [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -224,7 +229,8 @@ public class BrandController : ControllerBase
             {
                 PagedResultModel<TransactionModel>
                 result = brandService.GetHistoryTransactionListByStudentId
-                    (id, walletTypeIds, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
+                    (id, walletTypeIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                    paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
             return BadRequest("Invalid property of transaction");
@@ -240,6 +246,7 @@ public class BrandController : ControllerBase
     /// </summary>
     /// <param name="id">Brand id.</param>
     /// <param name="areaIds">Filter by area Id.</param>
+    /// <param name="state">Filter by store state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/stores")]
     [Authorize(Roles = "Admin, Brand")]
@@ -247,6 +254,7 @@ public class BrandController : ControllerBase
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public ActionResult<PagedResultModel<StoreModel>> GetStoreListByBrandId([ValidBrand] string id,
         [FromQuery] List<string> areaIds,
+        [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -259,7 +267,8 @@ public class BrandController : ControllerBase
             {
                 PagedResultModel<StoreModel>
                 result = brandService.GetStoreListByBrandId
-                    (id, areaIds, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
+                    (id, areaIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                    paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
             return BadRequest("Invalid property of store");
@@ -275,6 +284,7 @@ public class BrandController : ControllerBase
     /// </summary>
     /// <param name="id">Brand id.</param>
     /// <param name="typeIds">Filter by voucher type Id.</param>
+    /// <param name="state">Filter by voucher state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/vouchers")]
     [Authorize(Roles = "Admin, Brand")]
@@ -282,6 +292,7 @@ public class BrandController : ControllerBase
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public ActionResult<PagedResultModel<VoucherModel>> GetVoucherListByBrandId([ValidBrand] string id,
         [FromQuery] List<string> typeIds,
+        [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -294,7 +305,8 @@ public class BrandController : ControllerBase
             {
                 PagedResultModel<VoucherModel>
                 result = brandService.GetVoucherListByBrandId
-                    (id, typeIds, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
+                    (id, typeIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                    paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
             return BadRequest("Invalid property of voucher");

@@ -16,7 +16,7 @@ public interface IStudentService
     void Delete(string id);
 
     PagedResultModel<StudentModel> GetAll
-        (List<string> majorIds, List<string> campusIds, bool? isVerify, 
+        (List<string> majorIds, List<string> campusIds, bool? state, bool? isVerify, 
         string propertySort, bool isAsc, string search, int page, int limit);
 
     StudentExtraModel GetById(string id);
@@ -24,22 +24,22 @@ public interface IStudentService
     OrderExtraModel GetOrderByOrderId(string id, string orderId);
 
     PagedResultModel<StudentChallengeModel> GetChallengeListByStudentId
-        (string id, bool? isCompleted, bool? isClaimed, string propertySort, 
+        (string id, bool? isCompleted, bool? state, bool? isClaimed, string propertySort, 
         bool isAsc, string search, int page, int limit);
 
     PagedResultModel<TransactionModel> GetHistoryTransactionListByStudentId
-        (string id, List<TransactionType> typeIds, string propertySort, 
+        (string id, List<TransactionType> typeIds, bool? state, string propertySort, 
         bool isAsc, string search, int page, int limit);
 
     PagedResultModel<OrderModel> GetOrderListByStudentId
-        (List<string> stationIds, List<string> stateIds, string id, 
+        (List<string> stationIds, List<string> stateIds, string id, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit);
 
     VoucherItemExtraModel GetVoucherItemByVoucherId(string id, string voucherId);
 
     PagedResultModel<VoucherItemModel> GetVoucherListByStudentId
         (List<string> campaignIds, List<string> voucherIds, List<string> brandIds, List<string> typeIds,
-        string id, string propertySort, bool isAsc, string search, int page, int limit);
+        string id, bool? state, string propertySort, bool isAsc, string search, int page, int limit);
 
     List<string> GetWishlistsByStudentId(string id);
 

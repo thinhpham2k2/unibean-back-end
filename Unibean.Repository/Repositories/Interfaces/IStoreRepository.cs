@@ -10,12 +10,12 @@ public interface IStoreRepository
     void Delete(string id);
 
     PagedResultModel<Store> GetAll
-        (List<string> brandIds, List<string> areaIds, string propertySort, 
-        bool isAsc, string search, int page, int limit);
+        (List<string> brandIds, List<string> areaIds, bool? state,
+        string propertySort, bool isAsc, string search, int page, int limit);
 
     PagedResultModel<Store> GetAllByCampaign
-        (List<string> campaignIds, List<string> brandIds, List<string> areaIds, 
-        string propertySort, bool isAsc, string search, int page, int limit);
+        (List<string> campaignIds, List<string> brandIds, List<string> areaIds,
+        bool? state, string propertySort, bool isAsc, string search, int page, int limit);
 
     Store GetById(string id);
 

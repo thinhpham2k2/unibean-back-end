@@ -28,6 +28,7 @@ public class BonusController : ControllerBase
     /// <param name="brandIds">Filter by brand Id.</param>
     /// <param name="storeIds">Filter by store Id.</param>
     /// <param name="studentIds">Filter by student Id.</param>
+    /// <param name="state">Filter by bonus state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
     [Authorize(Roles = "Admin, Brand, Store")]
@@ -38,6 +39,7 @@ public class BonusController : ControllerBase
         [FromQuery] List<string> brandIds,
         [FromQuery] List<string> storeIds,
         [FromQuery] List<string> studentIds,
+        [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -48,8 +50,8 @@ public class BonusController : ControllerBase
         {
             PagedResultModel<BonusModel>
                 result = bonusService.GetAll
-                (brandIds, storeIds, studentIds, propertySort, paging.Sort.Split(",")[1].Equals("asc"),
-                paging.Search, paging.Page, paging.Limit);
+                (brandIds, storeIds, studentIds, state, propertySort, 
+                paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }
         return BadRequest("Invalid property of bonus");

@@ -58,10 +58,11 @@ public class StudentChallengeService : IStudentChallengeService
     }
 
     public PagedResultModel<StudentChallengeModel> GetAll
-        (List<string> studentIds, List<string> challengeIds, string propertySort, bool isAsc, string search, int page, int limit)
+        (List<string> studentIds, List<string> challengeIds, bool? state,
+        string propertySort, bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<StudentChallengeModel>>(studentChallengeRepository
-            .GetAll(studentIds, challengeIds, propertySort, isAsc, search, page, limit));
+            .GetAll(studentIds, challengeIds, state, propertySort, isAsc, search, page, limit));
     }
 
     public StudentChallengeModel GetById(string id)

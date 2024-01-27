@@ -80,9 +80,11 @@ public class StateService : IStateService
         }
     }
 
-    public PagedResultModel<StateModel> GetAll(string propertySort, bool isAsc, string search, int page, int limit)
+    public PagedResultModel<StateModel> GetAll
+        (bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
-        return mapper.Map<PagedResultModel<StateModel>>(stateRepository.GetAll(propertySort, isAsc, search, page, limit));
+        return mapper.Map<PagedResultModel<StateModel>>
+            (stateRepository.GetAll(state, propertySort, isAsc, search, page, limit));
     }
 
     public StateModel GetById(string id)

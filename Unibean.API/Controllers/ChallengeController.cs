@@ -26,6 +26,7 @@ public class ChallengeController : ControllerBase
     /// Get challenge list
     /// </summary>
     /// <param name="typeIds">Filter by challenge type Id.</param>
+    /// <param name="state">Filter by challenge state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
@@ -34,6 +35,7 @@ public class ChallengeController : ControllerBase
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public ActionResult<PagedResultModel<ChallengeModel>> GetList(
         [FromQuery] List<string> typeIds,
+        [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -44,7 +46,8 @@ public class ChallengeController : ControllerBase
         {
             PagedResultModel<ChallengeModel>
                 result = challengeService.GetAll
-                (typeIds, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
+                (typeIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }
         return BadRequest("Invalid property of challenge");

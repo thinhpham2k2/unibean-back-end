@@ -54,6 +54,7 @@ public class CampaignRepository : ICampaignRepository
             // Get brand wallet
             var brand = db.Brands
                     .Where(s => s.Id.Equals(creation.BrandId) && (bool)s.Status)
+                    .Include(b => b.Account)
                     .Include(b => b.Wallets).FirstOrDefault();
             var brandGreenWallet = brand.Wallets.FirstOrDefault();
             var brandRedWallet = brand.Wallets.Skip(1).FirstOrDefault();
@@ -151,8 +152,8 @@ public class CampaignRepository : ICampaignRepository
     }
 
     public PagedResultModel<Campaign> GetAll
-        (List<string> brandIds, List<string> typeIds, List<string> storeIds, List<string> majorIds, List<string> campusIds,
-        bool? state, string propertySort, bool isAsc, string search, int page, int limit)
+        (List<string> brandIds, List<string> typeIds, List<string> storeIds, List<string> majorIds, 
+        List<string> campusIds, bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<Campaign> pagedResult = new();
         try

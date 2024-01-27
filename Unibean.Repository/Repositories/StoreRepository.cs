@@ -40,8 +40,8 @@ public class StoreRepository : IStoreRepository
     }
 
     public PagedResultModel<Store> GetAll
-        (List<string> brandIds, List<string> areaIds, string propertySort, bool isAsc, 
-        string search, int page, int limit)
+        (List<string> brandIds, List<string> areaIds, bool? state,
+        string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<Store> pagedResult = new();
         try
@@ -55,6 +55,7 @@ public class StoreRepository : IStoreRepository
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
                 && (brandIds.Count == 0 || brandIds.Contains(t.BrandId))
                 && (areaIds.Count == 0 || areaIds.Contains(t.AreaId))
+                && (state == null || state.Equals(t.State))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 
@@ -84,8 +85,8 @@ public class StoreRepository : IStoreRepository
     }
 
     public PagedResultModel<Store> GetAllByCampaign
-        (List<string> campaignIds, List<string> brandIds, List<string> areaIds, 
-        string propertySort, bool isAsc, string search, int page, int limit)
+        (List<string> campaignIds, List<string> brandIds, List<string> areaIds,
+        bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<Store> pagedResult = new();
         try
@@ -99,7 +100,8 @@ public class StoreRepository : IStoreRepository
                 .Where(t => (EF.Functions.Like(t.StoreName, "%" + search + "%")
                 || EF.Functions.Like(t.Address, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
-                && (areaIds.Count == 0 || areaIds.Contains(t.AreaId)))
+                && (areaIds.Count == 0 || areaIds.Contains(t.AreaId))
+                && (state == null || state.Equals(t.State)))
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 
             var result = query

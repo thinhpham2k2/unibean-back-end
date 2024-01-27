@@ -35,6 +35,7 @@ public class AdminController : ControllerBase
     /// <summary>
     /// Get admin list
     /// </summary>
+    /// <param name="state">Filter by admin state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
     [Authorize(Roles = "Admin")]
@@ -42,6 +43,7 @@ public class AdminController : ControllerBase
         (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public ActionResult<PagedResultModel<AdminModel>> GetList(
+        [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -52,7 +54,8 @@ public class AdminController : ControllerBase
         {
             PagedResultModel<AdminModel>
                 result = adminService.GetAll
-                (propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
+                (state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }
         return BadRequest("Invalid property of admin");

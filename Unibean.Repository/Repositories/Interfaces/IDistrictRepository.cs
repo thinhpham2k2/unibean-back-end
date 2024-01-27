@@ -10,7 +10,8 @@ public interface IDistrictRepository
     void Delete(string id);
 
     PagedResultModel<District> GetAll
-        (List<string> cityIds, string propertySort, bool isAsc, string search, int page, int limit);
+        (List<string> cityIds, bool? state, string propertySort, 
+        bool isAsc, string search, int page, int limit);
 
     District GetById(string id);
 

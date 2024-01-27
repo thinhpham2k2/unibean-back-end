@@ -39,7 +39,9 @@ public class OrderStateRepository : IOrderStateRepository
         }
     }
 
-    public PagedResultModel<OrderState> GetAll(List<string> orderIds, List<string> stateIds, string propertySort, bool isAsc, string search, int page, int limit)
+    public PagedResultModel<OrderState> GetAll
+        (List<string> orderIds, List<string> stateIds, bool? state,
+        string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<OrderState> pagedResult = new();
         try
@@ -50,6 +52,7 @@ public class OrderStateRepository : IOrderStateRepository
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
                 && (orderIds.Count == 0 || orderIds.Contains(t.OrderId))
                 && (stateIds.Count == 0 || stateIds.Contains(t.StateId))
+                && (state == null || state.Equals(t.State))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 

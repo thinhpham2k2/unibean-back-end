@@ -59,7 +59,8 @@ public class BrandRepository : IBrandRepository
         }
     }
 
-    public PagedResultModel<Brand> GetAll(string propertySort, bool isAsc, string search, int page, int limit)
+    public PagedResultModel<Brand> GetAll
+        (bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<Brand> pagedResult = new();
         try
@@ -72,6 +73,7 @@ public class BrandRepository : IBrandRepository
                 || EF.Functions.Like(p.Address, "%" + search + "%")
                 || EF.Functions.Like(p.CoverFileName, "%" + search + "%")
                 || EF.Functions.Like(p.Description, "%" + search + "%"))
+                && (state == null || state.Equals(p.State))
                 && (bool)p.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 

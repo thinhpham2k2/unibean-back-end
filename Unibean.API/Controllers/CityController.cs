@@ -25,6 +25,7 @@ public class CityController : ControllerBase
     /// <summary>
     /// Get city list
     /// </summary>
+    /// <param name="state">Filter by city state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
     [AllowAnonymous]
@@ -32,6 +33,7 @@ public class CityController : ControllerBase
         (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public ActionResult<PagedResultModel<CityModel>> GetList(
+        [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -42,7 +44,8 @@ public class CityController : ControllerBase
         {
             PagedResultModel<CityModel>
                 result = cityService.GetAll
-                (propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
+                (state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }
         return BadRequest("Invalid property of city");

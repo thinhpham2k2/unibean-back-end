@@ -40,7 +40,7 @@ public class AdminRepository : IAdminRepository
     }
 
     public PagedResultModel<Admin> GetAll
-        (string propertySort, bool isAsc, string search, int page, int limit)
+        (bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<Admin> pagedResult = new();
         try
@@ -51,6 +51,7 @@ public class AdminRepository : IAdminRepository
                 || EF.Functions.Like(p.FullName, "%" + search + "%")
                 || EF.Functions.Like(p.Account.Email, "%" + search + "%")
                 || EF.Functions.Like(p.Account.Description, "%" + search + "%"))
+                && (state == null || state.Equals(p.State))
                 && (bool)p.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 

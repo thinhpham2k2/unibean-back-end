@@ -10,7 +10,8 @@ public interface IOrderRepository
     void Delete(string id);
 
     PagedResultModel<Order> GetAll
-        (List<string> stationIds, List<string> studentIds, List<string> stateIds, string propertySort, bool isAsc, string search, int page, int limit);
+        (List<string> stationIds, List<string> studentIds, List<string> stateIds,
+        bool? state, string propertySort, bool isAsc, string search, int page, int limit);
 
     Order GetById(string id);
 

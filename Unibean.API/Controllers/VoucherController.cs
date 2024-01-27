@@ -27,6 +27,7 @@ public class VoucherController : ControllerBase
     /// </summary>
     /// <param name="brandIds">Filter by brand Id.</param>
     /// <param name="typeIds">Filter by voucher type Id.</param>
+    /// <param name="state">Filter by voucher state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
@@ -36,6 +37,7 @@ public class VoucherController : ControllerBase
     public ActionResult<PagedResultModel<VoucherModel>> GetList(
         [FromQuery] List<string> brandIds,
         [FromQuery] List<string> typeIds,
+        [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -46,7 +48,8 @@ public class VoucherController : ControllerBase
         {
             PagedResultModel<VoucherModel>
                 result = voucherService.GetAll
-                (brandIds, typeIds, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
+                (brandIds, typeIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }
         return BadRequest("Invalid property of voucher");

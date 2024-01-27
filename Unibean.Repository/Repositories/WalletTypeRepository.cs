@@ -39,7 +39,8 @@ public class WalletTypeRepository : IWalletTypeRepository
         }
     }
 
-    public PagedResultModel<WalletType> GetAll(string propertySort, bool isAsc, string search, int page, int limit)
+    public PagedResultModel<WalletType> GetAll
+        (bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
 
         PagedResultModel<WalletType> pagedResult = new();
@@ -49,6 +50,7 @@ public class WalletTypeRepository : IWalletTypeRepository
             var query = db.WalletTypes
                 .Where(t => (EF.Functions.Like(t.TypeName, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
+                && (state == null || state.Equals(t.State))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 

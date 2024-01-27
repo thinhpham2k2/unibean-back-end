@@ -76,9 +76,11 @@ public class WalletTypeService : IWalletTypeService
         }
     }
 
-    public PagedResultModel<WalletTypeModel> GetAll(string propertySort, bool isAsc, string search, int page, int limit)
+    public PagedResultModel<WalletTypeModel> GetAll
+        (bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
-        return mapper.Map<PagedResultModel<WalletTypeModel>>(walletTypeRepository.GetAll(propertySort, isAsc, search, page, limit));
+        return mapper.Map<PagedResultModel<WalletTypeModel>>
+            (walletTypeRepository.GetAll(state, propertySort, isAsc, search, page, limit));
     }
 
     public WalletTypeModel GetById(string id)

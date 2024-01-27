@@ -39,7 +39,8 @@ public class UniversityRepository : IUniversityRepository
         }
     }
 
-    public PagedResultModel<University> GetAll(string propertySort, bool isAsc, string search, int page, int limit)
+    public PagedResultModel<University> GetAll
+        (bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<University> pagedResult = new();
         try
@@ -51,6 +52,7 @@ public class UniversityRepository : IUniversityRepository
                 || EF.Functions.Like(t.Email, "%" + search + "%")
                 || EF.Functions.Like(t.Link, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
+                && (state == null || state.Equals(t.State))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 

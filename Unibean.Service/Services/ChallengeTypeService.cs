@@ -76,9 +76,11 @@ public class ChallengeTypeService : IChallengeTypeService
         }
     }
 
-    public PagedResultModel<ChallengeTypeModel> GetAll(string propertySort, bool isAsc, string search, int page, int limit)
+    public PagedResultModel<ChallengeTypeModel> GetAll
+        (bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
-        return mapper.Map<PagedResultModel<ChallengeTypeModel>>(challengeTypeRepository.GetAll(propertySort, isAsc, search, page, limit));
+        return mapper.Map<PagedResultModel<ChallengeTypeModel>>(
+            challengeTypeRepository.GetAll(state, propertySort, isAsc, search, page, limit));
     }
 
     public ChallengeTypeModel GetById(string id)

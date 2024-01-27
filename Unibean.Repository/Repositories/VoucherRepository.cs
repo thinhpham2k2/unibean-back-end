@@ -40,7 +40,8 @@ public class VoucherRepository : IVoucherRepository
     }
 
     public PagedResultModel<Voucher> GetAll
-        (List<string> brandIds, List<string> typeIds, string propertySort, bool isAsc, string search, int page, int limit)
+        (List<string> brandIds, List<string> typeIds, bool? state,
+        string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<Voucher> pagedResult = new();
         try
@@ -54,6 +55,7 @@ public class VoucherRepository : IVoucherRepository
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
                 && (brandIds.Count == 0 || brandIds.Contains(t.BrandId))
                 && (typeIds.Count == 0 || typeIds.Contains(t.TypeId))
+                && (state == null || state.Equals(t.State))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 
@@ -83,8 +85,8 @@ public class VoucherRepository : IVoucherRepository
     }
 
     public PagedResultModel<Voucher> GetAllByCampaign
-        (List<string> campaignIds, List<string> typeIds, string propertySort, 
-        bool isAsc, string search, int page, int limit)
+        (List<string> campaignIds, List<string> typeIds, bool? state,
+        string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<Voucher> pagedResult = new();
         try
@@ -97,7 +99,8 @@ public class VoucherRepository : IVoucherRepository
                 .Where(t => (EF.Functions.Like(t.VoucherName, "%" + search + "%")
                 || EF.Functions.Like(t.Condition, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
-                && (typeIds.Count == 0 || typeIds.Contains(t.TypeId)))
+                && (typeIds.Count == 0 || typeIds.Contains(t.TypeId))
+                && (state == null || state.Equals(t.State)))
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 
             var result = query
@@ -126,8 +129,8 @@ public class VoucherRepository : IVoucherRepository
     }
 
     public PagedResultModel<Voucher> GetAllByStore
-        (List<string> storeIds, List<string> campaignIds, List<string> typeIds, 
-        string propertySort, bool isAsc, string search, int page, int limit)
+        (List<string> storeIds, List<string> campaignIds, List<string> typeIds,
+        bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<Voucher> pagedResult = new();
         try
@@ -144,7 +147,8 @@ public class VoucherRepository : IVoucherRepository
                 .Where(t => (EF.Functions.Like(t.VoucherName, "%" + search + "%")
                 || EF.Functions.Like(t.Condition, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
-                && (typeIds.Count == 0 || typeIds.Contains(t.TypeId)))
+                && (typeIds.Count == 0 || typeIds.Contains(t.TypeId))
+                && (state == null || state.Equals(t.State)))
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 
             var result = query

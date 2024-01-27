@@ -11,7 +11,7 @@ public interface IProductService
     void Delete(string id);
 
     PagedResultModel<ProductModel> GetAll
-        (List<string> categoryIds, string propertySort, 
+        (List<string> categoryIds, bool? state, string propertySort, 
         bool isAsc, string search, int page, int limit);
 
     ProductExtraModel GetById(string id);

@@ -10,7 +10,8 @@ public interface IImageRepository
     void Delete(string id);
 
     PagedResultModel<Image> GetAll
-        (List<string> productIds, string propertySort, bool isAsc, string search, int page, int limit);
+        (List<string> productIds, bool? state, string propertySort, 
+        bool isAsc, string search, int page, int limit);
 
     Image GetById(string id);
 

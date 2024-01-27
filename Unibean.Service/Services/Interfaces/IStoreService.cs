@@ -12,20 +12,21 @@ public interface IStoreService
     void Delete(string id);
 
     PagedResultModel<StoreModel> GetAll
-        (List<string> brandIds, List<string> areaIds, string propertySort,
-        bool isAsc, string search, int page, int limit);
+        (List<string> brandIds, List<string> areaIds, bool? state, 
+        string propertySort, bool isAsc, string search, int page, int limit);
 
     PagedResultModel<StoreModel> GetAllByCampaign
         (List<string> campaignIds, List<string> brandIds, List<string> areaIds,
-        string propertySort, bool isAsc, string search, int page, int limit);
+         bool? state, string propertySort, bool isAsc, string search, int page, int limit);
 
     StoreExtraModel GetById(string id);
 
     PagedResultModel<StoreTransactionModel> GetHistoryTransactionListByStoreId
-        (string id, List<StoreTransactionType> typeIds, string propertySort, bool isAsc, string search, int page, int limit);
+        (string id, List<StoreTransactionType> typeIds, bool? state, string propertySort, 
+        bool isAsc, string search, int page, int limit);
 
     PagedResultModel<VoucherModel> GetVoucherListByStoreId
-        (string id, List<string> campaignIds, List<string> typeIds, 
+        (string id, List<string> campaignIds, List<string> typeIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit);
 
     Task<StoreExtraModel> Update(string id, UpdateStoreModel update);

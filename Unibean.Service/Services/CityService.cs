@@ -76,9 +76,11 @@ public class CityService : ICityService
         }
     }
 
-    public PagedResultModel<CityModel> GetAll(string propertySort, bool isAsc, string search, int page, int limit)
+    public PagedResultModel<CityModel> GetAll
+        (bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
-        return mapper.Map<PagedResultModel<CityModel>>(cityRepository.GetAll(propertySort, isAsc, search, page, limit));
+        return mapper.Map<PagedResultModel<CityModel>>(
+            cityRepository.GetAll(state, propertySort, isAsc, search, page, limit));
     }
 
     public CityModel GetById(string id)

@@ -36,6 +36,7 @@ public class StoreController : ControllerBase
     /// </summary>
     /// <param name="brandIds">Filter by brand Id.</param>
     /// <param name="areaIds">Filter by area Id.</param>
+    /// <param name="state">Filter by store state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
@@ -45,6 +46,7 @@ public class StoreController : ControllerBase
     public ActionResult<PagedResultModel<StoreModel>> GetList(
         [FromQuery] List<string> brandIds,
         [FromQuery] List<string> areaIds,
+        [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -55,7 +57,7 @@ public class StoreController : ControllerBase
         {
             PagedResultModel<StoreModel>
                 result = storeService.GetAll
-                (brandIds, areaIds, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                (brandIds, areaIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
                 paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }
@@ -188,6 +190,7 @@ public class StoreController : ControllerBase
     /// </summary>
     /// <param name="id">Store id.</param>
     /// <param name="typeIds">Filter by transaction type Id --- ActivityTransaction = 1, BonusTransaction = 2</param>
+    /// <param name="state">Filter by history state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/histories")]
     [Authorize(Roles = "Admin, Brand, Store")]
@@ -195,6 +198,7 @@ public class StoreController : ControllerBase
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public ActionResult<PagedResultModel<VoucherModel>> GetHistoryTransactionByStoreId([ValidStore] string id,
         [FromQuery] List<StoreTransactionType> typeIds,
+        [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -207,7 +211,7 @@ public class StoreController : ControllerBase
             {
                 PagedResultModel<StoreTransactionModel>
                 result = storeService.GetHistoryTransactionListByStoreId
-                    (id, typeIds, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                    (id, typeIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
                     paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
@@ -225,6 +229,7 @@ public class StoreController : ControllerBase
     /// <param name="id">Store id.</param>
     /// <param name="campaignIds">Filter by campaign Id.</param>
     /// <param name="typeIds">Filter by voucher type Id.</param>
+    /// <param name="state">Filter by voucher state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/vouchers")]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
@@ -233,6 +238,7 @@ public class StoreController : ControllerBase
     public ActionResult<PagedResultModel<VoucherModel>> GetVoucherListByStoreId([ValidStore] string id,
         [FromQuery] List<string> campaignIds,
         [FromQuery] List<string> typeIds,
+        [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -245,7 +251,8 @@ public class StoreController : ControllerBase
             {
                 PagedResultModel<VoucherModel>
                 result = storeService.GetVoucherListByStoreId
-                    (id, campaignIds, typeIds, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                    (id, campaignIds, typeIds, state, propertySort, 
+                    paging.Sort.Split(",")[1].Equals("asc"), 
                     paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }

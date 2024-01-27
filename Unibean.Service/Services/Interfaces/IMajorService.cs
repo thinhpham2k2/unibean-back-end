@@ -10,10 +10,10 @@ public interface IMajorService
     void Delete(string id);
 
     PagedResultModel<MajorModel> GetAll
-        (string propertySort, bool isAsc, string search, int page, int limit);
+        (bool? state, string propertySort, bool isAsc, string search, int page, int limit);
 
     PagedResultModel<MajorModel> GetAllByCampaign
-        (List<string> campaignIds, string propertySort,
+        (List<string> campaignIds, bool? state, string propertySort,
         bool isAsc, string search, int page, int limit);
 
     MajorModel GetById(string id);

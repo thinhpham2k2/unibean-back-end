@@ -193,6 +193,7 @@ public class CampaignController : ControllerBase
     /// <param name="id">Campaign id.</param>
     /// <param name="universityIds">Filter by university Id.</param>
     /// <param name="areaIds">Filter by area Id.</param>
+    /// <param name="state">Filter by campus state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/campuses")]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
@@ -201,6 +202,7 @@ public class CampaignController : ControllerBase
     public ActionResult<PagedResultModel<CampusModel>> GetCampusListByStoreId([ValidCampaign] string id,
         [FromQuery] List<string> universityIds,
         [FromQuery] List<string> areaIds,
+        [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -213,8 +215,8 @@ public class CampaignController : ControllerBase
             {
                 PagedResultModel<CampusModel>
                 result = campaignService.GetCampusListByCampaignId
-                    (id, universityIds, areaIds, propertySort, paging.Sort.Split(",")[1].Equals("asc"),
-                    paging.Search, paging.Page, paging.Limit);
+                    (id, universityIds, areaIds, state, propertySort, 
+                    paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
             return BadRequest("Invalid property of campus");
@@ -229,12 +231,14 @@ public class CampaignController : ControllerBase
     /// Get major list by campaign id
     /// </summary>
     /// <param name="id">Campaign id.</param>
+    /// <param name="state">Filter by major state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/majors")]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(PagedResultModel<MajorModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public ActionResult<PagedResultModel<MajorModel>> GetMajorListByStoreId([ValidCampaign] string id,
+        [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -247,7 +251,7 @@ public class CampaignController : ControllerBase
             {
                 PagedResultModel<MajorModel>
                 result = campaignService.GetMajorListByCampaignId
-                    (id, propertySort, paging.Sort.Split(",")[1].Equals("asc"),
+                    (id, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"),
                     paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
@@ -265,6 +269,7 @@ public class CampaignController : ControllerBase
     /// <param name="id">Campaign id.</param>
     /// <param name="brandIds">Filter by brand Id.</param>
     /// <param name="areaIds">Filter by area Id.</param>
+    /// <param name="state">Filter by store state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/stores")]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
@@ -273,6 +278,7 @@ public class CampaignController : ControllerBase
     public ActionResult<PagedResultModel<StoreModel>> GetStoreListByStoreId([ValidCampaign] string id,
         [FromQuery] List<string> brandIds,
         [FromQuery] List<string> areaIds,
+        [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -285,7 +291,7 @@ public class CampaignController : ControllerBase
             {
                 PagedResultModel<StoreModel>
                 result = campaignService.GetStoreListByCampaignId
-                    (id, brandIds, areaIds, propertySort, paging.Sort.Split(",")[1].Equals("asc"),
+                    (id, brandIds, areaIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"),
                     paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
@@ -302,6 +308,7 @@ public class CampaignController : ControllerBase
     /// </summary>
     /// <param name="id">Campaign id.</param>
     /// <param name="typeIds">Filter by voucher type Id.</param>
+    /// <param name="state">Filter by voucher state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/vouchers")]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
@@ -309,6 +316,7 @@ public class CampaignController : ControllerBase
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public ActionResult<PagedResultModel<VoucherModel>> GetVoucherListByStoreId([ValidCampaign] string id,
         [FromQuery] List<string> typeIds,
+        [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -321,7 +329,7 @@ public class CampaignController : ControllerBase
             {
                 PagedResultModel<VoucherModel>
                 result = campaignService.GetVoucherListByCampaignId
-                    (id, typeIds, propertySort, paging.Sort.Split(",")[1].Equals("asc"),
+                    (id, typeIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"),
                     paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }

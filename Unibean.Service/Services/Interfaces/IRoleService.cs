@@ -13,7 +13,7 @@ public interface IRoleService
     void Delete(string id);
 
     PagedResultModel<RoleModel> GetAll
-        (string propertySort, bool isAsc, string search, int page, int limit);
+        (bool? state, string propertySort, bool isAsc, string search, int page, int limit);
 
     RoleModel GetById(string id);
 

@@ -40,7 +40,8 @@ public class ImageRepository : IImageRepository
     }
 
     public PagedResultModel<Image> GetAll
-        (List<string> productIds, string propertySort, bool isAsc, string search, int page, int limit)
+        (List<string> productIds, bool? state, string propertySort, 
+        bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<Image> pagedResult = new();
         try
@@ -51,6 +52,7 @@ public class ImageRepository : IImageRepository
                 || EF.Functions.Like(t.FileName, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
                 && (productIds.Count == 0 || productIds.Contains(t.ProductId))
+                && (state == null || state.Equals(t.State))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 

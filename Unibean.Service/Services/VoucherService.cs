@@ -96,26 +96,30 @@ public class VoucherService : IVoucherService
     }
 
     public PagedResultModel<VoucherModel> GetAll
-        (List<string> brandIds, List<string> typeIds, string propertySort, bool isAsc, string search, int page, int limit)
-    {
-        return mapper.Map<PagedResultModel<VoucherModel>>
-            (voucherRepository.GetAll(brandIds, typeIds, propertySort, isAsc, search, page, limit));
-    }
-
-    public PagedResultModel<VoucherModel> GetAllByCampaign
-        (List<string> campaignIds, List<string> typeIds, string propertySort, 
-        bool isAsc, string search, int page, int limit)
-    {
-        return mapper.Map<PagedResultModel<VoucherModel>>
-            (voucherRepository.GetAllByCampaign(campaignIds, typeIds, propertySort, isAsc, search, page, limit));
-    }
-
-    public PagedResultModel<VoucherModel> GetAllByStore
-        (List<string> storeIds, List<string> campaignIds, List<string> typeIds, 
+        (List<string> brandIds, List<string> typeIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<VoucherModel>>
-            (voucherRepository.GetAllByStore(storeIds, campaignIds, typeIds, propertySort, isAsc, search, page, limit));
+            (voucherRepository.GetAll(brandIds, typeIds, state, 
+            propertySort, isAsc, search, page, limit));
+    }
+
+    public PagedResultModel<VoucherModel> GetAllByCampaign
+        (List<string> campaignIds, List<string> typeIds, bool? state,
+        string propertySort, bool isAsc, string search, int page, int limit)
+    {
+        return mapper.Map<PagedResultModel<VoucherModel>>
+            (voucherRepository.GetAllByCampaign(campaignIds, typeIds, state, 
+            propertySort, isAsc, search, page, limit));
+    }
+
+    public PagedResultModel<VoucherModel> GetAllByStore
+        (List<string> storeIds, List<string> campaignIds, List<string> typeIds,
+        bool? state, string propertySort, bool isAsc, string search, int page, int limit)
+    {
+        return mapper.Map<PagedResultModel<VoucherModel>>
+            (voucherRepository.GetAllByStore(storeIds, campaignIds, 
+            typeIds, state, propertySort, isAsc, search, page, limit));
     }
 
     public VoucherExtraModel GetById(string id)

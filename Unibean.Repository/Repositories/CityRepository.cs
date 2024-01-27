@@ -39,7 +39,8 @@ public class CityRepository : ICityRepository
         }
     }
 
-    public PagedResultModel<City> GetAll(string propertySort, bool isAsc, string search, int page, int limit)
+    public PagedResultModel<City> GetAll
+        (bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<City> pagedResult = new();
         try
@@ -48,6 +49,7 @@ public class CityRepository : ICityRepository
             var query = db.Cities
                 .Where(t => (EF.Functions.Like(t.CityName, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
+                && (state == null || state.Equals(t.State))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 

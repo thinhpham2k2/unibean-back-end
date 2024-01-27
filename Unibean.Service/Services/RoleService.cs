@@ -76,9 +76,11 @@ public class RoleService : IRoleService
         }
     }
 
-    public PagedResultModel<RoleModel> GetAll(string propertySort, bool isAsc, string search, int page, int limit)
+    public PagedResultModel<RoleModel> GetAll
+        (bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
-        return mapper.Map<PagedResultModel<RoleModel>>(roleRepository.GetAll(propertySort, isAsc, search, page, limit));
+        return mapper.Map<PagedResultModel<RoleModel>>
+            (roleRepository.GetAll(state, propertySort, isAsc, search, page, limit));
     }
 
     public RoleModel GetById(string id)

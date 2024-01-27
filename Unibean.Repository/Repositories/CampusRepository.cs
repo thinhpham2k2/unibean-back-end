@@ -40,8 +40,8 @@ public class CampusRepository : ICampusRepository
     }
 
     public PagedResultModel<Campus> GetAll
-        (List<string> universityIds, List<string> areaIds, string propertySort, 
-        bool isAsc, string search, int page, int limit)
+        (List<string> universityIds, List<string> areaIds, bool? state, 
+        string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<Campus> pagedResult = new();
         try
@@ -57,6 +57,7 @@ public class CampusRepository : ICampusRepository
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
                 && (universityIds.Count == 0 || universityIds.Contains(t.UniversityId))
                 && (areaIds.Count == 0 || areaIds.Contains(t.AreaId))
+                && (state == null || state.Equals(t.State))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 
@@ -85,8 +86,8 @@ public class CampusRepository : ICampusRepository
     }
 
     public PagedResultModel<Campus> GetAllByCampaign
-        (List<string> campaignIds, List<string> universityIds, List<string> areaIds, 
-        string propertySort, bool isAsc, string search, int page, int limit)
+        (List<string> campaignIds, List<string> universityIds, List<string> areaIds,
+        bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<Campus> pagedResult = new();
         try
@@ -105,7 +106,8 @@ public class CampusRepository : ICampusRepository
                 || EF.Functions.Like(t.FileName, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
                 && (universityIds.Count == 0 || universityIds.Contains(t.UniversityId))
-                && (areaIds.Count == 0 || areaIds.Contains(t.AreaId)))
+                && (areaIds.Count == 0 || areaIds.Contains(t.AreaId))
+                && (state == null || state.Equals(t.State)))
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 
             var result = query

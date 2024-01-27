@@ -76,9 +76,11 @@ public class UniversityService : IUniversityService
         }
     }
 
-    public PagedResultModel<UniversityModel> GetAll(string propertySort, bool isAsc, string search, int page, int limit)
+    public PagedResultModel<UniversityModel> GetAll
+        (bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
-        return mapper.Map<PagedResultModel<UniversityModel>>(universityRepository.GetAll(propertySort, isAsc, search, page, limit));
+        return mapper.Map<PagedResultModel<UniversityModel>>
+            (universityRepository.GetAll(state, propertySort, isAsc, search, page, limit));
     }
 
     public UniversityModel GetById(string id)

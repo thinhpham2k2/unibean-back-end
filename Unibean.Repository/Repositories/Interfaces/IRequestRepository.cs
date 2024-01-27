@@ -10,7 +10,8 @@ public interface IRequestRepository
     void Delete(string id);
 
     PagedResultModel<Request> GetAll
-        (List<string> brandIds, List<string> adminIds, string propertySort, bool isAsc, string search, int page, int limit);
+        (List<string> brandIds, List<string> adminIds, bool? state, 
+        string propertySort, bool isAsc, string search, int page, int limit);
 
     Request GetById(string id);
 

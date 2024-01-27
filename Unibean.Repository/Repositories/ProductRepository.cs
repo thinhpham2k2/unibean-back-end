@@ -40,7 +40,7 @@ public class ProductRepository : IProductRepository
     }
 
     public PagedResultModel<Product> GetAll
-        (List<string> categoryIds, string propertySort,
+        (List<string> categoryIds, bool? state, string propertySort,
         bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<Product> pagedResult = new();
@@ -52,6 +52,7 @@ public class ProductRepository : IProductRepository
                 || EF.Functions.Like(t.Category.CategoryName, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
                 && (categoryIds.Count == 0 || categoryIds.Contains(t.CategoryId))
+                && (state == null || state.Equals(t.State))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 

@@ -27,6 +27,7 @@ public class WishlistController : ControllerBase
     /// </summary>
     /// <param name="studentIds">Filter by student Id.</param>
     /// <param name="brandIds">Filter by brand Id.</param>
+    /// <param name="state">Filter by wishlists state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
@@ -36,6 +37,7 @@ public class WishlistController : ControllerBase
     public ActionResult<PagedResultModel<WishlistModel>> GetList(
         [FromQuery] List<string> studentIds,
         [FromQuery] List<string> brandIds,
+        [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -46,7 +48,7 @@ public class WishlistController : ControllerBase
         {
             PagedResultModel<WishlistModel>
                 result = wishlistService.GetAll
-                (studentIds, brandIds, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                (studentIds, brandIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
                 paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }

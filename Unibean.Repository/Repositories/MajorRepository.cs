@@ -39,7 +39,9 @@ public class MajorRepository : IMajorRepository
         }
     }
 
-    public PagedResultModel<Major> GetAll(string propertySort, bool isAsc, string search, int page, int limit)
+    public PagedResultModel<Major> GetAll
+        (bool? state, string propertySort, bool isAsc, 
+        string search, int page, int limit)
     {
         PagedResultModel<Major> pagedResult = new();
         try
@@ -48,6 +50,7 @@ public class MajorRepository : IMajorRepository
             var query = db.Majors
                 .Where(t => (EF.Functions.Like(t.MajorName, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
+                && (state == null || state.Equals(t.State))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 
@@ -74,7 +77,7 @@ public class MajorRepository : IMajorRepository
     }
 
     public PagedResultModel<Major> GetAllByCampaign
-        (List<string> campaignIds, string propertySort, 
+        (List<string> campaignIds, bool? state, string propertySort, 
         bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<Major> pagedResult = new();
@@ -86,7 +89,8 @@ public class MajorRepository : IMajorRepository
                 && (bool)c.Status)
                 .SelectMany(c => c.CampaignMajors.Where(c => (bool)c.Status).Select(v => v.Major)).Distinct()
                 .Where(t => EF.Functions.Like(t.MajorName, "%" + search + "%")
-                || EF.Functions.Like(t.Description, "%" + search + "%"))
+                || EF.Functions.Like(t.Description, "%" + search + "%")
+                && (state == null || state.Equals(t.State)))
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 
             var result = query

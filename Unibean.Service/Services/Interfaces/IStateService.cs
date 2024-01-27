@@ -10,7 +10,7 @@ public interface IStateService
     void Delete(string id);
 
     PagedResultModel<StateModel> GetAll
-        (string propertySort, bool isAsc, string search, int page, int limit);
+        (bool? state, string propertySort, bool isAsc, string search, int page, int limit);
 
     StateModel GetById(string id);
 

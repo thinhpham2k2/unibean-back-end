@@ -197,11 +197,12 @@ public class BrandService : IBrandService
     }
 
     public PagedResultModel<BrandModel> GetAll
-        (string propertySort, bool isAsc, string search, int page, int limit, JwtRequestModel request)
+        (bool? state, string propertySort, bool isAsc, string search, 
+        int page, int limit, JwtRequestModel request)
     {
         if (request.Role.Equals("Student"))
         {
-            PagedResultModel<Brand> result = brandRepository.GetAll(propertySort, isAsc, search, page, limit);
+            PagedResultModel<Brand> result = brandRepository.GetAll(state, propertySort, isAsc, search, page, limit);
             PagedResultModel<BrandModel> pages = mapper.Map<PagedResultModel<BrandModel>>(result);
             pages.Result = result.Result.Select(r =>
             {
@@ -215,7 +216,7 @@ public class BrandService : IBrandService
         else
         {
             return mapper.Map<PagedResultModel<Brand>, PagedResultModel<BrandModel>>
-                (brandRepository.GetAll(propertySort, isAsc, search, page, limit), opt
+                (brandRepository.GetAll(state, propertySort, isAsc, search, page, limit), opt
                 => opt.AfterMap((src, dest)
                 => dest.Result = mapper.Map<List<BrandModel>>(src.Result)));
         }
@@ -238,11 +239,13 @@ public class BrandService : IBrandService
         (string id, List<string> typeIds, List<string> storeIds, List<string> majorIds, List<string> campusIds,
         bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
-        return campaignService.GetAll(new() { id }, typeIds, storeIds, majorIds, campusIds, state, propertySort, isAsc, search, page, limit);
+        return campaignService.GetAll(new() { id }, typeIds, storeIds, majorIds, 
+            campusIds, state, propertySort, isAsc, search, page, limit);
     }
 
     public PagedResultModel<TransactionModel> GetHistoryTransactionListByStudentId
-        (string id, List<string> walletTypeIds, string propertySort, bool isAsc, string search, int page, int limit)
+        (string id, List<string> walletTypeIds, bool? state, string propertySort, 
+        bool isAsc, string search, int page, int limit)
     {
         var query = bonusTransactionService.GetAll
             (brandRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), walletTypeIds, search)
@@ -251,6 +254,7 @@ public class BrandService : IBrandService
             .Concat(requestTransactionService.GetAll
             (brandRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), walletTypeIds, search))
             .AsQueryable()
+            .Where(t => state == null || state.Equals(t.State))
             .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 
         var result = query
@@ -270,15 +274,19 @@ public class BrandService : IBrandService
     }
 
     public PagedResultModel<StoreModel> GetStoreListByBrandId
-        (string id, List<string> areaIds, string propertySort, bool isAsc, string search, int page, int limit)
+        (string id, List<string> areaIds, bool? state, string propertySort, 
+        bool isAsc, string search, int page, int limit)
     {
-        return storeService.GetAll(new() { id }, areaIds, propertySort, isAsc, search, page, limit);
+        return storeService.GetAll(new() { id }, areaIds, state, 
+            propertySort, isAsc, search, page, limit);
     }
 
     public PagedResultModel<VoucherModel> GetVoucherListByBrandId
-        (string id, List<string> typeIds, string propertySort, bool isAsc, string search, int page, int limit)
+        (string id, List<string> typeIds, bool? state, string propertySort,
+        bool isAsc, string search, int page, int limit)
     {
-        return voucherService.GetAll(new() { id }, typeIds, propertySort, isAsc, search, page, limit);
+        return voucherService.GetAll(new() { id }, typeIds, state, 
+            propertySort, isAsc, search, page, limit);
     }
 
     public async Task<BrandExtraModel> Update(string id, UpdateBrandModel update)

@@ -37,6 +37,7 @@ public class StudentController : ControllerBase
     /// </summary>
     /// <param name="majorIds">Filter by major Id.</param>
     /// <param name="campusIds">Filter by campus Id.</param>
+    /// <param name="state">Filter by student state.</param>
     /// <param name="isVerify">Filter by student verification status.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
@@ -47,6 +48,7 @@ public class StudentController : ControllerBase
     public ActionResult<PagedResultModel<StudentModel>> GetList(
         [FromQuery] List<string> majorIds,
         [FromQuery] List<string> campusIds,
+        [FromQuery] bool? state,
         [FromQuery] bool? isVerify,
         [FromQuery] PagingModel paging)
     {
@@ -58,7 +60,8 @@ public class StudentController : ControllerBase
         {
             PagedResultModel<StudentModel>
                 result = studentService.GetAll
-                (majorIds, campusIds, isVerify, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
+                (majorIds, campusIds, state, isVerify, propertySort, 
+                paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }
         return BadRequest("Invalid property of student");
@@ -163,6 +166,7 @@ public class StudentController : ControllerBase
     /// Get challenge list by student id
     /// </summary>
     /// <param name="id">Student id.</param>
+    /// <param name="state">Filter by challenge state.</param>
     /// <param name="isCompleted">Filter by challenge completion status.</param>
     /// <param name="isClaimed">Filter by challenge claim status.</param>
     /// <param name="paging">Paging parameter.</param>
@@ -171,6 +175,7 @@ public class StudentController : ControllerBase
     [ProducesResponseType(typeof(PagedResultModel<StudentChallengeModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public ActionResult<PagedResultModel<StudentChallengeModel>> GetChallengeListByStudentId([ValidStudent] string id,
+        [FromQuery] bool? state,
         [FromQuery] bool? isCompleted,
         [FromQuery] bool? isClaimed,
         [FromQuery] PagingModel paging)
@@ -185,7 +190,8 @@ public class StudentController : ControllerBase
             {
                 PagedResultModel<StudentChallengeModel>
                 result = studentService.GetChallengeListByStudentId
-                    (id, isCompleted, isClaimed, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
+                    (id, state, isCompleted, isClaimed, propertySort, 
+                    paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
             return BadRequest("Invalid property of challenge");
@@ -201,6 +207,7 @@ public class StudentController : ControllerBase
     /// </summary>
     /// <param name="id">Student id.</param>
     /// <param name="typeIds">Filter by transaction type Id --- ActivityTransaction = 1, OrderTransaction = 2, ChallengeTransaction = 3, BonusTransaction = 4</param>
+    /// <param name="state">Filter by campaign state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/histories")]
     [Authorize(Roles = "Admin, Student")]
@@ -208,6 +215,7 @@ public class StudentController : ControllerBase
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public ActionResult<PagedResultModel<TransactionModel>> GetHistoryTransactionListByStudentId([ValidStudent] string id,
         [FromQuery] List<TransactionType> typeIds,
+        [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -220,7 +228,8 @@ public class StudentController : ControllerBase
             {
                 PagedResultModel<TransactionModel>
                 result = studentService.GetHistoryTransactionListByStudentId
-                    (id, typeIds, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
+                    (id, typeIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                    paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
             return BadRequest("Invalid property of transaction");
@@ -237,6 +246,7 @@ public class StudentController : ControllerBase
     /// <param name="id">Student id.</param>
     /// <param name="stationIds">Filter by station Id.</param>
     /// <param name="stateIds">Filter by state Id.</param>
+    /// <param name="state">Filter by order state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/orders")]
     [Authorize(Roles = "Admin, Student")]
@@ -245,6 +255,7 @@ public class StudentController : ControllerBase
     public ActionResult<PagedResultModel<OrderModel>> GetOrderListByStudentId([ValidStudent] string id,
         [FromQuery] List<string> stationIds,
         [FromQuery] List<string> stateIds,
+        [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -257,7 +268,7 @@ public class StudentController : ControllerBase
             {
                 PagedResultModel<OrderModel>
                 result = studentService.GetOrderListByStudentId
-                    (stationIds, stateIds, id, propertySort.Equals("StateCurrent")
+                    (stationIds, stateIds, id, state, propertySort.Equals("StateCurrent")
                         ? "OrderStates.Max(s => s.StateId)" : propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
@@ -323,6 +334,7 @@ public class StudentController : ControllerBase
     /// <param name="voucherIds">Filter by voucher Id.</param>
     /// <param name="brandIds">Filter by brand Id.</param>
     /// <param name="typeIds">Filter by voucher type Id.</param>
+    /// <param name="state">Filter by voucher state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/vouchers")]
     [Authorize(Roles = "Admin, Student")]
@@ -333,6 +345,7 @@ public class StudentController : ControllerBase
         [FromQuery] List<string> voucherIds,
         [FromQuery] List<string> brandIds,
         [FromQuery] List<string> typeIds,
+        [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -345,7 +358,9 @@ public class StudentController : ControllerBase
             {
                 PagedResultModel<VoucherItemModel>
                 result = studentService.GetVoucherListByStudentId
-                    (campaignIds, voucherIds, brandIds, typeIds, id, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
+                    (campaignIds, voucherIds, brandIds, typeIds, id, state, 
+                    propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                    paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
             return BadRequest("Invalid property of voucher");

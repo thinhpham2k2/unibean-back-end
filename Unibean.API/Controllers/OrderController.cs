@@ -33,6 +33,7 @@ public class OrderController : ControllerBase
     /// <param name="stationIds">Filter by station Id.</param>
     /// <param name="studentIds">Filter by student Id.</param>
     /// <param name="stateIds">Filter by state Id.</param>
+    /// <param name="state">Filter by order state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
     [Authorize(Roles = "Admin")]
@@ -43,6 +44,7 @@ public class OrderController : ControllerBase
         [FromQuery] List<string> stationIds,
         [FromQuery] List<string> studentIds,
         [FromQuery] List<string> stateIds,
+        [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -53,8 +55,9 @@ public class OrderController : ControllerBase
         {
             PagedResultModel<OrderModel>
                 result = orderService.GetAll
-                (stationIds, studentIds, stateIds, propertySort.Equals("StateCurrent")
-                ? "OrderStates.Max(s => s.StateId)" : propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
+                (stationIds, studentIds, stateIds, state, propertySort.Equals("StateCurrent")
+                ? "OrderStates.Max(s => s.StateId)" : propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }
         return BadRequest("Invalid property of order");

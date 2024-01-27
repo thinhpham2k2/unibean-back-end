@@ -12,6 +12,7 @@ using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Majors;
 using Unibean.Service.Models.Stores;
 using Unibean.Service.Models.Vouchers;
+using Unibean.Service.Models.WebHooks;
 using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Utilities.FireBase;
 
@@ -37,13 +38,16 @@ public class CampaignService : ICampaignService
 
     private readonly ICampusService campusService;
 
+    private readonly IDiscordService discordService;
+
     public CampaignService(ICampaignRepository campaignRepository,
         IVoucherRepository voucherRepository,
         IFireBaseService fireBaseService,
         IVoucherService voucherService,
         IStoreService storeService,
         IMajorService majorService,
-        ICampusService campusService)
+        ICampusService campusService,
+        IDiscordService discordService)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -115,9 +119,8 @@ public class CampaignService : ICampaignService
         this.storeService = storeService;
         this.majorService = majorService;
         this.campusService = campusService;
+        this.discordService = discordService;
     }
-
-
 
     public async Task<CampaignExtraModel> Add(CreateCampaignModel creation)
     {
@@ -158,7 +161,65 @@ public class CampaignService : ICampaignService
             }
         }
 
-        return mapper.Map<CampaignExtraModel>(campaignRepository.Add(campaign));
+        campaign = campaignRepository.Add(campaign);
+
+        if (campaign != null)
+        {
+            discordService.CreateWebHooks(new DiscordWebhookModel
+            {
+                Embeds = new() {
+                    new() {
+                        Author = new()
+                        {
+                            Name = campaign.Brand.BrandName,
+                            Url = campaign.Brand.Link,
+                            IconUrl = campaign.Brand.Account.Avatar
+                        },
+
+                        Fields = new()
+                        {
+                            new()
+                            {
+                                Name = "📢 Chiến dịch mới",
+                                Value = campaign.CampaignName
+                            },
+                            new()
+                            {
+                                Name = "🆔 chiến dịch mới",
+                                Value = "||" + campaign.Id + "||"
+                            },
+                            new()
+                            {
+                                Name = "💸 Tổng chi phí",
+                                Value = campaign.TotalIncome + " đậu"
+                            },
+                            new()
+                            {
+                                Name = "▶️ Bắt đầu",
+                                Value = ((DateOnly)campaign.StartOn).ToLongDateString()
+                            },
+                            new()
+                            {
+                                Name = "⏸️ Kết thúc",
+                                Value = ((DateOnly)campaign.EndOn).ToLongDateString()
+                            },
+                        },
+
+                        Image = new()
+                        {
+                            Url = campaign.Image
+                        },
+
+                        Footer = new()
+                        {
+                             Text = "Date created - " + ((DateTime)campaign.DateCreated).ToString("R")
+                        },
+                    }
+                },
+            });
+        }
+
+        return mapper.Map<CampaignExtraModel>(campaign);
     }
 
     public void Delete(string id)
@@ -191,7 +252,8 @@ public class CampaignService : ICampaignService
         List<string> campusIds, bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<CampaignModel>>(campaignRepository
-            .GetAll(brandIds, typeIds, storeIds, majorIds, campusIds, state, propertySort, isAsc, search, page, limit));
+            .GetAll(brandIds, typeIds, storeIds, majorIds, campusIds, state, 
+            propertySort, isAsc, search, page, limit));
     }
 
     public CampaignExtraModel GetById(string id)
@@ -205,35 +267,36 @@ public class CampaignService : ICampaignService
     }
 
     public PagedResultModel<CampusModel> GetCampusListByCampaignId
-        (string id, List<string> universityIds, List<string> areaIds,
+        (string id, List<string> universityIds, List<string> areaIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         return campusService.GetAllByCampaign
-            (new() { id }, universityIds, areaIds, propertySort, isAsc, search, page, limit);
+            (new() { id }, universityIds, areaIds, state, 
+            propertySort, isAsc, search, page, limit);
     }
 
     public PagedResultModel<MajorModel> GetMajorListByCampaignId
-        (string id, string propertySort, bool isAsc,
-        string search, int page, int limit)
+        (string id, bool? state, string propertySort, 
+        bool isAsc, string search, int page, int limit)
     {
         return majorService.GetAllByCampaign
-            (new() { id }, propertySort, isAsc, search, page, limit);
+            (new() { id }, state, propertySort, isAsc, search, page, limit);
     }
 
     public PagedResultModel<StoreModel> GetStoreListByCampaignId
-        (string id, List<string> brandIds, List<string> areaIds, string propertySort,
-        bool isAsc, string search, int page, int limit)
+        (string id, List<string> brandIds, List<string> areaIds, bool? state, 
+        string propertySort, bool isAsc, string search, int page, int limit)
     {
         return storeService.GetAllByCampaign
-            (new() { id }, brandIds, areaIds, propertySort, isAsc, search, page, limit);
+            (new() { id }, brandIds, areaIds, state, propertySort, isAsc, search, page, limit);
     }
 
     public PagedResultModel<VoucherModel> GetVoucherListByCampaignId
-        (string id, List<string> typeIds, string propertySort,
-        bool isAsc, string search, int page, int limit)
+        (string id, List<string> typeIds, bool? state, 
+        string propertySort, bool isAsc, string search, int page, int limit)
     {
         return voucherService.GetAllByCampaign
-            (new() { id }, typeIds, propertySort, isAsc, search, page, limit);
+            (new() { id }, typeIds, state, propertySort, isAsc, search, page, limit);
     }
 
     public async Task<CampaignExtraModel> Update(string id, UpdateCampaignModel update)

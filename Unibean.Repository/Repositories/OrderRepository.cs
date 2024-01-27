@@ -79,7 +79,8 @@ public class OrderRepository : IOrderRepository
     }
 
     public PagedResultModel<Order> GetAll
-        (List<string> stationIds, List<string> studentIds, List<string> stateIds, string propertySort, bool isAsc, string search, int page, int limit)
+        (List<string> stationIds, List<string> studentIds, List<string> stateIds,
+        bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<Order> pagedResult = new();
         try
@@ -93,6 +94,7 @@ public class OrderRepository : IOrderRepository
                 && (studentIds.Count == 0 || studentIds.Contains(o.StudentId))
                 && (stateIds.Count == 0 || stateIds.Contains(o.OrderStates
                     .Where(s => (bool)s.Status).Max(d => d.State.Id)))
+                && (state == null || state.Equals(o.State))
                 && (bool)o.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 

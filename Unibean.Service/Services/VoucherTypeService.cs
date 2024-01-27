@@ -76,9 +76,11 @@ public class VoucherTypeService : IVoucherTypeService
         }
     }
 
-    public PagedResultModel<VoucherTypeModel> GetAll(string propertySort, bool isAsc, string search, int page, int limit)
+    public PagedResultModel<VoucherTypeModel> GetAll
+        (bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
-        return mapper.Map<PagedResultModel<VoucherTypeModel>>(voucherTypeRepository.GetAll(propertySort, isAsc, search, page, limit));
+        return mapper.Map<PagedResultModel<VoucherTypeModel>>
+            (voucherTypeRepository.GetAll(state, propertySort, isAsc, search, page, limit));
     }
 
     public VoucherTypeModel GetById(string id)

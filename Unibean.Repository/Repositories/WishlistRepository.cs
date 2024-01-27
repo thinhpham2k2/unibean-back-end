@@ -40,7 +40,8 @@ public class WishlistRepository : IWishlistRepository
     }
 
     public PagedResultModel<Wishlist> GetAll
-        (List<string> studentIds, List<string> brandIds, string propertySort, bool isAsc, string search, int page, int limit)
+        (List<string> studentIds, List<string> brandIds, bool? state,
+        string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<Wishlist> pagedResult = new();
         try
@@ -52,6 +53,7 @@ public class WishlistRepository : IWishlistRepository
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
                 && (studentIds.Count == 0 || studentIds.Contains(t.StudentId))
                 && (brandIds.Count == 0 || brandIds.Contains(t.BrandId))
+                && (state == null || state.Equals(t.State))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 

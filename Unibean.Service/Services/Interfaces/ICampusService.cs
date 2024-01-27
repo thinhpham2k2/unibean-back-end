@@ -10,11 +10,12 @@ public interface ICampusService
     void Delete(string id);
 
     PagedResultModel<CampusModel> GetAll
-        (List<string> universityIds, List<string> areaIds, string propertySort, bool isAsc, string search, int page, int limit);
+        (List<string> universityIds, List<string> areaIds, bool? state, 
+        string propertySort, bool isAsc, string search, int page, int limit);
 
     PagedResultModel<CampusModel> GetAllByCampaign
-        (List<string> campaignIds, List<string> universityIds, List<string> areaIds, 
-        string propertySort, bool isAsc, string search, int page, int limit);
+        (List<string> campaignIds, List<string> universityIds, List<string> areaIds,
+         bool? state, string propertySort, bool isAsc, string search, int page, int limit);
 
     CampusModel GetById(string id);
 

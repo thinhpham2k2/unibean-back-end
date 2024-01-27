@@ -348,10 +348,12 @@ public class StudentService : IStudentService
     }
 
     public PagedResultModel<StudentModel> GetAll
-        (List<string> majorIds, List<string> campusIds, bool? isVerify, string propertySort, bool isAsc, string search, int page, int limit)
+        (List<string> majorIds, List<string> campusIds, bool? state, bool? isVerify, 
+        string propertySort, bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<StudentModel>>
-            (studentRepository.GetAll(majorIds, campusIds, isVerify, propertySort, isAsc, search, page, limit));
+            (studentRepository.GetAll(majorIds, campusIds, state, 
+            isVerify, propertySort, isAsc, search, page, limit));
     }
 
     public StudentExtraModel GetById(string id)
@@ -365,10 +367,11 @@ public class StudentService : IStudentService
     }
 
     public PagedResultModel<StudentChallengeModel> GetChallengeListByStudentId
-        (string id, bool? isCompleted, bool? isClaimed, string propertySort, bool isAsc, string search, int page, int limit)
+        (string id, bool? isCompleted, bool? state, bool? isClaimed, 
+        string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<StudentChallengeModel> result = studentChallengeService.GetAll
-            (new() { id }, new(), propertySort, isAsc, search, page, limit);
+            (new() { id }, new(), state, propertySort, isAsc, search, page, limit);
 
         result.Result = result.Result
             .Where(c => (isCompleted == null || c.IsCompleted.Equals(isCompleted))
@@ -378,7 +381,8 @@ public class StudentService : IStudentService
     }
 
     public PagedResultModel<TransactionModel> GetHistoryTransactionListByStudentId
-        (string id, List<TransactionType> typeIds, string propertySort, bool isAsc, string search, int page, int limit)
+        (string id, List<TransactionType> typeIds, bool? state, 
+        string propertySort, bool isAsc, string search, int page, int limit)
     {
         var query = (typeIds.Contains(TransactionType.ChallengeTransaction) || typeIds.Count == 0 ? 
             challengeTransactionService.GetAll
@@ -397,6 +401,7 @@ public class StudentService : IStudentService
             (studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search) : new())
 
             .AsQueryable()
+            .Where(t => state == null || state.Equals(t.State))
             .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 
         var result = query
@@ -426,11 +431,11 @@ public class StudentService : IStudentService
     }
 
     public PagedResultModel<OrderModel> GetOrderListByStudentId
-        (List<string> stationIds, List<string> stateIds, string id,
+        (List<string> stationIds, List<string> stateIds, string id, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         return orderService.GetAll
-            (stationIds, new() { id }, stateIds, propertySort, isAsc, search, page, limit);
+            (stationIds, new() { id }, stateIds, state, propertySort, isAsc, search, page, limit);
     }
 
     public VoucherItemExtraModel GetVoucherItemByVoucherId(string id, string voucherId)
@@ -445,16 +450,17 @@ public class StudentService : IStudentService
 
     public PagedResultModel<VoucherItemModel> GetVoucherListByStudentId
         (List<string> campaignIds, List<string> voucherIds, List<string> brandIds, List<string> typeIds,
-        string id, string propertySort, bool isAsc, string search, int page, int limit)
+        string id, bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
         return voucherItemService.GetAll
             (campaignIds, voucherIds, brandIds, typeIds, new() { id },
-            propertySort, isAsc, search, page, limit);
+            state, propertySort, isAsc, search, page, limit);
     }
 
     public List<string> GetWishlistsByStudentId(string id)
     {
-        return studentRepository.GetById(id).Wishlists.Select(w => w.BrandId).Distinct().ToList();
+        return studentRepository.GetById(id).Wishlists
+            .Select(w => w.BrandId).Distinct().ToList();
     }
 
     public async Task<StudentExtraModel> Update(string id, UpdateStudentModel update)

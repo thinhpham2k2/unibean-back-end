@@ -20,19 +20,19 @@ public interface ICampaignService
     CampaignExtraModel GetById(string id);
 
     PagedResultModel<CampusModel> GetCampusListByCampaignId
-        (string id, List<string> universityIds, List<string> areaIds,
+        (string id, List<string> universityIds, List<string> areaIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit);
 
     PagedResultModel<MajorModel> GetMajorListByCampaignId
-        (string id, string propertySort, bool isAsc,
-        string search, int page, int limit);
+        (string id, bool? state, string propertySort, 
+        bool isAsc, string search, int page, int limit);
 
     PagedResultModel<StoreModel> GetStoreListByCampaignId
-        (string id, List<string> brandIds, List<string> areaIds,
+        (string id, List<string> brandIds, List<string> areaIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit);
 
     PagedResultModel<VoucherModel> GetVoucherListByCampaignId
-        (string id, List<string> typeIds, string propertySort,
+        (string id, List<string> typeIds, bool? state, string propertySort,
         bool isAsc, string search, int page, int limit);
 
     Task<CampaignExtraModel> Update(string id, UpdateCampaignModel update);
