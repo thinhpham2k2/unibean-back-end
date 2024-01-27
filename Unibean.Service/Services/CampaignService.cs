@@ -12,6 +12,7 @@ using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Majors;
 using Unibean.Service.Models.Stores;
 using Unibean.Service.Models.Vouchers;
+using Unibean.Service.Models.WebHooks;
 using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Utilities.FireBase;
 
@@ -37,13 +38,16 @@ public class CampaignService : ICampaignService
 
     private readonly ICampusService campusService;
 
+    private readonly IDiscordService discordService;
+
     public CampaignService(ICampaignRepository campaignRepository,
         IVoucherRepository voucherRepository,
         IFireBaseService fireBaseService,
         IVoucherService voucherService,
         IStoreService storeService,
         IMajorService majorService,
-        ICampusService campusService)
+        ICampusService campusService,
+        IDiscordService discordService)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -115,6 +119,7 @@ public class CampaignService : ICampaignService
         this.storeService = storeService;
         this.majorService = majorService;
         this.campusService = campusService;
+        this.discordService = discordService;
     }
 
 
@@ -158,7 +163,65 @@ public class CampaignService : ICampaignService
             }
         }
 
-        return mapper.Map<CampaignExtraModel>(campaignRepository.Add(campaign));
+        campaign = campaignRepository.Add(campaign);
+
+        if (campaign != null)
+        {
+            discordService.CreateWebHooks(new DiscordWebhookModel
+            {
+                Embeds = new() {
+                    new() {
+                        Author = new()
+                        {
+                            Name = campaign.Brand.BrandName,
+                            Url = campaign.Brand.Link,
+                            IconUrl = campaign.Brand.Account.Avatar
+                        },
+
+                        Fields = new()
+                        {
+                            new()
+                            {
+                                Name = "📢 Chiến dịch mới",
+                                Value = campaign.CampaignName
+                            },
+                            new()
+                            {
+                                Name = "🆔 chiến dịch mới",
+                                Value = "||" + campaign.Id + "||"
+                            },
+                            new()
+                            {
+                                Name = "💸 Tổng chi phí",
+                                Value = campaign.TotalIncome + " đậu"
+                            },
+                            new()
+                            {
+                                Name = "▶️ Bắt đầu",
+                                Value = ((DateOnly)campaign.StartOn).ToLongDateString()
+                            },
+                            new()
+                            {
+                                Name = "⏸️ Kết thúc",
+                                Value = ((DateOnly)campaign.EndOn).ToLongDateString()
+                            },
+                        },
+
+                        Image = new()
+                        {
+                            Url = campaign.Image
+                        },
+
+                        Footer = new()
+                        {
+                             Text = "Date created - " + ((DateTime)campaign.DateCreated).ToString("R")
+                        },
+                    }
+                },
+            });
+        }
+
+        return mapper.Map<CampaignExtraModel>(campaign);
     }
 
     public void Delete(string id)

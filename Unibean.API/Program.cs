@@ -190,6 +190,9 @@ builder.Services.AddSingleton<IEmailService, EmailService>();
 // Jwt
 builder.Services.AddSingleton<IJwtService, JwtService>();
 
+// Discord
+builder.Services.AddSingleton<IDiscordService, DiscordService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

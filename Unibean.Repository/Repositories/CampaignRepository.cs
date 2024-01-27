@@ -54,6 +54,7 @@ public class CampaignRepository : ICampaignRepository
             // Get brand wallet
             var brand = db.Brands
                     .Where(s => s.Id.Equals(creation.BrandId) && (bool)s.Status)
+                    .Include(b => b.Account)
                     .Include(b => b.Wallets).FirstOrDefault();
             var brandGreenWallet = brand.Wallets.FirstOrDefault();
             var brandRedWallet = brand.Wallets.Skip(1).FirstOrDefault();

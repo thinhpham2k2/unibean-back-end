@@ -7,8 +7,10 @@ using Unibean.Service.Models.Admins;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Parameters;
 using Unibean.Service.Models.Requests;
+using Unibean.Service.Models.WebHooks;
 using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Validations;
+using static Unibean.Service.Models.WebHooks.DiscordWebhookModel;
 
 namespace Unibean.API.Controllers;
 
@@ -23,13 +25,17 @@ public class AdminController : ControllerBase
 
     private readonly IFireBaseService fireBaseService;
 
+    private readonly IDiscordService discordService;
+
     public AdminController(IAdminService adminService,
         IRequestService requestService,
-        IFireBaseService fireBaseService)
+        IFireBaseService fireBaseService,
+        IDiscordService discordService)
     {
         this.adminService = adminService;
         this.requestService = requestService;
         this.fireBaseService = fireBaseService;
+        this.discordService = discordService;
     }
 
     /// <summary>
