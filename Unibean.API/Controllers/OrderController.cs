@@ -40,6 +40,7 @@ public class OrderController : ControllerBase
     [ProducesResponseType(typeof(PagedResultModel<OrderModel>),
         (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult GetOrderList(
         [FromQuery] List<string> stationIds,
         [FromQuery] List<string> studentIds,
@@ -70,6 +71,7 @@ public class OrderController : ControllerBase
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(OrderExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult GetById(string id)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -91,6 +93,7 @@ public class OrderController : ControllerBase
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.Created)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult CreateStateForOrder(string id, [FromBody] CreateOrderStateModel create)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);

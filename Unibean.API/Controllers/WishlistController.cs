@@ -34,6 +34,7 @@ public class WishlistController : ControllerBase
     [ProducesResponseType(typeof(PagedResultModel<WishlistModel>),
         (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<WishlistModel>> GetList(
         [FromQuery] List<string> studentIds,
         [FromQuery] List<string> brandIds,
@@ -61,7 +62,9 @@ public class WishlistController : ControllerBase
     [HttpPost]
     [Authorize(Roles = "Admin, Student")]
     [ProducesResponseType(typeof(WishlistModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult Update([FromBody] UpdateWishlistModel update)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);

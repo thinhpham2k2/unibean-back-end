@@ -18,6 +18,7 @@ public class ValidationController : ControllerBase
     [HttpPost("code")]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult CodeValidation([FromBody] CodeModel code)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -32,6 +33,7 @@ public class ValidationController : ControllerBase
     [HttpPost("email")]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult EmailValidation([FromBody] EmailModel email)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -46,6 +48,7 @@ public class ValidationController : ControllerBase
     [HttpPost("invite-code")]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult InviteCodeValidation([FromBody] InviteCodeModel inviteCode)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -60,6 +63,7 @@ public class ValidationController : ControllerBase
     [HttpPost("phone")]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult PhoneValidation([FromBody] PhoneModel phone)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -74,6 +78,7 @@ public class ValidationController : ControllerBase
     [HttpPost("username")]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult UsernameValidation([FromBody] UserNameModel userName)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
