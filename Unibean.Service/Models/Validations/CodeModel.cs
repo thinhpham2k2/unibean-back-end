@@ -6,8 +6,8 @@ namespace Unibean.Service.Models.Validations;
 public class CodeModel
 {
     [ValidCode]
-    [Required(ErrorMessage = "Student code is required")]
+    [Required(ErrorMessage = "Mã sinh viên là bắt buộc")]
     [StringLength(50, MinimumLength = 3,
-        ErrorMessage = "The length of student code is from 3 to 50 characters")]
+        ErrorMessage = "Độ dài mã sinh viên từ 3 đến 50 ký tự")]
     public string Code { get; set; }
 }

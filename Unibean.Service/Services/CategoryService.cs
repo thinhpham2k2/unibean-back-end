@@ -72,7 +72,7 @@ public class CategoryService : ICategoryService
         }
         else
         {
-            throw new InvalidParameterException("Not found category");
+            throw new InvalidParameterException("Không tìm thấy thể loại sản phẩm");
         }
     }
 
@@ -90,7 +90,7 @@ public class CategoryService : ICategoryService
         {
             return mapper.Map<CategoryModel>(entity);
         }
-        throw new InvalidParameterException("Not found category");
+        throw new InvalidParameterException("Không tìm thấy thể loại sản phẩm");
     }
 
     public async Task<CategoryModel> Update(string id, UpdateCategoryModel update)
@@ -111,6 +111,6 @@ public class CategoryService : ICategoryService
             }
             return mapper.Map<CategoryModel>(categoryRepository.Update(entity));
         }
-        throw new InvalidParameterException("Not found category");
+        throw new InvalidParameterException("Không tìm thấy thể loại sản phẩm");
     }
 }

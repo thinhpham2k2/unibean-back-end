@@ -9,11 +9,11 @@ namespace Unibean.Service.Models.CampaignCampuses;
 public class CreateCampaignCampusModel
 {
     [ValidCampus]
-    [Required(ErrorMessage = "Campus is required")]
+    [Required(ErrorMessage = "Cơ sở là bắt buộc")]
     public string CampusId { get; set; }
 
     public string Description { get; set; }
 
-    [Required(ErrorMessage = "State is required")]
+    [Required(ErrorMessage = "Trạng thái là bắt buộc")]
     public bool? State { get; set; }
 }

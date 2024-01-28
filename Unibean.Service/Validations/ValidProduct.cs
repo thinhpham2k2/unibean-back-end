@@ -6,13 +6,14 @@ namespace Unibean.Service.Validations;
 
 public class ValidProduct : ValidationAttribute
 {
-    private new const string ErrorMessage = "Invalid product"; 
+    private new const string ErrorMessage = "Sản phẩm không hợp lệ"; 
     
     private readonly IProductRepository productRepo = new ProductRepository(); 
     
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
-        if (productRepo.GetById(value.ToString()) != null)
+        var pro = productRepo.GetById(value.ToString());
+        if (pro != null && (bool)pro.State)
         {
             return ValidationResult.Success;
         }

@@ -6,13 +6,14 @@ namespace Unibean.Service.Validations;
 
 public class ValidUniversity : ValidationAttribute
 {
-    private new const string ErrorMessage = "Invalid university"; 
+    private new const string ErrorMessage = "Trường đại học không hợp lệ"; 
     
     private readonly IUniversityRepository universityRepo = new UniversityRepository(); 
     
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
-        if (universityRepo.GetById(value.ToString()) != null)
+        var uni = universityRepo.GetById(value.ToString());
+        if (uni != null && (bool)uni.State)
         {
             return ValidationResult.Success;
         }

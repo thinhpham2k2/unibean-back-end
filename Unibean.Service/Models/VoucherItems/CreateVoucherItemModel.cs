@@ -9,13 +9,13 @@ namespace Unibean.Service.Models.VoucherItems;
 public class CreateVoucherItemModel
 {
     [ValidVoucher]
-    [Required(ErrorMessage = "Voucher is required")]
+    [Required(ErrorMessage = "Khuyến mãi là bắt buộc")]
     public string VoucherId { get; set; }
 
-    [Required(ErrorMessage = "Quantity is required")]
-    [Range(minimum: 1, maximum: int.MaxValue, ErrorMessage = "Quantity must be greater than 0")]
+    [Required(ErrorMessage = "Số lượng là bắt buộc")]
+    [Range(minimum: 1, maximum: int.MaxValue, ErrorMessage = "Số lượng phải lớn hơn 0")]
     public int? Quantity { get; set; }
 
-    [Required(ErrorMessage = "State is required")]
+    [Required(ErrorMessage = "Trạng thái là bắt buộc")]
     public bool? State { get; set; }
 }

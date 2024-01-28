@@ -33,6 +33,7 @@ public class InvitationService : IInvitationService
 
     public InvitationModel Add(CreateInvitationModel creation)
     {
-        return mapper.Map<InvitationModel>(invitationRepository.Add(mapper.Map<Invitation>(creation)));
+        return mapper.Map<InvitationModel>
+            (invitationRepository.Add(mapper.Map<Invitation>(creation)));
     }
 }

@@ -6,18 +6,18 @@ namespace Unibean.Service.Models.Requests;
 public class CreateRequestModel
 {
     [ValidBrand]
-    [Required(ErrorMessage = "Brand is required")]
+    [Required(ErrorMessage = "Thương hiệu là bắt buộc")]
     public string BrandId { get; set; }
 
-    [Required(ErrorMessage = "Amount is required")]
-    [Range(minimum: 1, maximum: (double)decimal.MaxValue, ErrorMessage = "Amount must be a positive number")]
+    [Required(ErrorMessage = "Chi phí là bắt buộc")]
+    [Range(minimum: 1, maximum: (double)decimal.MaxValue, ErrorMessage = "Chi phí phải là số dương")]
     public decimal? Amount { get; set; }
 
-    [Required(ErrorMessage = "Description is required")]
+    [Required(ErrorMessage = "Mô tả là bắt buộc")]
     [StringLength(int.MaxValue, MinimumLength = 3,
-            ErrorMessage = "The length of description must be 3 characters or more")]
+            ErrorMessage = "Độ dài mô tả phải từ 3 ký tự trở lên")]
     public string Description { get; set; }
 
-    [Required(ErrorMessage = "State is required")]
+    [Required(ErrorMessage = "Trạng thái là bắt buộc")]
     public bool? State { get; set; }
 }

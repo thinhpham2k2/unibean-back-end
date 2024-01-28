@@ -7,8 +7,10 @@ namespace Unibean.Service.Validations;
 
 public class ValidUserName : ValidationAttribute
 {
-    private new const string ErrorMessage = "Username must contain lowercase " +
-                    "letters or numbers, and be between 5 and 50 characters in length";
+    private new const string ErrorMessage = "Tên đăng nhập phải chứa chữ cái " +
+        "hoặc số viết thường và có độ dài từ 5 đến 50 ký tự";
+
+    private const string ErrorMessage1 = "Tên đăng nhập đã được sử dụng";
 
     private readonly IAccountRepository accountRepository = new AccountRepository();
 
@@ -21,7 +23,7 @@ public class ValidUserName : ValidationAttribute
             {
                 return ValidationResult.Success;
             }
-            return new ValidationResult("User name is already in use");
+            return new ValidationResult(ErrorMessage1);
         }
         return new ValidationResult(ErrorMessage);
     }

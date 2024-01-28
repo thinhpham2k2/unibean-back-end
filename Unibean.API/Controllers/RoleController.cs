@@ -48,7 +48,7 @@ public class RoleController : ControllerBase
                 paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }
-        return BadRequest("Invalid property of role");
+        return BadRequest("Thuộc tính vai trò không hợp lệ");
     }
 
     /// <summary>
@@ -90,7 +90,7 @@ public class RoleController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, role);
             }
-            return NotFound("Create fail");
+            return NotFound("Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
@@ -116,7 +116,7 @@ public class RoleController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, role);
             }
-            return NotFound("Update fail");
+            return NotFound("Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {

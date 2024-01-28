@@ -63,7 +63,7 @@ public class CampaignController : ControllerBase
                 paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }
-        return BadRequest("Invalid property of campaign");
+        return BadRequest("Thuộc tính của chiến dịch không hợp lệ");
     }
 
     /// <summary>
@@ -105,7 +105,7 @@ public class CampaignController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, campaign);
             }
-            return NotFound("Create fail");
+            return NotFound("Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
@@ -131,7 +131,7 @@ public class CampaignController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, campaign);
             }
-            return NotFound("Update fail");
+            return NotFound("Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {
@@ -157,7 +157,7 @@ public class CampaignController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, campaign);
             }
-            return NotFound("Update state fail");
+            return NotFound("Cập nhật trạng thái không thành công");
         }
         catch (InvalidParameterException e)
         {
@@ -199,7 +199,7 @@ public class CampaignController : ControllerBase
     [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(PagedResultModel<CampusModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public ActionResult<PagedResultModel<CampusModel>> GetCampusListByStoreId([ValidCampaign] string id,
+    public ActionResult<PagedResultModel<CampusModel>> GetCampusListByStoreId(string id,
         [FromQuery] List<string> universityIds,
         [FromQuery] List<string> areaIds,
         [FromQuery] bool? state,
@@ -219,7 +219,7 @@ public class CampaignController : ControllerBase
                     paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
-            return BadRequest("Invalid property of campus");
+            return BadRequest("Thuộc tính không hợp lệ của cơ sở");
         }
         catch (InvalidParameterException e)
         {
@@ -237,7 +237,7 @@ public class CampaignController : ControllerBase
     [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(PagedResultModel<MajorModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public ActionResult<PagedResultModel<MajorModel>> GetMajorListByStoreId([ValidCampaign] string id,
+    public ActionResult<PagedResultModel<MajorModel>> GetMajorListByStoreId(string id,
         [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
@@ -255,7 +255,7 @@ public class CampaignController : ControllerBase
                     paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
-            return BadRequest("Invalid property of major");
+            return BadRequest("Thuộc tính không hợp lệ của chuyên ngành");
         }
         catch (InvalidParameterException e)
         {
@@ -275,7 +275,7 @@ public class CampaignController : ControllerBase
     [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(PagedResultModel<StoreModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public ActionResult<PagedResultModel<StoreModel>> GetStoreListByStoreId([ValidCampaign] string id,
+    public ActionResult<PagedResultModel<StoreModel>> GetStoreListByStoreId(string id,
         [FromQuery] List<string> brandIds,
         [FromQuery] List<string> areaIds,
         [FromQuery] bool? state,
@@ -295,7 +295,7 @@ public class CampaignController : ControllerBase
                     paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
-            return BadRequest("Invalid property of store");
+            return BadRequest("Thuộc tính không hợp lệ của cửa hàng");
         }
         catch (InvalidParameterException e)
         {
@@ -314,7 +314,7 @@ public class CampaignController : ControllerBase
     [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(PagedResultModel<VoucherModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public ActionResult<PagedResultModel<VoucherModel>> GetVoucherListByStoreId([ValidCampaign] string id,
+    public ActionResult<PagedResultModel<VoucherModel>> GetVoucherListByStoreId(string id,
         [FromQuery] List<string> typeIds,
         [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
@@ -333,7 +333,7 @@ public class CampaignController : ControllerBase
                     paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
-            return BadRequest("Invalid property of voucher");
+            return BadRequest("Thuộc tính không hợp lệ của khuyến mãi");
         }
         catch (InvalidParameterException e)
         {

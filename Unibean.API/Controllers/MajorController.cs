@@ -48,7 +48,7 @@ public class MajorController : ControllerBase
                 paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }
-        return BadRequest("Invalid property of major");
+        return BadRequest("Thuộc tính không hợp lệ của chuyên ngành");
     }
 
     /// <summary>
@@ -90,7 +90,7 @@ public class MajorController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, major);
             }
-            return NotFound("Create fail");
+            return NotFound("Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
@@ -116,7 +116,7 @@ public class MajorController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, major);
             }
-            return NotFound("Update fail");
+            return NotFound("Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {

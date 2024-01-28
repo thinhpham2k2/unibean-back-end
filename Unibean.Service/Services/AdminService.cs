@@ -110,7 +110,7 @@ public class AdminService : IAdminService
         }
         else
         {
-            throw new InvalidParameterException("Not found admin");
+            throw new InvalidParameterException("Không tìm thấy quản trị viên");
         }
     }
 
@@ -128,7 +128,7 @@ public class AdminService : IAdminService
         {
             return mapper.Map<AdminModel>(entity);
         }
-        throw new InvalidParameterException("Not found admin");
+        throw new InvalidParameterException("Không tìm thấy quản trị viên");
     }
 
     public async Task<AdminModel> Update(string id, UpdateAdminModel update)
@@ -152,6 +152,6 @@ public class AdminService : IAdminService
 
             return mapper.Map<AdminModel>(adminRepository.Update(entity));
         }
-        throw new InvalidParameterException("Not found admin");
+        throw new InvalidParameterException("Không tìm thấy quản trị viên");
     }
 }

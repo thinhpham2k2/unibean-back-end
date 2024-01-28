@@ -52,11 +52,12 @@ public class OrderStateService : IOrderStateService
                         });
                     });
 
-                    return "Created successfully";
+                    return "Đã tạo thành công";
                 }
                 else
                 {
-                    throw new InvalidParameterException("Invalid state because the order has already gone through this state");
+                    throw new InvalidParameterException
+                        ("Trạng thái không hợp lệ vì đơn hàng đã trải qua trạng thái này");
                 }
             }
             else
@@ -77,9 +78,9 @@ public class OrderStateService : IOrderStateService
                     });
                 });
 
-                return "Created successfully";
+                return "Đã tạo thành công";
             }
         }
-        throw new InvalidParameterException("Invalid order");
+        throw new InvalidParameterException("Đơn hàng không hợp lệ");
     }
 }

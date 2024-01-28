@@ -6,8 +6,8 @@ namespace Unibean.Service.Models.Validations;
 public class UserNameModel
 {
     [ValidUserName]
-    [Required(ErrorMessage = "User name is required")]
+    [Required(ErrorMessage = "Tên đăng nhập là bắt buộc")]
     [StringLength(50, MinimumLength = 5,
-        ErrorMessage = "The length of user name is from 5 to 50 characters")]
+        ErrorMessage = "Độ dài tên đăng nhập từ 5 đến 50 ký tự")]
     public string UserName { get; set; }
 }

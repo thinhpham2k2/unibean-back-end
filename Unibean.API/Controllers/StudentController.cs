@@ -64,7 +64,7 @@ public class StudentController : ControllerBase
                 paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }
-        return BadRequest("Invalid property of student");
+        return BadRequest("Thuộc tính không hợp lệ của sinh viên");
     }
 
     /// <summary>
@@ -106,7 +106,7 @@ public class StudentController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, student);
             }
-            return NotFound("Create fail");
+            return NotFound("Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
@@ -132,7 +132,7 @@ public class StudentController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, student);
             }
-            return NotFound("Update fail");
+            return NotFound("Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {
@@ -174,7 +174,7 @@ public class StudentController : ControllerBase
     [Authorize(Roles = "Admin, Student")]
     [ProducesResponseType(typeof(PagedResultModel<StudentChallengeModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public ActionResult<PagedResultModel<StudentChallengeModel>> GetChallengeListByStudentId([ValidStudent] string id,
+    public ActionResult<PagedResultModel<StudentChallengeModel>> GetChallengeListByStudentId(string id,
         [FromQuery] bool? state,
         [FromQuery] bool? isCompleted,
         [FromQuery] bool? isClaimed,
@@ -194,7 +194,7 @@ public class StudentController : ControllerBase
                     paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
-            return BadRequest("Invalid property of challenge");
+            return BadRequest("Thuộc tính của thách thức không hợp lệ");
         }
         catch (InvalidParameterException e)
         {
@@ -207,13 +207,13 @@ public class StudentController : ControllerBase
     /// </summary>
     /// <param name="id">Student id.</param>
     /// <param name="typeIds">Filter by transaction type Id --- ActivityTransaction = 1, OrderTransaction = 2, ChallengeTransaction = 3, BonusTransaction = 4</param>
-    /// <param name="state">Filter by campaign state.</param>
+    /// <param name="state">Filter by history transaction state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/histories")]
     [Authorize(Roles = "Admin, Student")]
     [ProducesResponseType(typeof(PagedResultModel<TransactionModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public ActionResult<PagedResultModel<TransactionModel>> GetHistoryTransactionListByStudentId([ValidStudent] string id,
+    public ActionResult<PagedResultModel<TransactionModel>> GetHistoryTransactionListByStudentId(string id,
         [FromQuery] List<TransactionType> typeIds,
         [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
@@ -232,7 +232,7 @@ public class StudentController : ControllerBase
                     paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
-            return BadRequest("Invalid property of transaction");
+            return BadRequest("Thuộc tính của giao dịch không hợp lệ");
         }
         catch (InvalidParameterException e)
         {
@@ -252,7 +252,7 @@ public class StudentController : ControllerBase
     [Authorize(Roles = "Admin, Student")]
     [ProducesResponseType(typeof(PagedResultModel<OrderModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public ActionResult<PagedResultModel<OrderModel>> GetOrderListByStudentId([ValidStudent] string id,
+    public ActionResult<PagedResultModel<OrderModel>> GetOrderListByStudentId(string id,
         [FromQuery] List<string> stationIds,
         [FromQuery] List<string> stateIds,
         [FromQuery] bool? state,
@@ -272,7 +272,7 @@ public class StudentController : ControllerBase
                         ? "OrderStates.Max(s => s.StateId)" : propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
-            return BadRequest("Invalid property of order");
+            return BadRequest("Thuộc tính của đơn đặt hàng không hợp lệ");
         }
         catch (InvalidParameterException e)
         {
@@ -295,7 +295,8 @@ public class StudentController : ControllerBase
 
         try
         {
-            return StatusCode(StatusCodes.Status201Created, orderService.Add(id, create));
+            return StatusCode(StatusCodes.Status201Created, 
+                orderService.Add(id, create));
         }
         catch (InvalidParameterException e)
         {
@@ -312,7 +313,7 @@ public class StudentController : ControllerBase
     [Authorize(Roles = "Admin, Student")]
     [ProducesResponseType(typeof(OrderExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public IActionResult GetOrderById([ValidStudent] string id, string orderId)
+    public IActionResult GetOrderById(string id, string orderId)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
@@ -340,7 +341,7 @@ public class StudentController : ControllerBase
     [Authorize(Roles = "Admin, Student")]
     [ProducesResponseType(typeof(PagedResultModel<VoucherItemModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public ActionResult<PagedResultModel<OrderModel>> GetVoucherListByStudentId([ValidStudent] string id,
+    public ActionResult<PagedResultModel<OrderModel>> GetVoucherListByStudentId(string id,
         [FromQuery] List<string> campaignIds,
         [FromQuery] List<string> voucherIds,
         [FromQuery] List<string> brandIds,
@@ -363,7 +364,7 @@ public class StudentController : ControllerBase
                     paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
-            return BadRequest("Invalid property of voucher");
+            return BadRequest("Thuộc tính không hợp lệ của khuyến mãi");
         }
         catch (InvalidParameterException e)
         {
@@ -380,7 +381,7 @@ public class StudentController : ControllerBase
     [Authorize(Roles = "Admin, Student")]
     [ProducesResponseType(typeof(VoucherItemExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public IActionResult GetVoucherById([ValidStudent] string id, string voucherId)
+    public IActionResult GetVoucherById(string id, string voucherId)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
@@ -402,7 +403,7 @@ public class StudentController : ControllerBase
     [Authorize(Roles = "Admin, Student")]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public ActionResult<List<string>> GetWishlistsByStudentId([ValidStudent] string id)
+    public ActionResult<List<string>> GetWishlistsByStudentId(string id)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 

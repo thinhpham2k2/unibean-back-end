@@ -6,13 +6,14 @@ namespace Unibean.Service.Validations;
 
 public class ValidCampaign : ValidationAttribute
 {
-    private new const string ErrorMessage = "Invalid campaign"; 
+    private new const string ErrorMessage = "Chiến dịch không hợp lệ"; 
     
     private readonly ICampaignRepository campaignRepo = new CampaignRepository(); 
     
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
-        if (campaignRepo.GetById(value.ToString()) != null)
+        var cam = campaignRepo.GetById(value.ToString());
+        if (cam != null && (bool)cam.State)
         {
             return ValidationResult.Success;
         }

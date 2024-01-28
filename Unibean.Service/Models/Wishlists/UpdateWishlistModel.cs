@@ -6,15 +6,15 @@ namespace Unibean.Service.Models.Wishlists;
 public class UpdateWishlistModel
 {
     [ValidStudent]
-    [Required(ErrorMessage = "Student is required")]
+    [Required(ErrorMessage = "Sinh viên là bắt buộc")]
     public string StudentId { get; set; }
 
     [ValidBrand]
-    [Required(ErrorMessage = "Brand is required")]
+    [Required(ErrorMessage = "Thương hiệu là bắt buộc")]
     public string BrandId { get; set; }
 
     public string Description { get; set; }
 
-    [Required(ErrorMessage = "State is required")]
+    [Required(ErrorMessage = "Trạng thái là bắt buộc")]
     public bool? State { get; set; }
 }

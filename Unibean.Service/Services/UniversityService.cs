@@ -72,7 +72,7 @@ public class UniversityService : IUniversityService
         }
         else
         {
-            throw new InvalidParameterException("Not found university");
+            throw new InvalidParameterException("Không tìm thấy trường đại học");
         }
     }
 
@@ -90,7 +90,7 @@ public class UniversityService : IUniversityService
         {
             return mapper.Map<UniversityModel>(entity);
         }
-        throw new InvalidParameterException("Not found university");
+        throw new InvalidParameterException("Không tìm thấy trường đại học");
     }
 
     public async Task<UniversityModel> Update(string id, UpdateUniversityModel update)
@@ -111,6 +111,6 @@ public class UniversityService : IUniversityService
             }
             return mapper.Map<UniversityModel>(universityRepository.Update(entity));
         }
-        throw new InvalidParameterException("Not found university");
+        throw new InvalidParameterException("Không tìm thấy trường đại học");
     }
 }

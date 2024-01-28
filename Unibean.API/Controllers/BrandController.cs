@@ -59,7 +59,7 @@ public class BrandController : ControllerBase
                 paging.Page, paging.Limit, jwtService.GetJwtRequest(jwtToken.Split(" ")[1]));
             return Ok(result);
         }
-        return BadRequest("Invalid property of brand");
+        return BadRequest("Thuộc tính không hợp lệ của thương hiệu");
     }
 
     /// <summary>
@@ -103,7 +103,7 @@ public class BrandController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, brand);
             }
-            return NotFound("Create fail");
+            return NotFound("Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
@@ -129,7 +129,7 @@ public class BrandController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, brand);
             }
-            return NotFound("Update fail");
+            return NotFound("Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {
@@ -173,7 +173,7 @@ public class BrandController : ControllerBase
     [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType(typeof(PagedResultModel<CampaignModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public ActionResult<PagedResultModel<CampaignModel>> GetCampaignListByBrandId([ValidBrand] string id,
+    public ActionResult<PagedResultModel<CampaignModel>> GetCampaignListByBrandId(string id,
         [FromQuery] List<string> typeIds,
         [FromQuery] List<string> storeIds,
         [FromQuery] List<string> majorIds,
@@ -195,7 +195,7 @@ public class BrandController : ControllerBase
                     paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
-            return BadRequest("Invalid property of campaign");
+            return BadRequest("Thuộc tính của chiến dịch không hợp lệ");
         }
         catch (InvalidParameterException e)
         {
@@ -214,7 +214,7 @@ public class BrandController : ControllerBase
     [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType(typeof(PagedResultModel<TransactionModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public ActionResult<PagedResultModel<TransactionModel>> GetHistoryTransactionByStudentId([ValidBrand] string id,
+    public ActionResult<PagedResultModel<TransactionModel>> GetHistoryTransactionByStudentId(string id,
         [FromQuery] List<string> walletTypeIds,
         [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
@@ -233,7 +233,7 @@ public class BrandController : ControllerBase
                     paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
-            return BadRequest("Invalid property of transaction");
+            return BadRequest("Thuộc tính không hợp lệ của lịch sử giao dịch");
         }
         catch (InvalidParameterException e)
         {
@@ -252,7 +252,7 @@ public class BrandController : ControllerBase
     [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType(typeof(PagedResultModel<StoreModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public ActionResult<PagedResultModel<StoreModel>> GetStoreListByBrandId([ValidBrand] string id,
+    public ActionResult<PagedResultModel<StoreModel>> GetStoreListByBrandId(string id,
         [FromQuery] List<string> areaIds,
         [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
@@ -271,7 +271,7 @@ public class BrandController : ControllerBase
                     paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
-            return BadRequest("Invalid property of store");
+            return BadRequest("Thuộc tính không hợp lệ của cửa hàng");
         }
         catch (InvalidParameterException e)
         {
@@ -290,7 +290,7 @@ public class BrandController : ControllerBase
     [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType(typeof(PagedResultModel<VoucherModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public ActionResult<PagedResultModel<VoucherModel>> GetVoucherListByBrandId([ValidBrand] string id,
+    public ActionResult<PagedResultModel<VoucherModel>> GetVoucherListByBrandId(string id,
         [FromQuery] List<string> typeIds,
         [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
@@ -309,7 +309,7 @@ public class BrandController : ControllerBase
                     paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
-            return BadRequest("Invalid property of voucher");
+            return BadRequest("Thuộc tính không hợp lệ của khuyến mãi");
         }
         catch (InvalidParameterException e)
         {

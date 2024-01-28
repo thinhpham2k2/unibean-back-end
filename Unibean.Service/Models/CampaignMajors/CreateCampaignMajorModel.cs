@@ -9,11 +9,11 @@ namespace Unibean.Service.Models.CampaignMajors;
 public class CreateCampaignMajorModel
 {
     [ValidMajor]
-    [Required(ErrorMessage = "Major is required")]
+    [Required(ErrorMessage = "Chuyên ngành là bắt buộc")]
     public string MajorId { get; set; }
 
     public string Description { get; set; }
 
-    [Required(ErrorMessage = "State is required")]
+    [Required(ErrorMessage = "Trạng thái là bắt buộc")]
     public bool? State { get; set; }
 }

@@ -72,7 +72,7 @@ public class VoucherTypeService : IVoucherTypeService
         }
         else
         {
-            throw new InvalidParameterException("Not found voucher type");
+            throw new InvalidParameterException("Không tìm thấy loại khuyến mãi");
         }
     }
 
@@ -90,7 +90,7 @@ public class VoucherTypeService : IVoucherTypeService
         {
             return mapper.Map<VoucherTypeModel>(entity);
         }
-        throw new InvalidParameterException("Not found voucher type");
+        throw new InvalidParameterException("Không tìm thấy loại khuyến mãi");
     }
 
     public async Task<VoucherTypeModel> Update(string id, UpdateVoucherTypeModel update)
@@ -111,6 +111,6 @@ public class VoucherTypeService : IVoucherTypeService
             }
             return mapper.Map<VoucherTypeModel>(voucherTypeRepository.Update(entity));
         }
-        throw new InvalidParameterException("Not found voucher type");
+        throw new InvalidParameterException("Không tìm thấy loại khuyến mãi");
     }
 }

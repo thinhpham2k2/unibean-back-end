@@ -6,13 +6,14 @@ namespace Unibean.Service.Validations;
 
 public class ValidAdmin : ValidationAttribute
 {
-    private new const string ErrorMessage = "Invalid admin";
+    private new const string ErrorMessage = "Quản trị viên không hợp lệ";
 
     private readonly IAdminRepository adminRepo = new AdminRepository();
 
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
-        if (adminRepo.GetById(value.ToString()) != null)
+        var admin = adminRepo.GetById(value.ToString());
+        if (admin != null && (bool)admin.State)
         {
             return ValidationResult.Success;
         }

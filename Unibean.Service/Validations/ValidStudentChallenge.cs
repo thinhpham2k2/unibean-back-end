@@ -6,13 +6,14 @@ namespace Unibean.Service.Validations;
 
 public class ValidStudentChallenge : ValidationAttribute
 {
-    private new const string ErrorMessage = "Invalid student challenge"; 
+    private new const string ErrorMessage = "Thử thách không hợp lệ"; 
     
     private readonly IStudentChallengeRepository studentChallengeRepo = new StudentChallengeRepository(); 
     
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
-        if (studentChallengeRepo.GetById(value.ToString()) != null)
+        var chall = studentChallengeRepo.GetById(value.ToString());
+        if (chall != null && (bool)chall.State)
         {
             return ValidationResult.Success;
         }

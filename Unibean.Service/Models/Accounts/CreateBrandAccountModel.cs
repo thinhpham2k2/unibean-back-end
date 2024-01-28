@@ -6,44 +6,43 @@ namespace Unibean.Service.Models.Accounts;
 
 public class CreateBrandAccountModel
 {
-
-    [Required(ErrorMessage = "Brand's name is required")]
+    [Required(ErrorMessage = "Tên thương hiệu là bắt buộc")]
     [StringLength(255, MinimumLength = 3,
-            ErrorMessage = "The length of brand's name is from 3 to 255 characters")]
+            ErrorMessage = "Độ dài tên thương hiệu từ 3 đến 255 ký tự")]
     public string BrandName { get; set; }
 
     public string Acronym { get; set; }
 
     [ValidUserName]
-    [Required(ErrorMessage = "User name is required")]
+    [Required(ErrorMessage = "Tên đăng nhập là bắt buộc")]
     [StringLength(50, MinimumLength = 5,
-        ErrorMessage = "The length of user name is from 5 to 50 characters")]
+        ErrorMessage = "Độ dài tên đăng nhập từ 5 đến 50 ký tự")]
     public string UserName { get; set; }
 
-    [Required(ErrorMessage = "Password is required")]
+    [Required(ErrorMessage = "Mật khẩu là bắt buộc")]
     [StringLength(255, MinimumLength = 8,
-        ErrorMessage = "The length of password is from 8 to 255 characters")]
+        ErrorMessage = "Độ dài mật khẩu từ 8 đến 255 ký tự")]
     public string Password { get; set; }
 
-    [Required(ErrorMessage = "Password confirm is required")]
-    [Compare(nameof(Password), ErrorMessage = "Passwords do not match")]
+    [Required(ErrorMessage = "Cần phải xác nhận mật khẩu")]
+    [Compare(nameof(Password), ErrorMessage = "Xác nhận mật khẩu không phù hợp")]
     public string PasswordConfirmed { get; set; }
 
-    [Phone]
     [ValidPhone]
-    [Required(ErrorMessage = "Phone is required")]
+    [Phone(ErrorMessage = "Số điện thoại không hợp lệ")]
+    [Required(ErrorMessage = "Số điện thoại là bắt buộc")]
     public string Phone { get; set; }
 
-    [Required(ErrorMessage = "Hash code is required")]
+    [Required(ErrorMessage = "Mã băm là bắt buộc")]
     public string HashCode { get; set; }
 
     [ValidVerificationCode(nameof(HashCode))]
-    [Required(ErrorMessage = "Verification code is required")]
+    [Required(ErrorMessage = "Yêu cầu mã xác nhận")]
     public string VerificationCode { get; set; }
 
     [ValidEmail]
-    [EmailAddress]
-    [Required(ErrorMessage = "Email is required")]
+    [EmailAddress(ErrorMessage = "Email không hợp lệ")]
+    [Required(ErrorMessage = "Email là bắt buộc")]
     public string Email { get; set; }
 
     public string Address { get; set; }
@@ -60,6 +59,6 @@ public class CreateBrandAccountModel
 
     public string Description { get; set; }
 
-    [Required(ErrorMessage = "State is required")]
+    [Required(ErrorMessage = "Trạng thái là bắt buộc")]
     public bool? State { get; set; }
 }

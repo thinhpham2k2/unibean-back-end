@@ -7,7 +7,7 @@ public class ValidVerificationCode : ValidationAttribute
 {
     public string OtherProperty { get; }
 
-    private new const string ErrorMessage = "Invalid verification code";
+    private new const string ErrorMessage = "Mã xác minh không hợp lệ";
 
     public ValidVerificationCode(string otherProperty)
     {
@@ -18,7 +18,7 @@ public class ValidVerificationCode : ValidationAttribute
     {
         var property = validationContext.ObjectType.GetProperty(OtherProperty);
         if (property == null)
-            return new ValidationResult(OtherProperty + " is an invalid property of the model");
+            return new ValidationResult(OtherProperty + " là một thuộc tính không hợp lệ");
 
         string verifyCode = value.ToString();
         string hashCode = property.GetValue(validationContext.ObjectInstance).ToString();

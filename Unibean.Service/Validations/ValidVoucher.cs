@@ -6,13 +6,14 @@ namespace Unibean.Service.Validations;
 
 public class ValidVoucher : ValidationAttribute
 {
-    private new const string ErrorMessage = "Invalid voucher";
+    private new const string ErrorMessage = "Khuyến mãi không hợp lệ";
 
     private readonly IVoucherRepository voucherRepo = new VoucherRepository();
 
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
-        if (voucherRepo.GetById(value.ToString()) != null)
+        var vou = voucherRepo.GetById(value.ToString());
+        if (vou != null && (bool)vou.State)
         {
             return ValidationResult.Success;
         }

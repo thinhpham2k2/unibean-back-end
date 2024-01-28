@@ -115,7 +115,7 @@ public class ProductService : IProductService
         }
         else
         {
-            throw new InvalidParameterException("Not found product");
+            throw new InvalidParameterException("Không tìm thấy sản phẩm");
         }
     }
 
@@ -134,7 +134,7 @@ public class ProductService : IProductService
         {
             return mapper.Map<ProductExtraModel>(entity);
         }
-        throw new InvalidParameterException("Not found product");
+        throw new InvalidParameterException("Không tìm thấy sản phẩm");
     }
 
     public async Task<ProductExtraModel> Update(string id, UpdateProductModel update)
@@ -184,6 +184,6 @@ public class ProductService : IProductService
 
             return mapper.Map<ProductExtraModel>(productRepository.Update(entity));
         }
-        throw new InvalidParameterException("Not found product");
+        throw new InvalidParameterException("Không tìm thấy sản phẩm");
     }
 }

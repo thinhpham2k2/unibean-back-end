@@ -72,7 +72,7 @@ public class CampaignTypeService : ICampaignTypeService
         }
         else
         {
-            throw new InvalidParameterException("Not found campaign type");
+            throw new InvalidParameterException("Không tìm thấy loại chiến dịch");
         }
     }
 
@@ -90,7 +90,7 @@ public class CampaignTypeService : ICampaignTypeService
         {
             return mapper.Map<CampaignTypeModel>(entity);
         }
-        throw new InvalidParameterException("Not found campaign type");
+        throw new InvalidParameterException("Không tìm thấy loại chiến dịch");
     }
 
     public async Task<CampaignTypeModel> Update(string id, UpdateCampaignTypeModel update)
@@ -111,6 +111,6 @@ public class CampaignTypeService : ICampaignTypeService
             }
             return mapper.Map<CampaignTypeModel>(campaignTypeRepository.Update(entity));
         }
-        throw new InvalidParameterException("Not found campaign type");
+        throw new InvalidParameterException("Không tìm thấy loại chiến dịch");
     }
 }

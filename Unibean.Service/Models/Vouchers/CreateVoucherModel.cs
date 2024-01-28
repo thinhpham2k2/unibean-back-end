@@ -7,38 +7,38 @@ namespace Unibean.Service.Models.Vouchers;
 public class CreateVoucherModel
 {
     [ValidBrand]
-    [Required(ErrorMessage = "Brand is required")]
+    [Required(ErrorMessage = "Thương hiệu là bắt buộc")]
     public string BrandId { get; set; }
 
     [ValidVoucherType]
-    [Required(ErrorMessage = "Voucher type is required")]
+    [Required(ErrorMessage = "Loại khuyến mãi là bắt buộc")]
     public string TypeId { get; set; }
 
-    [Required(ErrorMessage = "Voucher name is required")]
+    [Required(ErrorMessage = "Tên khuyến mãi là bắt buộc")]
     [StringLength(255, MinimumLength = 3,
-            ErrorMessage = "The length of voucher name is from 3 to 255 characters")]
+            ErrorMessage = "Độ dài tên khuyến mãi từ 3 đến 255 ký tự")]
     public string VoucherName { get; set; }
 
-    [Required(ErrorMessage = "Price is required")]
-    [Range(minimum: 1, maximum: double.MaxValue, ErrorMessage = "Price must be a positive number")]
+    [Required(ErrorMessage = "Chi phí là bắt buộc")]
+    [Range(minimum: 1, maximum: double.MaxValue, ErrorMessage = "Chi phí phải là số dương")]
     public decimal? Price { get; set; }
 
-    [Required(ErrorMessage = "Rate is required")]
-    [Range(minimum: 1, maximum: double.MaxValue, ErrorMessage = "Rate must be a positive number")]
+    [Required(ErrorMessage = "Tỷ lệ là bắt buộc")]
+    [Range(minimum: 1, maximum: double.MaxValue, ErrorMessage = "Tỷ lệ phải là số dương")]
     public decimal? Rate { get; set; }
 
-    [Required(ErrorMessage = "Condition is required")]
+    [Required(ErrorMessage = "Điều kiện là bắt buộc")]
     [StringLength(int.MaxValue, MinimumLength = 3,
-            ErrorMessage = "The length of condition must be 3 characters or more")]
+            ErrorMessage = "Độ dài của điều kiện phải từ 3 ký tự trở lên")]
     public string Condition { get; set; }
 
     public IFormFile Image { get; set; }
 
-    [Required(ErrorMessage = "Description is required")]
+    [Required(ErrorMessage = "Mô tả là bắt buộc")]
     [StringLength(int.MaxValue, MinimumLength = 3,
-            ErrorMessage = "The length of description must be 3 characters or more")]
+            ErrorMessage = "Độ dài mô tả phải từ 3 ký tự trở lên")]
     public string Description { get; set; }
 
-    [Required(ErrorMessage = "State is required")]
+    [Required(ErrorMessage = "Trạng thái là bắt buộc")]
     public bool? State { get; set; }
 }

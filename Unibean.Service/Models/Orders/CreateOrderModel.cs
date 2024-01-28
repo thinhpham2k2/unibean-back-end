@@ -7,20 +7,20 @@ namespace Unibean.Service.Models.Orders;
 public class CreateOrderModel
 {
     [ValidStation]
-    [Required(ErrorMessage = "Station is required")]
+    [Required(ErrorMessage = "Trạm là bắt buộc")]
     public string StationId { get; set; }
 
     [ValidAmount]
-    [Required(ErrorMessage = "Amount is required")]
-    [Range(minimum: 1, maximum: (double)decimal.MaxValue, ErrorMessage = "Amount must be a positive number")]
+    [Required(ErrorMessage = "Chi phí là bắt buộc")]
+    [Range(minimum: 1, maximum: (double)decimal.MaxValue, ErrorMessage = "Chi phí phải là số dương")]
     public decimal? Amount { get; set; }
 
     public string Description { get; set; }
 
-    [Required(ErrorMessage = "State is required")]
+    [Required(ErrorMessage = "Trạng thái là bắt buộc")]
     public bool? State { get; set; }
 
     [ValidDetail]
-    [Required(ErrorMessage = "Order's details is required")]
+    [Required(ErrorMessage = "Thông tin chi tiết của đơn hàng là bắt buộc")]
     public ICollection<CreateDetailModel> OrderDetails { get; set; }
 }

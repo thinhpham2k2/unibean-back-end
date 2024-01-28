@@ -18,7 +18,7 @@ public class DiscordService : IDiscordService
         {
             if (string.IsNullOrEmpty(webhookModel.Content) && webhookModel.Embeds.Count == 0)
             {
-                throw new InvalidParameterException("Set content or add at least one EmbedObject");
+                throw new InvalidParameterException("Đặt nội dung hoặc thêm ít nhất một EmbedObject");
             }
 
             JObject json = new()

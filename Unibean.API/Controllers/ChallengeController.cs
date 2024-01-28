@@ -50,7 +50,7 @@ public class ChallengeController : ControllerBase
                 paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }
-        return BadRequest("Invalid property of challenge");
+        return BadRequest("Thuộc tính thách thức không hợp lệ");
     }
 
     /// <summary>
@@ -92,7 +92,7 @@ public class ChallengeController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, challenge);
             }
-            return NotFound("Create fail");
+            return NotFound("Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
@@ -118,7 +118,7 @@ public class ChallengeController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, challenge);
             }
-            return NotFound("Update fail");
+            return NotFound("Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {

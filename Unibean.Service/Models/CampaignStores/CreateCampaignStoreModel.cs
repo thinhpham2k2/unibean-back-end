@@ -9,11 +9,11 @@ namespace Unibean.Service.Models.CampaignStores;
 public class CreateCampaignStoreModel
 {
     [ValidStore]
-    [Required(ErrorMessage = "Store is required")]
+    [Required(ErrorMessage = "Cửa hàng là bắt buộc")]
     public string StoreId { get; set; }
 
     public string Description { get; set; }
 
-    [Required(ErrorMessage = "State is required")]
+    [Required(ErrorMessage = "Trạng thái là bắt buộc")]
     public bool? State { get; set; }
 }

@@ -6,7 +6,7 @@ namespace Unibean.Service.Validations;
 
 public class ValidEmail : ValidationAttribute
 {
-    private new const string ErrorMessage = "Email is already in use";
+    private new const string ErrorMessage = "Email đã được sử dụng";
 
     private readonly IAccountRepository accountRepository = new AccountRepository();
 

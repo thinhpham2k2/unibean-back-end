@@ -5,8 +5,8 @@ namespace Unibean.Service.Models.Validations;
 
 public class PhoneModel
 {
-    [Phone]
     [ValidPhone]
-    [Required(ErrorMessage = "Phone is required")]
+    [Phone(ErrorMessage = "Số điện thoại không hợp lệ")]
+    [Required(ErrorMessage = "Số điện thoại là bắt buộc")]
     public string Phone { get; set; }
 }

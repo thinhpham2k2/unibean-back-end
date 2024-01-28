@@ -6,12 +6,14 @@ namespace Unibean.Service.Validations;
 
 public class ValidAccount : ValidationAttribute
 {
-    private new const string ErrorMessage = "Invalid account";
+    private new const string ErrorMessage = "Tài khoản không hợp lệ";
+
     private readonly IAccountRepository accountRepo = new AccountRepository();
 
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
-        if (accountRepo.GetById(value.ToString()) != null)
+        var acc = accountRepo.GetById(value.ToString());
+        if (acc != null && (bool)acc.State)
         {
             return ValidationResult.Success;
         }

@@ -238,12 +238,12 @@ public class CampaignService : ICampaignService
             }
             else
             {
-                throw new InvalidParameterException("An ongoing campaign cannot be deleted");
+                throw new InvalidParameterException("Không thể xóa chiến dịch đang diễn ra");
             }
         }
         else
         {
-            throw new InvalidParameterException("Not found campaign");
+            throw new InvalidParameterException("Không tìm thấy Chiến dịch");
         }
     }
 
@@ -263,40 +263,63 @@ public class CampaignService : ICampaignService
         {
             return mapper.Map<CampaignExtraModel>(entity);
         }
-        throw new InvalidParameterException("Not found campaign");
+        throw new InvalidParameterException("Không tìm thấy Chiến dịch");
     }
 
     public PagedResultModel<CampusModel> GetCampusListByCampaignId
         (string id, List<string> universityIds, List<string> areaIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
-        return campusService.GetAllByCampaign
-            (new() { id }, universityIds, areaIds, state, 
-            propertySort, isAsc, search, page, limit);
+        Campaign entity = campaignRepository.GetById(id);
+        if (entity != null)
+        {
+            return campusService.GetAllByCampaign
+                (new() { id }, universityIds, areaIds, state,
+                propertySort, isAsc, search, page, limit);
+        }
+        throw new InvalidParameterException("Không tìm thấy Chiến dịch");
     }
 
     public PagedResultModel<MajorModel> GetMajorListByCampaignId
         (string id, bool? state, string propertySort, 
         bool isAsc, string search, int page, int limit)
     {
-        return majorService.GetAllByCampaign
-            (new() { id }, state, propertySort, isAsc, search, page, limit);
+        Campaign entity = campaignRepository.GetById(id);
+        if (entity != null)
+        {
+            return majorService.GetAllByCampaign
+                (new() { id }, state, propertySort, 
+                isAsc, search, page, limit);
+        }
+        throw new InvalidParameterException("Không tìm thấy Chiến dịch");
     }
 
     public PagedResultModel<StoreModel> GetStoreListByCampaignId
         (string id, List<string> brandIds, List<string> areaIds, bool? state, 
         string propertySort, bool isAsc, string search, int page, int limit)
     {
-        return storeService.GetAllByCampaign
-            (new() { id }, brandIds, areaIds, state, propertySort, isAsc, search, page, limit);
+        Campaign entity = campaignRepository.GetById(id);
+        if (entity != null)
+        {
+            return storeService.GetAllByCampaign
+                (new() { id }, brandIds, areaIds, state, 
+                propertySort, isAsc, search, page, limit);
+        }
+        throw new InvalidParameterException("Không tìm thấy Chiến dịch");
     }
 
     public PagedResultModel<VoucherModel> GetVoucherListByCampaignId
         (string id, List<string> typeIds, bool? state, 
         string propertySort, bool isAsc, string search, int page, int limit)
     {
-        return voucherService.GetAllByCampaign
-            (new() { id }, typeIds, state, propertySort, isAsc, search, page, limit);
+        Campaign entity = campaignRepository.GetById(id);
+        if (entity != null)
+        {
+            return voucherService.GetAllByCampaign
+                (new() { id }, typeIds, state, propertySort,
+                isAsc, search, page, limit);
+        }
+        throw new InvalidParameterException("Không tìm thấy Chiến dịch");
     }
 
     public async Task<CampaignExtraModel> Update(string id, UpdateCampaignModel update)
@@ -317,7 +340,7 @@ public class CampaignService : ICampaignService
             }
             return mapper.Map<CampaignExtraModel>(campaignRepository.Update(entity));
         }
-        throw new InvalidParameterException("Not found campaign");
+        throw new InvalidParameterException("Không tìm thấy Chiến dịch");
     }
 
     public CampaignExtraModel UpdateState(string id)
@@ -348,8 +371,8 @@ public class CampaignService : ICampaignService
 
                 return mapper.Map<CampaignExtraModel>(campaignRepository.Update(entity));
             }
-            throw new InvalidParameterException("This campaign has been approved");
+            throw new InvalidParameterException("Chiến dịch này đã được phê duyệt");
         }
-        throw new InvalidParameterException("Not found campaign");
+        throw new InvalidParameterException("Không tìm thấy Chiến dịch");
     }
 }

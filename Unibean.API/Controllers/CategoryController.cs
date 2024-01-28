@@ -48,7 +48,7 @@ public class CategoryController : ControllerBase
                 paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }
-        return BadRequest("Invalid property of category");
+        return BadRequest("Thuộc tính không hợp lệ của thể loại sản phẩm");
     }
 
     /// <summary>
@@ -90,7 +90,7 @@ public class CategoryController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, category);
             }
-            return NotFound("Create fail");
+            return NotFound("Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
@@ -116,7 +116,7 @@ public class CategoryController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, category);
             }
-            return NotFound("Update fail");
+            return NotFound("Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {

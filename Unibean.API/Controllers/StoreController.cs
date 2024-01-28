@@ -61,7 +61,7 @@ public class StoreController : ControllerBase
                 paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }
-        return BadRequest("Invalid property of store");
+        return BadRequest("Thuộc tính không hợp lệ của cửa hàng");
     }
 
     /// <summary>
@@ -103,7 +103,7 @@ public class StoreController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, store);
             }
-            return NotFound("Create fail");
+            return NotFound("Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
@@ -129,7 +129,7 @@ public class StoreController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, store);
             }
-            return NotFound("Update fail");
+            return NotFound("Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {
@@ -177,7 +177,7 @@ public class StoreController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, bonus);
             }
-            return NotFound("Create fail");
+            return NotFound("Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
@@ -190,13 +190,13 @@ public class StoreController : ControllerBase
     /// </summary>
     /// <param name="id">Store id.</param>
     /// <param name="typeIds">Filter by transaction type Id --- ActivityTransaction = 1, BonusTransaction = 2</param>
-    /// <param name="state">Filter by history state.</param>
+    /// <param name="state">Filter by history transaction state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/histories")]
     [Authorize(Roles = "Admin, Brand, Store")]
     [ProducesResponseType(typeof(PagedResultModel<StoreTransactionModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public ActionResult<PagedResultModel<VoucherModel>> GetHistoryTransactionByStoreId([ValidStore] string id,
+    public ActionResult<PagedResultModel<VoucherModel>> GetHistoryTransactionByStoreId(string id,
         [FromQuery] List<StoreTransactionType> typeIds,
         [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
@@ -215,7 +215,7 @@ public class StoreController : ControllerBase
                     paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
-            return BadRequest("Invalid property of history transaction");
+            return BadRequest("Thuộc tính không hợp lệ của lịch sử giao dịch");
         }
         catch (InvalidParameterException e)
         {
@@ -235,7 +235,7 @@ public class StoreController : ControllerBase
     [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(PagedResultModel<VoucherModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public ActionResult<PagedResultModel<VoucherModel>> GetVoucherListByStoreId([ValidStore] string id,
+    public ActionResult<PagedResultModel<VoucherModel>> GetVoucherListByStoreId(string id,
         [FromQuery] List<string> campaignIds,
         [FromQuery] List<string> typeIds,
         [FromQuery] bool? state,
@@ -256,7 +256,7 @@ public class StoreController : ControllerBase
                     paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
-            return BadRequest("Invalid property of voucher");
+            return BadRequest("Thuộc tính không hợp lệ của khuyến mãi");
         }
         catch (InvalidParameterException e)
         {

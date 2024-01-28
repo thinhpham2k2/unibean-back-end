@@ -48,7 +48,7 @@ public class StateController : ControllerBase
                 paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }
-        return BadRequest("Invalid property of state");
+        return BadRequest("Thuộc tính không hợp lệ của trạng thái");
     }
 
     /// <summary>
@@ -90,7 +90,7 @@ public class StateController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, state);
             }
-            return NotFound("Create fail");
+            return NotFound("Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
@@ -116,7 +116,7 @@ public class StateController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, state);
             }
-            return NotFound("Update fail");
+            return NotFound("Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {

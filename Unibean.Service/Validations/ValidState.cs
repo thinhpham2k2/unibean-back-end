@@ -6,13 +6,14 @@ namespace Unibean.Service.Validations;
 
 public class ValidState : ValidationAttribute
 {
-    private new const string ErrorMessage = "Invalid state"; 
+    private new const string ErrorMessage = "Trạng thái đơn hàng không hợp lệ"; 
     
     private readonly IStateRepository stateRepo = new StateRepository(); 
     
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
-        if (stateRepo.GetById(value.ToString()) != null)
+        var state = stateRepo.GetById(value.ToString());
+        if (state != null && (bool)state.States)
         {
             return ValidationResult.Success;
         }

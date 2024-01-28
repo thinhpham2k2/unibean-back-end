@@ -75,7 +75,7 @@ public class DistrictService : IDistrictService
         }
         else
         {
-            throw new InvalidParameterException("Not found district");
+            throw new InvalidParameterException("Không tìm thấy quận");
         }
     }
 
@@ -94,7 +94,7 @@ public class DistrictService : IDistrictService
         {
             return mapper.Map<DistrictModel>(entity);
         }
-        throw new InvalidParameterException("Not found district");
+        throw new InvalidParameterException("Không tìm thấy quận");
     }
 
     public async Task<DistrictModel> Update(string id, UpdateDistrictModel update)
@@ -115,6 +115,6 @@ public class DistrictService : IDistrictService
             }
             return mapper.Map<DistrictModel>(districtRepository.Update(entity));
         }
-        throw new InvalidParameterException("Not found district");
+        throw new InvalidParameterException("Không tìm thấy quận");
     }
 }

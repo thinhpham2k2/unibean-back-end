@@ -52,7 +52,7 @@ public class WishlistController : ControllerBase
                 paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }
-        return BadRequest("Invalid property of wishlist");
+        return BadRequest("Thuộc tính không hợp lệ của danh sách mong muốn");
     }
 
     /// <summary>
@@ -73,7 +73,7 @@ public class WishlistController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, wishlist);
             }
-            return NotFound("Update fail");
+            return NotFound("Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {

@@ -78,9 +78,9 @@ public class BonusService : IBonusService
                 bonus.BrandId = store.BrandId;
                 return mapper.Map<BonusExtraModel>(bonusRepository.Add(bonus));
             }
-            throw new InvalidParameterException("Brand's green bean wallet balance is not enough");
+            throw new InvalidParameterException("Số dư ví đậu xanh của thương hiệu là không đủ");
         }
-        throw new InvalidParameterException("Not found store");
+        throw new InvalidParameterException("Không tìm thấy cửa hàng");
     }
 
     public PagedResultModel<BonusModel> GetAll
@@ -98,7 +98,7 @@ public class BonusService : IBonusService
         {
             return mapper.Map<BonusExtraModel>(entity);
         }
-        throw new InvalidParameterException("Not found bonus");
+        throw new InvalidParameterException("Không tìm thấy tiền thưởng");
     }
 
     public List<StoreTransactionModel> GetList

@@ -150,12 +150,12 @@ public class StoreService : IStoreService
         }
         else
         {
-            throw new InvalidParameterException("Not found store");
+            throw new InvalidParameterException("Không tìm thấy cửa hàng");
         }
     }
 
     public PagedResultModel<StoreModel> GetAll
-        (List<string> brandIds, List<string> areaIds, bool? state, 
+        (List<string> brandIds, List<string> areaIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<StoreModel>>
@@ -178,45 +178,55 @@ public class StoreService : IStoreService
         {
             return mapper.Map<StoreExtraModel>(entity);
         }
-        throw new InvalidParameterException("Not found store");
+        throw new InvalidParameterException("Không tìm thấy cửa hàng");
     }
 
     public PagedResultModel<StoreTransactionModel> GetHistoryTransactionListByStoreId
         (string id, List<StoreTransactionType> typeIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
-        var query = (typeIds.Contains(StoreTransactionType.ActivityTransaction) || typeIds.Count == 0 ?
-            activityService.GetList
-            (new() { id }, new(), new(), search) : new())
-            .Concat(typeIds.Contains(StoreTransactionType.BonusTransaction) || typeIds.Count == 0 ?
-            bonusService.GetList
-            (new(), new() { id }, new(), search) : new())
-            .AsQueryable()
-            .Where(t => state == null || state.Equals(t.State))
-            .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
-
-        var result = query
-            .Skip((page - 1) * limit)
-            .Take(limit)
-            .ToList();
-
-        return new()
+        Store entity = storeRepository.GetById(id);
+        if (entity != null)
         {
-            CurrentPage = page,
-            PageSize = limit,
-            PageCount = (int)Math.Ceiling((double)query.Count() / limit),
-            Result = result,
-            RowCount = result.Count,
-            TotalCount = query.Count()
-        };
+            var query = (typeIds.Contains(StoreTransactionType.ActivityTransaction) || typeIds.Count == 0 ?
+                activityService.GetList
+                (new() { id }, new(), new(), search) : new())
+                .Concat(typeIds.Contains(StoreTransactionType.BonusTransaction) || typeIds.Count == 0 ?
+                bonusService.GetList
+                (new(), new() { id }, new(), search) : new())
+                .AsQueryable()
+                .Where(t => state == null || state.Equals(t.State))
+                .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
+
+            var result = query
+                .Skip((page - 1) * limit)
+                .Take(limit)
+                .ToList();
+
+            return new()
+            {
+                CurrentPage = page,
+                PageSize = limit,
+                PageCount = (int)Math.Ceiling((double)query.Count() / limit),
+                Result = result,
+                RowCount = result.Count,
+                TotalCount = query.Count()
+            };
+        }
+        throw new InvalidParameterException("Không tìm thấy cửa hàng");
     }
 
     public PagedResultModel<VoucherModel> GetVoucherListByStoreId
         (string id, List<string> campaignIds, List<string> typeIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
-        return voucherService.GetAllByStore
-            (new() { id }, campaignIds, typeIds, state, propertySort, isAsc, search, page, limit);
+        Store entity = storeRepository.GetById(id);
+        if (entity != null)
+        {
+            return voucherService.GetAllByStore
+                (new() { id }, campaignIds, typeIds, state, propertySort, isAsc, search, page, limit);
+        }
+        throw new InvalidParameterException("Không tìm thấy cửa hàng");
     }
 
     public async Task<StoreExtraModel> Update(string id, UpdateStoreModel update)
@@ -240,6 +250,6 @@ public class StoreService : IStoreService
 
             return mapper.Map<StoreExtraModel>(storeRepository.Update(entity));
         }
-        throw new InvalidParameterException("Not found store");
+        throw new InvalidParameterException("Không tìm thấy cửa hàng");
     }
 }

@@ -6,13 +6,14 @@ namespace Unibean.Service.Validations;
 
 public class ValidCity : ValidationAttribute
 {
-    private new const string ErrorMessage = "Invalid city"; 
+    private new const string ErrorMessage = "Thành phố không hợp lệ"; 
     
     private readonly ICityRepository cityRepo = new CityRepository(); 
     
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
-        if (cityRepo.GetById(value.ToString()) != null)
+        var city = cityRepo.GetById(value.ToString());
+        if (city != null && (bool)city.State)
         {
             return ValidationResult.Success;
         }

@@ -6,7 +6,7 @@ namespace Unibean.Service.Models.OrderStates;
 public class CreateOrderStateModel
 {
     [ValidState]
-    [Required(ErrorMessage = "State is required")]
+    [Required(ErrorMessage = "Trạng thái là bắt buộc")]
     public string StateId { get; set; }
 
     public string Description { get; set; }

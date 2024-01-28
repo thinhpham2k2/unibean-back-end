@@ -7,9 +7,9 @@ namespace Unibean.Service.Validations;
 
 public class ValidConstraint : ValidationAttribute
 {
-    private new const string ErrorMessage = "Invalid campaign campuses";
+    private new const string ErrorMessage = "Danh sách cơ sở không hợp lệ";
 
-    private const string ErrorMessage1 = "Campus listings must be in the same area as store listings";
+    private const string ErrorMessage1 = "Danh sách cơ sở phải ở cùng khu vực với danh sách cửa hàng";
 
     private readonly IStoreRepository storeRepository = new StoreRepository();
 

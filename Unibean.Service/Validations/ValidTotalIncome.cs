@@ -7,9 +7,9 @@ namespace Unibean.Service.Validations;
 
 public class ValidTotalIncome : ValidationAttribute
 {
-    private new const string ErrorMessage = "Invalid cost";
+    private new const string ErrorMessage = "Chi phí không hợp lệ";
 
-    private const string ErrorMessage1 = "The balance of the brand's green and red wallets is insufficient";
+    private const string ErrorMessage1 = "Số dư ví xanh và đỏ của thương hiệu là không đủ";
 
     private readonly IBrandRepository brandRepo = new BrandRepository();
 
@@ -27,11 +27,11 @@ public class ValidTotalIncome : ValidationAttribute
                         =>
                     {
                         var voucher = voucherRepo.GetById(v.VoucherId);
-                        return voucher != null ? v.Quantity * voucher.Price * voucher.Rate : 0;
+                        return voucher != null && (bool)voucher.State ? v.Quantity * voucher.Price * voucher.Rate : 0;
                     }).Sum()))
                     {
                         var brand = brandRepo.GetById(create.BrandId);
-                        if (brand != null)
+                        if (brand != null && (bool)brand.State)
                         {
                             if (amount <= brand.Wallets.Select(w => w.Balance).Sum())
                             {

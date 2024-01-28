@@ -6,13 +6,14 @@ namespace Unibean.Service.Validations;
 
 public class ValidStation : ValidationAttribute
 {
-    private new const string ErrorMessage = "Invalid station"; 
+    private new const string ErrorMessage = "Trạm không hợp lệ"; 
     
     private readonly IStationRepository stationRepo = new StationRepository(); 
     
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
-        if (stationRepo.GetById(value.ToString()) != null)
+        var station = stationRepo.GetById(value.ToString());
+        if (station != null && (bool)station.State)
         {
             return ValidationResult.Success;
         }

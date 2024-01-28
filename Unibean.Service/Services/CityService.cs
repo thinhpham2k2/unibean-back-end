@@ -72,7 +72,7 @@ public class CityService : ICityService
         }
         else
         {
-            throw new InvalidParameterException("Not found city");
+            throw new InvalidParameterException("Không tìm thấy thành phố");
         }
     }
 
@@ -90,7 +90,7 @@ public class CityService : ICityService
         {
             return mapper.Map<CityModel>(entity);
         }
-        throw new InvalidParameterException("Not found city");
+        throw new InvalidParameterException("Không tìm thấy thành phố");
     }
 
     public async Task<CityModel> Update(string id, UpdateCityModel update)
@@ -111,6 +111,6 @@ public class CityService : ICityService
             }
             return mapper.Map<CityModel>(cityRepository.Update(entity));
         }
-        throw new InvalidParameterException("Not found city");
+        throw new InvalidParameterException("Không tìm thấy thành phố");
     }
 }

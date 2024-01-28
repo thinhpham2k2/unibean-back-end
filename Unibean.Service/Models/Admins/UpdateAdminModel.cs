@@ -5,16 +5,15 @@ namespace Unibean.Service.Models.Admins;
 
 public class UpdateAdminModel
 {
-
-    [Required(ErrorMessage = "Full name is required")]
+    [Required(ErrorMessage = "Tên đầy đủ là bắt buộc")]
     [StringLength(255, MinimumLength = 3,
-            ErrorMessage = "The length of full name is from 3 to 255 characters")]
+            ErrorMessage = "Độ dài của họ tên từ 3 đến 255 ký tự")]
     public string FullName { get; set; }
 
     public IFormFile Avatar { get; set; }
 
     public string Description { get; set; }
 
-    [Required(ErrorMessage = "State is required")]
+    [Required(ErrorMessage = "Trạng thái là bắt buộc")]
     public bool? State { get; set; }
 }

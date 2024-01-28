@@ -7,12 +7,12 @@ namespace Unibean.Service.Models.Areas;
 public class CreateAreaModel
 {
     [ValidDistrict]
-    [Required(ErrorMessage = "District is required")]
+    [Required(ErrorMessage = "Quận là bắt buộc")]
     public string DistrictId { get; set; }
 
-    [Required(ErrorMessage = "Area's name is required")]
+    [Required(ErrorMessage = "Tên khu vực là bắt buộc")]
     [StringLength(255, MinimumLength = 3,
-            ErrorMessage = "The length of area's name is from 3 to 255 characters")]
+            ErrorMessage = "Độ dài tên khu vực từ 3 đến 255 ký tự")]
     public string AreaName { get; set; }
 
     public IFormFile Image { get; set; }
@@ -21,6 +21,6 @@ public class CreateAreaModel
 
     public string Description { get; set; }
 
-    [Required(ErrorMessage = "State is required")]
+    [Required(ErrorMessage = "Trạng thái là bắt buộc")]
     public bool? State { get; set; }
 }

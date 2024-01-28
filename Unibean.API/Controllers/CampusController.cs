@@ -52,7 +52,7 @@ public class CampusController : ControllerBase
                 paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }
-        return BadRequest("Invalid property of campus");
+        return BadRequest("Thuộc tính không hợp lệ của cở sở");
     }
 
     /// <summary>
@@ -94,7 +94,7 @@ public class CampusController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, campus);
             }
-            return NotFound("Create fail");
+            return NotFound("Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
@@ -120,7 +120,7 @@ public class CampusController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, campus);
             }
-            return NotFound("Update fail");
+            return NotFound("Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {
