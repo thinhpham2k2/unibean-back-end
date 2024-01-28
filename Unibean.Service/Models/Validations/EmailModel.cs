@@ -6,7 +6,7 @@ namespace Unibean.Service.Models.Validations;
 public class EmailModel
 {
     [ValidEmail]
-    [EmailAddress]
-    [Required(ErrorMessage = "Email is required")]
+    [EmailAddress(ErrorMessage = "Email không hợp lệ")]
+    [Required(ErrorMessage = "Email là bắt buộc")]
     public string Email { get; set; }
 }

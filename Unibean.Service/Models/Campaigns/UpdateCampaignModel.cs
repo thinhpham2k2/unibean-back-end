@@ -7,25 +7,25 @@ namespace Unibean.Service.Models.Campaigns;
 public class UpdateCampaignModel
 {
     [ValidCampaignType]
-    [Required(ErrorMessage = "Campaign type is required")]
+    [Required(ErrorMessage = "Loại chiến dịch là bắt buộc")]
     public string TypeId { get; set; }
 
-    [Required(ErrorMessage = "Campaign's name is required")]
+    [Required(ErrorMessage = "Tên chiến dịch là bắt buộc")]
     [StringLength(255, MinimumLength = 3,
-            ErrorMessage = "The length of campaign's name is from 3 to 255 characters")]
+            ErrorMessage = "Độ dài tên chiến dịch từ 3 đến 255 ký tự")]
     public string CampaignName { get; set; }
 
     public IFormFile Image { get; set; }
 
-    [Required(ErrorMessage = "Condition is required")]
+    [Required(ErrorMessage = "Điều kiện là bắt buộc")]
     [StringLength(int.MaxValue, MinimumLength = 3,
-            ErrorMessage = "The length of condition must be 3 characters or more")]
+            ErrorMessage = "Độ dài của điều kiện phải từ 3 ký tự trở lên")]
     public string Condition { get; set; }
 
     public string Link { get; set; }
 
-    [Required(ErrorMessage = "Description is required")]
+    [Required(ErrorMessage = "Mô tả là bắt buộc")]
     [StringLength(int.MaxValue, MinimumLength = 3,
-            ErrorMessage = "The length of description must be 3 characters or more")]
+            ErrorMessage = "Độ dài mô tả phải từ 3 ký tự trở lên")]
     public string Description { get; set; }
 }

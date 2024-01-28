@@ -5,9 +5,9 @@ namespace Unibean.Service.Models.Brands;
 
 public class UpdateBrandModel
 {
-    [Required(ErrorMessage = "Brand's name is required")]
+    [Required(ErrorMessage = "Tên thương hiệu là bắt buộc")]
     [StringLength(255, MinimumLength = 3,
-            ErrorMessage = "The length of brand's name is from 3 to 255 characters")]
+            ErrorMessage = "Độ dài tên thương hiệu từ 3 đến 255 ký tự")]
     public string BrandName { get; set; }
 
     public string Acronym { get; set; }
@@ -26,6 +26,6 @@ public class UpdateBrandModel
 
     public string Description { get; set; }
 
-    [Required(ErrorMessage = "State is required")]
+    [Required(ErrorMessage = "Trạng thái là bắt buộc")]
     public bool? State { get; set; }
 }

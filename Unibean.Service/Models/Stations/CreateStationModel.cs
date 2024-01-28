@@ -5,12 +5,12 @@ namespace Unibean.Service.Models.Stations;
 
 public class CreateStationModel
 {
-    [Required(ErrorMessage = "Station's name is required")]
+    [Required(ErrorMessage = "Tên trạm là bắt buộc")]
     [StringLength(255, MinimumLength = 3,
-            ErrorMessage = "The length of station's name is from 3 to 255 characters")]
-    public string StationName { get; set; } 
+            ErrorMessage = "Độ dài tên trạm từ 3 đến 255 ký tự")]
+    public string StationName { get; set; }
 
-    [Required(ErrorMessage = "Address is required")]
+    [Required(ErrorMessage = "Địa chỉ là bắt buộc")]
     public string Address { get; set; }
 
     public IFormFile Image { get; set; }
@@ -19,14 +19,14 @@ public class CreateStationModel
 
     public TimeOnly? ClosingHours { get; set; }
 
-    [Phone]
+    [Phone(ErrorMessage = "Số điện thoại không hợp lệ")]
     public string Phone { get; set; }
 
-    [EmailAddress]
+    [EmailAddress(ErrorMessage = "Email không hợp lệ")]
     public string Email { get; set; }
 
     public string Description { get; set; }
 
-    [Required(ErrorMessage = "State is required")]
+    [Required(ErrorMessage = "Trạng thái là bắt buộc")]
     public bool? State { get; set; }
 }

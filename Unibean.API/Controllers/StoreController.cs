@@ -190,7 +190,7 @@ public class StoreController : ControllerBase
     /// </summary>
     /// <param name="id">Store id.</param>
     /// <param name="typeIds">Filter by transaction type Id --- ActivityTransaction = 1, BonusTransaction = 2</param>
-    /// <param name="state">Filter by history state.</param>
+    /// <param name="state">Filter by history transaction state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/histories")]
     [Authorize(Roles = "Admin, Brand, Store")]

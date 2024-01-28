@@ -7,30 +7,30 @@ namespace Unibean.Service.Models.Products;
 public class CreateProductModel
 {
     [ValidCategory]
-    [Required(ErrorMessage = "Category is required")]
+    [Required(ErrorMessage = "Thể loại sản phẩm là bắt buộc")]
     public string CategoryId { get; set; }
 
-    [Required(ErrorMessage = "Product's name is required")]
+    [Required(ErrorMessage = "Tên sản phẩm là bắt buộc")]
     [StringLength(255, MinimumLength = 3,
-            ErrorMessage = "The length of product's name is from 3 to 255 characters")]
+            ErrorMessage = "Độ dài tên sản phẩm từ 3 đến 255 ký tự")]
     public string ProductName { get; set; }
 
     public List<IFormFile> ProductImages { get; set; }
 
-    [Required(ErrorMessage = "Price is required")]
-    [Range(minimum: 1, maximum: double.MaxValue, ErrorMessage = "Price must be a positive number")]
+    [Required(ErrorMessage = "Giá cả là bắt buộc")]
+    [Range(minimum: 1, maximum: double.MaxValue, ErrorMessage = "Giá cả phải là số dương")]
     public decimal? Price { get; set; }
 
-    [Required(ErrorMessage = "Weight is required")]
-    [Range(minimum: 0, maximum: double.MaxValue, ErrorMessage = "Weight must be a positive number")]
+    [Required(ErrorMessage = "Trọng lượng là bắt buộc")]
+    [Range(minimum: 0, maximum: double.MaxValue, ErrorMessage = "Trọng lượng phải là số dương")]
     public decimal? Weight { get; set; }
 
-    [Required(ErrorMessage = "Quantity is required")]
-    [Range(minimum: 0, maximum: int.MaxValue, ErrorMessage = "Quantity must be greater than or equal to 0")]
+    [Required(ErrorMessage = "Số lượng là bắt buộc")]
+    [Range(minimum: 0, maximum: int.MaxValue, ErrorMessage = "Số lượng phải lớn hơn hoặc bằng 0")]
     public int? Quantity { get; set; }
 
     public string Description { get; set; }
 
-    [Required(ErrorMessage = "State is required")]
+    [Required(ErrorMessage = "Trạng thái là bắt buộc")]
     public bool? State { get; set; }
 }

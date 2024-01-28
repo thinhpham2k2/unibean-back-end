@@ -5,15 +5,15 @@ namespace Unibean.Service.Models.Universities;
 
 public class UpdateUniversityModel
 {
-    [Required(ErrorMessage = "University's name is required")]
+    [Required(ErrorMessage = "Tên trường đại học là bắt buộc")]
     [StringLength(255, MinimumLength = 3,
-            ErrorMessage = "The length of university's name is from 3 to 255 characters")]
+            ErrorMessage = "Độ dài tên trường đại học từ 3 đến 255 ký tự")]
     public string UniversityName { get; set; }
 
-    [Phone]
+    [Phone(ErrorMessage = "Số điện thoại không hợp lệ")]
     public string Phone { get; set; }
 
-    [EmailAddress]
+    [EmailAddress(ErrorMessage = "Email không hợp lệ")]
     public string Email { get; set; }
 
     public string Link { get; set; }
@@ -22,6 +22,6 @@ public class UpdateUniversityModel
 
     public string Description { get; set; }
 
-    [Required(ErrorMessage = "State is required")]
+    [Required(ErrorMessage = "Trạng thái là bắt buộc")]
     public bool? State { get; set; }
 }

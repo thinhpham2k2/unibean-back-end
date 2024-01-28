@@ -9,17 +9,17 @@ public class CreateGoogleAccountModel
     public string RoleId { get; set; }
 
     [ValidEmail]
-    [EmailAddress]
-    [Required(ErrorMessage = "Email is required")]
+    [EmailAddress(ErrorMessage = "Email không hợp lệ")]
+    [Required(ErrorMessage = "Email là bắt buộc")]
     [StringLength(320, MinimumLength = 3,
-            ErrorMessage = "Email is invalid")]
+            ErrorMessage = "Email không hợp lệ")]
     public string Email { get; set; }
 
-    [Required(ErrorMessage = "IsVerify is required")]
+    [Required(ErrorMessage = "IsVerify là bắt buộc")]
     public bool? IsVerify { get; set; }
 
     public string Description { get; set; }
 
-    [Required(ErrorMessage = "State is required")]
+    [Required(ErrorMessage = "Trạng thái là bắt buộc")]
     public bool? State { get; set; }
 }

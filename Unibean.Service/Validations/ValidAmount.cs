@@ -9,7 +9,7 @@ namespace Unibean.Service.Validations;
 
 public class ValidAmount : ValidationAttribute
 {
-    private new const string ErrorMessage = "Số tiền không hợp lệ";
+    private new const string ErrorMessage = "Chi phí không hợp lệ";
 
     private readonly IProductRepository productRepo = new ProductRepository();
 

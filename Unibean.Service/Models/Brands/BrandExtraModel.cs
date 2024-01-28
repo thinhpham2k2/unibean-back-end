@@ -1,8 +1,4 @@
-﻿    using Unibean.Service.Models.Campaigns;
-using Unibean.Service.Models.Stores;
-using Unibean.Service.Models.Vouchers;
-
-namespace Unibean.Service.Models.Brands;
+﻿namespace Unibean.Service.Models.Brands;
 
 public class BrandExtraModel
 {

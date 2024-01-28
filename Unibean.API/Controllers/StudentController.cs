@@ -207,7 +207,7 @@ public class StudentController : ControllerBase
     /// </summary>
     /// <param name="id">Student id.</param>
     /// <param name="typeIds">Filter by transaction type Id --- ActivityTransaction = 1, OrderTransaction = 2, ChallengeTransaction = 3, BonusTransaction = 4</param>
-    /// <param name="state">Filter by campaign state.</param>
+    /// <param name="state">Filter by history transaction state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/histories")]
     [Authorize(Roles = "Admin, Student")]

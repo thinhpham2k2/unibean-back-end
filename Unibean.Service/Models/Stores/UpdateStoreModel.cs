@@ -7,17 +7,17 @@ namespace Unibean.Service.Models.Stores;
 public class UpdateStoreModel
 {
     [ValidArea]
-    [Required(ErrorMessage = "Area is required")]
+    [Required(ErrorMessage = "Khu vực là bắt buộc")]
     public string AreaId { get; set; }
 
-    [Required(ErrorMessage = "Store name is required")]
+    [Required(ErrorMessage = "Tên cửa hàng là bắt buộc")]
     [StringLength(255, MinimumLength = 3,
-            ErrorMessage = "The length of store name is from 3 to 255 characters")]
+            ErrorMessage = "Độ dài tên cửa hàng từ 3 đến 255 ký tự")]
     public string StoreName { get; set; }
 
-    [Required(ErrorMessage = "Address is required")]
+    [Required(ErrorMessage = "Địa chỉ là bắt buộc")]
     [StringLength(255, MinimumLength = 3,
-            ErrorMessage = "The length of address is from 3 to 255 characters")]
+            ErrorMessage = "Độ dài của địa chỉ từ 3 đến 255 ký tự")]
     public string Address { get; set; }
 
     public IFormFile Avatar { get; set; }
@@ -28,6 +28,6 @@ public class UpdateStoreModel
 
     public string Description { get; set; }
 
-    [Required(ErrorMessage = "State is required")]
+    [Required(ErrorMessage = "Trạng thái là bắt buộc")]
     public bool? State { get; set; }
 }
