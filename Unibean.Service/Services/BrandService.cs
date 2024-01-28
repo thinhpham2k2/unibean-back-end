@@ -192,7 +192,7 @@ public class BrandService : IBrandService
         }
         else
         {
-            throw new InvalidParameterException("Not found brand");
+            throw new InvalidParameterException("Không tìm thấy thương hiệu");
         }
     }
 
@@ -232,7 +232,7 @@ public class BrandService : IBrandService
                 => w.StudentId.Equals(request.UserId)).Any()))
                 : mapper.Map<BrandExtraModel>(entity);
         }
-        throw new InvalidParameterException("Not found brand");
+        throw new InvalidParameterException("Không tìm thấy thương hiệu");
     }
 
     public PagedResultModel<CampaignModel> GetCampaignListByBrandId
@@ -322,6 +322,6 @@ public class BrandService : IBrandService
 
             return mapper.Map<BrandExtraModel>(brandRepository.Update(entity));
         }
-        throw new InvalidParameterException("Not found brand");
+        throw new InvalidParameterException("Không tìm thấy thương hiệu");
     }
 }

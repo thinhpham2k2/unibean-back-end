@@ -255,7 +255,7 @@ public class StudentService : IStudentService
 
         if (!account.Email.Equals(creation.Email) || !account.Role.RoleName.Equals("Student"))
         {
-            throw new InvalidParameterException("Logging in with your Google account is not valid");
+            throw new InvalidParameterException("Đăng nhập bằng tài khoản Google của bạn không hợp lệ");
         }
 
         account.Phone = creation.Phone;
@@ -343,7 +343,7 @@ public class StudentService : IStudentService
         }
         else
         {
-            throw new InvalidParameterException("Not found student");
+            throw new InvalidParameterException("Không tìm thấy sinh viên");
         }
     }
 
@@ -363,7 +363,7 @@ public class StudentService : IStudentService
         {
             return mapper.Map<StudentExtraModel>(entity);
         }
-        throw new InvalidParameterException("Not found student");
+        throw new InvalidParameterException("Không tìm thấy sinh viên");
     }
 
     public PagedResultModel<StudentChallengeModel> GetChallengeListByStudentId
@@ -427,7 +427,7 @@ public class StudentService : IStudentService
         {
             return order;
         }
-        throw new InvalidParameterException("Not found order");
+        throw new InvalidParameterException("Không tìm thấy sinh viên");
     }
 
     public PagedResultModel<OrderModel> GetOrderListByStudentId
@@ -445,7 +445,7 @@ public class StudentService : IStudentService
         {
             return voucher;
         }
-        throw new InvalidParameterException("Not found voucher item");
+        throw new InvalidParameterException("Không tìm thấy khuyến mãi");
     }
 
     public PagedResultModel<VoucherItemModel> GetVoucherListByStudentId
@@ -484,6 +484,6 @@ public class StudentService : IStudentService
 
             return mapper.Map<StudentExtraModel>(studentRepository.Update(entity));
         }
-        throw new InvalidParameterException("Not found student");
+        throw new InvalidParameterException("Không tìm thấy sinh viên");
     }
 }

@@ -76,7 +76,7 @@ public class StateService : IStateService
         }
         else
         {
-            throw new InvalidParameterException("Not found state");
+            throw new InvalidParameterException("Không tìm thấy trạng thái");
         }
     }
 
@@ -94,7 +94,7 @@ public class StateService : IStateService
         {
             return mapper.Map<StateModel>(entity);
         }
-        throw new InvalidParameterException("Not found state");
+        throw new InvalidParameterException("Không tìm thấy trạng thái");
     }
 
     public async Task<StateModel> Update(string id, UpdateStateModel update)
@@ -115,6 +115,6 @@ public class StateService : IStateService
             }
             return mapper.Map<StateModel>(stateRepository.Update(entity));
         }
-        throw new InvalidParameterException("Not found state");
+        throw new InvalidParameterException("Không tìm thấy trạng thái");
     }
 }

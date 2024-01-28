@@ -77,7 +77,7 @@ public class CampusService : ICampusService
         }
         else
         {
-            throw new InvalidParameterException("Not found campus");
+            throw new InvalidParameterException("Không tìm thấy cơ sở");
         }
     }
 
@@ -104,7 +104,7 @@ public class CampusService : ICampusService
         {
             return mapper.Map<CampusModel>(entity);
         }
-        throw new InvalidParameterException("Not found campus");
+        throw new InvalidParameterException("Không tìm thấy cơ sở");
     }
 
     public async Task<CampusModel> Update(string id, UpdateCampusModel update)
@@ -125,6 +125,6 @@ public class CampusService : ICampusService
             }
             return mapper.Map<CampusModel>(campusRepository.Update(entity));
         }
-        throw new InvalidParameterException("Not found campus");
+        throw new InvalidParameterException("Không tìm thấy cơ sở");
     }
 }

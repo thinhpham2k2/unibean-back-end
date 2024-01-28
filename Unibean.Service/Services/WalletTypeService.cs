@@ -72,7 +72,7 @@ public class WalletTypeService : IWalletTypeService
         }
         else
         {
-            throw new InvalidParameterException("Not found wallet type");
+            throw new InvalidParameterException("Không tìm thấy loại ví");
         }
     }
 
@@ -90,7 +90,7 @@ public class WalletTypeService : IWalletTypeService
         {
             return mapper.Map<WalletTypeModel>(entity);
         }
-        throw new InvalidParameterException("Not found wallet type");
+        throw new InvalidParameterException("Không tìm thấy loại ví");
     }
 
     public async Task<WalletTypeModel> Update(string id, UpdateWalletTypeModel update)
@@ -111,6 +111,6 @@ public class WalletTypeService : IWalletTypeService
             }
             return mapper.Map<WalletTypeModel>(walletTypeRepository.Update(entity));
         }
-        throw new InvalidParameterException("Not found wallet type");
+        throw new InvalidParameterException("Không tìm thấy loại ví");
     }
 }

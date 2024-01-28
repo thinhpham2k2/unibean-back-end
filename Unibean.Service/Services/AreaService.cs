@@ -77,7 +77,7 @@ public class AreaService : IAreaService
         }
         else
         {
-            throw new InvalidParameterException("Not found area");
+            throw new InvalidParameterException("Không tìm thấy khu vực");
         }
     }
 
@@ -96,7 +96,7 @@ public class AreaService : IAreaService
         {
             return mapper.Map<AreaModel>(entity);
         }
-        throw new InvalidParameterException("Not found area");
+        throw new InvalidParameterException("Không tìm thấy khu vực");
     }
 
     public async Task<AreaModel> Update(string id, UpdateAreaModel update)
@@ -117,6 +117,6 @@ public class AreaService : IAreaService
             }
             return mapper.Map<AreaModel>(areaRepository.Update(entity));
         }
-        throw new InvalidParameterException("Not found area");
+        throw new InvalidParameterException("Không tìm thấy khu vực");
     }
 }

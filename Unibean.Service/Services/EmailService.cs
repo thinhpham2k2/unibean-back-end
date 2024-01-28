@@ -38,7 +38,7 @@ public class EmailService : IEmailService
         }
         catch
         {
-            throw new InvalidParameterException(receiver + " is not a valid email address");
+            throw new InvalidParameterException(receiver + " không phải là địa chỉ email hợp lệ");
         }
     }
 }

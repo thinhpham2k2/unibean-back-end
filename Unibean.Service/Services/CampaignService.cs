@@ -238,12 +238,12 @@ public class CampaignService : ICampaignService
             }
             else
             {
-                throw new InvalidParameterException("An ongoing campaign cannot be deleted");
+                throw new InvalidParameterException("Không thể xóa chiến dịch đang diễn ra");
             }
         }
         else
         {
-            throw new InvalidParameterException("Not found campaign");
+            throw new InvalidParameterException("Không tìm thấy Chiến dịch");
         }
     }
 
@@ -263,7 +263,7 @@ public class CampaignService : ICampaignService
         {
             return mapper.Map<CampaignExtraModel>(entity);
         }
-        throw new InvalidParameterException("Not found campaign");
+        throw new InvalidParameterException("Không tìm thấy Chiến dịch");
     }
 
     public PagedResultModel<CampusModel> GetCampusListByCampaignId
@@ -317,7 +317,7 @@ public class CampaignService : ICampaignService
             }
             return mapper.Map<CampaignExtraModel>(campaignRepository.Update(entity));
         }
-        throw new InvalidParameterException("Not found campaign");
+        throw new InvalidParameterException("Không tìm thấy Chiến dịch");
     }
 
     public CampaignExtraModel UpdateState(string id)
@@ -348,8 +348,8 @@ public class CampaignService : ICampaignService
 
                 return mapper.Map<CampaignExtraModel>(campaignRepository.Update(entity));
             }
-            throw new InvalidParameterException("This campaign has been approved");
+            throw new InvalidParameterException("Chiến dịch này đã được phê duyệt");
         }
-        throw new InvalidParameterException("Not found campaign");
+        throw new InvalidParameterException("Không tìm thấy Chiến dịch");
     }
 }

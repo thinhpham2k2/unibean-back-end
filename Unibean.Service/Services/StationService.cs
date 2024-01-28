@@ -73,7 +73,7 @@ public class StationService : IStationService
         }
         else
         {
-            throw new InvalidParameterException("Not found station");
+            throw new InvalidParameterException("Không tìm thấy trạm");
         }
     }
 
@@ -91,7 +91,7 @@ public class StationService : IStationService
         {
             return mapper.Map<StationModel>(entity);
         }
-        throw new InvalidParameterException("Not found station");
+        throw new InvalidParameterException("Không tìm thấy trạm");
     }
 
     public async Task<StationModel> Update(string id, UpdateStationModel update)
@@ -112,6 +112,6 @@ public class StationService : IStationService
             }
             return mapper.Map<StationModel>(stationRepository.Update(entity));
         }
-        throw new InvalidParameterException("Not found station");
+        throw new InvalidParameterException("Không tìm thấy trạm");
     }
 }

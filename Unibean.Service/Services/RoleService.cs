@@ -72,7 +72,7 @@ public class RoleService : IRoleService
         }
         else
         {
-            throw new InvalidParameterException("Not found role");
+            throw new InvalidParameterException("Không tìm thấy vai trò");
         }
     }
 
@@ -90,7 +90,7 @@ public class RoleService : IRoleService
         {
             return mapper.Map<RoleModel>(entity);
         }
-        throw new InvalidParameterException("Not found role");
+        throw new InvalidParameterException("Không tìm thấy vai trò");
     }
 
     public RoleModel GetRoleByName(string roleName)
@@ -100,7 +100,7 @@ public class RoleService : IRoleService
         {
             return mapper.Map<RoleModel>(entity);
         }
-        throw new InvalidParameterException("Not found role");
+        throw new InvalidParameterException("Không tìm thấy vai trò");
     }
 
     public async Task<RoleModel> Update(string id, UpdateRoleModel update)
@@ -121,6 +121,6 @@ public class RoleService : IRoleService
             }
             return mapper.Map<RoleModel>(roleRepository.Update(entity));
         }
-        throw new InvalidParameterException("Not found role");
+        throw new InvalidParameterException("Không tìm thấy vai trò");
     }
 }

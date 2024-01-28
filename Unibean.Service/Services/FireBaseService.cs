@@ -174,7 +174,7 @@ public class FireBaseService : IFireBaseService
                     throw new InvalidParameterException(ex.Message);
                 }
             }
-            else throw new InvalidParameterException("File is not existed!");
+            else throw new InvalidParameterException("Tập tin không tồn tại");
         }
         catch (Exception ex)
         {

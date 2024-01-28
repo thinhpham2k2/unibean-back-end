@@ -72,7 +72,7 @@ public class MajorService : IMajorService
         }
         else
         {
-            throw new InvalidParameterException("Not found major");
+            throw new InvalidParameterException("Không tìm thấy chuyên ngành");
         }
     }
 
@@ -99,7 +99,7 @@ public class MajorService : IMajorService
         {
             return mapper.Map<MajorModel>(entity);
         }
-        throw new InvalidParameterException("Not found major");
+        throw new InvalidParameterException("Không tìm thấy chuyên ngành");
     }
 
     public async Task<MajorModel> Update(string id, UpdateMajorModel update)
@@ -120,6 +120,6 @@ public class MajorService : IMajorService
             }
             return mapper.Map<MajorModel>(majorRepository.Update(entity));
         }
-        throw new InvalidParameterException("Not found major");
+        throw new InvalidParameterException("Không tìm thấy chuyên ngành");
     }
 }

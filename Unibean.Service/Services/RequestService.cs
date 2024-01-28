@@ -70,6 +70,6 @@ public class RequestService : IRequestService
         {
             return mapper.Map<RequestExtraModel>(entity);
         }
-        throw new InvalidParameterException("Not found request");
+        throw new InvalidParameterException("Không tìm thấy yêu cầu");
     }
 }

@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
-using Unibean.Repository.Repositories;
 using Unibean.Repository.Repositories.Interfaces;
-using Unibean.Service.Models.Campuses;
 using Unibean.Service.Models.Wishlists;
 using Unibean.Service.Services.Interfaces;
 

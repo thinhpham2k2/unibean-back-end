@@ -79,7 +79,7 @@ public class GoogleService : IGoogleService
                     }
                 }
             }
-            throw new InvalidParameterException("The token is invalid");
+            throw new InvalidParameterException("Mã thông báo không hợp lệ");
         }
         catch (Exception e)
         {

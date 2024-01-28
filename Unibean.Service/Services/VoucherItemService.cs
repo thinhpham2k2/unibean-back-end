@@ -82,6 +82,6 @@ public class VoucherItemService : IVoucherItemService
         {
             return mapper.Map<VoucherItemExtraModel>(entity);
         }
-        throw new InvalidParameterException("Not found voucher item");
+        throw new InvalidParameterException("Không tìm thấy khuyến mãi");
     }
 }

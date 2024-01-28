@@ -75,7 +75,7 @@ public class ChallengeService : IChallengeService
         }
         else
         {
-            throw new InvalidParameterException("Not found challenge");
+            throw new InvalidParameterException("Không tìm thấy thử thách");
         }
     }
 
@@ -94,7 +94,7 @@ public class ChallengeService : IChallengeService
         {
             return mapper.Map<ChallengeModel>(entity);
         }
-        throw new InvalidParameterException("Not found challenge");
+        throw new InvalidParameterException("Không tìm thấy thử thách");
     }
 
     public async Task<ChallengeModel> Update(string id, UpdateChallengeModel update)
@@ -115,6 +115,6 @@ public class ChallengeService : IChallengeService
             }
             return mapper.Map<ChallengeModel>(challengeRepository.Update(entity));
         }
-        throw new InvalidParameterException("Not found challenge");
+        throw new InvalidParameterException("Không tìm thấy thử thách");
     }
 }

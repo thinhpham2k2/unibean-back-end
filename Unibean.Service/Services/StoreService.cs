@@ -150,7 +150,7 @@ public class StoreService : IStoreService
         }
         else
         {
-            throw new InvalidParameterException("Not found store");
+            throw new InvalidParameterException("Không tìm thấy cửa hàng");
         }
     }
 
@@ -178,7 +178,7 @@ public class StoreService : IStoreService
         {
             return mapper.Map<StoreExtraModel>(entity);
         }
-        throw new InvalidParameterException("Not found store");
+        throw new InvalidParameterException("Không tìm thấy cửa hàng");
     }
 
     public PagedResultModel<StoreTransactionModel> GetHistoryTransactionListByStoreId
@@ -240,6 +240,6 @@ public class StoreService : IStoreService
 
             return mapper.Map<StoreExtraModel>(storeRepository.Update(entity));
         }
-        throw new InvalidParameterException("Not found store");
+        throw new InvalidParameterException("Không tìm thấy cửa hàng");
     }
 }

@@ -91,7 +91,7 @@ public class VoucherService : IVoucherService
         }
         else
         {
-            throw new InvalidParameterException("Not found voucher");
+            throw new InvalidParameterException("Không tìm thấy khuyến mãi");
         }
     }
 
@@ -129,7 +129,7 @@ public class VoucherService : IVoucherService
         {
             return mapper.Map<VoucherExtraModel>(entity);
         }
-        throw new InvalidParameterException("Not found voucher");
+        throw new InvalidParameterException("Không tìm thấy khuyến mãi");
     }
 
     public async Task<VoucherExtraModel> Update(string id, UpdateVoucherModel update)
@@ -150,6 +150,6 @@ public class VoucherService : IVoucherService
             }
             return mapper.Map<VoucherExtraModel>(voucherRepository.Update(entity));
         }
-        throw new InvalidParameterException("Not found voucher");
+        throw new InvalidParameterException("Không tìm thấy khuyến mãi");
     }
 }

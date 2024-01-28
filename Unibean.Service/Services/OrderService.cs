@@ -101,13 +101,13 @@ public class OrderService : IOrderService
                         });
                         return mapper.Map<OrderModel>(order);
                     }
-                    throw new InvalidParameterException("Create fail");
+                    throw new InvalidParameterException("Tạo thất bại");
                 }
-                throw new InvalidParameterException("Red bean wallet balance is not enough");
+                throw new InvalidParameterException("Số dư ví đậu đỏ là không đủ");
             }
-            throw new InvalidParameterException("Red bean wallet is invalid");
+            throw new InvalidParameterException("Ví đậu đỏ không hợp lệ");
         }
-        throw new InvalidParameterException("Invalid student");
+        throw new InvalidParameterException("Sinh viên không hợp lệ");
     }
 
     public PagedResultModel<OrderModel> GetAll
@@ -125,6 +125,6 @@ public class OrderService : IOrderService
         {
             return mapper.Map<OrderExtraModel>(entity);
         }
-        throw new InvalidParameterException("Not found order");
+        throw new InvalidParameterException("Không tìm thấy đơn hàng");
     }
 }

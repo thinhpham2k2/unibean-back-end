@@ -167,7 +167,8 @@ public class AccountService : IAccountService
 
     public AccountModel AddGoogle(CreateGoogleAccountModel creation)
     {
-        return mapper.Map<AccountModel>(accountRepository.Add(mapper.Map<Account>(creation)));
+        return mapper.Map<AccountModel>
+            (accountRepository.Add(mapper.Map<Account>(creation)));
     }
 
     public async Task<AccountModel> AddStudent(CreateStudentAccountModel creation)
@@ -232,11 +233,13 @@ public class AccountService : IAccountService
 
     public AccountModel GetByEmail(string email)
     {
-        return mapper.Map<AccountModel>(accountRepository.GetByEmail(email));
+        return mapper.Map<AccountModel>
+            (accountRepository.GetByEmail(email));
     }
 
     public AccountModel GetByUserNameAndPassword(string userName, string password)
     {
-        return mapper.Map<AccountModel>(accountRepository.GetByUserNameAndPassword(userName, password));
+        return mapper.Map<AccountModel>
+            (accountRepository.GetByUserNameAndPassword(userName, password));
     }
 }

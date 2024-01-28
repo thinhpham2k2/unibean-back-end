@@ -53,7 +53,7 @@ public class StudentChallengeService : IStudentChallengeService
         }
         else
         {
-            throw new InvalidParameterException("Not found student challenge");
+            throw new InvalidParameterException("Không tìm thấy thử thách của sinh viên");
         }
     }
 
@@ -72,7 +72,7 @@ public class StudentChallengeService : IStudentChallengeService
         {
             return mapper.Map<StudentChallengeModel>(entity);
         }
-        throw new InvalidParameterException("Not found student challenge");
+        throw new InvalidParameterException("Không tìm thấy thử thách của sinh viên");
     }
 
     public void Update(IEnumerable<StudentChallenge> studentChallenges, decimal amount)
