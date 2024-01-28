@@ -270,33 +270,56 @@ public class CampaignService : ICampaignService
         (string id, List<string> universityIds, List<string> areaIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
-        return campusService.GetAllByCampaign
-            (new() { id }, universityIds, areaIds, state, 
-            propertySort, isAsc, search, page, limit);
+        Campaign entity = campaignRepository.GetById(id);
+        if (entity != null)
+        {
+            return campusService.GetAllByCampaign
+                (new() { id }, universityIds, areaIds, state,
+                propertySort, isAsc, search, page, limit);
+        }
+        throw new InvalidParameterException("Không tìm thấy Chiến dịch");
     }
 
     public PagedResultModel<MajorModel> GetMajorListByCampaignId
         (string id, bool? state, string propertySort, 
         bool isAsc, string search, int page, int limit)
     {
-        return majorService.GetAllByCampaign
-            (new() { id }, state, propertySort, isAsc, search, page, limit);
+        Campaign entity = campaignRepository.GetById(id);
+        if (entity != null)
+        {
+            return majorService.GetAllByCampaign
+                (new() { id }, state, propertySort, 
+                isAsc, search, page, limit);
+        }
+        throw new InvalidParameterException("Không tìm thấy Chiến dịch");
     }
 
     public PagedResultModel<StoreModel> GetStoreListByCampaignId
         (string id, List<string> brandIds, List<string> areaIds, bool? state, 
         string propertySort, bool isAsc, string search, int page, int limit)
     {
-        return storeService.GetAllByCampaign
-            (new() { id }, brandIds, areaIds, state, propertySort, isAsc, search, page, limit);
+        Campaign entity = campaignRepository.GetById(id);
+        if (entity != null)
+        {
+            return storeService.GetAllByCampaign
+                (new() { id }, brandIds, areaIds, state, 
+                propertySort, isAsc, search, page, limit);
+        }
+        throw new InvalidParameterException("Không tìm thấy Chiến dịch");
     }
 
     public PagedResultModel<VoucherModel> GetVoucherListByCampaignId
         (string id, List<string> typeIds, bool? state, 
         string propertySort, bool isAsc, string search, int page, int limit)
     {
-        return voucherService.GetAllByCampaign
-            (new() { id }, typeIds, state, propertySort, isAsc, search, page, limit);
+        Campaign entity = campaignRepository.GetById(id);
+        if (entity != null)
+        {
+            return voucherService.GetAllByCampaign
+                (new() { id }, typeIds, state, propertySort,
+                isAsc, search, page, limit);
+        }
+        throw new InvalidParameterException("Không tìm thấy Chiến dịch");
     }
 
     public async Task<CampaignExtraModel> Update(string id, UpdateCampaignModel update)

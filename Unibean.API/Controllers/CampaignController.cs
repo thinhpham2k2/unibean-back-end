@@ -199,7 +199,7 @@ public class CampaignController : ControllerBase
     [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(PagedResultModel<CampusModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public ActionResult<PagedResultModel<CampusModel>> GetCampusListByStoreId([ValidCampaign] string id,
+    public ActionResult<PagedResultModel<CampusModel>> GetCampusListByStoreId(string id,
         [FromQuery] List<string> universityIds,
         [FromQuery] List<string> areaIds,
         [FromQuery] bool? state,
@@ -237,7 +237,7 @@ public class CampaignController : ControllerBase
     [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(PagedResultModel<MajorModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public ActionResult<PagedResultModel<MajorModel>> GetMajorListByStoreId([ValidCampaign] string id,
+    public ActionResult<PagedResultModel<MajorModel>> GetMajorListByStoreId(string id,
         [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
@@ -275,7 +275,7 @@ public class CampaignController : ControllerBase
     [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(PagedResultModel<StoreModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public ActionResult<PagedResultModel<StoreModel>> GetStoreListByStoreId([ValidCampaign] string id,
+    public ActionResult<PagedResultModel<StoreModel>> GetStoreListByStoreId(string id,
         [FromQuery] List<string> brandIds,
         [FromQuery] List<string> areaIds,
         [FromQuery] bool? state,
@@ -314,7 +314,7 @@ public class CampaignController : ControllerBase
     [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(PagedResultModel<VoucherModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public ActionResult<PagedResultModel<VoucherModel>> GetVoucherListByStoreId([ValidCampaign] string id,
+    public ActionResult<PagedResultModel<VoucherModel>> GetVoucherListByStoreId(string id,
         [FromQuery] List<string> typeIds,
         [FromQuery] bool? state,
         [FromQuery] PagingModel paging)

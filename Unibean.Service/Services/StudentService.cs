@@ -370,62 +370,77 @@ public class StudentService : IStudentService
         (string id, bool? isCompleted, bool? state, bool? isClaimed, 
         string propertySort, bool isAsc, string search, int page, int limit)
     {
-        PagedResultModel<StudentChallengeModel> result = studentChallengeService.GetAll
-            (new() { id }, new(), state, propertySort, isAsc, search, page, limit);
+        Student entity = studentRepository.GetById(id);
+        if (entity != null)
+        {
+            PagedResultModel<StudentChallengeModel> result = studentChallengeService.GetAll
+                (new() { id }, new(), state, propertySort, isAsc, search, page, limit);
 
-        result.Result = result.Result
-            .Where(c => (isCompleted == null || c.IsCompleted.Equals(isCompleted))
-            && (isClaimed == null || c.IsClaimed.Equals(isClaimed))).ToList();
+            result.Result = result.Result
+                .Where(c => (isCompleted == null || c.IsCompleted.Equals(isCompleted))
+                && (isClaimed == null || c.IsClaimed.Equals(isClaimed))).ToList();
 
-        return result;
+            return result;
+        }
+        throw new InvalidParameterException("Không tìm thấy sinh viên");
     }
 
     public PagedResultModel<TransactionModel> GetHistoryTransactionListByStudentId
         (string id, List<TransactionType> typeIds, bool? state, 
         string propertySort, bool isAsc, string search, int page, int limit)
     {
-        var query = (typeIds.Contains(TransactionType.ChallengeTransaction) || typeIds.Count == 0 ? 
-            challengeTransactionService.GetAll
-            (studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search) : new())
-
-            .Concat(typeIds.Contains(TransactionType.OrderTransaction) || typeIds.Count == 0 ? 
-            orderTransactionService.GetAll
-            (studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search) : new())
-
-            .Concat(typeIds.Contains(TransactionType.BonusTransaction) || typeIds.Count == 0 ?
-            bonusTransactionService.GetAll
-            (studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), new(), search) : new())
-
-            .Concat(typeIds.Contains(TransactionType.ActivityTransaction) || typeIds.Count == 0 ?
-            activityTransactionService.GetAll
-            (studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search) : new())
-
-            .AsQueryable()
-            .Where(t => state == null || state.Equals(t.State))
-            .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
-
-        var result = query
-            .Skip((page - 1) * limit)
-            .Take(limit)
-            .ToList();
-
-        return new()
+        Student entity = studentRepository.GetById(id);
+        if (entity != null)
         {
-            CurrentPage = page,
-            PageSize = limit,
-            PageCount = (int)Math.Ceiling((double)query.Count() / limit),
-            Result = result,
-            RowCount = result.Count,
-            TotalCount = query.Count()
-        };
+            var query = (typeIds.Contains(TransactionType.ChallengeTransaction) || typeIds.Count == 0 ?
+                challengeTransactionService.GetAll
+                (studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search) : new())
+
+                .Concat(typeIds.Contains(TransactionType.OrderTransaction) || typeIds.Count == 0 ?
+                orderTransactionService.GetAll
+                (studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search) : new())
+
+                .Concat(typeIds.Contains(TransactionType.BonusTransaction) || typeIds.Count == 0 ?
+                bonusTransactionService.GetAll
+                (studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), new(), search) : new())
+
+                .Concat(typeIds.Contains(TransactionType.ActivityTransaction) || typeIds.Count == 0 ?
+                activityTransactionService.GetAll
+                (studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search) : new())
+
+                .AsQueryable()
+                .Where(t => state == null || state.Equals(t.State))
+                .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
+
+            var result = query
+                .Skip((page - 1) * limit)
+                .Take(limit)
+                .ToList();
+
+            return new()
+            {
+                CurrentPage = page,
+                PageSize = limit,
+                PageCount = (int)Math.Ceiling((double)query.Count() / limit),
+                Result = result,
+                RowCount = result.Count,
+                TotalCount = query.Count()
+            };
+        }
+        throw new InvalidParameterException("Không tìm thấy sinh viên");
     }
 
     public OrderExtraModel GetOrderByOrderId(string id, string orderId)
     {
-        OrderExtraModel order = orderService.GetById(orderId);
-        if (order != null && order.StudentId.Equals(id))
+        Student entity = studentRepository.GetById(id);
+        if(entity != null)
         {
-            return order;
+            OrderExtraModel order = orderService.GetById(orderId);
+            if (order != null && order.StudentId.Equals(id))
+            {
+                return order;
+            }
+            throw new InvalidParameterException("Không tìm thấy đơn hàng");
         }
         throw new InvalidParameterException("Không tìm thấy sinh viên");
     }
@@ -434,27 +449,42 @@ public class StudentService : IStudentService
         (List<string> stationIds, List<string> stateIds, string id, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
-        return orderService.GetAll
-            (stationIds, new() { id }, stateIds, state, propertySort, isAsc, search, page, limit);
+        Student entity = studentRepository.GetById(id);
+        if (entity != null)
+        {
+            return orderService.GetAll
+                (stationIds, new() { id }, stateIds, state, propertySort, isAsc, search, page, limit);
+        }
+        throw new InvalidParameterException("Không tìm thấy sinh viên");
     }
 
     public VoucherItemExtraModel GetVoucherItemByVoucherId(string id, string voucherId)
     {
-        VoucherItemExtraModel voucher = voucherItemService.GetById(voucherId);
-        if (voucher != null && !voucher.StudentId.IsNullOrEmpty() && voucher.StudentId.Equals(id))
+        Student entity = studentRepository.GetById(id);
+        if(entity != null)
         {
-            return voucher;
+            VoucherItemExtraModel voucher = voucherItemService.GetById(voucherId);
+            if (voucher != null && !voucher.StudentId.IsNullOrEmpty() && voucher.StudentId.Equals(id))
+            {
+                return voucher;
+            }
+            throw new InvalidParameterException("Không tìm thấy khuyến mãi");
         }
-        throw new InvalidParameterException("Không tìm thấy khuyến mãi");
+        throw new InvalidParameterException("Không tìm thấy sinh viên");
     }
 
     public PagedResultModel<VoucherItemModel> GetVoucherListByStudentId
         (List<string> campaignIds, List<string> voucherIds, List<string> brandIds, List<string> typeIds,
         string id, bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
-        return voucherItemService.GetAll
-            (campaignIds, voucherIds, brandIds, typeIds, new() { id },
-            state, propertySort, isAsc, search, page, limit);
+        Student entity = studentRepository.GetById(id);
+        if (entity != null)
+        {
+            return voucherItemService.GetAll
+                (campaignIds, voucherIds, brandIds, typeIds, new() { id },
+                state, propertySort, isAsc, search, page, limit);
+        }
+        throw new InvalidParameterException("Không tìm thấy sinh viên");
     }
 
     public List<string> GetWishlistsByStudentId(string id)

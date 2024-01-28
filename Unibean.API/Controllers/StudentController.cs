@@ -174,7 +174,7 @@ public class StudentController : ControllerBase
     [Authorize(Roles = "Admin, Student")]
     [ProducesResponseType(typeof(PagedResultModel<StudentChallengeModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public ActionResult<PagedResultModel<StudentChallengeModel>> GetChallengeListByStudentId([ValidStudent] string id,
+    public ActionResult<PagedResultModel<StudentChallengeModel>> GetChallengeListByStudentId(string id,
         [FromQuery] bool? state,
         [FromQuery] bool? isCompleted,
         [FromQuery] bool? isClaimed,
@@ -213,7 +213,7 @@ public class StudentController : ControllerBase
     [Authorize(Roles = "Admin, Student")]
     [ProducesResponseType(typeof(PagedResultModel<TransactionModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public ActionResult<PagedResultModel<TransactionModel>> GetHistoryTransactionListByStudentId([ValidStudent] string id,
+    public ActionResult<PagedResultModel<TransactionModel>> GetHistoryTransactionListByStudentId(string id,
         [FromQuery] List<TransactionType> typeIds,
         [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
@@ -252,7 +252,7 @@ public class StudentController : ControllerBase
     [Authorize(Roles = "Admin, Student")]
     [ProducesResponseType(typeof(PagedResultModel<OrderModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public ActionResult<PagedResultModel<OrderModel>> GetOrderListByStudentId([ValidStudent] string id,
+    public ActionResult<PagedResultModel<OrderModel>> GetOrderListByStudentId(string id,
         [FromQuery] List<string> stationIds,
         [FromQuery] List<string> stateIds,
         [FromQuery] bool? state,
@@ -313,7 +313,7 @@ public class StudentController : ControllerBase
     [Authorize(Roles = "Admin, Student")]
     [ProducesResponseType(typeof(OrderExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public IActionResult GetOrderById([ValidStudent] string id, string orderId)
+    public IActionResult GetOrderById(string id, string orderId)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
@@ -341,7 +341,7 @@ public class StudentController : ControllerBase
     [Authorize(Roles = "Admin, Student")]
     [ProducesResponseType(typeof(PagedResultModel<VoucherItemModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public ActionResult<PagedResultModel<OrderModel>> GetVoucherListByStudentId([ValidStudent] string id,
+    public ActionResult<PagedResultModel<OrderModel>> GetVoucherListByStudentId(string id,
         [FromQuery] List<string> campaignIds,
         [FromQuery] List<string> voucherIds,
         [FromQuery] List<string> brandIds,
@@ -381,7 +381,7 @@ public class StudentController : ControllerBase
     [Authorize(Roles = "Admin, Student")]
     [ProducesResponseType(typeof(VoucherItemExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public IActionResult GetVoucherById([ValidStudent] string id, string voucherId)
+    public IActionResult GetVoucherById(string id, string voucherId)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
@@ -403,7 +403,7 @@ public class StudentController : ControllerBase
     [Authorize(Roles = "Admin, Student")]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public ActionResult<List<string>> GetWishlistsByStudentId([ValidStudent] string id)
+    public ActionResult<List<string>> GetWishlistsByStudentId(string id)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 

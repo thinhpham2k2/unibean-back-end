@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Org.BouncyCastle.Asn1.Ocsp;
 using System.Linq.Dynamic.Core;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
@@ -239,54 +240,74 @@ public class BrandService : IBrandService
         (string id, List<string> typeIds, List<string> storeIds, List<string> majorIds, List<string> campusIds,
         bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
-        return campaignService.GetAll(new() { id }, typeIds, storeIds, majorIds, 
-            campusIds, state, propertySort, isAsc, search, page, limit);
+        Brand entity = brandRepository.GetById(id);
+        if (entity != null)
+        {
+            return campaignService.GetAll(new() { id }, typeIds, storeIds, majorIds,
+                campusIds, state, propertySort, isAsc, search, page, limit);
+        }
+        throw new InvalidParameterException("Không tìm thấy thương hiệu");
     }
 
     public PagedResultModel<TransactionModel> GetHistoryTransactionListByStudentId
         (string id, List<string> walletTypeIds, bool? state, string propertySort, 
         bool isAsc, string search, int page, int limit)
     {
-        var query = bonusTransactionService.GetAll
-            (brandRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), walletTypeIds, search)
-            .Concat(walletTransactionService.GetAll
-            (brandRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), walletTypeIds, search))
-            .Concat(requestTransactionService.GetAll
-            (brandRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), walletTypeIds, search))
-            .AsQueryable()
-            .Where(t => state == null || state.Equals(t.State))
-            .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
-
-        var result = query
-            .Skip((page - 1) * limit)
-            .Take(limit)
-            .ToList();
-
-        return new()
+        Brand entity = brandRepository.GetById(id);
+        if (entity != null)
         {
-            CurrentPage = page,
-            PageSize = limit,
-            PageCount = (int)Math.Ceiling((double)query.Count() / limit),
-            Result = result,
-            RowCount = result.Count,
-            TotalCount = query.Count()
-        };
+            var query = bonusTransactionService.GetAll
+                (brandRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), walletTypeIds, search)
+                .Concat(walletTransactionService.GetAll
+                (brandRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), walletTypeIds, search))
+                .Concat(requestTransactionService.GetAll
+                (brandRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), walletTypeIds, search))
+                .AsQueryable()
+                .Where(t => state == null || state.Equals(t.State))
+                .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
+
+            var result = query
+                .Skip((page - 1) * limit)
+                .Take(limit)
+                .ToList();
+
+            return new()
+            {
+                CurrentPage = page,
+                PageSize = limit,
+                PageCount = (int)Math.Ceiling((double)query.Count() / limit),
+                Result = result,
+                RowCount = result.Count,
+                TotalCount = query.Count()
+            };
+        }
+        throw new InvalidParameterException("Không tìm thấy thương hiệu");
     }
 
     public PagedResultModel<StoreModel> GetStoreListByBrandId
         (string id, List<string> areaIds, bool? state, string propertySort, 
         bool isAsc, string search, int page, int limit)
     {
-        return storeService.GetAll(new() { id }, areaIds, state, 
-            propertySort, isAsc, search, page, limit);
+        Brand entity = brandRepository.GetById(id);
+        if (entity != null)
+        {
+            return storeService.GetAll(new() { id }, areaIds, state,
+                propertySort, isAsc, search, page, limit);
+        }
+        throw new InvalidParameterException("Không tìm thấy thương hiệu");
     }
 
     public PagedResultModel<VoucherModel> GetVoucherListByBrandId
         (string id, List<string> typeIds, bool? state, string propertySort,
         bool isAsc, string search, int page, int limit)
     {
-        return voucherService.GetAll(new() { id }, typeIds, state, 
-            propertySort, isAsc, search, page, limit);
+        Brand entity = brandRepository.GetById(id);
+        if (entity != null)
+        {
+            return voucherService.GetAll(new() { id }, typeIds, state,
+                propertySort, isAsc, search, page, limit);
+        }
+        throw new InvalidParameterException("Không tìm thấy thương hiệu");
     }
 
     public async Task<BrandExtraModel> Update(string id, UpdateBrandModel update)

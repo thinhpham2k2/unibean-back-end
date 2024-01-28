@@ -196,7 +196,7 @@ public class StoreController : ControllerBase
     [Authorize(Roles = "Admin, Brand, Store")]
     [ProducesResponseType(typeof(PagedResultModel<StoreTransactionModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public ActionResult<PagedResultModel<VoucherModel>> GetHistoryTransactionByStoreId([ValidStore] string id,
+    public ActionResult<PagedResultModel<VoucherModel>> GetHistoryTransactionByStoreId(string id,
         [FromQuery] List<StoreTransactionType> typeIds,
         [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
@@ -235,7 +235,7 @@ public class StoreController : ControllerBase
     [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(PagedResultModel<VoucherModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public ActionResult<PagedResultModel<VoucherModel>> GetVoucherListByStoreId([ValidStore] string id,
+    public ActionResult<PagedResultModel<VoucherModel>> GetVoucherListByStoreId(string id,
         [FromQuery] List<string> campaignIds,
         [FromQuery] List<string> typeIds,
         [FromQuery] bool? state,
