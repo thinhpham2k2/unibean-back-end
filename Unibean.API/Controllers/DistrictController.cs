@@ -50,7 +50,7 @@ public class DistrictController : ControllerBase
                 paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }
-        return BadRequest("Invalid property of district");
+        return BadRequest("Thuộc tính không hợp lệ của quận");
     }
 
     /// <summary>
@@ -92,7 +92,7 @@ public class DistrictController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, district);
             }
-            return NotFound("Create fail");
+            return NotFound("Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
@@ -118,7 +118,7 @@ public class DistrictController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, district);
             }
-            return NotFound("Update fail");
+            return NotFound("Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {

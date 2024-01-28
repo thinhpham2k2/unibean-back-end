@@ -58,7 +58,7 @@ public class AdminController : ControllerBase
                 paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }
-        return BadRequest("Invalid property of admin");
+        return BadRequest("Thuộc tính không hợp lệ của quản trị viên");
     }
 
     /// <summary>
@@ -100,7 +100,7 @@ public class AdminController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, admin);
             }
-            return NotFound("Create fail");
+            return NotFound("Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
@@ -126,7 +126,7 @@ public class AdminController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, admin);
             }
-            return NotFound("Update fail");
+            return NotFound("Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {
@@ -174,7 +174,7 @@ public class AdminController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, request);
             }
-            return NotFound("Create fail");
+            return NotFound("Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
@@ -194,7 +194,8 @@ public class AdminController : ControllerBase
 
         try
         {
-            return StatusCode(StatusCodes.Status201Created, fireBaseService.PushNotificationToTopic(topic));
+            return StatusCode(StatusCodes.Status201Created, 
+                fireBaseService.PushNotificationToTopic(topic));
         }
         catch (InvalidParameterException e)
         {

@@ -50,7 +50,7 @@ public class ProductController : ControllerBase
                 paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }
-        return BadRequest("Invalid property of product");
+        return BadRequest("Thuộc tính không hợp lệ của sản phẩm");
     }
 
     /// <summary>
@@ -92,7 +92,7 @@ public class ProductController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, product);
             }
-            return NotFound("Create fail");
+            return NotFound("Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
@@ -118,7 +118,7 @@ public class ProductController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, product);
             }
-            return NotFound("Update fail");
+            return NotFound("Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {

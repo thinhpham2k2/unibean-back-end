@@ -52,7 +52,7 @@ public class VoucherController : ControllerBase
                 paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }
-        return BadRequest("Invalid property of voucher");
+        return BadRequest("Thuộc tính không hợp lệ của khuyến mãi");
     }
 
     /// <summary>
@@ -94,7 +94,7 @@ public class VoucherController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, voucher);
             }
-            return NotFound("Create fail");
+            return NotFound("Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
@@ -120,7 +120,7 @@ public class VoucherController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, voucher);
             }
-            return NotFound("Update fail");
+            return NotFound("Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {

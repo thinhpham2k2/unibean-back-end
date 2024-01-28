@@ -61,7 +61,7 @@ public class StoreController : ControllerBase
                 paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }
-        return BadRequest("Invalid property of store");
+        return BadRequest("Thuộc tính không hợp lệ của cửa hàng");
     }
 
     /// <summary>
@@ -103,7 +103,7 @@ public class StoreController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, store);
             }
-            return NotFound("Create fail");
+            return NotFound("Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
@@ -129,7 +129,7 @@ public class StoreController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, store);
             }
-            return NotFound("Update fail");
+            return NotFound("Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {
@@ -177,7 +177,7 @@ public class StoreController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, bonus);
             }
-            return NotFound("Create fail");
+            return NotFound("Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
@@ -215,7 +215,7 @@ public class StoreController : ControllerBase
                     paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
-            return BadRequest("Invalid property of history transaction");
+            return BadRequest("Thuộc tính không hợp lệ của lịch sử giao dịch");
         }
         catch (InvalidParameterException e)
         {
@@ -256,7 +256,7 @@ public class StoreController : ControllerBase
                     paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
-            return BadRequest("Invalid property of voucher");
+            return BadRequest("Thuộc tính không hợp lệ của khuyến mãi");
         }
         catch (InvalidParameterException e)
         {

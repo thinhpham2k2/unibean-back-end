@@ -48,7 +48,7 @@ public class CityController : ControllerBase
                 paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }
-        return BadRequest("Invalid property of city");
+        return BadRequest("Thuộc tính của thành phố không hợp lệ");
     }
 
     /// <summary>
@@ -90,7 +90,7 @@ public class CityController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, city);
             }
-            return NotFound("Create fail");
+            return NotFound("Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
@@ -116,7 +116,7 @@ public class CityController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, city);
             }
-            return NotFound("Update fail");
+            return NotFound("Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {

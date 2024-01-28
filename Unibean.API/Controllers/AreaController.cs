@@ -50,7 +50,7 @@ public class AreaController : ControllerBase
                 paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }
-        return BadRequest("Invalid property of area");
+        return BadRequest("Thuộc tính không hợp lệ của khu vực");
     }
 
     /// <summary>
@@ -92,7 +92,7 @@ public class AreaController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, type);
             }
-            return NotFound("Create fail");
+            return NotFound("Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
@@ -118,7 +118,7 @@ public class AreaController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, type);
             }
-            return NotFound("Update fail");
+            return NotFound("Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {

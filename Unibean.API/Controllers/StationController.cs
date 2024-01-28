@@ -48,7 +48,7 @@ public class StationController : ControllerBase
                 paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }
-        return BadRequest("Invalid property of station");
+        return BadRequest("Thuộc tính không hợp lệ của trạm");
     }
 
     /// <summary>
@@ -90,7 +90,7 @@ public class StationController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, station);
             }
-            return NotFound("Create fail");
+            return NotFound("Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
@@ -116,7 +116,7 @@ public class StationController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, station);
             }
-            return NotFound("Update fail");
+            return NotFound("Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {

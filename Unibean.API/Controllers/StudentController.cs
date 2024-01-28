@@ -64,7 +64,7 @@ public class StudentController : ControllerBase
                 paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
             return Ok(result);
         }
-        return BadRequest("Invalid property of student");
+        return BadRequest("Thuộc tính không hợp lệ của sinh viên");
     }
 
     /// <summary>
@@ -106,7 +106,7 @@ public class StudentController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, student);
             }
-            return NotFound("Create fail");
+            return NotFound("Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
@@ -132,7 +132,7 @@ public class StudentController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, student);
             }
-            return NotFound("Update fail");
+            return NotFound("Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {
@@ -194,7 +194,7 @@ public class StudentController : ControllerBase
                     paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
-            return BadRequest("Invalid property of challenge");
+            return BadRequest("Thuộc tính của thách thức không hợp lệ");
         }
         catch (InvalidParameterException e)
         {
@@ -232,7 +232,7 @@ public class StudentController : ControllerBase
                     paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
-            return BadRequest("Invalid property of transaction");
+            return BadRequest("Thuộc tính của giao dịch không hợp lệ");
         }
         catch (InvalidParameterException e)
         {
@@ -272,7 +272,7 @@ public class StudentController : ControllerBase
                         ? "OrderStates.Max(s => s.StateId)" : propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
-            return BadRequest("Invalid property of order");
+            return BadRequest("Thuộc tính của đơn đặt hàng không hợp lệ");
         }
         catch (InvalidParameterException e)
         {
@@ -295,7 +295,8 @@ public class StudentController : ControllerBase
 
         try
         {
-            return StatusCode(StatusCodes.Status201Created, orderService.Add(id, create));
+            return StatusCode(StatusCodes.Status201Created, 
+                orderService.Add(id, create));
         }
         catch (InvalidParameterException e)
         {
@@ -363,7 +364,7 @@ public class StudentController : ControllerBase
                     paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
-            return BadRequest("Invalid property of voucher");
+            return BadRequest("Thuộc tính không hợp lệ của khuyến mãi");
         }
         catch (InvalidParameterException e)
         {

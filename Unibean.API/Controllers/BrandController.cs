@@ -59,7 +59,7 @@ public class BrandController : ControllerBase
                 paging.Page, paging.Limit, jwtService.GetJwtRequest(jwtToken.Split(" ")[1]));
             return Ok(result);
         }
-        return BadRequest("Invalid property of brand");
+        return BadRequest("Thuộc tính không hợp lệ của thương hiệu");
     }
 
     /// <summary>
@@ -103,7 +103,7 @@ public class BrandController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, brand);
             }
-            return NotFound("Create fail");
+            return NotFound("Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
@@ -129,7 +129,7 @@ public class BrandController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, brand);
             }
-            return NotFound("Update fail");
+            return NotFound("Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {
@@ -195,7 +195,7 @@ public class BrandController : ControllerBase
                     paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
-            return BadRequest("Invalid property of campaign");
+            return BadRequest("Thuộc tính của chiến dịch không hợp lệ");
         }
         catch (InvalidParameterException e)
         {
@@ -233,7 +233,7 @@ public class BrandController : ControllerBase
                     paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
-            return BadRequest("Invalid property of transaction");
+            return BadRequest("Thuộc tính không hợp lệ của lịch sử giao dịch");
         }
         catch (InvalidParameterException e)
         {
@@ -271,7 +271,7 @@ public class BrandController : ControllerBase
                     paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
-            return BadRequest("Invalid property of store");
+            return BadRequest("Thuộc tính không hợp lệ của cửa hàng");
         }
         catch (InvalidParameterException e)
         {
@@ -309,7 +309,7 @@ public class BrandController : ControllerBase
                     paging.Search, paging.Page, paging.Limit);
                 return Ok(result);
             }
-            return BadRequest("Invalid property of voucher");
+            return BadRequest("Thuộc tính không hợp lệ của khuyến mãi");
         }
         catch (InvalidParameterException e)
         {
