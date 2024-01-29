@@ -1,5 +1,8 @@
 ﻿using AutoMapper;
 using FirebaseAdmin.Messaging;
+using Google.Api.Gax;
+using Org.BouncyCastle.Crypto;
+using System.Collections.Generic;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
@@ -40,6 +43,8 @@ public class CampaignService : ICampaignService
 
     private readonly IDiscordService discordService;
 
+    private readonly IActivityService activityService;
+
     public CampaignService(ICampaignRepository campaignRepository,
         IVoucherRepository voucherRepository,
         IFireBaseService fireBaseService,
@@ -47,7 +52,8 @@ public class CampaignService : ICampaignService
         IStoreService storeService,
         IMajorService majorService,
         ICampusService campusService,
-        IDiscordService discordService)
+        IDiscordService discordService,
+        IActivityService activityService)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -120,6 +126,7 @@ public class CampaignService : ICampaignService
         this.majorService = majorService;
         this.campusService = campusService;
         this.discordService = discordService;
+        this.activityService = activityService;
     }
 
     public async Task<CampaignExtraModel> Add(CreateCampaignModel creation)
@@ -308,9 +315,19 @@ public class CampaignService : ICampaignService
         throw new InvalidParameterException("Không tìm thấy Chiến dịch");
     }
 
+    public VoucherModel GetVoucherById(string id, string voucherId)
+    {
+        Campaign entity = campaignRepository.GetById(id);
+        if (entity != null)
+        {
+            return voucherService.GetByIdAndCampaign(voucherId, id);
+        }
+        throw new InvalidParameterException("Không tìm thấy Chiến dịch");
+    }
+
     public PagedResultModel<VoucherModel> GetVoucherListByCampaignId
-        (string id, List<string> typeIds, bool? state, 
-        string propertySort, bool isAsc, string search, int page, int limit)
+        (string id, List<string> typeIds, bool? state, string propertySort, 
+        bool isAsc, string search, int page, int limit)
     {
         Campaign entity = campaignRepository.GetById(id);
         if (entity != null)
@@ -348,30 +365,34 @@ public class CampaignService : ICampaignService
         Campaign entity = campaignRepository.GetById(id);
         if (entity != null)
         {
-            if (!(bool)entity.State)
+            if(entity.EndOn >= DateOnly.FromDateTime(DateTime.Now))
             {
-                entity.State = true;
-
-                fireBaseService.PushNotificationToStudent(new Message
+                if (!(bool)entity.State)
                 {
-                    Data = new Dictionary<string, string>()
+                    entity.State = true;
+
+                    fireBaseService.PushNotificationToStudent(new Message
+                    {
+                        Data = new Dictionary<string, string>()
                     {
                         { "brandId", entity.BrandId },
                         { "campaignId", entity.Id },
                     },
-                    //Token = registrationToken,
-                    Topic = entity.BrandId,
-                    Notification = new Notification()
-                    {
-                        Title = entity.Brand.BrandName + " tạo chiến dịch mới!",
-                        Body = "Chiến dịch " + entity.CampaignName,
-                        ImageUrl = entity.Image
-                    }
-                });
+                        //Token = registrationToken,
+                        Topic = entity.BrandId,
+                        Notification = new Notification()
+                        {
+                            Title = entity.Brand.BrandName + " tạo chiến dịch mới!",
+                            Body = "Chiến dịch " + entity.CampaignName,
+                            ImageUrl = entity.Image
+                        }
+                    });
 
-                return mapper.Map<CampaignExtraModel>(campaignRepository.Update(entity));
+                    return mapper.Map<CampaignExtraModel>(campaignRepository.Update(entity));
+                }
+                throw new InvalidParameterException("Chiến dịch này đã được phê duyệt");
             }
-            throw new InvalidParameterException("Chiến dịch này đã được phê duyệt");
+            throw new InvalidParameterException("Chiến dịch này đã kết thúc");
         }
         throw new InvalidParameterException("Không tìm thấy Chiến dịch");
     }

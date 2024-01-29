@@ -31,6 +31,8 @@ public interface ICampaignService
         (string id, List<string> brandIds, List<string> areaIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit);
 
+    VoucherModel GetVoucherById(string id, string voucherId);
+
     PagedResultModel<VoucherModel> GetVoucherListByCampaignId
         (string id, List<string> typeIds, bool? state, string propertySort,
         bool isAsc, string search, int page, int limit);

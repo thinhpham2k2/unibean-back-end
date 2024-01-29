@@ -10,6 +10,7 @@ using Unibean.Service.Models.Majors;
 using Unibean.Service.Models.Parameters;
 using Unibean.Service.Models.Stores;
 using Unibean.Service.Models.Vouchers;
+using Unibean.Service.Services;
 using Unibean.Service.Services.Interfaces;
 
 namespace Unibean.API.Controllers;
@@ -326,7 +327,7 @@ public class CampaignController : ControllerBase
     [ProducesResponseType(typeof(PagedResultModel<VoucherModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public ActionResult<PagedResultModel<VoucherModel>> GetVoucherListByStoreId(string id,
+    public ActionResult<PagedResultModel<VoucherModel>> GetVoucherListByCampaignId(string id,
         [FromQuery] List<string> typeIds,
         [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
@@ -346,6 +347,30 @@ public class CampaignController : ControllerBase
                 return Ok(result);
             }
             return BadRequest("Thuộc tính không hợp lệ của khuyến mãi");
+        }
+        catch (InvalidParameterException e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Get voucher by campaign id
+    /// </summary>
+    /// <param name="id">Campaign id.</param>
+    /// <param name="voucherId">Voucher id.</param>
+    [HttpGet("{id}/vouchers/{voucherId}")]
+    [Authorize(Roles = "Admin, Brand, Store, Student")]
+    [ProducesResponseType(typeof(VoucherModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public ActionResult<VoucherModel> GetVoucherByCampaignId(string id, string voucherId)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            return Ok(campaignService.GetVoucherById(id, voucherId));
         }
         catch (InvalidParameterException e)
         {

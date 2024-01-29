@@ -108,7 +108,9 @@ public class VoucherRepository : IVoucherRepository
                .Take(limit)
                .Include(s => s.Brand)
                .Include(s => s.Type)
-               .Include(s => s.VoucherItems.Where(v => (bool)v.Status))
+               .Include(s => s.VoucherItems.Where(
+                   v => (bool)v.Status && !(bool)v.IsBought && !(bool)v.IsUsed
+                   && v.CampaignId.Equals(campaignIds.FirstOrDefault())))
                .ToList();
 
             pagedResult = new PagedResultModel<Voucher>
@@ -190,6 +192,36 @@ public class VoucherRepository : IVoucherRepository
                 .ThenInclude(v => v.Campaign)
                     .ThenInclude(c => c.Brand)
             .Include(s => s.VoucherItems.Where(v => (bool)v.Status))
+                .ThenInclude(v => v.Campaign)
+                    .ThenInclude(c => c.Type)
+            .FirstOrDefault();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return voucher;
+    }
+
+    public Voucher GetByIdAndCampaign(string id, string campaignId)
+    {
+        Voucher voucher = new();
+        try
+        {
+            using var db = new UnibeanDBContext();
+            voucher = db.Vouchers
+            .Where(s => s.Id.Equals(id) && (bool)s.Status
+            && s.VoucherItems.Any(v => v.CampaignId.Equals(campaignId)))
+            .Include(s => s.Brand)
+            .Include(s => s.Type)
+            .Include(s => s.VoucherItems.Where(
+                v => (bool)v.Status && !(bool)v.IsBought && !(bool)v.IsUsed 
+                && v.CampaignId.Equals(campaignId)))
+                .ThenInclude(v => v.Campaign)
+                    .ThenInclude(c => c.Brand)
+            .Include(s => s.VoucherItems.Where(
+                v => (bool)v.Status && !(bool)v.IsBought && !(bool)v.IsUsed
+                && v.CampaignId.Equals(campaignId)))
                 .ThenInclude(v => v.Campaign)
                     .ThenInclude(c => c.Type)
             .FirstOrDefault();

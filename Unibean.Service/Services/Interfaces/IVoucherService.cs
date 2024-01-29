@@ -23,5 +23,7 @@ public interface IVoucherService
 
     VoucherExtraModel GetById(string id);
 
+    VoucherModel GetByIdAndCampaign(string id, string campaignId);
+
     Task<VoucherExtraModel> Update(string id, UpdateVoucherModel update);
 }

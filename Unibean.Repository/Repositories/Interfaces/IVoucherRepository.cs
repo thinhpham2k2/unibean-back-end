@@ -23,5 +23,7 @@ public interface IVoucherRepository
 
     Voucher GetById(string id);
 
+    Voucher GetByIdAndCampaign(string id, string campaignId);
+
     Voucher Update(Voucher update);
 }

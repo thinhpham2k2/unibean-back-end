@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Repositories.Interfaces;
+using Unibean.Service.Models.Activities;
+using Unibean.Service.Models.Activity;
 using Unibean.Service.Models.Transactions;
 using Unibean.Service.Services.Interfaces;
+using Type = Unibean.Repository.Entities.Type;
 
 namespace Unibean.Service.Services;
 
@@ -12,7 +15,11 @@ public class ActivityService : IActivityService
 
     private readonly IActivityRepository activityRepository;
 
-    public ActivityService(IActivityRepository activityRepository)
+    private readonly IVoucherRepository voucherRepository;
+
+    public ActivityService(
+        IActivityRepository activityRepository, 
+        IVoucherRepository voucherRepository)
     {
         var config = new MapperConfiguration(cfg
             =>
@@ -27,9 +34,22 @@ public class ActivityService : IActivityService
             .ForMember(t => t.WalletType, opt => opt.MapFrom(src => src.ActivityTransactions.FirstOrDefault().Wallet.Type.TypeName))
             .ForMember(t => t.WalletImage, opt => opt.MapFrom(src => src.ActivityTransactions.FirstOrDefault().Wallet.Type.Image))
             .ReverseMap();
+            cfg.CreateMap<Activity, CreateActivityModel>()
+            .ReverseMap()
+            .ForMember(s => s.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
+            .ForMember(s => s.StoreId, opt => opt.MapFrom(src => src.Type.Equals(Type.Use) ? src.StoreId : null))
+            .ForMember(s => s.DateCreated, opt => opt.MapFrom(src => DateTime.Now))
+            .ForMember(s => s.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
+            .ForMember(s => s.Status, opt => opt.MapFrom(src => true));
         });
         mapper = new Mapper(config);
         this.activityRepository = activityRepository;
+        this.voucherRepository = voucherRepository;
+    }
+
+    public ActivityModel Add(CreateActivityModel creation)
+    {
+        throw new NotImplementedException();
     }
 
     public List<StoreTransactionModel> GetList
