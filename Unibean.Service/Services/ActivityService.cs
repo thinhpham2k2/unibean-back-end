@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Unibean.Repository.Entities;
+using Unibean.Repository.Repositories;
 using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Service.Models.Activities;
 using Unibean.Service.Models.Activity;
+using Unibean.Service.Models.Areas;
 using Unibean.Service.Models.Transactions;
 using Unibean.Service.Services.Interfaces;
 using Type = Unibean.Repository.Entities.Type;
@@ -15,11 +17,11 @@ public class ActivityService : IActivityService
 
     private readonly IActivityRepository activityRepository;
 
-    private readonly IVoucherRepository voucherRepository;
+    private readonly IVoucherItemRepository voucherItemRepository;
 
     public ActivityService(
-        IActivityRepository activityRepository, 
-        IVoucherRepository voucherRepository)
+        IActivityRepository activityRepository,
+        IVoucherItemRepository voucherItemRepository)
     {
         var config = new MapperConfiguration(cfg
             =>
@@ -34,6 +36,8 @@ public class ActivityService : IActivityService
             .ForMember(t => t.WalletType, opt => opt.MapFrom(src => src.ActivityTransactions.FirstOrDefault().Wallet.Type.TypeName))
             .ForMember(t => t.WalletImage, opt => opt.MapFrom(src => src.ActivityTransactions.FirstOrDefault().Wallet.Type.Image))
             .ReverseMap();
+            cfg.CreateMap<Activity, ActivityModel>()
+            .ReverseMap();
             cfg.CreateMap<Activity, CreateActivityModel>()
             .ReverseMap()
             .ForMember(s => s.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
@@ -44,12 +48,14 @@ public class ActivityService : IActivityService
         });
         mapper = new Mapper(config);
         this.activityRepository = activityRepository;
-        this.voucherRepository = voucherRepository;
+        this.voucherItemRepository = voucherItemRepository;
     }
 
     public ActivityModel Add(CreateActivityModel creation)
     {
-        throw new NotImplementedException();
+        Activity entity = mapper.Map<Activity>(creation);
+        entity.VoucherItem = voucherItemRepository.GetById(creation.VoucherItemId);
+        return mapper.Map<ActivityModel>(activityRepository.Add(entity));
     }
 
     public List<StoreTransactionModel> GetList

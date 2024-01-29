@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
+using Unibean.Service.Models.Activities;
 using Unibean.Service.Models.Campaigns;
 using Unibean.Service.Models.Campuses;
 using Unibean.Service.Models.Exceptions;
@@ -10,8 +11,8 @@ using Unibean.Service.Models.Majors;
 using Unibean.Service.Models.Parameters;
 using Unibean.Service.Models.Stores;
 using Unibean.Service.Models.Vouchers;
-using Unibean.Service.Services;
 using Unibean.Service.Services.Interfaces;
+using Unibean.Service.Validations;
 
 namespace Unibean.API.Controllers;
 
@@ -62,9 +63,9 @@ public class CampaignController : ControllerBase
                 result = campaignService.GetAll
                 (brandIds, typeIds, storeIds, majorIds, campusIds, state, propertySort,
                 paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
-            return Ok(result);
+            return StatusCode(StatusCodes.Status200OK, result);
         }
-        return BadRequest("Thuộc tính của chiến dịch không hợp lệ");
+        return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính của chiến dịch không hợp lệ");
     }
 
     /// <summary>
@@ -81,11 +82,11 @@ public class CampaignController : ControllerBase
 
         try
         {
-            return Ok(campaignService.GetById(id));
+            return StatusCode(StatusCodes.Status200OK, campaignService.GetById(id));
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -109,11 +110,11 @@ public class CampaignController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, campaign);
             }
-            return NotFound("Tạo thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -137,11 +138,11 @@ public class CampaignController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, campaign);
             }
-            return NotFound("Cập nhật thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -169,7 +170,7 @@ public class CampaignController : ControllerBase
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -192,7 +193,7 @@ public class CampaignController : ControllerBase
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -227,13 +228,13 @@ public class CampaignController : ControllerBase
                 result = campaignService.GetCampusListByCampaignId
                     (id, universityIds, areaIds, state, propertySort, 
                     paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
-                return Ok(result);
+                return StatusCode(StatusCodes.Status200OK, result);
             }
-            return BadRequest("Thuộc tính không hợp lệ của cơ sở");
+            return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của cơ sở");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -264,13 +265,13 @@ public class CampaignController : ControllerBase
                 result = campaignService.GetMajorListByCampaignId
                     (id, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"),
                     paging.Search, paging.Page, paging.Limit);
-                return Ok(result);
+                return StatusCode(StatusCodes.Status200OK, result);
             }
-            return BadRequest("Thuộc tính không hợp lệ của chuyên ngành");
+            return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của chuyên ngành");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -305,13 +306,13 @@ public class CampaignController : ControllerBase
                 result = campaignService.GetStoreListByCampaignId
                     (id, brandIds, areaIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"),
                     paging.Search, paging.Page, paging.Limit);
-                return Ok(result);
+                return StatusCode(StatusCodes.Status200OK, result);
             }
-            return BadRequest("Thuộc tính không hợp lệ của cửa hàng");
+            return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của cửa hàng");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -344,13 +345,13 @@ public class CampaignController : ControllerBase
                 result = campaignService.GetVoucherListByCampaignId
                     (id, typeIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"),
                     paging.Search, paging.Page, paging.Limit);
-                return Ok(result);
+                return StatusCode(StatusCodes.Status200OK, result);
             }
-            return BadRequest("Thuộc tính không hợp lệ của khuyến mãi");
+            return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của khuyến mãi");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -370,11 +371,42 @@ public class CampaignController : ControllerBase
 
         try
         {
-            return Ok(campaignService.GetVoucherById(id, voucherId));
+            return StatusCode(StatusCodes.Status200OK, campaignService.GetVoucherById(id, voucherId));
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Get voucher by campaign id
+    /// </summary>
+    /// <param name="id">Campaign id.</param>
+    /// <param name="voucherId">Voucher id.</param>
+    /// <param name="creation">Buy activities model.</param>
+    [HttpPost("{id}/vouchers/{voucherId}")]
+    [Authorize(Roles = "Admin, Brand, Store, Student")]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.Created)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public ActionResult<VoucherModel> BuyVoucher(
+        [ValidCampaign] string id, 
+        [ValidVoucher] string voucherId, 
+        CreateBuyActivityModel creation)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            return campaignService.AddActivity(id, voucherId, creation) ?  
+                StatusCode(StatusCodes.Status201Created) :
+                StatusCode(StatusCodes.Status404NotFound, "Tạo thất bại");
+        }
+        catch (InvalidParameterException e)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 }

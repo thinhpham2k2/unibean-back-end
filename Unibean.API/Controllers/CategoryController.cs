@@ -47,9 +47,9 @@ public class CategoryController : ControllerBase
                 result = categoryService.GetAll
                 (state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
                 paging.Search, paging.Page, paging.Limit);
-            return Ok(result);
+            return StatusCode(StatusCodes.Status200OK, result);
         }
-        return BadRequest("Thuộc tính không hợp lệ của thể loại sản phẩm");
+        return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của thể loại sản phẩm");
     }
 
     /// <summary>
@@ -66,11 +66,11 @@ public class CategoryController : ControllerBase
 
         try
         {
-            return Ok(categoryService.GetById(id));
+            return StatusCode(StatusCodes.Status200OK, categoryService.GetById(id));
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -94,11 +94,11 @@ public class CategoryController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, category);
             }
-            return NotFound("Tạo thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -122,11 +122,11 @@ public class CategoryController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, category);
             }
-            return NotFound("Cập nhật thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -149,7 +149,7 @@ public class CategoryController : ControllerBase
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 }

@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
 using FirebaseAdmin.Messaging;
-using Google.Api.Gax;
-using Org.BouncyCastle.Crypto;
-using System.Collections.Generic;
+using System.Linq;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
+using Unibean.Service.Models.Activities;
 using Unibean.Service.Models.CampaignCampuses;
 using Unibean.Service.Models.CampaignMajors;
 using Unibean.Service.Models.Campaigns;
@@ -227,6 +226,18 @@ public class CampaignService : ICampaignService
         }
 
         return mapper.Map<CampaignExtraModel>(campaign);
+    }
+
+    public bool AddActivity
+        (string id, string voucherId, CreateBuyActivityModel creation)
+    {
+        foreach (string itemId in new List<string>().Take((int)creation.Quantity))
+        {
+            CreateActivityModel create = mapper.Map<CreateActivityModel>(creation);
+            create.VoucherItemId = itemId;
+            activityService.Add(create);
+        }
+        return true;
     }
 
     public void Delete(string id)

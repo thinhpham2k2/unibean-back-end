@@ -57,9 +57,9 @@ public class BrandController : ControllerBase
                 result = brandService.GetAll
                 (state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, 
                 paging.Page, paging.Limit, jwtService.GetJwtRequest(jwtToken.Split(" ")[1]));
-            return Ok(result);
+            return StatusCode(StatusCodes.Status200OK, result);
         }
-        return BadRequest("Thuộc tính không hợp lệ của thương hiệu");
+        return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của thương hiệu");
     }
 
     /// <summary>
@@ -78,11 +78,11 @@ public class BrandController : ControllerBase
 
         try
         {
-            return Ok(brandService.GetById(id, jwtService.GetJwtRequest(jwtToken.Split(" ")[1])));
+            return StatusCode(StatusCodes.Status200OK, brandService.GetById(id, jwtService.GetJwtRequest(jwtToken.Split(" ")[1])));
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -106,11 +106,11 @@ public class BrandController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, brand);
             }
-            return NotFound("Tạo thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -134,11 +134,11 @@ public class BrandController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, brand);
             }
-            return NotFound("Cập nhật thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -161,7 +161,7 @@ public class BrandController : ControllerBase
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -200,13 +200,13 @@ public class BrandController : ControllerBase
                 result = brandService.GetCampaignListByBrandId
                     (id, typeIds, storeIds, majorIds, campusIds, state, propertySort,
                     paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
-                return Ok(result);
+                return StatusCode(StatusCodes.Status200OK, result);
             }
-            return BadRequest("Thuộc tính của chiến dịch không hợp lệ");
+            return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính của chiến dịch không hợp lệ");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -239,13 +239,13 @@ public class BrandController : ControllerBase
                 result = brandService.GetHistoryTransactionListByStudentId
                     (id, walletTypeIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
                     paging.Search, paging.Page, paging.Limit);
-                return Ok(result);
+                return StatusCode(StatusCodes.Status200OK, result);
             }
-            return BadRequest("Thuộc tính không hợp lệ của lịch sử giao dịch");
+            return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của lịch sử giao dịch");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -278,13 +278,13 @@ public class BrandController : ControllerBase
                 result = brandService.GetStoreListByBrandId
                     (id, areaIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
                     paging.Search, paging.Page, paging.Limit);
-                return Ok(result);
+                return StatusCode(StatusCodes.Status200OK, result);
             }
-            return BadRequest("Thuộc tính không hợp lệ của cửa hàng");
+            return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của cửa hàng");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -317,13 +317,13 @@ public class BrandController : ControllerBase
                 result = brandService.GetVoucherListByBrandId
                     (id, typeIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
                     paging.Search, paging.Page, paging.Limit);
-                return Ok(result);
+                return StatusCode(StatusCodes.Status200OK, result);
             }
-            return BadRequest("Thuộc tính không hợp lệ của khuyến mãi");
+            return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của khuyến mãi");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 }

@@ -47,9 +47,9 @@ public class UniversityController : ControllerBase
                 result = universityService.GetAll
                 (state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
                 paging.Search, paging.Page, paging.Limit);
-            return Ok(result);
+            return StatusCode(StatusCodes.Status200OK, result);
         }
-        return BadRequest("Thuộc tính không hợp lệ của trường đại học");
+        return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của trường đại học");
     }
 
     /// <summary>
@@ -66,11 +66,11 @@ public class UniversityController : ControllerBase
 
         try
         {
-            return Ok(universityService.GetById(id));
+            return StatusCode(StatusCodes.Status200OK, universityService.GetById(id));
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -94,11 +94,11 @@ public class UniversityController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, type);
             }
-            return NotFound("Tạo thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -122,11 +122,11 @@ public class UniversityController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, type);
             }
-            return NotFound("Cập nhật thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -149,7 +149,7 @@ public class UniversityController : ControllerBase
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 }

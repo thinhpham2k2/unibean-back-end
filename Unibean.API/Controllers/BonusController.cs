@@ -53,9 +53,9 @@ public class BonusController : ControllerBase
                 result = bonusService.GetAll
                 (brandIds, storeIds, studentIds, state, propertySort, 
                 paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
-            return Ok(result);
+            return StatusCode(StatusCodes.Status200OK, result);
         }
-        return BadRequest("Invalid property of bonus");
+        return StatusCode(StatusCodes.Status400BadRequest, "Invalid property of bonus");
     }
 
     /// <summary>
@@ -72,11 +72,11 @@ public class BonusController : ControllerBase
 
         try
         {
-            return Ok(bonusService.GetById(id));
+            return StatusCode(StatusCodes.Status200OK, bonusService.GetById(id));
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 }

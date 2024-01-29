@@ -51,9 +51,9 @@ public class VoucherController : ControllerBase
                 result = voucherService.GetAll
                 (brandIds, typeIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
                 paging.Search, paging.Page, paging.Limit);
-            return Ok(result);
+            return StatusCode(StatusCodes.Status200OK, result);
         }
-        return BadRequest("Thuộc tính không hợp lệ của khuyến mãi");
+        return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của khuyến mãi");
     }
 
     /// <summary>
@@ -70,11 +70,11 @@ public class VoucherController : ControllerBase
 
         try
         {
-            return Ok(voucherService.GetById(id));
+            return StatusCode(StatusCodes.Status200OK, voucherService.GetById(id));
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -98,11 +98,11 @@ public class VoucherController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, voucher);
             }
-            return NotFound("Tạo thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -126,11 +126,11 @@ public class VoucherController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, voucher);
             }
-            return NotFound("Cập nhật thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -153,7 +153,7 @@ public class VoucherController : ControllerBase
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 }

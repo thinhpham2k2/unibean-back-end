@@ -49,9 +49,9 @@ public class ChallengeController : ControllerBase
                 result = challengeService.GetAll
                 (typeIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
                 paging.Search, paging.Page, paging.Limit);
-            return Ok(result);
+            return StatusCode(StatusCodes.Status200OK, result);
         }
-        return BadRequest("Thuộc tính thách thức không hợp lệ");
+        return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính thách thức không hợp lệ");
     }
 
     /// <summary>
@@ -68,11 +68,11 @@ public class ChallengeController : ControllerBase
 
         try
         {
-            return Ok(challengeService.GetById(id));
+            return StatusCode(StatusCodes.Status200OK, challengeService.GetById(id));
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -96,11 +96,11 @@ public class ChallengeController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, challenge);
             }
-            return NotFound("Tạo thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -124,11 +124,11 @@ public class ChallengeController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, challenge);
             }
-            return NotFound("Cập nhật thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -151,7 +151,7 @@ public class ChallengeController : ControllerBase
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 }

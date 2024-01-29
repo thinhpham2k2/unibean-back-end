@@ -23,7 +23,7 @@ public class ValidationController : ControllerBase
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
-        return Ok(code.Code + " is valid");
+        return StatusCode(StatusCodes.Status200OK, code.Code + " is valid");
     }
 
     /// <summary>
@@ -38,7 +38,7 @@ public class ValidationController : ControllerBase
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
-        return Ok(email.Email + " is valid");
+        return StatusCode(StatusCodes.Status200OK, email.Email + " is valid");
     }
 
     /// <summary>
@@ -53,7 +53,7 @@ public class ValidationController : ControllerBase
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
-        return Ok(inviteCode.InviteCode + " is valid");
+        return StatusCode(StatusCodes.Status200OK, inviteCode.InviteCode + " is valid");
     }
 
     /// <summary>
@@ -68,7 +68,7 @@ public class ValidationController : ControllerBase
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
-        return Ok(phone.Phone + " is valid");
+        return StatusCode(StatusCodes.Status200OK, phone.Phone + " is valid");
     }
 
     /// <summary>
@@ -83,6 +83,6 @@ public class ValidationController : ControllerBase
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
-        return Ok(userName.UserName + " is valid");
+        return StatusCode(StatusCodes.Status200OK, userName.UserName + " is valid");
     }
 }

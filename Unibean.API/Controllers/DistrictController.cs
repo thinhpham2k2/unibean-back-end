@@ -49,9 +49,9 @@ public class DistrictController : ControllerBase
                 result = districtService.GetAll
                 (cityIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
                 paging.Search, paging.Page, paging.Limit);
-            return Ok(result);
+            return StatusCode(StatusCodes.Status200OK, result);
         }
-        return BadRequest("Thuộc tính không hợp lệ của quận");
+        return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của quận");
     }
 
     /// <summary>
@@ -68,11 +68,11 @@ public class DistrictController : ControllerBase
 
         try
         {
-            return Ok(districtService.GetById(id));
+            return StatusCode(StatusCodes.Status200OK, districtService.GetById(id));
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -96,11 +96,11 @@ public class DistrictController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, district);
             }
-            return NotFound("Tạo thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -124,11 +124,11 @@ public class DistrictController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, district);
             }
-            return NotFound("Cập nhật thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -151,7 +151,7 @@ public class DistrictController : ControllerBase
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 }

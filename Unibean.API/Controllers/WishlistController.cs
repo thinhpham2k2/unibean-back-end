@@ -51,9 +51,9 @@ public class WishlistController : ControllerBase
                 result = wishlistService.GetAll
                 (studentIds, brandIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
                 paging.Search, paging.Page, paging.Limit);
-            return Ok(result);
+            return StatusCode(StatusCodes.Status200OK, result);
         }
-        return BadRequest("Thuộc tính không hợp lệ của danh sách mong muốn");
+        return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của danh sách mong muốn");
     }
 
     /// <summary>
@@ -76,11 +76,11 @@ public class WishlistController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, wishlist);
             }
-            return NotFound("Cập nhật thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 }

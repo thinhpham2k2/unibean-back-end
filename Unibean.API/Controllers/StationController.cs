@@ -48,9 +48,9 @@ public class StationController : ControllerBase
                 result = stationService.GetAll
                 (state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
                 paging.Search, paging.Page, paging.Limit);
-            return Ok(result);
+            return StatusCode(StatusCodes.Status200OK, result);
         }
-        return BadRequest("Thuộc tính không hợp lệ của trạm");
+        return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của trạm");
     }
 
     /// <summary>
@@ -67,11 +67,11 @@ public class StationController : ControllerBase
 
         try
         {
-            return Ok(stationService.GetById(id));
+            return StatusCode(StatusCodes.Status200OK, stationService.GetById(id));
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -95,11 +95,11 @@ public class StationController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, station);
             }
-            return NotFound("Tạo thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -123,11 +123,11 @@ public class StationController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, station);
             }
-            return NotFound("Cập nhật thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -150,7 +150,7 @@ public class StationController : ControllerBase
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -185,13 +185,13 @@ public class StationController : ControllerBase
                     (id, studentIds, stateIds, state, propertySort.Equals("StateCurrent")
                         ? "OrderStates.Max(s => s.StateId)" : propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
                         paging.Search, paging.Page, paging.Limit);
-                return Ok(result);
+                return StatusCode(StatusCodes.Status200OK, result);
             }
-            return BadRequest("Thuộc tính của đơn đặt hàng không hợp lệ");
+            return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính của đơn đặt hàng không hợp lệ");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 }

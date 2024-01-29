@@ -47,9 +47,9 @@ public class CampaignTypeController : ControllerBase
                 result = campaignTypeService.GetAll
                 (state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
                 paging.Search, paging.Page, paging.Limit);
-            return Ok(result);
+            return StatusCode(StatusCodes.Status200OK, result);
         }
-        return BadRequest("Thuộc tính không hợp lệ của loại chiến dịch");
+        return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của loại chiến dịch");
     }
 
     /// <summary>
@@ -66,11 +66,11 @@ public class CampaignTypeController : ControllerBase
 
         try
         {
-            return Ok(campaignTypeService.GetById(id));
+            return StatusCode(StatusCodes.Status200OK, campaignTypeService.GetById(id));
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -94,11 +94,11 @@ public class CampaignTypeController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, type);
             }
-            return NotFound("Tạo thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -122,11 +122,11 @@ public class CampaignTypeController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, type);
             }
-            return NotFound("Cập nhật thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -149,7 +149,7 @@ public class CampaignTypeController : ControllerBase
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 }

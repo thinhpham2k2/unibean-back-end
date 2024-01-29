@@ -63,9 +63,9 @@ public class StudentController : ControllerBase
                 result = studentService.GetAll
                 (majorIds, campusIds, state, isVerify, propertySort, 
                 paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
-            return Ok(result);
+            return StatusCode(StatusCodes.Status200OK, result);
         }
-        return BadRequest("Thuộc tính không hợp lệ của sinh viên");
+        return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của sinh viên");
     }
 
     /// <summary>
@@ -82,11 +82,11 @@ public class StudentController : ControllerBase
 
         try
         {
-            return Ok(studentService.GetById(id));
+            return StatusCode(StatusCodes.Status200OK, studentService.GetById(id));
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -110,11 +110,11 @@ public class StudentController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, student);
             }
-            return NotFound("Tạo thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -138,11 +138,11 @@ public class StudentController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, student);
             }
-            return NotFound("Cập nhật thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -170,7 +170,7 @@ public class StudentController : ControllerBase
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -193,7 +193,7 @@ public class StudentController : ControllerBase
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -228,13 +228,13 @@ public class StudentController : ControllerBase
                 result = studentService.GetChallengeListByStudentId
                     (id, state, isCompleted, isClaimed, propertySort, 
                     paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
-                return Ok(result);
+                return StatusCode(StatusCodes.Status200OK, result);
             }
-            return BadRequest("Thuộc tính của thách thức không hợp lệ");
+            return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính của thách thức không hợp lệ");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -267,13 +267,13 @@ public class StudentController : ControllerBase
                 result = studentService.GetHistoryTransactionListByStudentId
                     (id, typeIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
                     paging.Search, paging.Page, paging.Limit);
-                return Ok(result);
+                return StatusCode(StatusCodes.Status200OK, result);
             }
-            return BadRequest("Thuộc tính của giao dịch không hợp lệ");
+            return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính của giao dịch không hợp lệ");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -308,13 +308,13 @@ public class StudentController : ControllerBase
                 result = studentService.GetOrderListByStudentId
                     (stationIds, stateIds, id, state, propertySort.Equals("StateCurrent")
                         ? "OrderStates.Max(s => s.StateId)" : propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
-                return Ok(result);
+                return StatusCode(StatusCodes.Status200OK, result);
             }
-            return BadRequest("Thuộc tính của đơn đặt hàng không hợp lệ");
+            return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính của đơn đặt hàng không hợp lệ");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -339,7 +339,7 @@ public class StudentController : ControllerBase
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -359,11 +359,11 @@ public class StudentController : ControllerBase
 
         try
         {
-            return Ok(studentService.GetOrderByOrderId(id, orderId));
+            return StatusCode(StatusCodes.Status200OK, studentService.GetOrderByOrderId(id, orderId));
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -403,13 +403,13 @@ public class StudentController : ControllerBase
                     (campaignIds, voucherIds, brandIds, typeIds, id, state, 
                     propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
                     paging.Search, paging.Page, paging.Limit);
-                return Ok(result);
+                return StatusCode(StatusCodes.Status200OK, result);
             }
-            return BadRequest("Thuộc tính không hợp lệ của khuyến mãi");
+            return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của khuyến mãi");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -429,11 +429,11 @@ public class StudentController : ControllerBase
 
         try
         {
-            return Ok(studentService.GetVoucherItemByVoucherId(id, voucherId));
+            return StatusCode(StatusCodes.Status200OK, studentService.GetVoucherItemByVoucherId(id, voucherId));
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -452,11 +452,11 @@ public class StudentController : ControllerBase
 
         try
         {
-            return Ok(studentService.GetWishlistsByStudentId(id));
+            return StatusCode(StatusCodes.Status200OK, studentService.GetWishlistsByStudentId(id));
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 }

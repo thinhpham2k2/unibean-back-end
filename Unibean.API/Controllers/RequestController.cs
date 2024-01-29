@@ -51,9 +51,9 @@ public class RequestController : ControllerBase
                 result = requestService.GetAll
                 (brandIds, adminIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
                 paging.Search, paging.Page, paging.Limit);
-            return Ok(result);
+            return StatusCode(StatusCodes.Status200OK, result);
         }
-        return BadRequest("Invalid property of request");
+        return StatusCode(StatusCodes.Status400BadRequest, "Invalid property of request");
     }
 
     /// <summary>
@@ -70,11 +70,11 @@ public class RequestController : ControllerBase
 
         try
         {
-            return Ok(requestService.GetById(id));
+            return StatusCode(StatusCodes.Status200OK, requestService.GetById(id));
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 }

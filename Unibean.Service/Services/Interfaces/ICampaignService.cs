@@ -1,4 +1,6 @@
 ﻿using Unibean.Repository.Paging;
+using Unibean.Service.Models.Activities;
+using Unibean.Service.Models.Activity;
 using Unibean.Service.Models.Campaigns;
 using Unibean.Service.Models.Campuses;
 using Unibean.Service.Models.Majors;
@@ -10,6 +12,8 @@ namespace Unibean.Service.Services.Interfaces;
 public interface ICampaignService
 {
     Task<CampaignExtraModel> Add(CreateCampaignModel creation);
+
+    bool AddActivity(string id, string voucherId, CreateBuyActivityModel creation);
 
     void Delete(string id);
 

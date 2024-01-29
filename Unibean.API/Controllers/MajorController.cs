@@ -47,9 +47,9 @@ public class MajorController : ControllerBase
                 result = majorService.GetAll
                 (state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
                 paging.Search, paging.Page, paging.Limit);
-            return Ok(result);
+            return StatusCode(StatusCodes.Status200OK, result);
         }
-        return BadRequest("Thuộc tính không hợp lệ của chuyên ngành");
+        return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của chuyên ngành");
     }
 
     /// <summary>
@@ -66,11 +66,11 @@ public class MajorController : ControllerBase
 
         try
         {
-            return Ok(majorService.GetById(id));
+            return StatusCode(StatusCodes.Status200OK, majorService.GetById(id));
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -94,11 +94,11 @@ public class MajorController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, major);
             }
-            return NotFound("Tạo thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -122,11 +122,11 @@ public class MajorController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, major);
             }
-            return NotFound("Cập nhật thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -149,7 +149,7 @@ public class MajorController : ControllerBase
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 }
