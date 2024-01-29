@@ -7,6 +7,7 @@ using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Models.Stations;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Repository.Entities;
+using Unibean.Service.Models.Orders;
 
 namespace Unibean.API.Controllers;
 
@@ -146,6 +147,47 @@ public class StationController : ControllerBase
         {
             stationService.Delete(id);
             return StatusCode(StatusCodes.Status204NoContent);
+        }
+        catch (InvalidParameterException e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Get order list by station id
+    /// </summary>
+    /// <param name="id">Station id.</param>
+    /// <param name="studentIds">Filter by student Id.</param>
+    /// <param name="stateIds">Filter by state Id.</param>
+    /// <param name="state">Filter by order state.</param>
+    /// <param name="paging">Paging parameter.</param>
+    [HttpGet("{id}/orders")]
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType(typeof(PagedResultModel<OrderModel>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    public ActionResult<PagedResultModel<OrderModel>> GetOrderListByStudentId(string id,
+        [FromQuery] List<string> studentIds,
+        [FromQuery] List<string> stateIds,
+        [FromQuery] bool? state,
+        [FromQuery] PagingModel paging)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            string propertySort = paging.Sort.Split(",")[0];
+            var propertyInfo = typeof(Order).GetProperty(propertySort);
+            if (propertySort != null && propertyInfo != null || propertySort.Equals("StateCurrent"))
+            {
+                PagedResultModel<OrderModel>
+                result = stationService.GetOrderListByStudentId
+                    (id, studentIds, stateIds, state, propertySort.Equals("StateCurrent")
+                        ? "OrderStates.Max(s => s.StateId)" : propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                        paging.Search, paging.Page, paging.Limit);
+                return Ok(result);
+            }
+            return BadRequest("Thuộc tính của đơn đặt hàng không hợp lệ");
         }
         catch (InvalidParameterException e)
         {

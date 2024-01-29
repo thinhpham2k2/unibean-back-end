@@ -3,6 +3,7 @@ using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Service.Models.Exceptions;
+using Unibean.Service.Models.Orders;
 using Unibean.Service.Models.Stations;
 using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Utilities.FireBase;
@@ -19,8 +20,12 @@ public class StationService : IStationService
 
     private readonly IFireBaseService fireBaseService;
 
-    public StationService(IStationRepository stationRepository, 
-        IFireBaseService fireBaseService)
+    private readonly IOrderService orderService;
+
+    public StationService(
+        IStationRepository stationRepository, 
+        IFireBaseService fireBaseService,
+        IOrderService orderService)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -28,6 +33,23 @@ public class StationService : IStationService
             cfg.CreateMap<Station, StationModel>()
             .ReverseMap();
             cfg.CreateMap<PagedResultModel<Station>, PagedResultModel<StationModel>>()
+            .ReverseMap();
+            cfg.CreateMap<Station, StationExtraModel>()
+            .ForMember(t => t.NumberOfOrder, opt 
+                => opt.MapFrom(src => src.Orders.Where(o 
+                => o.OrderStates.DistinctBy(s => s.State).Count().Equals(1)).Count()))
+            .ForMember(t => t.NumberOfAccept, opt 
+                => opt.MapFrom(src => src.Orders.Where(o 
+                => o.OrderStates.DistinctBy(s => s.State).Count().Equals(2)).Count()))
+            .ForMember(t => t.NumberOfPrepare, opt 
+                => opt.MapFrom(src => src.Orders.Where(o 
+                => o.OrderStates.DistinctBy(s => s.State).Count().Equals(3)).Count()))
+            .ForMember(t => t.NumberOfDelivery, opt 
+                => opt.MapFrom(src => src.Orders.Where(o 
+                => o.OrderStates.DistinctBy(s => s.State).Count().Equals(4)).Count()))
+            .ForMember(t => t.NumberOfDone, opt 
+                => opt.MapFrom(src => src.Orders.Where(o 
+                => o.OrderStates.DistinctBy(s => s.State).Count().Equals(5)).Count()))
             .ReverseMap();
             cfg.CreateMap<Station, UpdateStationModel>()
             .ReverseMap()
@@ -43,9 +65,10 @@ public class StationService : IStationService
         mapper = new Mapper(config);
         this.stationRepository = stationRepository;
         this.fireBaseService = fireBaseService;
+        this.orderService = orderService;
     }
 
-    public async Task<StationModel> Add(CreateStationModel creation)
+    public async Task<StationExtraModel> Add(CreateStationModel creation)
     {
         Station entity = mapper.Map<Station>(creation);
 
@@ -56,7 +79,7 @@ public class StationService : IStationService
             entity.Image = f.URL;
             entity.FileName = f.FileName;
         }
-        return mapper.Map<StationModel>(stationRepository.Add(entity));
+        return mapper.Map<StationExtraModel>(stationRepository.Add(entity));
     }
 
     public void Delete(string id)
@@ -64,12 +87,21 @@ public class StationService : IStationService
         Station entity = stationRepository.GetById(id);
         if (entity != null)
         {
-            if (entity.Image != null && entity.FileName != null)
+            entity.Orders = entity.Orders.Where(
+                o => o.OrderStates.DistinctBy(s => s.State).Count() < 5).ToList();
+            if (entity.Orders.Count.Equals(0))
             {
-                //Remove image
-                fireBaseService.RemoveFileAsync(entity.FileName, FOLDER_NAME);
+                if (entity.Image != null && entity.FileName != null)
+                {
+                    //Remove image
+                    fireBaseService.RemoveFileAsync(entity.FileName, FOLDER_NAME);
+                }
+                stationRepository.Delete(id);
             }
-            stationRepository.Delete(id);
+            else
+            {
+                throw new InvalidParameterException("Đang có đơn hàng ở trạm");
+            }
         }
         else
         {
@@ -84,17 +116,31 @@ public class StationService : IStationService
             (state, propertySort, isAsc, search, page, limit));
     }
 
-    public StationModel GetById(string id)
+    public StationExtraModel GetById(string id)
     {
         Station entity = stationRepository.GetById(id);
         if (entity != null)
         {
-            return mapper.Map<StationModel>(entity);
+            return mapper.Map<StationExtraModel>(entity);
         }
         throw new InvalidParameterException("Không tìm thấy trạm");
     }
 
-    public async Task<StationModel> Update(string id, UpdateStationModel update)
+    public PagedResultModel<OrderModel> GetOrderListByStudentId
+        (string id, List<string> studentIds, List<string> stateIds, bool? state, 
+        string propertySort, bool isAsc, string search, int page, int limit)
+    {
+        Station entity = stationRepository.GetById(id);
+        if (entity != null)
+        {
+            return orderService.GetAll
+                (new() { id }, studentIds, stateIds, state, 
+                propertySort, isAsc, search, page, limit);
+        }
+        throw new InvalidParameterException("Không tìm thấy trạm");
+    }
+
+    public async Task<StationExtraModel> Update(string id, UpdateStationModel update)
     {
         Station entity = stationRepository.GetById(id);
         if (entity != null)
@@ -110,7 +156,7 @@ public class StationService : IStationService
                 entity.Image = f.URL;
                 entity.FileName = f.FileName;
             }
-            return mapper.Map<StationModel>(stationRepository.Update(entity));
+            return mapper.Map<StationExtraModel>(stationRepository.Update(entity));
         }
         throw new InvalidParameterException("Không tìm thấy trạm");
     }

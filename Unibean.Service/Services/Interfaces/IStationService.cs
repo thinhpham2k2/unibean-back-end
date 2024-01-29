@@ -1,18 +1,23 @@
 ﻿using Unibean.Repository.Paging;
+using Unibean.Service.Models.Orders;
 using Unibean.Service.Models.Stations;
 
 namespace Unibean.Service.Services.Interfaces;
 
 public interface IStationService
 {
-    Task<StationModel> Add(CreateStationModel creation);
+    Task<StationExtraModel> Add(CreateStationModel creation);
 
     void Delete(string id);
 
     PagedResultModel<StationModel> GetAll
         (bool? state, string propertySort, bool isAsc, string search, int page, int limit);
 
-    StationModel GetById(string id);
+    StationExtraModel GetById(string id);
 
-    Task<StationModel> Update(string id, UpdateStationModel update);
+    PagedResultModel<OrderModel> GetOrderListByStudentId
+        (string id, List<string> studentIds, List<string> stateIds, bool? state,
+        string propertySort, bool isAsc, string search, int page, int limit);
+
+    Task<StationExtraModel> Update(string id, UpdateStationModel update);
 }

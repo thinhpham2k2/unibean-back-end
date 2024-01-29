@@ -86,6 +86,9 @@ public class StationRepository : IStationRepository
             using var db = new UnibeanDBContext();
             station = db.Stations
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
+            .Include(s => s.Orders.Where(o => (bool)o.Status))
+                .ThenInclude(o => o.OrderStates.Where(o => (bool)o.Status))
+                    .ThenInclude(s => s.State)
             .FirstOrDefault();
         }
         catch (Exception ex)
