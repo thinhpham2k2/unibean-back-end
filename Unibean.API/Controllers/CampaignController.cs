@@ -164,7 +164,7 @@ public class CampaignController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, campaign);
             }
-            return NotFound("Cập nhật trạng thái không thành công");
+            return NotFound("Cập nhật trạng thái thất bại");
         }
         catch (InvalidParameterException e)
         {

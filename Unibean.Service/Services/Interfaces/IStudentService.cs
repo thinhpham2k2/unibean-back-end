@@ -44,4 +44,6 @@ public interface IStudentService
     List<string> GetWishlistsByStudentId(string id);
 
     Task<StudentExtraModel> Update(string id, UpdateStudentModel update);
+
+    StudentExtraModel UpdateVerification(string id);
 }

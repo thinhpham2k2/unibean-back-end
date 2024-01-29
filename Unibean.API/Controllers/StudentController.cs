@@ -147,6 +147,34 @@ public class StudentController : ControllerBase
     }
 
     /// <summary>
+    /// Update student verification
+    /// </summary>
+    [HttpPut("{id}/verification")]
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType(typeof(StudentExtraModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public ActionResult UpdateState(string id)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            var student = studentService.UpdateVerification(id);
+            if (student != null)
+            {
+                return StatusCode(StatusCodes.Status200OK, student);
+            }
+            return NotFound("Xác minh tài khoản sinh viên thất bại");
+        }
+        catch (InvalidParameterException e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    /// <summary>
     /// Delete student
     /// </summary>
     [HttpDelete("{id}")]
