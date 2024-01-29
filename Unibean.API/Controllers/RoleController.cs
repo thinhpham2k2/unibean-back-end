@@ -80,8 +80,8 @@ public class RoleController : ControllerBase
     [HttpPost]
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(RoleModel), (int)HttpStatusCode.Created)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> Create([FromForm] CreateRoleModel creation)
     {
@@ -108,8 +108,8 @@ public class RoleController : ControllerBase
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(RoleModel), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> Update(string id, [FromForm] UpdateRoleModel update)
     {

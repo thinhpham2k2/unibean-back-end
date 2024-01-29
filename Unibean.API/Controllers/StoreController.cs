@@ -93,8 +93,8 @@ public class StoreController : ControllerBase
     [HttpPost]
     [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType(typeof(StoreModel), (int)HttpStatusCode.Created)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> Create([FromForm] CreateStoreModel creation)
     {
@@ -121,8 +121,8 @@ public class StoreController : ControllerBase
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType(typeof(StoreExtraModel), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> Update(string id, [FromForm] UpdateStoreModel update)
     {
@@ -172,8 +172,8 @@ public class StoreController : ControllerBase
     [HttpPost("{id}/bonuses")]
     [Authorize(Roles = "Brand, Store")]
     [ProducesResponseType(typeof(BonusModel), (int)HttpStatusCode.Created)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult CreateBonus([ValidStore] string id, [FromBody] CreateBonusModel creation)
     {

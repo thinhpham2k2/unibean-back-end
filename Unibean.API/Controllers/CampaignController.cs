@@ -96,8 +96,8 @@ public class CampaignController : ControllerBase
     [HttpPost]
     [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType(typeof(CampaignModel), (int)HttpStatusCode.Created)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> Create([FromForm] CreateCampaignModel creation)
     {
@@ -124,8 +124,8 @@ public class CampaignController : ControllerBase
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType(typeof(CampaignModel), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> Update(string id, [FromForm] UpdateCampaignModel update)
     {
@@ -152,8 +152,8 @@ public class CampaignController : ControllerBase
     [HttpPut("{id}/state")]
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(CampaignExtraModel), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult UpdateState(string id)
     {
@@ -380,16 +380,16 @@ public class CampaignController : ControllerBase
     }
 
     /// <summary>
-    /// Get voucher by campaign id
+    /// Buy voucher
     /// </summary>
     /// <param name="id">Campaign id.</param>
     /// <param name="voucherId">Voucher id.</param>
     /// <param name="creation">Buy activities model.</param>
     [HttpPost("{id}/vouchers/{voucherId}")]
-    [Authorize(Roles = "Admin, Brand, Store, Student")]
+    [Authorize(Roles = "Student")]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.Created)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<VoucherModel> BuyVoucher(
         [ValidCampaign] string id, 

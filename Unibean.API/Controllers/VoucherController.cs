@@ -84,8 +84,8 @@ public class VoucherController : ControllerBase
     [HttpPost]
     [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType(typeof(VoucherExtraModel), (int)HttpStatusCode.Created)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> Create([FromForm] CreateVoucherModel creation)
     {
@@ -112,8 +112,8 @@ public class VoucherController : ControllerBase
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType(typeof(VoucherExtraModel), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> Update(string id, [FromForm] UpdateVoucherModel update)
     {

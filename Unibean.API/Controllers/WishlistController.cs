@@ -62,8 +62,8 @@ public class WishlistController : ControllerBase
     [HttpPost]
     [Authorize(Roles = "Admin, Student")]
     [ProducesResponseType(typeof(WishlistModel), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult Update([FromBody] UpdateWishlistModel update)
     {

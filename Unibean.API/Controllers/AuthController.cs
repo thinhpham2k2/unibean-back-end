@@ -48,8 +48,8 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     [HttpPost("website/login")]
     [ProducesResponseType(typeof(JwtResponseModel), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult GenerateWebsiteToken([FromBody] LoginFromModel requestLogin)
     {
@@ -74,8 +74,8 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     [HttpPost("mobile/login")]
     [ProducesResponseType(typeof(JwtResponseModel), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult GenerateMobileToken([FromBody] LoginFromModel requestLogin)
     {
@@ -164,8 +164,8 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     [HttpPost("website/login/google")]
     [ProducesResponseType(typeof(JwtResponseModel), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> GenerateWebsiteTokenByGoogle([FromBody] GoogleTokenModel token)
     {
@@ -195,9 +195,9 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     [HttpPost("mobile/login/google")]
     [ProducesResponseType(typeof(JwtResponseModel), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.SeeOther)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> GenerateMobileTokenByGoogle([FromBody] GoogleTokenModel token)
     {
@@ -227,8 +227,8 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     [HttpPost("mobile/register/google")]
     [ProducesResponseType(typeof(JwtResponseModel), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> RegisterMobileAccountByGoogle([FromForm] CreateStudentGoogleModel student)
     {
@@ -254,8 +254,8 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     [HttpPost("website/register")]
     [ProducesResponseType(typeof(AccountModel), (int)HttpStatusCode.Created)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> WebsiteRegister([FromForm] CreateBrandAccountModel register)
     {
@@ -282,8 +282,8 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     [HttpPost("mobile/register")]
     [ProducesResponseType(typeof(AccountModel), (int)HttpStatusCode.Created)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> MobileRegister([FromForm] CreateStudentAccountModel register)
     {
