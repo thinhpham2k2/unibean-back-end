@@ -43,6 +43,7 @@ public class StoreController : ControllerBase
     [ProducesResponseType(typeof(PagedResultModel<StoreModel>),
         (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<StoreModel>> GetList(
         [FromQuery] List<string> brandIds,
         [FromQuery] List<string> areaIds,
@@ -59,9 +60,9 @@ public class StoreController : ControllerBase
                 result = storeService.GetAll
                 (brandIds, areaIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
                 paging.Search, paging.Page, paging.Limit);
-            return Ok(result);
+            return StatusCode(StatusCodes.Status200OK, result);
         }
-        return BadRequest("Thuộc tính không hợp lệ của cửa hàng");
+        return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của cửa hàng");
     }
 
     /// <summary>
@@ -71,17 +72,18 @@ public class StoreController : ControllerBase
     [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(StoreExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult GetById(string id)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         try
         {
-            return Ok(storeService.GetById(id));
+            return StatusCode(StatusCodes.Status200OK, storeService.GetById(id));
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -92,6 +94,8 @@ public class StoreController : ControllerBase
     [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType(typeof(StoreModel), (int)HttpStatusCode.Created)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> Create([FromForm] CreateStoreModel creation)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -103,11 +107,11 @@ public class StoreController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, store);
             }
-            return NotFound("Tạo thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -118,6 +122,8 @@ public class StoreController : ControllerBase
     [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType(typeof(StoreExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> Update(string id, [FromForm] UpdateStoreModel update)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -129,11 +135,11 @@ public class StoreController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, store);
             }
-            return NotFound("Cập nhật thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -144,6 +150,7 @@ public class StoreController : ControllerBase
     [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType((int)HttpStatusCode.NoContent)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult Delete(string id)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -155,7 +162,7 @@ public class StoreController : ControllerBase
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -166,6 +173,8 @@ public class StoreController : ControllerBase
     [Authorize(Roles = "Brand, Store")]
     [ProducesResponseType(typeof(BonusModel), (int)HttpStatusCode.Created)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult CreateBonus([ValidStore] string id, [FromBody] CreateBonusModel creation)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -177,11 +186,11 @@ public class StoreController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, bonus);
             }
-            return NotFound("Tạo thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -196,6 +205,7 @@ public class StoreController : ControllerBase
     [Authorize(Roles = "Admin, Brand, Store")]
     [ProducesResponseType(typeof(PagedResultModel<StoreTransactionModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<VoucherModel>> GetHistoryTransactionByStoreId(string id,
         [FromQuery] List<StoreTransactionType> typeIds,
         [FromQuery] bool? state,
@@ -213,13 +223,13 @@ public class StoreController : ControllerBase
                 result = storeService.GetHistoryTransactionListByStoreId
                     (id, typeIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
                     paging.Search, paging.Page, paging.Limit);
-                return Ok(result);
+                return StatusCode(StatusCodes.Status200OK, result);
             }
-            return BadRequest("Thuộc tính không hợp lệ của lịch sử giao dịch");
+            return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của lịch sử giao dịch");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -235,6 +245,7 @@ public class StoreController : ControllerBase
     [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(PagedResultModel<VoucherModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<VoucherModel>> GetVoucherListByStoreId(string id,
         [FromQuery] List<string> campaignIds,
         [FromQuery] List<string> typeIds,
@@ -254,13 +265,13 @@ public class StoreController : ControllerBase
                     (id, campaignIds, typeIds, state, propertySort, 
                     paging.Sort.Split(",")[1].Equals("asc"), 
                     paging.Search, paging.Page, paging.Limit);
-                return Ok(result);
+                return StatusCode(StatusCodes.Status200OK, result);
             }
-            return BadRequest("Thuộc tính không hợp lệ của khuyến mãi");
+            return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của khuyến mãi");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 }

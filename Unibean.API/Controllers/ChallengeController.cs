@@ -33,6 +33,7 @@ public class ChallengeController : ControllerBase
     [ProducesResponseType(typeof(PagedResultModel<ChallengeModel>),
         (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<ChallengeModel>> GetList(
         [FromQuery] List<string> typeIds,
         [FromQuery] bool? state,
@@ -48,9 +49,9 @@ public class ChallengeController : ControllerBase
                 result = challengeService.GetAll
                 (typeIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
                 paging.Search, paging.Page, paging.Limit);
-            return Ok(result);
+            return StatusCode(StatusCodes.Status200OK, result);
         }
-        return BadRequest("Thuộc tính thách thức không hợp lệ");
+        return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính thách thức không hợp lệ");
     }
 
     /// <summary>
@@ -60,17 +61,18 @@ public class ChallengeController : ControllerBase
     [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(ChallengeModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult GetById(string id)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         try
         {
-            return Ok(challengeService.GetById(id));
+            return StatusCode(StatusCodes.Status200OK, challengeService.GetById(id));
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -81,6 +83,8 @@ public class ChallengeController : ControllerBase
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(ChallengeModel), (int)HttpStatusCode.Created)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> Create([FromForm] CreateChallengeModel creation)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -92,11 +96,11 @@ public class ChallengeController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, challenge);
             }
-            return NotFound("Tạo thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -107,6 +111,8 @@ public class ChallengeController : ControllerBase
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(ChallengeModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> Update(string id, [FromForm] UpdateChallengeModel update)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -118,11 +124,11 @@ public class ChallengeController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, challenge);
             }
-            return NotFound("Cập nhật thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -133,6 +139,7 @@ public class ChallengeController : ControllerBase
     [Authorize(Roles = "Admin")]
     [ProducesResponseType((int)HttpStatusCode.NoContent)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult Delete(string id)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -144,7 +151,7 @@ public class ChallengeController : ControllerBase
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 }

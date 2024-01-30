@@ -35,6 +35,7 @@ public class BonusController : ControllerBase
     [ProducesResponseType(typeof(PagedResultModel<BonusModel>),
         (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<BonusModel>> GetList(
         [FromQuery] List<string> brandIds,
         [FromQuery] List<string> storeIds,
@@ -52,9 +53,9 @@ public class BonusController : ControllerBase
                 result = bonusService.GetAll
                 (brandIds, storeIds, studentIds, state, propertySort, 
                 paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
-            return Ok(result);
+            return StatusCode(StatusCodes.Status200OK, result);
         }
-        return BadRequest("Invalid property of bonus");
+        return StatusCode(StatusCodes.Status400BadRequest, "Invalid property of bonus");
     }
 
     /// <summary>
@@ -64,17 +65,18 @@ public class BonusController : ControllerBase
     [Authorize(Roles = "Admin, Brand, Store")]
     [ProducesResponseType(typeof(BonusExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult GetById(string id)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         try
         {
-            return Ok(bonusService.GetById(id));
+            return StatusCode(StatusCodes.Status200OK, bonusService.GetById(id));
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 }

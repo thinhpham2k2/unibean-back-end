@@ -34,6 +34,7 @@ public class WishlistController : ControllerBase
     [ProducesResponseType(typeof(PagedResultModel<WishlistModel>),
         (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<WishlistModel>> GetList(
         [FromQuery] List<string> studentIds,
         [FromQuery] List<string> brandIds,
@@ -50,9 +51,9 @@ public class WishlistController : ControllerBase
                 result = wishlistService.GetAll
                 (studentIds, brandIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
                 paging.Search, paging.Page, paging.Limit);
-            return Ok(result);
+            return StatusCode(StatusCodes.Status200OK, result);
         }
-        return BadRequest("Thuộc tính không hợp lệ của danh sách mong muốn");
+        return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của danh sách mong muốn");
     }
 
     /// <summary>
@@ -62,6 +63,8 @@ public class WishlistController : ControllerBase
     [Authorize(Roles = "Admin, Student")]
     [ProducesResponseType(typeof(WishlistModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult Update([FromBody] UpdateWishlistModel update)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -73,11 +76,11 @@ public class WishlistController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, wishlist);
             }
-            return NotFound("Cập nhật thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 }

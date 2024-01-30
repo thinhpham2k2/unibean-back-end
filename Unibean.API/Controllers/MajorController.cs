@@ -32,6 +32,7 @@ public class MajorController : ControllerBase
     [ProducesResponseType(typeof(PagedResultModel<MajorModel>),
         (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<MajorModel>> GetList(
         [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
@@ -46,9 +47,9 @@ public class MajorController : ControllerBase
                 result = majorService.GetAll
                 (state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
                 paging.Search, paging.Page, paging.Limit);
-            return Ok(result);
+            return StatusCode(StatusCodes.Status200OK, result);
         }
-        return BadRequest("Thuộc tính không hợp lệ của chuyên ngành");
+        return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của chuyên ngành");
     }
 
     /// <summary>
@@ -58,17 +59,18 @@ public class MajorController : ControllerBase
     [AllowAnonymous]
     [ProducesResponseType(typeof(MajorModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult GetById(string id)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         try
         {
-            return Ok(majorService.GetById(id));
+            return StatusCode(StatusCodes.Status200OK, majorService.GetById(id));
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -79,6 +81,8 @@ public class MajorController : ControllerBase
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(MajorModel), (int)HttpStatusCode.Created)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> Create([FromForm] CreateMajorModel creation)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -90,11 +94,11 @@ public class MajorController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, major);
             }
-            return NotFound("Tạo thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -105,6 +109,8 @@ public class MajorController : ControllerBase
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(MajorModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> Update(string id, [FromForm] UpdateMajorModel update)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -116,11 +122,11 @@ public class MajorController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, major);
             }
-            return NotFound("Cập nhật thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -131,6 +137,7 @@ public class MajorController : ControllerBase
     [Authorize(Roles = "Admin")]
     [ProducesResponseType((int)HttpStatusCode.NoContent)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult Delete(string id)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -142,7 +149,7 @@ public class MajorController : ControllerBase
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 }

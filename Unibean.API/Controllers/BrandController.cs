@@ -11,7 +11,6 @@ using Unibean.Service.Models.Stores;
 using Unibean.Service.Models.Transactions;
 using Unibean.Service.Models.Vouchers;
 using Unibean.Service.Services.Interfaces;
-using Unibean.Service.Validations;
 
 namespace Unibean.API.Controllers;
 
@@ -41,6 +40,7 @@ public class BrandController : ControllerBase
     [ProducesResponseType(typeof(PagedResultModel<BrandModel>),
         (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<BrandModel>> GetList(
         [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
@@ -57,9 +57,9 @@ public class BrandController : ControllerBase
                 result = brandService.GetAll
                 (state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, 
                 paging.Page, paging.Limit, jwtService.GetJwtRequest(jwtToken.Split(" ")[1]));
-            return Ok(result);
+            return StatusCode(StatusCodes.Status200OK, result);
         }
-        return BadRequest("Thuộc tính không hợp lệ của thương hiệu");
+        return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của thương hiệu");
     }
 
     /// <summary>
@@ -69,6 +69,7 @@ public class BrandController : ControllerBase
     [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(BrandExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult GetById(string id)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -77,11 +78,11 @@ public class BrandController : ControllerBase
 
         try
         {
-            return Ok(brandService.GetById(id, jwtService.GetJwtRequest(jwtToken.Split(" ")[1])));
+            return StatusCode(StatusCodes.Status200OK, brandService.GetById(id, jwtService.GetJwtRequest(jwtToken.Split(" ")[1])));
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -92,6 +93,8 @@ public class BrandController : ControllerBase
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(BrandModel), (int)HttpStatusCode.Created)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> Create([FromForm] CreateBrandModel creation)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -103,11 +106,11 @@ public class BrandController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, brand);
             }
-            return NotFound("Tạo thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -118,6 +121,8 @@ public class BrandController : ControllerBase
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(BrandExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> Update(string id, [FromForm] UpdateBrandModel update)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -129,11 +134,11 @@ public class BrandController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, brand);
             }
-            return NotFound("Cập nhật thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -144,6 +149,7 @@ public class BrandController : ControllerBase
     [Authorize(Roles = "Admin")]
     [ProducesResponseType((int)HttpStatusCode.NoContent)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult Delete(string id)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -155,7 +161,7 @@ public class BrandController : ControllerBase
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -173,6 +179,7 @@ public class BrandController : ControllerBase
     [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType(typeof(PagedResultModel<CampaignModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<CampaignModel>> GetCampaignListByBrandId(string id,
         [FromQuery] List<string> typeIds,
         [FromQuery] List<string> storeIds,
@@ -193,13 +200,13 @@ public class BrandController : ControllerBase
                 result = brandService.GetCampaignListByBrandId
                     (id, typeIds, storeIds, majorIds, campusIds, state, propertySort,
                     paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
-                return Ok(result);
+                return StatusCode(StatusCodes.Status200OK, result);
             }
-            return BadRequest("Thuộc tính của chiến dịch không hợp lệ");
+            return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính của chiến dịch không hợp lệ");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -214,6 +221,7 @@ public class BrandController : ControllerBase
     [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType(typeof(PagedResultModel<TransactionModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<TransactionModel>> GetHistoryTransactionByStudentId(string id,
         [FromQuery] List<string> walletTypeIds,
         [FromQuery] bool? state,
@@ -231,13 +239,13 @@ public class BrandController : ControllerBase
                 result = brandService.GetHistoryTransactionListByStudentId
                     (id, walletTypeIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
                     paging.Search, paging.Page, paging.Limit);
-                return Ok(result);
+                return StatusCode(StatusCodes.Status200OK, result);
             }
-            return BadRequest("Thuộc tính không hợp lệ của lịch sử giao dịch");
+            return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của lịch sử giao dịch");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -252,6 +260,7 @@ public class BrandController : ControllerBase
     [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType(typeof(PagedResultModel<StoreModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<StoreModel>> GetStoreListByBrandId(string id,
         [FromQuery] List<string> areaIds,
         [FromQuery] bool? state,
@@ -269,13 +278,13 @@ public class BrandController : ControllerBase
                 result = brandService.GetStoreListByBrandId
                     (id, areaIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
                     paging.Search, paging.Page, paging.Limit);
-                return Ok(result);
+                return StatusCode(StatusCodes.Status200OK, result);
             }
-            return BadRequest("Thuộc tính không hợp lệ của cửa hàng");
+            return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của cửa hàng");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -290,6 +299,7 @@ public class BrandController : ControllerBase
     [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType(typeof(PagedResultModel<VoucherModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<VoucherModel>> GetVoucherListByBrandId(string id,
         [FromQuery] List<string> typeIds,
         [FromQuery] bool? state,
@@ -307,13 +317,13 @@ public class BrandController : ControllerBase
                 result = brandService.GetVoucherListByBrandId
                     (id, typeIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
                     paging.Search, paging.Page, paging.Limit);
-                return Ok(result);
+                return StatusCode(StatusCodes.Status200OK, result);
             }
-            return BadRequest("Thuộc tính không hợp lệ của khuyến mãi");
+            return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của khuyến mãi");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 }

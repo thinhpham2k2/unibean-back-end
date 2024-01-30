@@ -34,6 +34,7 @@ public class RequestController : ControllerBase
     [ProducesResponseType(typeof(PagedResultModel<RequestModel>),
         (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<RequestModel>> GetList(
         [FromQuery] List<string> brandIds,
         [FromQuery] List<string> adminIds,
@@ -50,9 +51,9 @@ public class RequestController : ControllerBase
                 result = requestService.GetAll
                 (brandIds, adminIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
                 paging.Search, paging.Page, paging.Limit);
-            return Ok(result);
+            return StatusCode(StatusCodes.Status200OK, result);
         }
-        return BadRequest("Invalid property of request");
+        return StatusCode(StatusCodes.Status400BadRequest, "Invalid property of request");
     }
 
     /// <summary>
@@ -62,17 +63,18 @@ public class RequestController : ControllerBase
     [Authorize(Roles = "Admin, Brand, Store")]
     [ProducesResponseType(typeof(RequestExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult GetById(string id)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         try
         {
-            return Ok(requestService.GetById(id));
+            return StatusCode(StatusCodes.Status200OK, requestService.GetById(id));
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 }

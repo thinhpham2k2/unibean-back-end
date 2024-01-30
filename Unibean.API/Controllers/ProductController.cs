@@ -33,6 +33,7 @@ public class ProductController : ControllerBase
     [ProducesResponseType(typeof(PagedResultModel<ProductModel>),
         (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<ProductModel>> GetList(
         [FromQuery] List<string> categoryIds,
         [FromQuery] bool? state,
@@ -48,9 +49,9 @@ public class ProductController : ControllerBase
                 result = productService.GetAll
                 (categoryIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
                 paging.Search, paging.Page, paging.Limit);
-            return Ok(result);
+            return StatusCode(StatusCodes.Status200OK, result);
         }
-        return BadRequest("Thuộc tính không hợp lệ của sản phẩm");
+        return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của sản phẩm");
     }
 
     /// <summary>
@@ -60,17 +61,18 @@ public class ProductController : ControllerBase
     [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(ProductExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult GetById(string id)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         try
         {
-            return Ok(productService.GetById(id));
+            return StatusCode(StatusCodes.Status200OK, productService.GetById(id));
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -81,6 +83,8 @@ public class ProductController : ControllerBase
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(ProductModel), (int)HttpStatusCode.Created)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> Create([FromForm] CreateProductModel creation)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -92,11 +96,11 @@ public class ProductController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, product);
             }
-            return NotFound("Tạo thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -107,6 +111,8 @@ public class ProductController : ControllerBase
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(ProductModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> Update(string id, [FromForm] UpdateProductModel update)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -118,11 +124,11 @@ public class ProductController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, product);
             }
-            return NotFound("Cập nhật thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -133,6 +139,7 @@ public class ProductController : ControllerBase
     [Authorize(Roles = "Admin")]
     [ProducesResponseType((int)HttpStatusCode.NoContent)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult Delete(string id)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -144,7 +151,7 @@ public class ProductController : ControllerBase
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 }

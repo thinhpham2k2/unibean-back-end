@@ -32,6 +32,7 @@ public class WalletTypeController : ControllerBase
     [ProducesResponseType(typeof(PagedResultModel<WalletTypeModel>),
         (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<WalletTypeModel>> GetList(
         [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
@@ -46,9 +47,9 @@ public class WalletTypeController : ControllerBase
                 result = walletTypeService.GetAll
                 (state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
                 paging.Search, paging.Page, paging.Limit);
-            return Ok(result);
+            return StatusCode(StatusCodes.Status200OK, result);
         }
-        return BadRequest("Thuộc tính không hợp lệ của loại ví");
+        return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của loại ví");
     }
 
     /// <summary>
@@ -58,17 +59,18 @@ public class WalletTypeController : ControllerBase
     [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(WalletTypeModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult GetById(string id)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         try
         {
-            return Ok(walletTypeService.GetById(id));
+            return StatusCode(StatusCodes.Status200OK, walletTypeService.GetById(id));
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -79,6 +81,8 @@ public class WalletTypeController : ControllerBase
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(WalletTypeModel), (int)HttpStatusCode.Created)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> Create([FromForm] CreateWalletTypeModel creation)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -90,11 +94,11 @@ public class WalletTypeController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, type);
             }
-            return NotFound("Tạo thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -105,6 +109,8 @@ public class WalletTypeController : ControllerBase
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(WalletTypeModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> Update(string id, [FromForm] UpdateWalletTypeModel update)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -116,11 +122,11 @@ public class WalletTypeController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, type);
             }
-            return NotFound("Cập nhật thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -131,6 +137,7 @@ public class WalletTypeController : ControllerBase
     [Authorize(Roles = "Admin")]
     [ProducesResponseType((int)HttpStatusCode.NoContent)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult Delete(string id)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -142,7 +149,7 @@ public class WalletTypeController : ControllerBase
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 }

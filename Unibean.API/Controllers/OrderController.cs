@@ -40,6 +40,7 @@ public class OrderController : ControllerBase
     [ProducesResponseType(typeof(PagedResultModel<OrderModel>),
         (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult GetOrderList(
         [FromQuery] List<string> stationIds,
         [FromQuery] List<string> studentIds,
@@ -58,9 +59,9 @@ public class OrderController : ControllerBase
                 (stationIds, studentIds, stateIds, state, propertySort.Equals("StateCurrent")
                 ? "OrderStates.Max(s => s.StateId)" : propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
                 paging.Search, paging.Page, paging.Limit);
-            return Ok(result);
+            return StatusCode(StatusCodes.Status200OK, result);
         }
-        return BadRequest("Invalid property of order");
+        return StatusCode(StatusCodes.Status400BadRequest, "Invalid property of order");
     }
 
     /// <summary>
@@ -70,17 +71,18 @@ public class OrderController : ControllerBase
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(OrderExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult GetById(string id)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         try
         {
-            return Ok(orderService.GetById(id));
+            return StatusCode(StatusCodes.Status200OK, orderService.GetById(id));
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -91,6 +93,7 @@ public class OrderController : ControllerBase
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.Created)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult CreateStateForOrder(string id, [FromBody] CreateOrderStateModel create)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -101,7 +104,7 @@ public class OrderController : ControllerBase
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 }

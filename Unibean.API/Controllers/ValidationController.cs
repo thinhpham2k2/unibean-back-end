@@ -18,11 +18,12 @@ public class ValidationController : ControllerBase
     [HttpPost("code")]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult CodeValidation([FromBody] CodeModel code)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
-        return Ok(code.Code + " is valid");
+        return StatusCode(StatusCodes.Status200OK, code.Code + " is valid");
     }
 
     /// <summary>
@@ -32,11 +33,12 @@ public class ValidationController : ControllerBase
     [HttpPost("email")]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult EmailValidation([FromBody] EmailModel email)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
-        return Ok(email.Email + " is valid");
+        return StatusCode(StatusCodes.Status200OK, email.Email + " is valid");
     }
 
     /// <summary>
@@ -46,11 +48,12 @@ public class ValidationController : ControllerBase
     [HttpPost("invite-code")]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult InviteCodeValidation([FromBody] InviteCodeModel inviteCode)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
-        return Ok(inviteCode.InviteCode + " is valid");
+        return StatusCode(StatusCodes.Status200OK, inviteCode.InviteCode + " is valid");
     }
 
     /// <summary>
@@ -60,11 +63,12 @@ public class ValidationController : ControllerBase
     [HttpPost("phone")]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult PhoneValidation([FromBody] PhoneModel phone)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
-        return Ok(phone.Phone + " is valid");
+        return StatusCode(StatusCodes.Status200OK, phone.Phone + " is valid");
     }
 
     /// <summary>
@@ -74,10 +78,11 @@ public class ValidationController : ControllerBase
     [HttpPost("username")]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult UsernameValidation([FromBody] UserNameModel userName)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
-        return Ok(userName.UserName + " is valid");
+        return StatusCode(StatusCodes.Status200OK, userName.UserName + " is valid");
     }
 }

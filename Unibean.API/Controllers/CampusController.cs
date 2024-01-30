@@ -34,6 +34,7 @@ public class CampusController : ControllerBase
     [ProducesResponseType(typeof(PagedResultModel<CampusModel>),
         (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<CampusModel>> GetList(
         [FromQuery] List<string> universityIds,
         [FromQuery] List<string> areaIds,
@@ -50,9 +51,9 @@ public class CampusController : ControllerBase
                 result = campusService.GetAll
                 (universityIds, areaIds, state, propertySort, 
                 paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
-            return Ok(result);
+            return StatusCode(StatusCodes.Status200OK, result);
         }
-        return BadRequest("Thuộc tính không hợp lệ của cở sở");
+        return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của cở sở");
     }
 
     /// <summary>
@@ -62,17 +63,18 @@ public class CampusController : ControllerBase
     [AllowAnonymous]
     [ProducesResponseType(typeof(CampusModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult GetById(string id)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         try
         {
-            return Ok(campusService.GetById(id));
+            return StatusCode(StatusCodes.Status200OK, campusService.GetById(id));
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -83,6 +85,8 @@ public class CampusController : ControllerBase
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(CampusModel), (int)HttpStatusCode.Created)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> Create([FromForm] CreateCampusModel creation)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -94,11 +98,11 @@ public class CampusController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, campus);
             }
-            return NotFound("Tạo thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -109,6 +113,8 @@ public class CampusController : ControllerBase
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(CampusModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> Update(string id, [FromForm] UpdateCampusModel update)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -120,11 +126,11 @@ public class CampusController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, campus);
             }
-            return NotFound("Cập nhật thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -135,6 +141,7 @@ public class CampusController : ControllerBase
     [Authorize(Roles = "Admin")]
     [ProducesResponseType((int)HttpStatusCode.NoContent)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult Delete(string id)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -146,7 +153,7 @@ public class CampusController : ControllerBase
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 }

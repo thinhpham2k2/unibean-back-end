@@ -132,6 +132,16 @@ public class VoucherService : IVoucherService
         throw new InvalidParameterException("Không tìm thấy khuyến mãi");
     }
 
+    public VoucherModel GetByIdAndCampaign(string id, string campaignId)
+    {
+        Voucher entity = voucherRepository.GetByIdAndCampaign(id, campaignId);
+        if (entity != null)
+        {
+            return mapper.Map<VoucherModel>(entity);
+        }
+        throw new InvalidParameterException("Không tìm thấy khuyến mãi");
+    }
+
     public async Task<VoucherExtraModel> Update(string id, UpdateVoucherModel update)
     {
         Voucher entity = voucherRepository.GetById(id);

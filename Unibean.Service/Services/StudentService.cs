@@ -516,4 +516,19 @@ public class StudentService : IStudentService
         }
         throw new InvalidParameterException("Không tìm thấy sinh viên");
     }
+
+    public StudentExtraModel UpdateVerification(string id)
+    {
+        Student entity = studentRepository.GetById(id);
+        if (entity != null)
+        {
+            if (!(bool)entity.Account.IsVerify)
+            {
+                entity.Account.IsVerify = true;
+                return mapper.Map<StudentExtraModel>(studentRepository.Update(entity));
+            }
+            throw new InvalidParameterException("Sinh viên này đã được phê duyệt");
+        }
+        throw new InvalidParameterException("Không tìm thấy sinh viên");
+    }
 }

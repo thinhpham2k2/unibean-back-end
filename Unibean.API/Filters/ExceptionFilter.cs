@@ -8,10 +8,10 @@ public class ExceptionFilter : IExceptionFilter
 {
     public void OnException(ExceptionContext context)
     {
-        if (context.Exception is InvalidParameterException)
+        if (context.Exception is InvalidParameterException exception1)
         {
             var errorMessages = new List<string>();
-            var exception = (InvalidParameterException)context.Exception;
+            var exception = exception1;
 
             foreach (var entry in exception.ModelState)
             {

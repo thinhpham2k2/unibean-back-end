@@ -45,6 +45,7 @@ public class StudentController : ControllerBase
     [ProducesResponseType(typeof(PagedResultModel<StudentModel>),
         (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<StudentModel>> GetList(
         [FromQuery] List<string> majorIds,
         [FromQuery] List<string> campusIds,
@@ -62,9 +63,9 @@ public class StudentController : ControllerBase
                 result = studentService.GetAll
                 (majorIds, campusIds, state, isVerify, propertySort, 
                 paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
-            return Ok(result);
+            return StatusCode(StatusCodes.Status200OK, result);
         }
-        return BadRequest("Thuộc tính không hợp lệ của sinh viên");
+        return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của sinh viên");
     }
 
     /// <summary>
@@ -74,17 +75,18 @@ public class StudentController : ControllerBase
     [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(StudentExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult GetById(string id)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         try
         {
-            return Ok(studentService.GetById(id));
+            return StatusCode(StatusCodes.Status200OK, studentService.GetById(id));
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -95,6 +97,8 @@ public class StudentController : ControllerBase
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(StudentModel), (int)HttpStatusCode.Created)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> Create([FromForm] CreateStudentModel creation)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -106,11 +110,11 @@ public class StudentController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, student);
             }
-            return NotFound("Tạo thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Tạo thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -121,6 +125,8 @@ public class StudentController : ControllerBase
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(StudentExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> Update(string id, [FromForm] UpdateStudentModel update)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -132,11 +138,39 @@ public class StudentController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status200OK, student);
             }
-            return NotFound("Cập nhật thất bại");
+            return StatusCode(StatusCodes.Status404NotFound, "Cập nhật thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Update student verification
+    /// </summary>
+    [HttpPut("{id}/verification")]
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType(typeof(StudentExtraModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public ActionResult UpdateState(string id)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            var student = studentService.UpdateVerification(id);
+            if (student != null)
+            {
+                return StatusCode(StatusCodes.Status200OK, student);
+            }
+            return NotFound("Xác minh tài khoản sinh viên thất bại");
+        }
+        catch (InvalidParameterException e)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -147,6 +181,7 @@ public class StudentController : ControllerBase
     [Authorize(Roles = "Admin")]
     [ProducesResponseType((int)HttpStatusCode.NoContent)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult Delete(string id)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -158,7 +193,7 @@ public class StudentController : ControllerBase
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -174,6 +209,7 @@ public class StudentController : ControllerBase
     [Authorize(Roles = "Admin, Student")]
     [ProducesResponseType(typeof(PagedResultModel<StudentChallengeModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<StudentChallengeModel>> GetChallengeListByStudentId(string id,
         [FromQuery] bool? state,
         [FromQuery] bool? isCompleted,
@@ -192,13 +228,13 @@ public class StudentController : ControllerBase
                 result = studentService.GetChallengeListByStudentId
                     (id, state, isCompleted, isClaimed, propertySort, 
                     paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
-                return Ok(result);
+                return StatusCode(StatusCodes.Status200OK, result);
             }
-            return BadRequest("Thuộc tính của thách thức không hợp lệ");
+            return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính của thách thức không hợp lệ");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -213,6 +249,7 @@ public class StudentController : ControllerBase
     [Authorize(Roles = "Admin, Student")]
     [ProducesResponseType(typeof(PagedResultModel<TransactionModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<TransactionModel>> GetHistoryTransactionListByStudentId(string id,
         [FromQuery] List<TransactionType> typeIds,
         [FromQuery] bool? state,
@@ -230,13 +267,13 @@ public class StudentController : ControllerBase
                 result = studentService.GetHistoryTransactionListByStudentId
                     (id, typeIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
                     paging.Search, paging.Page, paging.Limit);
-                return Ok(result);
+                return StatusCode(StatusCodes.Status200OK, result);
             }
-            return BadRequest("Thuộc tính của giao dịch không hợp lệ");
+            return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính của giao dịch không hợp lệ");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -252,6 +289,7 @@ public class StudentController : ControllerBase
     [Authorize(Roles = "Admin, Student")]
     [ProducesResponseType(typeof(PagedResultModel<OrderModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<OrderModel>> GetOrderListByStudentId(string id,
         [FromQuery] List<string> stationIds,
         [FromQuery] List<string> stateIds,
@@ -270,13 +308,13 @@ public class StudentController : ControllerBase
                 result = studentService.GetOrderListByStudentId
                     (stationIds, stateIds, id, state, propertySort.Equals("StateCurrent")
                         ? "OrderStates.Max(s => s.StateId)" : propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
-                return Ok(result);
+                return StatusCode(StatusCodes.Status200OK, result);
             }
-            return BadRequest("Thuộc tính của đơn đặt hàng không hợp lệ");
+            return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính của đơn đặt hàng không hợp lệ");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -289,6 +327,7 @@ public class StudentController : ControllerBase
     [Authorize(Roles = "Admin, Student")]
     [ProducesResponseType(typeof(OrderExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult CreateOrder([ValidStudent] string id, [FromBody] CreateOrderModel create)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -300,7 +339,7 @@ public class StudentController : ControllerBase
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -313,17 +352,18 @@ public class StudentController : ControllerBase
     [Authorize(Roles = "Admin, Student")]
     [ProducesResponseType(typeof(OrderExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult GetOrderById(string id, string orderId)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         try
         {
-            return Ok(studentService.GetOrderByOrderId(id, orderId));
+            return StatusCode(StatusCodes.Status200OK, studentService.GetOrderByOrderId(id, orderId));
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -341,6 +381,7 @@ public class StudentController : ControllerBase
     [Authorize(Roles = "Admin, Student")]
     [ProducesResponseType(typeof(PagedResultModel<VoucherItemModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<OrderModel>> GetVoucherListByStudentId(string id,
         [FromQuery] List<string> campaignIds,
         [FromQuery] List<string> voucherIds,
@@ -362,13 +403,13 @@ public class StudentController : ControllerBase
                     (campaignIds, voucherIds, brandIds, typeIds, id, state, 
                     propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
                     paging.Search, paging.Page, paging.Limit);
-                return Ok(result);
+                return StatusCode(StatusCodes.Status200OK, result);
             }
-            return BadRequest("Thuộc tính không hợp lệ của khuyến mãi");
+            return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của khuyến mãi");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -381,17 +422,18 @@ public class StudentController : ControllerBase
     [Authorize(Roles = "Admin, Student")]
     [ProducesResponseType(typeof(VoucherItemExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult GetVoucherById(string id, string voucherId)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         try
         {
-            return Ok(studentService.GetVoucherItemByVoucherId(id, voucherId));
+            return StatusCode(StatusCodes.Status200OK, studentService.GetVoucherItemByVoucherId(id, voucherId));
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -403,17 +445,18 @@ public class StudentController : ControllerBase
     [Authorize(Roles = "Admin, Student")]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<List<string>> GetWishlistsByStudentId(string id)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         try
         {
-            return Ok(studentService.GetWishlistsByStudentId(id));
+            return StatusCode(StatusCodes.Status200OK, studentService.GetWishlistsByStudentId(id));
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 }

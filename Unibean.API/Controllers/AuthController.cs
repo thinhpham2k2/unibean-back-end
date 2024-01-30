@@ -49,6 +49,8 @@ public class AuthController : ControllerBase
     [HttpPost("website/login")]
     [ProducesResponseType(typeof(JwtResponseModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult GenerateWebsiteToken([FromBody] LoginFromModel requestLogin)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -62,7 +64,7 @@ public class AuthController : ControllerBase
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -73,6 +75,8 @@ public class AuthController : ControllerBase
     [HttpPost("mobile/login")]
     [ProducesResponseType(typeof(JwtResponseModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult GenerateMobileToken([FromBody] LoginFromModel requestLogin)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -87,7 +91,7 @@ public class AuthController : ControllerBase
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -129,7 +133,7 @@ public class AuthController : ControllerBase
                 var token = tokenHandler.CreateToken(tokenDescription);
                 response.Role = role;
                 response.Jwt = tokenHandler.WriteToken(token);
-                return Ok(response);
+                return StatusCode(StatusCodes.Status200OK, response);
             }
             else
             {
@@ -140,13 +144,13 @@ public class AuthController : ControllerBase
                 }
                 else
                 {
-                    return BadRequest("Your account is being verified. Please come back later");
+                    return StatusCode(StatusCodes.Status400BadRequest, "Tài khoản của bạn đang được xác minh. Vui lòng quay lại sau");
                 }
             }
         }
         else
         {
-            return NotFound("Invalid username or password");
+            return StatusCode(StatusCodes.Status404NotFound, "Mật khẩu hoặc tài khoản không hợp lệ");
         }
     }
 
@@ -161,6 +165,8 @@ public class AuthController : ControllerBase
     [HttpPost("website/login/google")]
     [ProducesResponseType(typeof(JwtResponseModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> GenerateWebsiteTokenByGoogle([FromBody] GoogleTokenModel token)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -174,12 +180,12 @@ public class AuthController : ControllerBase
             }
             else
             {
-                return BadRequest("The account must not access this platform");
+                return StatusCode(StatusCodes.Status400BadRequest, "Tài khoản không được truy cập vào nền tảng này");
             }
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -189,7 +195,10 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     [HttpPost("mobile/login/google")]
     [ProducesResponseType(typeof(JwtResponseModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(AccountModel), (int)HttpStatusCode.SeeOther)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> GenerateMobileTokenByGoogle([FromBody] GoogleTokenModel token)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -203,12 +212,12 @@ public class AuthController : ControllerBase
             }
             else
             {
-                return BadRequest("The account must not access this platform");
+                return StatusCode(StatusCodes.Status400BadRequest, "Tài khoản không được truy cập vào nền tảng này");
             }
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -219,6 +228,8 @@ public class AuthController : ControllerBase
     [HttpPost("mobile/register/google")]
     [ProducesResponseType(typeof(JwtResponseModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> RegisterMobileAccountByGoogle([FromForm] CreateStudentGoogleModel student)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -229,7 +240,7 @@ public class AuthController : ControllerBase
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -244,6 +255,8 @@ public class AuthController : ControllerBase
     [HttpPost("website/register")]
     [ProducesResponseType(typeof(AccountModel), (int)HttpStatusCode.Created)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> WebsiteRegister([FromForm] CreateBrandAccountModel register)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -255,11 +268,11 @@ public class AuthController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, account);
             }
-            return NotFound("Register fail");
+            return StatusCode(StatusCodes.Status404NotFound, "Đăng kí thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -270,6 +283,8 @@ public class AuthController : ControllerBase
     [HttpPost("mobile/register")]
     [ProducesResponseType(typeof(AccountModel), (int)HttpStatusCode.Created)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> MobileRegister([FromForm] CreateStudentAccountModel register)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -281,11 +296,11 @@ public class AuthController : ControllerBase
             {
                 return StatusCode(StatusCodes.Status201Created, account);
             }
-            return NotFound("Register fail");
+            return StatusCode(StatusCodes.Status404NotFound, "Đăng kí thất bại");
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 
@@ -301,6 +316,7 @@ public class AuthController : ControllerBase
     [HttpPost("website/mail")]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.Created)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult SendMail([FromQuery] string email)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -311,7 +327,7 @@ public class AuthController : ControllerBase
         }
         catch (InvalidParameterException e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
 }

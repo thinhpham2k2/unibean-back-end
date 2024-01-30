@@ -2,7 +2,6 @@
 using System.Linq.Dynamic.Core;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
-using Unibean.Repository.Repositories;
 using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Stores;
@@ -23,8 +22,6 @@ public enum StoreTransactionType
 public class StoreService : IStoreService
 {
     private readonly Mapper mapper;
-
-    private readonly string FOLDER_NAME = "stores";
 
     private readonly string ACCOUNT_FOLDER_NAME = "accounts";
 
