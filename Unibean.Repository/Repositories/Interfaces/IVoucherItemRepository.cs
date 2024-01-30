@@ -14,6 +14,9 @@ public interface IVoucherItemRepository
         List<string> typeIds, List<string> studentIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit);
 
+    List<VoucherItem> GetAllByCampaign
+        (List<string> campaignIds, List<string> voucherIds, int limit);
+
     VoucherItem GetById(string id);
 
     VoucherItem Update(VoucherItem update);

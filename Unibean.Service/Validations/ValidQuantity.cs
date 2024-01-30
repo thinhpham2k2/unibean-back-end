@@ -27,7 +27,6 @@ public class ValidQuantity : ValidationAttribute
                     }
                     return new ValidationResult("Số lượng của " + product.ProductName + " không đủ");
                 }
-                return new ValidationResult(ErrorMessage);
             }
         }
         return new ValidationResult(ErrorMessage);

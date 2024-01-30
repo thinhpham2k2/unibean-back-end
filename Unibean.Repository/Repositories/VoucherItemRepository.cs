@@ -40,7 +40,7 @@ public class VoucherItemRepository : IVoucherItemRepository
     }
 
     public PagedResultModel<VoucherItem> GetAll
-        (List<string> campaignIds, List<string> voucherIds, List<string> brandIds, 
+        (List<string> campaignIds, List<string> voucherIds, List<string> brandIds,
         List<string> typeIds, List<string> studentIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
@@ -97,6 +97,31 @@ public class VoucherItemRepository : IVoucherItemRepository
             throw new Exception(ex.Message);
         }
         return pagedResult;
+    }
+
+    public List<VoucherItem> GetAllByCampaign
+        (List<string> campaignIds, List<string> voucherIds, int limit)
+     {
+        try
+        {
+            using var db = new UnibeanDBContext();
+
+            var query = db.VoucherItems
+                .Where(t => (campaignIds.Count == 0 || campaignIds.Contains(t.CampaignId))
+                && (voucherIds.Count == 0 || voucherIds.Contains(t.CampaignId))
+                && !(bool)t.IsBought
+                && !(bool)t.IsUsed
+                && (bool)t.State
+                && (bool)t.Status);
+
+            return query.Take(limit)
+                .Include(v => v.Voucher)
+                .ToList();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
     }
 
     public VoucherItem GetById(string id)

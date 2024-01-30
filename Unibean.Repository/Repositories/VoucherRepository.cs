@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MoreLinq.Extensions;
 using System.Linq.Dynamic.Core;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
@@ -109,9 +110,17 @@ public class VoucherRepository : IVoucherRepository
                .Include(s => s.Brand)
                .Include(s => s.Type)
                .Include(s => s.VoucherItems.Where(
+                   v => (bool)v.Status))
+               .ToList()
+               .Select(r =>
+               {
+                   r.Price = r.VoucherItems.FirstOrDefault().Price;
+                   r.Rate = r.VoucherItems.FirstOrDefault().Rate;
+                   r.VoucherItems = r.VoucherItems.Where(
                    v => (bool)v.Status && !(bool)v.IsBought && !(bool)v.IsUsed
-                   && v.CampaignId.Equals(campaignIds.FirstOrDefault())))
-               .ToList();
+                   && v.CampaignId.Equals(campaignIds.FirstOrDefault())).ToList();
+                   return r;
+               }).ToList();
 
             pagedResult = new PagedResultModel<Voucher>
             {
@@ -142,7 +151,8 @@ public class VoucherRepository : IVoucherRepository
             var query = db.Stores
                 .Where(s => (storeIds.Count == 0 || storeIds.Contains(s.Id))
                 && (bool)s.Status)
-                .SelectMany(s => s.CampaignStores.Where(c => (bool)c.Status
+                .SelectMany(s => s.CampaignStores.Where(c => (bool)c.Status 
+                && (bool)c.Campaign.State
                 && EF.Functions.Like(c.Campaign.CampaignName, "%" + search + "%")
                 && (campaignIds.Count == 0 || campaignIds.Contains(c.CampaignId)))
                 .SelectMany(c => c.Campaign.VoucherItems.Select(v => v.Voucher))).Distinct()
@@ -215,7 +225,7 @@ public class VoucherRepository : IVoucherRepository
             .Include(s => s.Brand)
             .Include(s => s.Type)
             .Include(s => s.VoucherItems.Where(
-                v => (bool)v.Status && !(bool)v.IsBought && !(bool)v.IsUsed 
+                v => (bool)v.Status && !(bool)v.IsBought && !(bool)v.IsUsed
                 && v.CampaignId.Equals(campaignId)))
                 .ThenInclude(v => v.Campaign)
                     .ThenInclude(c => c.Brand)

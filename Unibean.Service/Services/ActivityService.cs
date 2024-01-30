@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
 using Unibean.Repository.Entities;
-using Unibean.Repository.Repositories;
 using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Service.Models.Activities;
 using Unibean.Service.Models.Activity;
-using Unibean.Service.Models.Areas;
 using Unibean.Service.Models.Transactions;
 using Unibean.Service.Services.Interfaces;
 using Type = Unibean.Repository.Entities.Type;

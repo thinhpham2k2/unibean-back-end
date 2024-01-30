@@ -380,7 +380,7 @@ public class CampaignController : ControllerBase
     }
 
     /// <summary>
-    /// Buy voucher
+    /// Redeem voucher
     /// </summary>
     /// <param name="id">Campaign id.</param>
     /// <param name="voucherId">Voucher id.</param>
@@ -400,9 +400,9 @@ public class CampaignController : ControllerBase
 
         try
         {
-            return campaignService.AddActivity(id, voucherId, creation) ?  
-                StatusCode(StatusCodes.Status201Created) :
-                StatusCode(StatusCodes.Status404NotFound, "Tạo thất bại");
+            return campaignService.AddActivity(id, voucherId, creation) ?
+                StatusCode(StatusCodes.Status201Created, "Thanh toán thành công") :
+                StatusCode(StatusCodes.Status404NotFound, "Thanh toán khuyến mãi thất bại");
         }
         catch (InvalidParameterException e)
         {

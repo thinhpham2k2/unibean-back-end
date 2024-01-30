@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using FirebaseAdmin.Messaging;
-using System.Linq;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
@@ -44,6 +43,10 @@ public class CampaignService : ICampaignService
 
     private readonly IActivityService activityService;
 
+    private readonly IVoucherItemRepository voucherItemRepository;
+
+    private readonly IStudentRepository studentRepository;
+
     public CampaignService(ICampaignRepository campaignRepository,
         IVoucherRepository voucherRepository,
         IFireBaseService fireBaseService,
@@ -52,7 +55,9 @@ public class CampaignService : ICampaignService
         IMajorService majorService,
         ICampusService campusService,
         IDiscordService discordService,
-        IActivityService activityService)
+        IActivityService activityService,
+        IVoucherItemRepository voucherItemRepository,
+        IStudentRepository studentRepository)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -115,6 +120,9 @@ public class CampaignService : ICampaignService
             .ForMember(c => c.Image, opt => opt.Ignore())
             .ForMember(c => c.ImageName, opt => opt.Ignore())
             .ForMember(c => c.DateUpdated, opt => opt.MapFrom(src => DateTime.Now));
+            // Map Create Activity
+            cfg.CreateMap<CreateActivityModel, CreateBuyActivityModel>()
+            .ReverseMap();
         });
         mapper = new Mapper(config);
         this.campaignRepository = campaignRepository;
@@ -126,6 +134,8 @@ public class CampaignService : ICampaignService
         this.campusService = campusService;
         this.discordService = discordService;
         this.activityService = activityService;
+        this.voucherItemRepository = voucherItemRepository;
+        this.studentRepository = studentRepository;
     }
 
     public async Task<CampaignExtraModel> Add(CreateCampaignModel creation)
@@ -231,13 +241,28 @@ public class CampaignService : ICampaignService
     public bool AddActivity
         (string id, string voucherId, CreateBuyActivityModel creation)
     {
-        foreach (string itemId in new List<string>().Take((int)creation.Quantity))
+        var list = voucherItemRepository.GetAllByCampaign
+            (new() { id }, new() { voucherId }, (int)creation.Quantity);
+
+        if (list.Count.Equals(creation.Quantity))
         {
-            CreateActivityModel create = mapper.Map<CreateActivityModel>(creation);
-            create.VoucherItemId = itemId;
-            activityService.Add(create);
+            if (studentRepository.GetById
+                (creation.StudentId)?.Wallets.FirstOrDefault().Balance  >= list.Select(l => l.Price).Sum())
+            {
+
+                foreach (string itemId in list.Select(v => v.Id))
+                {
+                    CreateActivityModel create = mapper.Map<CreateActivityModel>(creation);
+                    create.VoucherItemId = itemId;
+                    activityService.Add(create);
+                }
+                return true;
+            }
+            throw new InvalidParameterException
+                ("Số dư đậu xanh của sinh viên không đủ");
         }
-        return true;
+        throw new InvalidParameterException
+            ("Số lượng của khuyến mãi không đủ");
     }
 
     public void Delete(string id)
@@ -270,7 +295,7 @@ public class CampaignService : ICampaignService
         List<string> campusIds, bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<CampaignModel>>(campaignRepository
-            .GetAll(brandIds, typeIds, storeIds, majorIds, campusIds, state, 
+            .GetAll(brandIds, typeIds, storeIds, majorIds, campusIds, state,
             propertySort, isAsc, search, page, limit));
     }
 
@@ -299,28 +324,28 @@ public class CampaignService : ICampaignService
     }
 
     public PagedResultModel<MajorModel> GetMajorListByCampaignId
-        (string id, bool? state, string propertySort, 
+        (string id, bool? state, string propertySort,
         bool isAsc, string search, int page, int limit)
     {
         Campaign entity = campaignRepository.GetById(id);
         if (entity != null)
         {
             return majorService.GetAllByCampaign
-                (new() { id }, state, propertySort, 
+                (new() { id }, state, propertySort,
                 isAsc, search, page, limit);
         }
         throw new InvalidParameterException("Không tìm thấy Chiến dịch");
     }
 
     public PagedResultModel<StoreModel> GetStoreListByCampaignId
-        (string id, List<string> brandIds, List<string> areaIds, bool? state, 
+        (string id, List<string> brandIds, List<string> areaIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         Campaign entity = campaignRepository.GetById(id);
         if (entity != null)
         {
             return storeService.GetAllByCampaign
-                (new() { id }, brandIds, areaIds, state, 
+                (new() { id }, brandIds, areaIds, state,
                 propertySort, isAsc, search, page, limit);
         }
         throw new InvalidParameterException("Không tìm thấy Chiến dịch");
@@ -337,7 +362,7 @@ public class CampaignService : ICampaignService
     }
 
     public PagedResultModel<VoucherModel> GetVoucherListByCampaignId
-        (string id, List<string> typeIds, bool? state, string propertySort, 
+        (string id, List<string> typeIds, bool? state, string propertySort,
         bool isAsc, string search, int page, int limit)
     {
         Campaign entity = campaignRepository.GetById(id);
@@ -376,7 +401,7 @@ public class CampaignService : ICampaignService
         Campaign entity = campaignRepository.GetById(id);
         if (entity != null)
         {
-            if(entity.EndOn >= DateOnly.FromDateTime(DateTime.Now))
+            if (entity.EndOn >= DateOnly.FromDateTime(DateTime.Now))
             {
                 if (!(bool)entity.State)
                 {

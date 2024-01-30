@@ -37,6 +37,7 @@ public class ActivityRepository : IActivityRepository
                         Status = creation.Status,
                     }};
 
+                creation.VoucherItem.Activities = null;
                 creation.VoucherItem.IsBought = true;
                 db.VoucherItems.Update(creation.VoucherItem);
                 creation.VoucherItem = null;
@@ -92,6 +93,7 @@ public class ActivityRepository : IActivityRepository
                         Status = creation.Status,
                     }};
 
+                creation.VoucherItem.Activities = null;
                 creation.VoucherItem.IsUsed = true;
                 db.VoucherItems.Update(creation.VoucherItem);
                 creation.VoucherItem = null;

@@ -1,5 +1,5 @@
-﻿using AutoMapper.Configuration.Annotations;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using Unibean.Service.Validations;
 using Type = Unibean.Repository.Entities.Type;
 
@@ -11,10 +11,9 @@ public class CreateBuyActivityModel
     [Required(ErrorMessage = "Sinh viên là bắt buộc")]
     public string StudentId { get; set; }
 
-    [Ignore]
+    [JsonIgnore]
     public Type Type { get; set; } = Type.Buy;
 
-    [ValidQuantity]
     [Required(ErrorMessage = "Số lượng là bắt buộc")]
     [Range(minimum: 1, maximum: int.MaxValue, ErrorMessage = "Số lượng phải lớn hơn 0")]
     public int? Quantity { get; set; }
