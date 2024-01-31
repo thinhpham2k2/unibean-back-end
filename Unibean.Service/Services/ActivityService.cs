@@ -53,6 +53,7 @@ public class ActivityService : IActivityService
     {
         Activity entity = mapper.Map<Activity>(creation);
         entity.VoucherItem = voucherItemRepository.GetById(creation.VoucherItemId);
+        entity.VoucherItem.Campaign = null;
         return mapper.Map<ActivityModel>(activityRepository.Add(entity));
     }
 

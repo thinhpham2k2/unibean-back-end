@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using Microsoft.IdentityModel.Tokens;
 using System.Linq.Dynamic.Core;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
+using Unibean.Service.Models.Activities;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Stores;
 using Unibean.Service.Models.Transactions;
@@ -39,13 +41,19 @@ public class StoreService : IStoreService
 
     private readonly IBonusService bonusService;
 
+    private readonly IVoucherItemRepository voucherItemRepository;
+
+    private readonly IStudentRepository studentRepository;
+
     public StoreService(IStoreRepository storeRepository,
         IFireBaseService fireBaseService,
         IRoleService roleService,
         IAccountRepository accountRepository,
         IVoucherService voucherService,
         IActivityService activityService,
-        IBonusService bonusService)
+        IBonusService bonusService,
+        IVoucherItemRepository voucherItemRepository,
+        IStudentRepository studentRepository)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -99,6 +107,9 @@ public class StoreService : IStoreService
             .ForPath(s => s.Account.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
             .ForPath(s => s.Account.Description, opt => opt.MapFrom(src => src.Description))
             .ForPath(s => s.Account.State, opt => opt.MapFrom(src => src.State));
+            // Map Create Activity
+            cfg.CreateMap<CreateActivityModel, CreateUseActivityModel>()
+            .ReverseMap();
         });
         mapper = new Mapper(config);
         this.storeRepository = storeRepository;
@@ -108,6 +119,8 @@ public class StoreService : IStoreService
         this.voucherService = voucherService;
         this.activityService = activityService;
         this.bonusService = bonusService;
+        this.voucherItemRepository = voucherItemRepository;
+        this.studentRepository = studentRepository;
     }
 
     public async Task<StoreModel> Add(CreateStoreModel creation)
@@ -128,6 +141,40 @@ public class StoreService : IStoreService
         store.AccountId = account.Id;
 
         return mapper.Map<StoreModel>(storeRepository.Add(store));
+    }
+
+    public bool AddActivity
+        (string id, string voucherItemId, CreateUseActivityModel creation)
+    {
+        var item = voucherItemRepository.GetById(voucherItemId);
+        if (item.Campaign.CampaignStores.Any(c => c.StoreId.Equals(id)))
+        {
+            if ((bool)item.IsBought && item.Activities.FirstOrDefault() != null)
+            {
+                if (!(bool)item.IsUsed)
+                {
+                    var stu = studentRepository.GetById
+                        (item.Activities.FirstOrDefault().StudentId);
+                    if (stu != null && (bool)stu.State)
+                    {
+                        CreateActivityModel create = mapper.Map<CreateActivityModel>(creation);
+                        create.StudentId = item.Activities.FirstOrDefault().StudentId;
+                        create.VoucherItemId = voucherItemId;
+                        create.StoreId = id;
+                        activityService.Add(create);
+                        return true;
+                    }
+                    throw new InvalidParameterException
+                        ("Sinh viên không hợp lệ");
+                }
+                throw new InvalidParameterException
+                    ("Mã khuyến mãi đã được sử dụng");
+            }
+            throw new InvalidParameterException
+                ("Mã khuyến mãi chưa được thanh toán");
+        }
+        throw new InvalidParameterException
+            ("Mã khuyến mãi không được áp dụng cho cửa hàng này");
     }
 
     public void Delete(string id)

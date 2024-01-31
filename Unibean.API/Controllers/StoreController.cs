@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
+using Unibean.Service.Models.Activities;
 using Unibean.Service.Models.Bonuses;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Parameters;
@@ -268,6 +269,37 @@ public class StoreController : ControllerBase
                 return StatusCode(StatusCodes.Status200OK, result);
             }
             return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của khuyến mãi");
+        }
+        catch (InvalidParameterException e)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Scan voucher
+    /// </summary>
+    /// <param name="id">Store id.</param>
+    /// <param name="voucherId">Voucher id.</param>
+    /// <param name="creation">Buy activities model.</param>
+    [HttpPost("{id}/vouchers/{voucherId}")]
+    [Authorize(Roles = "Store")]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.Created)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public ActionResult<string> BuyVoucher(
+        [ValidStore] string id,
+        [ValidItem] string voucherId,
+        CreateUseActivityModel creation)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            return storeService.AddActivity(id, voucherId, creation) ?
+                StatusCode(StatusCodes.Status201Created, "Quét khuyến mãi thành công") :
+                StatusCode(StatusCodes.Status404NotFound, "Quét khuyến mãi thất bại");
         }
         catch (InvalidParameterException e)
         {

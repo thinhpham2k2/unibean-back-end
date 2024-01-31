@@ -391,7 +391,7 @@ public class CampaignController : ControllerBase
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public ActionResult<VoucherModel> BuyVoucher(
+    public ActionResult<string> BuyVoucher(
         [ValidCampaign] string id, 
         [ValidVoucher] string voucherId, 
         CreateBuyActivityModel creation)

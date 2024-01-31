@@ -59,8 +59,8 @@ public class ActivityRepository : IActivityRepository
                 // Get red bean wallet student
                 var student = db.Students
                         .Where(s => s.Id.Equals(creation.StudentId) && (bool)s.Status)
-                        .Include(b => b.Wallets).Skip(1).FirstOrDefault();
-                var studentWallet = student.Wallets.FirstOrDefault();
+                        .Include(b => b.Wallets).FirstOrDefault();
+                var studentWallet = student.Wallets.Skip(1).FirstOrDefault();
 
                 // Get red bean wallet campaign
                 var campaign = db.Campaigns

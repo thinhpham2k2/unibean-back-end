@@ -1,4 +1,5 @@
 ﻿using Unibean.Repository.Paging;
+using Unibean.Service.Models.Activities;
 using Unibean.Service.Models.Stores;
 using Unibean.Service.Models.Transactions;
 using Unibean.Service.Models.Vouchers;
@@ -8,6 +9,9 @@ namespace Unibean.Service.Services.Interfaces;
 public interface IStoreService
 {
     Task<StoreModel> Add(CreateStoreModel creation);
+
+    bool AddActivity
+        (string id, string voucherItemId, CreateUseActivityModel creation);
 
     void Delete(string id);
 
