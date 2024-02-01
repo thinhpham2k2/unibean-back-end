@@ -60,6 +60,8 @@ public class Account
 
     public virtual ICollection<Admin> Admins { get; set; }
 
+    public virtual ICollection<Staff> Staffs { get; set; }
+
     public virtual ICollection<Brand> Brands { get; set; }
 
     public virtual ICollection<Store> Stores { get; set; }

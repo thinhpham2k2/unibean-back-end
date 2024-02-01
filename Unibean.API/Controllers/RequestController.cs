@@ -53,7 +53,7 @@ public class RequestController : ControllerBase
                 paging.Search, paging.Page, paging.Limit);
             return StatusCode(StatusCodes.Status200OK, result);
         }
-        return StatusCode(StatusCodes.Status400BadRequest, "Invalid property of request");
+        return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính yêu cầu không hợp lệ");
     }
 
     /// <summary>
