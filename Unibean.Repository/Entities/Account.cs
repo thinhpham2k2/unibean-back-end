@@ -3,6 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Unibean.Repository.Entities;
 
+public enum Role
+{
+    Admin = 1, Staff = 2, Brand = 3, Store = 4, Student = 5
+}
+
 [Table("tbl_account")]
 public class Account
 {
@@ -10,10 +15,9 @@ public class Account
     [Column("id", TypeName = "char(26)")]
     public string Id { get; set; }
 
-    [Column("role_id", TypeName = "char(26)")]
-    public string RoleId { get; set; }
-
-    public Role Role { get; set; }
+    [Column("role", 
+        TypeName = "enum('Admin', 'Staff', 'Brand', 'Store', 'Student')")]
+    public Role? Role { get; set; }
 
     [MaxLength(50)]
     [Column("user_name")]

@@ -62,8 +62,8 @@ public class CampaignRepository : ICampaignRepository
             var amount = brandRedWallet.Balance - creation.TotalIncome;
 
             // Cretae wallet transactions
-            creation.WalletTransactions = new List<WalletTransaction>() {
-                new WalletTransaction
+            creation.WalletTransactions = new List<CampaignTransaction>() {
+                new CampaignTransaction
             {
                 // Transaction for campaign's red bean
                 Id = Ulid.NewUlid().ToString(),
@@ -76,7 +76,7 @@ public class CampaignRepository : ICampaignRepository
                 Status = creation.Status,
             },
                 // Transaction for brand's red bean
-                new WalletTransaction
+                new CampaignTransaction
             {
                 Id = Ulid.NewUlid().ToString(),
                 CampaignId = creation.Id,
@@ -91,7 +91,7 @@ public class CampaignRepository : ICampaignRepository
             if (amount < 0)
             {
                 // Transaction for brand's green bean
-                creation.WalletTransactions.Add(new WalletTransaction
+                creation.WalletTransactions.Add(new CampaignTransaction
                 {
                     Id = Ulid.NewUlid().ToString(),
                     CampaignId = creation.Id,

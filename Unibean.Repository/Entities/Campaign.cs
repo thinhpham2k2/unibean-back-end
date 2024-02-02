@@ -66,21 +66,20 @@ public class Campaign
     [Column("description", TypeName = "text")]
     public string Description { get; set; }
 
-    [Column("state", TypeName = "bit(1)")]
-    public bool? State { get; set; }
-
     [Column("status", TypeName = "bit(1)")]
     public bool? Status { get; set; }
 
-    public virtual ICollection<CampaignCampus> CampaignCampuses { get; set; }
+    public virtual ICollection<Wallet> Wallets { get; set; }
 
     public virtual ICollection<CampaignMajor> CampaignMajors { get; set; }
 
     public virtual ICollection<CampaignStore> CampaignStores { get; set; }
 
-    public virtual ICollection<VoucherItem> VoucherItems { get; set; }
+    public virtual ICollection<CampaignDetail> CampaignDetails { get; set; }
 
-    public virtual ICollection<Wallet> Wallets { get; set; }
+    public virtual ICollection<CampaignCampus> CampaignCampuses { get; set; }
 
-    public virtual ICollection<WalletTransaction> WalletTransactions { get; set; }
+    public virtual ICollection<CampaignActivity> CampaignActivities { get; set; }
+
+    public virtual ICollection<CampaignTransaction> CampaignTransactions { get; set; }
 }

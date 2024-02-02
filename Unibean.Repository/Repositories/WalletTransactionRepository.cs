@@ -6,7 +6,7 @@ namespace Unibean.Repository.Repositories;
 
 public class WalletTransactionRepository : IWalletTransactionRepository
 {
-    public WalletTransaction Add(WalletTransaction creation)
+    public CampaignTransaction Add(CampaignTransaction creation)
     {
         try
         {
@@ -31,10 +31,10 @@ public class WalletTransactionRepository : IWalletTransactionRepository
         return creation;
     }
 
-    public List<WalletTransaction> GetAll
+    public List<CampaignTransaction> GetAll
         (List<string> walletIds, List<string> campaignIds, List<string> walletTypeIds, string search)
     {
-        List<WalletTransaction> result;
+        List<CampaignTransaction> result;
         try
         {
             using var db = new UnibeanDBContext();
@@ -61,9 +61,9 @@ public class WalletTransactionRepository : IWalletTransactionRepository
         return result;
     }
 
-    public WalletTransaction GetById(string id)
+    public CampaignTransaction GetById(string id)
     {
-        WalletTransaction walletTransaction = new();
+        CampaignTransaction walletTransaction = new();
         try
         {
             using var db = new UnibeanDBContext();

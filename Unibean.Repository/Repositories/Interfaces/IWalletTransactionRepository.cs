@@ -4,10 +4,10 @@ namespace Unibean.Repository.Repositories.Interfaces;
 
 public interface IWalletTransactionRepository
 {
-    WalletTransaction Add(WalletTransaction creation);
+    CampaignTransaction Add(CampaignTransaction creation);
 
-    List<WalletTransaction> GetAll
+    List<CampaignTransaction> GetAll
         (List<string> walletIds, List<string> campaignIds, List<string> walletTypeIds, string search);
 
-    WalletTransaction GetById(string id);
+    CampaignTransaction GetById(string id);
 }

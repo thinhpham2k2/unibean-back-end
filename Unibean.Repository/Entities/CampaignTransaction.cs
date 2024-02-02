@@ -3,33 +3,31 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Unibean.Repository.Entities;
 
-[Table("tbl_district")]
-public class District
+[Table("tbl_campaign_transaction")]
+public class CampaignTransaction
 {
     [Key]
     [Column("id", TypeName = "char(26)")]
     public string Id { get; set; }
 
-    [Column("city_id", TypeName = "char(26)")]
-    public string CityId { get; set; }
+    [Column("wallet_id", TypeName = "char(26)")]
+    public string WalletId { get; set; }
 
-    public City City { get; set; }
+    public Wallet Wallet { get; set; }
 
-    [MaxLength(255)]
-    [Column("district_name")]
-    public string DistrictName { get; set; }
+    [Column("campaign_id", TypeName = "char(26)")]
+    public string CampaignId { get; set; }
 
-    [Column("image", TypeName = "text")]
-    public string Image { get; set; }
+    public Campaign Campaign { get; set; }
 
-    [Column("file_name", TypeName = "text")]
-    public string FileName { get; set; }
+    [Column("amount", TypeName = "decimal(38,2)")]
+    public decimal? Amount { get; set; }
+
+    [Column("rate", TypeName = "decimal(38,2)")]
+    public decimal? Rate { get; set; }
 
     [Column("date_created")]
     public DateTime? DateCreated { get; set; }
-
-    [Column("date_updated")]
-    public DateTime? DateUpdated { get; set; }
 
     [Column("description", TypeName = "text")]
     public string Description { get; set; }
@@ -39,6 +37,4 @@ public class District
 
     [Column("status", TypeName = "bit(1)")]
     public bool? Status { get; set; }
-
-    public virtual ICollection<Area> Areas { get; set; }
 }

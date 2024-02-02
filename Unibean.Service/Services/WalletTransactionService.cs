@@ -17,7 +17,7 @@ public class WalletTransactionService : IWalletTransactionService
         var config = new MapperConfiguration(cfg
             =>
         {
-            cfg.CreateMap<WalletTransaction, TransactionModel>()
+            cfg.CreateMap<CampaignTransaction, TransactionModel>()
             .ForMember(t => t.Name, opt => opt.MapFrom(src
                 => src.Amount > 0 ? 
                 "Chiến dịch " + src.Campaign.CampaignName + " kết thúc" : "Tạo chiến dịch " + src.Campaign.CampaignName))

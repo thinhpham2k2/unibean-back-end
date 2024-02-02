@@ -54,7 +54,7 @@ public class Wallet
 
     public virtual ICollection<BonusTransaction> BonusTransactions { get; set; }
 
-    public virtual ICollection<WalletTransaction> WalletTransactions { get; set; }
+    public virtual ICollection<CampaignTransaction> WalletTransactions { get; set; }
 
     public virtual ICollection<RequestTransaction> RequestTransactions { get; set; }
 

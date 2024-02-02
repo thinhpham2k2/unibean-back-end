@@ -58,7 +58,7 @@ public class UnibeanDBContext : DbContext
     public virtual DbSet<VoucherItem> VoucherItems { get; set; }
     public virtual DbSet<VoucherType> VoucherTypes { get; set; }
     public virtual DbSet<Wallet> Wallets { get; set; }
-    public virtual DbSet<WalletTransaction> WalletTransactions { get; set; }
+    public virtual DbSet<CampaignTransaction> WalletTransactions { get; set; }
     public virtual DbSet<WalletType> WalletTypes { get; set; }
     public virtual DbSet<Wishlist> Wishlists { get; set; }
 
