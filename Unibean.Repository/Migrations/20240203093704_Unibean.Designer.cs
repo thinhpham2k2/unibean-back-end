@@ -11,7 +11,7 @@ using Unibean.Repository.Entities;
 namespace Unibean.Repository.Migrations
 {
     [DbContext(typeof(UnibeanDBContext))]
-    [Migration("20240111052048_Unibean")]
+    [Migration("20240203093704_Unibean")]
     partial class Unibean
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -69,9 +69,9 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("char(20)")
                         .HasColumnName("phone");
 
-                    b.Property<string>("RoleId")
-                        .HasColumnType("char(26)")
-                        .HasColumnName("role_id");
+                    b.Property<string>("Role")
+                        .HasColumnType("enum('Admin', 'Staff', 'Brand', 'Store', 'Student')")
+                        .HasColumnName("role");
 
                     b.Property<ulong?>("State")
                         .HasColumnType("bit(1)")
@@ -87,8 +87,6 @@ namespace Unibean.Repository.Migrations
                         .HasColumnName("user_name");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
 
                     b.ToTable("tbl_account");
                 });
@@ -254,10 +252,6 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("text")
                         .HasColumnName("description");
 
-                    b.Property<string>("DistrictId")
-                        .HasColumnType("char(26)")
-                        .HasColumnName("district_id");
-
                     b.Property<string>("FileName")
                         .HasColumnType("text")
                         .HasColumnName("file_name");
@@ -275,8 +269,6 @@ namespace Unibean.Repository.Migrations
                         .HasColumnName("status");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("DistrictId");
 
                     b.ToTable("tbl_area");
                 });
@@ -519,10 +511,6 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("date")
                         .HasColumnName("start_on");
 
-                    b.Property<ulong?>("State")
-                        .HasColumnType("bit(1)")
-                        .HasColumnName("state");
-
                     b.Property<ulong?>("Status")
                         .HasColumnType("bit(1)")
                         .HasColumnName("status");
@@ -546,6 +534,39 @@ namespace Unibean.Repository.Migrations
                     b.HasIndex("TypeId");
 
                     b.ToTable("tbl_campaign");
+                });
+
+            modelBuilder.Entity("Unibean.Repository.Entities.CampaignActivity", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("char(26)")
+                        .HasColumnName("id");
+
+                    b.Property<string>("CampaignId")
+                        .HasColumnType("char(26)")
+                        .HasColumnName("campaign_id");
+
+                    b.Property<DateTime?>("DateCreated")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("date_created");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text")
+                        .HasColumnName("description");
+
+                    b.Property<string>("State")
+                        .HasColumnType("enum('Pending', 'Active', 'Inactive', 'Expired', 'Closed')")
+                        .HasColumnName("state");
+
+                    b.Property<ulong?>("Status")
+                        .HasColumnType("bit(1)")
+                        .HasColumnName("status");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CampaignId");
+
+                    b.ToTable("tbl_campaign_activity");
                 });
 
             modelBuilder.Entity("Unibean.Repository.Entities.CampaignCampus", b =>
@@ -581,6 +602,69 @@ namespace Unibean.Repository.Migrations
                     b.HasIndex("CampusId");
 
                     b.ToTable("tbl_campaign_campus");
+                });
+
+            modelBuilder.Entity("Unibean.Repository.Entities.CampaignDetail", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("char(26)")
+                        .HasColumnName("id");
+
+                    b.Property<string>("CampaignId")
+                        .HasColumnType("char(26)")
+                        .HasColumnName("campaign_id");
+
+                    b.Property<DateTime?>("DateCreated")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("date_created");
+
+                    b.Property<DateTime?>("DateUpdated")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("date_updated");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text")
+                        .HasColumnName("description");
+
+                    b.Property<ulong?>("FromIndex")
+                        .HasColumnType("bit(1)")
+                        .HasColumnName("from_index");
+
+                    b.Property<decimal?>("Price")
+                        .HasColumnType("decimal(38,2)")
+                        .HasColumnName("price");
+
+                    b.Property<int?>("Quantity")
+                        .HasColumnType("int")
+                        .HasColumnName("quantity");
+
+                    b.Property<decimal?>("Rate")
+                        .HasColumnType("decimal(38,2)")
+                        .HasColumnName("rate");
+
+                    b.Property<ulong?>("State")
+                        .HasColumnType("bit(1)")
+                        .HasColumnName("state");
+
+                    b.Property<ulong?>("Status")
+                        .HasColumnType("bit(1)")
+                        .HasColumnName("status");
+
+                    b.Property<ulong?>("ToIndex")
+                        .HasColumnType("bit(1)")
+                        .HasColumnName("to_index");
+
+                    b.Property<string>("VoucherId")
+                        .HasColumnType("char(26)")
+                        .HasColumnName("voucher_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CampaignId");
+
+                    b.HasIndex("VoucherId");
+
+                    b.ToTable("tbl_campaign_detail");
                 });
 
             modelBuilder.Entity("Unibean.Repository.Entities.CampaignMajor", b =>
@@ -651,6 +735,53 @@ namespace Unibean.Repository.Migrations
                     b.HasIndex("StoreId");
 
                     b.ToTable("tbl_campaign_store");
+                });
+
+            modelBuilder.Entity("Unibean.Repository.Entities.CampaignTransaction", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("char(26)")
+                        .HasColumnName("id");
+
+                    b.Property<decimal?>("Amount")
+                        .HasColumnType("decimal(38,2)")
+                        .HasColumnName("amount");
+
+                    b.Property<string>("CampaignId")
+                        .HasColumnType("char(26)")
+                        .HasColumnName("campaign_id");
+
+                    b.Property<DateTime?>("DateCreated")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("date_created");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text")
+                        .HasColumnName("description");
+
+                    b.Property<decimal?>("Rate")
+                        .HasColumnType("decimal(38,2)")
+                        .HasColumnName("rate");
+
+                    b.Property<ulong?>("State")
+                        .HasColumnType("bit(1)")
+                        .HasColumnName("state");
+
+                    b.Property<ulong?>("Status")
+                        .HasColumnType("bit(1)")
+                        .HasColumnName("status");
+
+                    b.Property<string>("WalletId")
+                        .HasColumnType("char(26)")
+                        .HasColumnName("wallet_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CampaignId");
+
+                    b.HasIndex("WalletId");
+
+                    b.ToTable("tbl_campaign_transaction");
                 });
 
             modelBuilder.Entity("Unibean.Repository.Entities.CampaignType", b =>
@@ -869,13 +1000,11 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("bit(1)")
                         .HasColumnName("status");
 
-                    b.Property<string>("TypeId")
-                        .HasColumnType("char(26)")
-                        .HasColumnName("type_id");
+                    b.Property<string>("Type")
+                        .HasColumnType("enum('Verify', 'Welcome', 'Spread', 'Consume')")
+                        .HasColumnName("type");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("TypeId");
 
                     b.ToTable("tbl_challenge");
                 });
@@ -925,144 +1054,6 @@ namespace Unibean.Repository.Migrations
                     b.HasIndex("WalletId");
 
                     b.ToTable("tbl_challenge_transaction");
-                });
-
-            modelBuilder.Entity("Unibean.Repository.Entities.ChallengeType", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("char(26)")
-                        .HasColumnName("id");
-
-                    b.Property<DateTime?>("DateCreated")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("date_created");
-
-                    b.Property<DateTime?>("DateUpdated")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("date_updated");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text")
-                        .HasColumnName("description");
-
-                    b.Property<string>("FileName")
-                        .HasColumnType("text")
-                        .HasColumnName("file_name");
-
-                    b.Property<string>("Image")
-                        .HasColumnType("text")
-                        .HasColumnName("image");
-
-                    b.Property<ulong?>("State")
-                        .HasColumnType("bit(1)")
-                        .HasColumnName("state");
-
-                    b.Property<ulong?>("Status")
-                        .HasColumnType("bit(1)")
-                        .HasColumnName("status");
-
-                    b.Property<string>("TypeName")
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)")
-                        .HasColumnName("type_name");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("tbl_challenge_type");
-                });
-
-            modelBuilder.Entity("Unibean.Repository.Entities.City", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("char(26)")
-                        .HasColumnName("id");
-
-                    b.Property<string>("CityName")
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)")
-                        .HasColumnName("city_name");
-
-                    b.Property<DateTime?>("DateCreated")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("date_created");
-
-                    b.Property<DateTime?>("DateUpdated")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("date_updated");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text")
-                        .HasColumnName("description");
-
-                    b.Property<string>("FileName")
-                        .HasColumnType("text")
-                        .HasColumnName("file_name");
-
-                    b.Property<string>("Image")
-                        .HasColumnType("text")
-                        .HasColumnName("image");
-
-                    b.Property<ulong?>("State")
-                        .HasColumnType("bit(1)")
-                        .HasColumnName("state");
-
-                    b.Property<ulong?>("Status")
-                        .HasColumnType("bit(1)")
-                        .HasColumnName("status");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("tbl_city");
-                });
-
-            modelBuilder.Entity("Unibean.Repository.Entities.District", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("char(26)")
-                        .HasColumnName("id");
-
-                    b.Property<string>("CityId")
-                        .HasColumnType("char(26)")
-                        .HasColumnName("city_id");
-
-                    b.Property<DateTime?>("DateCreated")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("date_created");
-
-                    b.Property<DateTime?>("DateUpdated")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("date_updated");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text")
-                        .HasColumnName("description");
-
-                    b.Property<string>("DistrictName")
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)")
-                        .HasColumnName("district_name");
-
-                    b.Property<string>("FileName")
-                        .HasColumnType("text")
-                        .HasColumnName("file_name");
-
-                    b.Property<string>("Image")
-                        .HasColumnType("text")
-                        .HasColumnName("image");
-
-                    b.Property<ulong?>("State")
-                        .HasColumnType("bit(1)")
-                        .HasColumnName("state");
-
-                    b.Property<ulong?>("Status")
-                        .HasColumnType("bit(1)")
-                        .HasColumnName("status");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CityId");
-
-                    b.ToTable("tbl_district");
                 });
 
             modelBuilder.Entity("Unibean.Repository.Entities.Image", b =>
@@ -1297,12 +1288,8 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("char(26)")
                         .HasColumnName("order_id");
 
-                    b.Property<string>("StateId")
-                        .HasColumnType("char(26)")
-                        .HasColumnName("state_id");
-
-                    b.Property<ulong?>("States")
-                        .HasColumnType("bit(1)")
+                    b.Property<string>("State")
+                        .HasColumnType("enum('Order', 'Confirmation', 'Preparation', 'Arrival', 'Receipt', 'Abort')")
                         .HasColumnName("state");
 
                     b.Property<ulong?>("Status")
@@ -1312,8 +1299,6 @@ namespace Unibean.Repository.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("OrderId");
-
-                    b.HasIndex("StateId");
 
                     b.ToTable("tbl_order_state");
                 });
@@ -1505,11 +1490,15 @@ namespace Unibean.Repository.Migrations
                     b.ToTable("tbl_request_transaction");
                 });
 
-            modelBuilder.Entity("Unibean.Repository.Entities.Role", b =>
+            modelBuilder.Entity("Unibean.Repository.Entities.Staff", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("char(26)")
                         .HasColumnName("id");
+
+                    b.Property<string>("AccountId")
+                        .HasColumnType("char(26)")
+                        .HasColumnName("account_id");
 
                     b.Property<DateTime?>("DateCreated")
                         .HasColumnType("datetime(6)")
@@ -1519,70 +1508,18 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("datetime(6)")
                         .HasColumnName("date_updated");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("text")
-                        .HasColumnName("description");
-
-                    b.Property<string>("FileName")
-                        .HasColumnType("text")
-                        .HasColumnName("file_name");
-
-                    b.Property<string>("Image")
-                        .HasColumnType("text")
-                        .HasColumnName("image");
-
-                    b.Property<string>("RoleName")
+                    b.Property<string>("FullName")
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)")
-                        .HasColumnName("role_name");
+                        .HasColumnName("full_name");
 
                     b.Property<ulong?>("State")
                         .HasColumnType("bit(1)")
                         .HasColumnName("state");
 
-                    b.Property<ulong?>("Status")
-                        .HasColumnType("bit(1)")
-                        .HasColumnName("status");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("tbl_role");
-                });
-
-            modelBuilder.Entity("Unibean.Repository.Entities.State", b =>
-                {
-                    b.Property<string>("Id")
+                    b.Property<string>("StationId")
                         .HasColumnType("char(26)")
-                        .HasColumnName("id");
-
-                    b.Property<DateTime?>("DateCreated")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("date_created");
-
-                    b.Property<DateTime?>("DateUpdated")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("date_updated");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text")
-                        .HasColumnName("description");
-
-                    b.Property<string>("FileName")
-                        .HasColumnType("text")
-                        .HasColumnName("file_name");
-
-                    b.Property<string>("Image")
-                        .HasColumnType("text")
-                        .HasColumnName("image");
-
-                    b.Property<string>("StateName")
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)")
-                        .HasColumnName("state_name");
-
-                    b.Property<ulong?>("States")
-                        .HasColumnType("bit(1)")
-                        .HasColumnName("state");
+                        .HasColumnName("station_id");
 
                     b.Property<ulong?>("Status")
                         .HasColumnType("bit(1)")
@@ -1590,7 +1527,11 @@ namespace Unibean.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("tbl_state");
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("StationId");
+
+                    b.ToTable("tbl_staff");
                 });
 
             modelBuilder.Entity("Unibean.Repository.Entities.Station", b =>
@@ -1640,8 +1581,8 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("char(20)")
                         .HasColumnName("phone");
 
-                    b.Property<ulong?>("State")
-                        .HasColumnType("bit(1)")
+                    b.Property<string>("State")
+                        .HasColumnType("enum('Active', 'Inactive', 'Closed')")
                         .HasColumnName("state");
 
                     b.Property<string>("StationName")
@@ -1781,15 +1722,15 @@ namespace Unibean.Repository.Migrations
                         .HasColumnName("full_name");
 
                     b.Property<string>("Gender")
-                        .HasColumnType("enum('Nữ', 'Nam')")
+                        .HasColumnType("enum('Female', 'Male')")
                         .HasColumnName("gender");
 
                     b.Property<string>("MajorId")
                         .HasColumnType("char(26)")
                         .HasColumnName("major_id");
 
-                    b.Property<ulong?>("State")
-                        .HasColumnType("bit(1)")
+                    b.Property<string>("State")
+                        .HasColumnType("enum('Pending', 'Active', 'Inactive', 'Rejected')")
                         .HasColumnName("state");
 
                     b.Property<ulong?>("Status")
@@ -2021,37 +1962,37 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("char(26)")
                         .HasColumnName("id");
 
-                    b.Property<string>("CampaignId")
+                    b.Property<string>("CampaignDetailId")
                         .HasColumnType("char(26)")
-                        .HasColumnName("campaign_id");
+                        .HasColumnName("campaign_detail_id");
 
                     b.Property<DateTime?>("DateCreated")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("date_created");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("text")
-                        .HasColumnName("description");
+                    b.Property<DateTime?>("DateIssued")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("date_issued");
 
                     b.Property<DateOnly?>("ExpireOn")
                         .HasColumnType("date")
                         .HasColumnName("expire_on");
 
+                    b.Property<int?>("Index")
+                        .HasColumnType("int")
+                        .HasColumnName("index");
+
                     b.Property<ulong?>("IsBought")
                         .HasColumnType("bit(1)")
                         .HasColumnName("is_bought");
 
+                    b.Property<ulong?>("IsLocked")
+                        .HasColumnType("bit(1)")
+                        .HasColumnName("is_locked");
+
                     b.Property<ulong?>("IsUsed")
                         .HasColumnType("bit(1)")
                         .HasColumnName("is_used");
-
-                    b.Property<decimal?>("Price")
-                        .HasColumnType("decimal(38,2)")
-                        .HasColumnName("price");
-
-                    b.Property<decimal?>("Rate")
-                        .HasColumnType("decimal(38,2)")
-                        .HasColumnName("rate");
 
                     b.Property<ulong?>("State")
                         .HasColumnType("bit(1)")
@@ -2075,7 +2016,7 @@ namespace Unibean.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CampaignId");
+                    b.HasIndex("CampaignDetailId");
 
                     b.HasIndex("VoucherId");
 
@@ -2168,9 +2109,9 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("char(26)")
                         .HasColumnName("student_id");
 
-                    b.Property<string>("TypeId")
-                        .HasColumnType("char(26)")
-                        .HasColumnName("type_id");
+                    b.Property<string>("Type")
+                        .HasColumnType("enum('Green', 'Red')")
+                        .HasColumnName("type");
 
                     b.HasKey("Id");
 
@@ -2180,100 +2121,7 @@ namespace Unibean.Repository.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.HasIndex("TypeId");
-
                     b.ToTable("tbl_wallet");
-                });
-
-            modelBuilder.Entity("Unibean.Repository.Entities.WalletTransaction", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("char(26)")
-                        .HasColumnName("id");
-
-                    b.Property<decimal?>("Amount")
-                        .HasColumnType("decimal(38,2)")
-                        .HasColumnName("amount");
-
-                    b.Property<string>("CampaignId")
-                        .HasColumnType("char(26)")
-                        .HasColumnName("campaign_id");
-
-                    b.Property<DateTime?>("DateCreated")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("date_created");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text")
-                        .HasColumnName("description");
-
-                    b.Property<decimal?>("Rate")
-                        .HasColumnType("decimal(38,2)")
-                        .HasColumnName("rate");
-
-                    b.Property<ulong?>("State")
-                        .HasColumnType("bit(1)")
-                        .HasColumnName("state");
-
-                    b.Property<ulong?>("Status")
-                        .HasColumnType("bit(1)")
-                        .HasColumnName("status");
-
-                    b.Property<string>("WalletId")
-                        .HasColumnType("char(26)")
-                        .HasColumnName("wallet_id");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CampaignId");
-
-                    b.HasIndex("WalletId");
-
-                    b.ToTable("tbl_wallet_transaction");
-                });
-
-            modelBuilder.Entity("Unibean.Repository.Entities.WalletType", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("char(26)")
-                        .HasColumnName("id");
-
-                    b.Property<DateTime?>("DateCreated")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("date_created");
-
-                    b.Property<DateTime?>("DateUpdated")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("date_updated");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text")
-                        .HasColumnName("description");
-
-                    b.Property<string>("FileName")
-                        .HasColumnType("text")
-                        .HasColumnName("file_name");
-
-                    b.Property<string>("Image")
-                        .HasColumnType("text")
-                        .HasColumnName("image");
-
-                    b.Property<ulong?>("State")
-                        .HasColumnType("bit(1)")
-                        .HasColumnName("state");
-
-                    b.Property<ulong?>("Status")
-                        .HasColumnType("bit(1)")
-                        .HasColumnName("status");
-
-                    b.Property<string>("TypeName")
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)")
-                        .HasColumnName("type_name");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("tbl_wallet_type");
                 });
 
             modelBuilder.Entity("Unibean.Repository.Entities.Wishlist", b =>
@@ -2309,15 +2157,6 @@ namespace Unibean.Repository.Migrations
                     b.HasIndex("StudentId");
 
                     b.ToTable("tbl_wishlist");
-                });
-
-            modelBuilder.Entity("Unibean.Repository.Entities.Account", b =>
-                {
-                    b.HasOne("Unibean.Repository.Entities.Role", "Role")
-                        .WithMany("Accounts")
-                        .HasForeignKey("RoleId");
-
-                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("Unibean.Repository.Entities.Activity", b =>
@@ -2363,15 +2202,6 @@ namespace Unibean.Repository.Migrations
                         .HasForeignKey("AccountId");
 
                     b.Navigation("Account");
-                });
-
-            modelBuilder.Entity("Unibean.Repository.Entities.Area", b =>
-                {
-                    b.HasOne("Unibean.Repository.Entities.District", "District")
-                        .WithMany("Areas")
-                        .HasForeignKey("DistrictId");
-
-                    b.Navigation("District");
                 });
 
             modelBuilder.Entity("Unibean.Repository.Entities.Bonus", b =>
@@ -2434,6 +2264,15 @@ namespace Unibean.Repository.Migrations
                     b.Navigation("Type");
                 });
 
+            modelBuilder.Entity("Unibean.Repository.Entities.CampaignActivity", b =>
+                {
+                    b.HasOne("Unibean.Repository.Entities.Campaign", "Campaign")
+                        .WithMany("CampaignActivities")
+                        .HasForeignKey("CampaignId");
+
+                    b.Navigation("Campaign");
+                });
+
             modelBuilder.Entity("Unibean.Repository.Entities.CampaignCampus", b =>
                 {
                     b.HasOne("Unibean.Repository.Entities.Campaign", "Campaign")
@@ -2447,6 +2286,21 @@ namespace Unibean.Repository.Migrations
                     b.Navigation("Campaign");
 
                     b.Navigation("Campus");
+                });
+
+            modelBuilder.Entity("Unibean.Repository.Entities.CampaignDetail", b =>
+                {
+                    b.HasOne("Unibean.Repository.Entities.Campaign", "Campaign")
+                        .WithMany("CampaignDetails")
+                        .HasForeignKey("CampaignId");
+
+                    b.HasOne("Unibean.Repository.Entities.Voucher", "Voucher")
+                        .WithMany("CampaignDetails")
+                        .HasForeignKey("VoucherId");
+
+                    b.Navigation("Campaign");
+
+                    b.Navigation("Voucher");
                 });
 
             modelBuilder.Entity("Unibean.Repository.Entities.CampaignMajor", b =>
@@ -2479,6 +2333,21 @@ namespace Unibean.Repository.Migrations
                     b.Navigation("Store");
                 });
 
+            modelBuilder.Entity("Unibean.Repository.Entities.CampaignTransaction", b =>
+                {
+                    b.HasOne("Unibean.Repository.Entities.Campaign", "Campaign")
+                        .WithMany("CampaignTransactions")
+                        .HasForeignKey("CampaignId");
+
+                    b.HasOne("Unibean.Repository.Entities.Wallet", "Wallet")
+                        .WithMany("CampaignTransactions")
+                        .HasForeignKey("WalletId");
+
+                    b.Navigation("Campaign");
+
+                    b.Navigation("Wallet");
+                });
+
             modelBuilder.Entity("Unibean.Repository.Entities.Campus", b =>
                 {
                     b.HasOne("Unibean.Repository.Entities.Area", "Area")
@@ -2494,15 +2363,6 @@ namespace Unibean.Repository.Migrations
                     b.Navigation("University");
                 });
 
-            modelBuilder.Entity("Unibean.Repository.Entities.Challenge", b =>
-                {
-                    b.HasOne("Unibean.Repository.Entities.ChallengeType", "Type")
-                        .WithMany("Challenges")
-                        .HasForeignKey("TypeId");
-
-                    b.Navigation("Type");
-                });
-
             modelBuilder.Entity("Unibean.Repository.Entities.ChallengeTransaction", b =>
                 {
                     b.HasOne("Unibean.Repository.Entities.StudentChallenge", "Challenge")
@@ -2516,15 +2376,6 @@ namespace Unibean.Repository.Migrations
                     b.Navigation("Challenge");
 
                     b.Navigation("Wallet");
-                });
-
-            modelBuilder.Entity("Unibean.Repository.Entities.District", b =>
-                {
-                    b.HasOne("Unibean.Repository.Entities.City", "City")
-                        .WithMany("Districts")
-                        .HasForeignKey("CityId");
-
-                    b.Navigation("City");
                 });
 
             modelBuilder.Entity("Unibean.Repository.Entities.Image", b =>
@@ -2587,13 +2438,7 @@ namespace Unibean.Repository.Migrations
                         .WithMany("OrderStates")
                         .HasForeignKey("OrderId");
 
-                    b.HasOne("Unibean.Repository.Entities.State", "State")
-                        .WithMany("OrderStates")
-                        .HasForeignKey("StateId");
-
                     b.Navigation("Order");
-
-                    b.Navigation("State");
                 });
 
             modelBuilder.Entity("Unibean.Repository.Entities.OrderTransaction", b =>
@@ -2648,6 +2493,21 @@ namespace Unibean.Repository.Migrations
                     b.Navigation("Request");
 
                     b.Navigation("Wallet");
+                });
+
+            modelBuilder.Entity("Unibean.Repository.Entities.Staff", b =>
+                {
+                    b.HasOne("Unibean.Repository.Entities.Account", "Account")
+                        .WithMany("Staffs")
+                        .HasForeignKey("AccountId");
+
+                    b.HasOne("Unibean.Repository.Entities.Station", "Station")
+                        .WithMany("Staffs")
+                        .HasForeignKey("StationId");
+
+                    b.Navigation("Account");
+
+                    b.Navigation("Station");
                 });
 
             modelBuilder.Entity("Unibean.Repository.Entities.Store", b =>
@@ -2724,15 +2584,15 @@ namespace Unibean.Repository.Migrations
 
             modelBuilder.Entity("Unibean.Repository.Entities.VoucherItem", b =>
                 {
-                    b.HasOne("Unibean.Repository.Entities.Campaign", "Campaign")
+                    b.HasOne("Unibean.Repository.Entities.CampaignDetail", "CampaignDetail")
                         .WithMany("VoucherItems")
-                        .HasForeignKey("CampaignId");
+                        .HasForeignKey("CampaignDetailId");
 
                     b.HasOne("Unibean.Repository.Entities.Voucher", "Voucher")
                         .WithMany("VoucherItems")
                         .HasForeignKey("VoucherId");
 
-                    b.Navigation("Campaign");
+                    b.Navigation("CampaignDetail");
 
                     b.Navigation("Voucher");
                 });
@@ -2751,32 +2611,11 @@ namespace Unibean.Repository.Migrations
                         .WithMany("Wallets")
                         .HasForeignKey("StudentId");
 
-                    b.HasOne("Unibean.Repository.Entities.WalletType", "Type")
-                        .WithMany("Wallets")
-                        .HasForeignKey("TypeId");
-
                     b.Navigation("Brand");
 
                     b.Navigation("Campaign");
 
                     b.Navigation("Student");
-
-                    b.Navigation("Type");
-                });
-
-            modelBuilder.Entity("Unibean.Repository.Entities.WalletTransaction", b =>
-                {
-                    b.HasOne("Unibean.Repository.Entities.Campaign", "Campaign")
-                        .WithMany("WalletTransactions")
-                        .HasForeignKey("CampaignId");
-
-                    b.HasOne("Unibean.Repository.Entities.Wallet", "Wallet")
-                        .WithMany("WalletTransactions")
-                        .HasForeignKey("WalletId");
-
-                    b.Navigation("Campaign");
-
-                    b.Navigation("Wallet");
                 });
 
             modelBuilder.Entity("Unibean.Repository.Entities.Wishlist", b =>
@@ -2799,6 +2638,8 @@ namespace Unibean.Repository.Migrations
                     b.Navigation("Admins");
 
                     b.Navigation("Brands");
+
+                    b.Navigation("Staffs");
 
                     b.Navigation("Stores");
 
@@ -2846,17 +2687,24 @@ namespace Unibean.Repository.Migrations
 
             modelBuilder.Entity("Unibean.Repository.Entities.Campaign", b =>
                 {
+                    b.Navigation("CampaignActivities");
+
                     b.Navigation("CampaignCampuses");
+
+                    b.Navigation("CampaignDetails");
 
                     b.Navigation("CampaignMajors");
 
                     b.Navigation("CampaignStores");
 
-                    b.Navigation("VoucherItems");
-
-                    b.Navigation("WalletTransactions");
+                    b.Navigation("CampaignTransactions");
 
                     b.Navigation("Wallets");
+                });
+
+            modelBuilder.Entity("Unibean.Repository.Entities.CampaignDetail", b =>
+                {
+                    b.Navigation("VoucherItems");
                 });
 
             modelBuilder.Entity("Unibean.Repository.Entities.CampaignType", b =>
@@ -2879,21 +2727,6 @@ namespace Unibean.Repository.Migrations
             modelBuilder.Entity("Unibean.Repository.Entities.Challenge", b =>
                 {
                     b.Navigation("StudentChallenges");
-                });
-
-            modelBuilder.Entity("Unibean.Repository.Entities.ChallengeType", b =>
-                {
-                    b.Navigation("Challenges");
-                });
-
-            modelBuilder.Entity("Unibean.Repository.Entities.City", b =>
-                {
-                    b.Navigation("Districts");
-                });
-
-            modelBuilder.Entity("Unibean.Repository.Entities.District", b =>
-                {
-                    b.Navigation("Areas");
                 });
 
             modelBuilder.Entity("Unibean.Repository.Entities.Major", b =>
@@ -2924,19 +2757,11 @@ namespace Unibean.Repository.Migrations
                     b.Navigation("RequestTransactions");
                 });
 
-            modelBuilder.Entity("Unibean.Repository.Entities.Role", b =>
-                {
-                    b.Navigation("Accounts");
-                });
-
-            modelBuilder.Entity("Unibean.Repository.Entities.State", b =>
-                {
-                    b.Navigation("OrderStates");
-                });
-
             modelBuilder.Entity("Unibean.Repository.Entities.Station", b =>
                 {
                     b.Navigation("Orders");
+
+                    b.Navigation("Staffs");
                 });
 
             modelBuilder.Entity("Unibean.Repository.Entities.Store", b =>
@@ -2979,6 +2804,8 @@ namespace Unibean.Repository.Migrations
 
             modelBuilder.Entity("Unibean.Repository.Entities.Voucher", b =>
                 {
+                    b.Navigation("CampaignDetails");
+
                     b.Navigation("VoucherItems");
                 });
 
@@ -2998,18 +2825,13 @@ namespace Unibean.Repository.Migrations
 
                     b.Navigation("BonusTransactions");
 
+                    b.Navigation("CampaignTransactions");
+
                     b.Navigation("ChallengeTransactions");
 
                     b.Navigation("OrderTransactions");
 
                     b.Navigation("RequestTransactions");
-
-                    b.Navigation("WalletTransactions");
-                });
-
-            modelBuilder.Entity("Unibean.Repository.Entities.WalletType", b =>
-                {
-                    b.Navigation("Wallets");
                 });
 #pragma warning restore 612, 618
         }

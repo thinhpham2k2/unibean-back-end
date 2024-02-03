@@ -13,6 +13,68 @@ namespace Unibean.Repository.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "tbl_account",
+                columns: table => new
+                {
+                    id = table.Column<string>(type: "char(26)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    role = table.Column<string>(type: "enum('Admin', 'Staff', 'Brand', 'Store', 'Student')", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    user_name = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    password = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    phone = table.Column<string>(type: "char(20)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    email = table.Column<string>(type: "varchar(320)", maxLength: 320, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    avatar = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    file_name = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    is_verify = table.Column<ulong>(type: "bit(1)", nullable: true),
+                    date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    date_updated = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    date_verified = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    description = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    state = table.Column<ulong>(type: "bit(1)", nullable: true),
+                    status = table.Column<ulong>(type: "bit(1)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tbl_account", x => x.id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "tbl_area",
+                columns: table => new
+                {
+                    id = table.Column<string>(type: "char(26)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    area_name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    image = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    file_name = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    address = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    date_updated = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    description = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    state = table.Column<ulong>(type: "bit(1)", nullable: true),
+                    status = table.Column<ulong>(type: "bit(1)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tbl_area", x => x.id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "tbl_campaign_type",
                 columns: table => new
                 {
@@ -63,13 +125,17 @@ namespace Unibean.Repository.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "tbl_challenge_type",
+                name: "tbl_challenge",
                 columns: table => new
                 {
                     id = table.Column<string>(type: "char(26)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    type_name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true)
+                    type = table.Column<string>(type: "enum('Verify', 'Welcome', 'Spread', 'Consume')", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    challenge_name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    amount = table.Column<decimal>(type: "decimal(38,2)", nullable: true),
+                    condition = table.Column<decimal>(type: "decimal(38,2)", nullable: true),
                     image = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     file_name = table.Column<string>(type: "text", nullable: true)
@@ -83,32 +149,7 @@ namespace Unibean.Repository.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tbl_challenge_type", x => x.id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "tbl_city",
-                columns: table => new
-                {
-                    id = table.Column<string>(type: "char(26)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    city_name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    image = table.Column<string>(type: "text", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    file_name = table.Column<string>(type: "text", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    date_updated = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    description = table.Column<string>(type: "text", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    state = table.Column<ulong>(type: "bit(1)", nullable: true),
-                    status = table.Column<ulong>(type: "bit(1)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tbl_city", x => x.id);
+                    table.PrimaryKey("PK_tbl_challenge", x => x.id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -138,56 +179,6 @@ namespace Unibean.Repository.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "tbl_role",
-                columns: table => new
-                {
-                    id = table.Column<string>(type: "char(26)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    role_name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    image = table.Column<string>(type: "text", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    file_name = table.Column<string>(type: "text", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    date_updated = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    description = table.Column<string>(type: "text", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    state = table.Column<ulong>(type: "bit(1)", nullable: true),
-                    status = table.Column<ulong>(type: "bit(1)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tbl_role", x => x.id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "tbl_state",
-                columns: table => new
-                {
-                    id = table.Column<string>(type: "char(26)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    state_name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    image = table.Column<string>(type: "text", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    file_name = table.Column<string>(type: "text", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    date_updated = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    description = table.Column<string>(type: "text", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    state = table.Column<ulong>(type: "bit(1)", nullable: true),
-                    status = table.Column<ulong>(type: "bit(1)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tbl_state", x => x.id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
                 name: "tbl_station",
                 columns: table => new
                 {
@@ -211,7 +202,8 @@ namespace Unibean.Repository.Migrations
                     date_updated = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     description = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    state = table.Column<ulong>(type: "bit(1)", nullable: true),
+                    state = table.Column<string>(type: "enum('Active', 'Inactive', 'Closed')", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     status = table.Column<ulong>(type: "bit(1)", nullable: true)
                 },
                 constraints: table =>
@@ -273,232 +265,6 @@ namespace Unibean.Repository.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_tbl_voucher_type", x => x.id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "tbl_wallet_type",
-                columns: table => new
-                {
-                    id = table.Column<string>(type: "char(26)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    type_name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    image = table.Column<string>(type: "text", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    file_name = table.Column<string>(type: "text", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    date_updated = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    description = table.Column<string>(type: "text", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    state = table.Column<ulong>(type: "bit(1)", nullable: true),
-                    status = table.Column<ulong>(type: "bit(1)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tbl_wallet_type", x => x.id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "tbl_product",
-                columns: table => new
-                {
-                    id = table.Column<string>(type: "char(26)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    category_id = table.Column<string>(type: "char(26)", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    product_name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    price = table.Column<decimal>(type: "decimal(38,2)", nullable: true),
-                    weight = table.Column<decimal>(type: "decimal(38,2)", nullable: true),
-                    quantity = table.Column<int>(type: "int", nullable: true),
-                    date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    date_updated = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    description = table.Column<string>(type: "text", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    state = table.Column<ulong>(type: "bit(1)", nullable: true),
-                    status = table.Column<ulong>(type: "bit(1)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tbl_product", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_tbl_product_tbl_category_category_id",
-                        column: x => x.category_id,
-                        principalTable: "tbl_category",
-                        principalColumn: "id");
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "tbl_challenge",
-                columns: table => new
-                {
-                    id = table.Column<string>(type: "char(26)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    type_id = table.Column<string>(type: "char(26)", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    challenge_name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    amount = table.Column<decimal>(type: "decimal(38,2)", nullable: true),
-                    condition = table.Column<decimal>(type: "decimal(38,2)", nullable: true),
-                    image = table.Column<string>(type: "text", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    file_name = table.Column<string>(type: "text", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    date_updated = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    description = table.Column<string>(type: "text", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    state = table.Column<ulong>(type: "bit(1)", nullable: true),
-                    status = table.Column<ulong>(type: "bit(1)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tbl_challenge", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_tbl_challenge_tbl_challenge_type_type_id",
-                        column: x => x.type_id,
-                        principalTable: "tbl_challenge_type",
-                        principalColumn: "id");
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "tbl_district",
-                columns: table => new
-                {
-                    id = table.Column<string>(type: "char(26)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    city_id = table.Column<string>(type: "char(26)", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    district_name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    image = table.Column<string>(type: "text", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    file_name = table.Column<string>(type: "text", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    date_updated = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    description = table.Column<string>(type: "text", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    state = table.Column<ulong>(type: "bit(1)", nullable: true),
-                    status = table.Column<ulong>(type: "bit(1)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tbl_district", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_tbl_district_tbl_city_city_id",
-                        column: x => x.city_id,
-                        principalTable: "tbl_city",
-                        principalColumn: "id");
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "tbl_account",
-                columns: table => new
-                {
-                    id = table.Column<string>(type: "char(26)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    role_id = table.Column<string>(type: "char(26)", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    user_name = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    password = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    phone = table.Column<string>(type: "char(20)", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    email = table.Column<string>(type: "varchar(320)", maxLength: 320, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    avatar = table.Column<string>(type: "text", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    file_name = table.Column<string>(type: "text", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    is_verify = table.Column<ulong>(type: "bit(1)", nullable: true),
-                    date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    date_updated = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    date_verified = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    description = table.Column<string>(type: "text", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    state = table.Column<ulong>(type: "bit(1)", nullable: true),
-                    status = table.Column<ulong>(type: "bit(1)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tbl_account", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_tbl_account_tbl_role_role_id",
-                        column: x => x.role_id,
-                        principalTable: "tbl_role",
-                        principalColumn: "id");
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "tbl_image",
-                columns: table => new
-                {
-                    id = table.Column<string>(type: "char(26)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    product_id = table.Column<string>(type: "char(26)", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    url = table.Column<string>(type: "text", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    file_name = table.Column<string>(type: "text", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    is_cover = table.Column<ulong>(type: "bit(1)", nullable: true),
-                    date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    description = table.Column<string>(type: "text", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    state = table.Column<ulong>(type: "bit(1)", nullable: true),
-                    status = table.Column<ulong>(type: "bit(1)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tbl_image", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_tbl_image_tbl_product_product_id",
-                        column: x => x.product_id,
-                        principalTable: "tbl_product",
-                        principalColumn: "id");
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "tbl_area",
-                columns: table => new
-                {
-                    id = table.Column<string>(type: "char(26)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    district_id = table.Column<string>(type: "char(26)", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    area_name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    image = table.Column<string>(type: "text", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    file_name = table.Column<string>(type: "text", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    address = table.Column<string>(type: "text", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    date_updated = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    description = table.Column<string>(type: "text", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    state = table.Column<ulong>(type: "bit(1)", nullable: true),
-                    status = table.Column<ulong>(type: "bit(1)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tbl_area", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_tbl_area_tbl_district_district_id",
-                        column: x => x.district_id,
-                        principalTable: "tbl_district",
-                        principalColumn: "id");
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -571,6 +337,70 @@ namespace Unibean.Repository.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "tbl_product",
+                columns: table => new
+                {
+                    id = table.Column<string>(type: "char(26)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    category_id = table.Column<string>(type: "char(26)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    product_name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    price = table.Column<decimal>(type: "decimal(38,2)", nullable: true),
+                    weight = table.Column<decimal>(type: "decimal(38,2)", nullable: true),
+                    quantity = table.Column<int>(type: "int", nullable: true),
+                    date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    date_updated = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    description = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    state = table.Column<ulong>(type: "bit(1)", nullable: true),
+                    status = table.Column<ulong>(type: "bit(1)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tbl_product", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_tbl_product_tbl_category_category_id",
+                        column: x => x.category_id,
+                        principalTable: "tbl_category",
+                        principalColumn: "id");
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "tbl_staff",
+                columns: table => new
+                {
+                    id = table.Column<string>(type: "char(26)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    station_id = table.Column<string>(type: "char(26)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    account_id = table.Column<string>(type: "char(26)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    full_name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    date_updated = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    state = table.Column<ulong>(type: "bit(1)", nullable: true),
+                    status = table.Column<ulong>(type: "bit(1)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tbl_staff", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_tbl_staff_tbl_account_account_id",
+                        column: x => x.account_id,
+                        principalTable: "tbl_account",
+                        principalColumn: "id");
+                    table.ForeignKey(
+                        name: "FK_tbl_staff_tbl_station_station_id",
+                        column: x => x.station_id,
+                        principalTable: "tbl_station",
+                        principalColumn: "id");
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "tbl_campus",
                 columns: table => new
                 {
@@ -596,10 +426,10 @@ namespace Unibean.Repository.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     file_name = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    description = table.Column<string>(type: "text", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
                     date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     date_updated = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    description = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     state = table.Column<ulong>(type: "bit(1)", nullable: true),
                     status = table.Column<ulong>(type: "bit(1)", nullable: true)
                 },
@@ -652,7 +482,6 @@ namespace Unibean.Repository.Migrations
                     date_updated = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     description = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    state = table.Column<ulong>(type: "bit(1)", nullable: true),
                     status = table.Column<ulong>(type: "bit(1)", nullable: true)
                 },
                 constraints: table =>
@@ -803,6 +632,36 @@ namespace Unibean.Repository.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "tbl_image",
+                columns: table => new
+                {
+                    id = table.Column<string>(type: "char(26)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    product_id = table.Column<string>(type: "char(26)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    url = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    file_name = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    is_cover = table.Column<ulong>(type: "bit(1)", nullable: true),
+                    date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    description = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    state = table.Column<ulong>(type: "bit(1)", nullable: true),
+                    status = table.Column<ulong>(type: "bit(1)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tbl_image", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_tbl_image_tbl_product_product_id",
+                        column: x => x.product_id,
+                        principalTable: "tbl_product",
+                        principalColumn: "id");
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "tbl_student",
                 columns: table => new
                 {
@@ -826,7 +685,7 @@ namespace Unibean.Repository.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     code = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    gender = table.Column<string>(type: "enum('Nữ', 'Nam')", nullable: true)
+                    gender = table.Column<string>(type: "enum('Female', 'Male')", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     date_of_birth = table.Column<DateOnly>(type: "date", nullable: true),
                     address = table.Column<string>(type: "text", nullable: true)
@@ -835,7 +694,8 @@ namespace Unibean.Repository.Migrations
                     total_spending = table.Column<decimal>(type: "decimal(38,2)", nullable: true),
                     date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     date_updated = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    state = table.Column<ulong>(type: "bit(1)", nullable: true),
+                    state = table.Column<string>(type: "enum('Pending', 'Active', 'Inactive', 'Rejected')", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     status = table.Column<ulong>(type: "bit(1)", nullable: true)
                 },
                 constraints: table =>
@@ -855,6 +715,32 @@ namespace Unibean.Repository.Migrations
                         name: "FK_tbl_student_tbl_major_major_id",
                         column: x => x.major_id,
                         principalTable: "tbl_major",
+                        principalColumn: "id");
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "tbl_campaign_activity",
+                columns: table => new
+                {
+                    id = table.Column<string>(type: "char(26)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    campaign_id = table.Column<string>(type: "char(26)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    state = table.Column<string>(type: "enum('Pending', 'Active', 'Inactive', 'Expired', 'Closed')", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    description = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    status = table.Column<ulong>(type: "bit(1)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tbl_campaign_activity", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_tbl_campaign_activity_tbl_campaign_campaign_id",
+                        column: x => x.campaign_id,
+                        principalTable: "tbl_campaign",
                         principalColumn: "id");
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
@@ -953,7 +839,7 @@ namespace Unibean.Repository.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "tbl_voucher_item",
+                name: "tbl_campaign_detail",
                 columns: table => new
                 {
                     id = table.Column<string>(type: "char(26)", nullable: false)
@@ -962,15 +848,13 @@ namespace Unibean.Repository.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     campaign_id = table.Column<string>(type: "char(26)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    voucher_code = table.Column<string>(type: "text", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
                     price = table.Column<decimal>(type: "decimal(38,2)", nullable: true),
                     rate = table.Column<decimal>(type: "decimal(38,2)", nullable: true),
-                    is_bought = table.Column<ulong>(type: "bit(1)", nullable: true),
-                    is_used = table.Column<ulong>(type: "bit(1)", nullable: true),
-                    valid_on = table.Column<DateOnly>(type: "date", nullable: true),
-                    expire_on = table.Column<DateOnly>(type: "date", nullable: true),
+                    quantity = table.Column<int>(type: "int", nullable: true),
+                    from_index = table.Column<ulong>(type: "bit(1)", nullable: true),
+                    to_index = table.Column<ulong>(type: "bit(1)", nullable: true),
                     date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    date_updated = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     description = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     state = table.Column<ulong>(type: "bit(1)", nullable: true),
@@ -978,14 +862,14 @@ namespace Unibean.Repository.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tbl_voucher_item", x => x.id);
+                    table.PrimaryKey("PK_tbl_campaign_detail", x => x.id);
                     table.ForeignKey(
-                        name: "FK_tbl_voucher_item_tbl_campaign_campaign_id",
+                        name: "FK_tbl_campaign_detail_tbl_campaign_campaign_id",
                         column: x => x.campaign_id,
                         principalTable: "tbl_campaign",
                         principalColumn: "id");
                     table.ForeignKey(
-                        name: "FK_tbl_voucher_item_tbl_voucher_voucher_id",
+                        name: "FK_tbl_campaign_detail_tbl_voucher_voucher_id",
                         column: x => x.voucher_id,
                         principalTable: "tbl_voucher",
                         principalColumn: "id");
@@ -1000,9 +884,9 @@ namespace Unibean.Repository.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     brand_id = table.Column<string>(type: "char(26)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    store_id = table.Column<string>(type: "char(26)", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
                     student_id = table.Column<string>(type: "char(26)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    store_id = table.Column<string>(type: "char(26)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     amount = table.Column<decimal>(type: "decimal(38,2)", nullable: true),
                     date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
@@ -1147,7 +1031,7 @@ namespace Unibean.Repository.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     brand_id = table.Column<string>(type: "char(26)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    type_id = table.Column<string>(type: "char(26)", nullable: true)
+                    type = table.Column<string>(type: "enum('Green', 'Red')", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     balance = table.Column<decimal>(type: "decimal(38,2)", nullable: true),
                     date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
@@ -1174,11 +1058,6 @@ namespace Unibean.Repository.Migrations
                         name: "FK_tbl_wallet_tbl_student_student_id",
                         column: x => x.student_id,
                         principalTable: "tbl_student",
-                        principalColumn: "id");
-                    table.ForeignKey(
-                        name: "FK_tbl_wallet_tbl_wallet_type_type_id",
-                        column: x => x.type_id,
-                        principalTable: "tbl_wallet_type",
                         principalColumn: "id");
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
@@ -1215,43 +1094,40 @@ namespace Unibean.Repository.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "tbl_activity",
+                name: "tbl_voucher_item",
                 columns: table => new
                 {
                     id = table.Column<string>(type: "char(26)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    store_id = table.Column<string>(type: "char(26)", nullable: true)
+                    voucher_id = table.Column<string>(type: "char(26)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    student_id = table.Column<string>(type: "char(26)", nullable: true)
+                    campaign_detail_id = table.Column<string>(type: "char(26)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    voucher_item_id = table.Column<string>(type: "char(26)", nullable: true)
+                    voucher_code = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    type = table.Column<string>(type: "enum('Buy', 'Use')", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    description = table.Column<string>(type: "text", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    index = table.Column<int>(type: "int", nullable: true),
+                    is_locked = table.Column<ulong>(type: "bit(1)", nullable: true),
+                    is_bought = table.Column<ulong>(type: "bit(1)", nullable: true),
+                    is_used = table.Column<ulong>(type: "bit(1)", nullable: true),
+                    valid_on = table.Column<DateOnly>(type: "date", nullable: true),
+                    expire_on = table.Column<DateOnly>(type: "date", nullable: true),
                     date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    date_updated = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    date_issued = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     state = table.Column<ulong>(type: "bit(1)", nullable: true),
                     status = table.Column<ulong>(type: "bit(1)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tbl_activity", x => x.id);
+                    table.PrimaryKey("PK_tbl_voucher_item", x => x.id);
                     table.ForeignKey(
-                        name: "FK_tbl_activity_tbl_store_store_id",
-                        column: x => x.store_id,
-                        principalTable: "tbl_store",
+                        name: "FK_tbl_voucher_item_tbl_campaign_detail_campaign_detail_id",
+                        column: x => x.campaign_detail_id,
+                        principalTable: "tbl_campaign_detail",
                         principalColumn: "id");
                     table.ForeignKey(
-                        name: "FK_tbl_activity_tbl_student_student_id",
-                        column: x => x.student_id,
-                        principalTable: "tbl_student",
-                        principalColumn: "id");
-                    table.ForeignKey(
-                        name: "FK_tbl_activity_tbl_voucher_item_voucher_item_id",
-                        column: x => x.voucher_item_id,
-                        principalTable: "tbl_voucher_item",
+                        name: "FK_tbl_voucher_item_tbl_voucher_voucher_id",
+                        column: x => x.voucher_id,
+                        principalTable: "tbl_voucher",
                         principalColumn: "id");
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
@@ -1296,12 +1172,11 @@ namespace Unibean.Repository.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     order_id = table.Column<string>(type: "char(26)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    state_id = table.Column<string>(type: "char(26)", nullable: true)
+                    state = table.Column<string>(type: "enum('Order', 'Confirmation', 'Preparation', 'Arrival', 'Receipt', 'Abort')", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     description = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    state = table.Column<ulong>(type: "bit(1)", nullable: true),
                     status = table.Column<ulong>(type: "bit(1)", nullable: true)
                 },
                 constraints: table =>
@@ -1311,11 +1186,6 @@ namespace Unibean.Repository.Migrations
                         name: "FK_tbl_order_state_tbl_order_order_id",
                         column: x => x.order_id,
                         principalTable: "tbl_order",
-                        principalColumn: "id");
-                    table.ForeignKey(
-                        name: "FK_tbl_order_state_tbl_state_state_id",
-                        column: x => x.state_id,
-                        principalTable: "tbl_state",
                         principalColumn: "id");
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
@@ -1347,6 +1217,40 @@ namespace Unibean.Repository.Migrations
                         principalColumn: "id");
                     table.ForeignKey(
                         name: "FK_tbl_bonus_transaction_tbl_wallet_wallet_id",
+                        column: x => x.wallet_id,
+                        principalTable: "tbl_wallet",
+                        principalColumn: "id");
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "tbl_campaign_transaction",
+                columns: table => new
+                {
+                    id = table.Column<string>(type: "char(26)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    campaign_id = table.Column<string>(type: "char(26)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    wallet_id = table.Column<string>(type: "char(26)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    amount = table.Column<decimal>(type: "decimal(38,2)", nullable: true),
+                    rate = table.Column<decimal>(type: "decimal(38,2)", nullable: true),
+                    date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    description = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    state = table.Column<ulong>(type: "bit(1)", nullable: true),
+                    status = table.Column<ulong>(type: "bit(1)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tbl_campaign_transaction", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_tbl_campaign_transaction_tbl_campaign_campaign_id",
+                        column: x => x.campaign_id,
+                        principalTable: "tbl_campaign",
+                        principalColumn: "id");
+                    table.ForeignKey(
+                        name: "FK_tbl_campaign_transaction_tbl_wallet_wallet_id",
                         column: x => x.wallet_id,
                         principalTable: "tbl_wallet",
                         principalColumn: "id");
@@ -1454,18 +1358,21 @@ namespace Unibean.Repository.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "tbl_wallet_transaction",
+                name: "tbl_activity",
                 columns: table => new
                 {
                     id = table.Column<string>(type: "char(26)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    wallet_id = table.Column<string>(type: "char(26)", nullable: true)
+                    store_id = table.Column<string>(type: "char(26)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    campaign_id = table.Column<string>(type: "char(26)", nullable: true)
+                    student_id = table.Column<string>(type: "char(26)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    amount = table.Column<decimal>(type: "decimal(38,2)", nullable: true),
-                    rate = table.Column<decimal>(type: "decimal(38,2)", nullable: true),
+                    voucher_item_id = table.Column<string>(type: "char(26)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    type = table.Column<string>(type: "enum('Buy', 'Use')", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    date_updated = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     description = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     state = table.Column<ulong>(type: "bit(1)", nullable: true),
@@ -1473,16 +1380,21 @@ namespace Unibean.Repository.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tbl_wallet_transaction", x => x.id);
+                    table.PrimaryKey("PK_tbl_activity", x => x.id);
                     table.ForeignKey(
-                        name: "FK_tbl_wallet_transaction_tbl_campaign_campaign_id",
-                        column: x => x.campaign_id,
-                        principalTable: "tbl_campaign",
+                        name: "FK_tbl_activity_tbl_store_store_id",
+                        column: x => x.store_id,
+                        principalTable: "tbl_store",
                         principalColumn: "id");
                     table.ForeignKey(
-                        name: "FK_tbl_wallet_transaction_tbl_wallet_wallet_id",
-                        column: x => x.wallet_id,
-                        principalTable: "tbl_wallet",
+                        name: "FK_tbl_activity_tbl_student_student_id",
+                        column: x => x.student_id,
+                        principalTable: "tbl_student",
+                        principalColumn: "id");
+                    table.ForeignKey(
+                        name: "FK_tbl_activity_tbl_voucher_item_voucher_item_id",
+                        column: x => x.voucher_item_id,
+                        principalTable: "tbl_voucher_item",
                         principalColumn: "id");
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
@@ -1521,11 +1433,6 @@ namespace Unibean.Repository.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tbl_account_role_id",
-                table: "tbl_account",
-                column: "role_id");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_tbl_activity_store_id",
                 table: "tbl_activity",
                 column: "store_id");
@@ -1554,11 +1461,6 @@ namespace Unibean.Repository.Migrations
                 name: "IX_tbl_admin_account_id",
                 table: "tbl_admin",
                 column: "account_id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_tbl_area_district_id",
-                table: "tbl_area",
-                column: "district_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tbl_bonus_brand_id",
@@ -1601,6 +1503,11 @@ namespace Unibean.Repository.Migrations
                 column: "type_id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_tbl_campaign_activity_campaign_id",
+                table: "tbl_campaign_activity",
+                column: "campaign_id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_tbl_campaign_campus_campaign_id",
                 table: "tbl_campaign_campus",
                 column: "campaign_id");
@@ -1609,6 +1516,16 @@ namespace Unibean.Repository.Migrations
                 name: "IX_tbl_campaign_campus_campus_id",
                 table: "tbl_campaign_campus",
                 column: "campus_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tbl_campaign_detail_campaign_id",
+                table: "tbl_campaign_detail",
+                column: "campaign_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tbl_campaign_detail_voucher_id",
+                table: "tbl_campaign_detail",
+                column: "voucher_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tbl_campaign_major_campaign_id",
@@ -1631,6 +1548,16 @@ namespace Unibean.Repository.Migrations
                 column: "store_id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_tbl_campaign_transaction_campaign_id",
+                table: "tbl_campaign_transaction",
+                column: "campaign_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tbl_campaign_transaction_wallet_id",
+                table: "tbl_campaign_transaction",
+                column: "wallet_id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_tbl_campus_area_id",
                 table: "tbl_campus",
                 column: "area_id");
@@ -1641,11 +1568,6 @@ namespace Unibean.Repository.Migrations
                 column: "university_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tbl_challenge_type_id",
-                table: "tbl_challenge",
-                column: "type_id");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_tbl_challenge_transaction_challenge_id",
                 table: "tbl_challenge_transaction",
                 column: "challenge_id");
@@ -1654,11 +1576,6 @@ namespace Unibean.Repository.Migrations
                 name: "IX_tbl_challenge_transaction_wallet_id",
                 table: "tbl_challenge_transaction",
                 column: "wallet_id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_tbl_district_city_id",
-                table: "tbl_district",
-                column: "city_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tbl_image_product_id",
@@ -1701,11 +1618,6 @@ namespace Unibean.Repository.Migrations
                 column: "order_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tbl_order_state_state_id",
-                table: "tbl_order_state",
-                column: "state_id");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_tbl_order_transaction_order_id",
                 table: "tbl_order_transaction",
                 column: "order_id");
@@ -1739,6 +1651,16 @@ namespace Unibean.Repository.Migrations
                 name: "IX_tbl_request_transaction_wallet_id",
                 table: "tbl_request_transaction",
                 column: "wallet_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tbl_staff_account_id",
+                table: "tbl_staff",
+                column: "account_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tbl_staff_station_id",
+                table: "tbl_staff",
+                column: "station_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tbl_store_account_id",
@@ -1791,9 +1713,9 @@ namespace Unibean.Repository.Migrations
                 column: "type_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tbl_voucher_item_campaign_id",
+                name: "IX_tbl_voucher_item_campaign_detail_id",
                 table: "tbl_voucher_item",
-                column: "campaign_id");
+                column: "campaign_detail_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tbl_voucher_item_voucher_id",
@@ -1816,21 +1738,6 @@ namespace Unibean.Repository.Migrations
                 column: "student_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tbl_wallet_type_id",
-                table: "tbl_wallet",
-                column: "type_id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_tbl_wallet_transaction_campaign_id",
-                table: "tbl_wallet_transaction",
-                column: "campaign_id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_tbl_wallet_transaction_wallet_id",
-                table: "tbl_wallet_transaction",
-                column: "wallet_id");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_tbl_wishlist_brand_id",
                 table: "tbl_wishlist",
                 column: "brand_id");
@@ -1850,6 +1757,9 @@ namespace Unibean.Repository.Migrations
                 name: "tbl_bonus_transaction");
 
             migrationBuilder.DropTable(
+                name: "tbl_campaign_activity");
+
+            migrationBuilder.DropTable(
                 name: "tbl_campaign_campus");
 
             migrationBuilder.DropTable(
@@ -1857,6 +1767,9 @@ namespace Unibean.Repository.Migrations
 
             migrationBuilder.DropTable(
                 name: "tbl_campaign_store");
+
+            migrationBuilder.DropTable(
+                name: "tbl_campaign_transaction");
 
             migrationBuilder.DropTable(
                 name: "tbl_challenge_transaction");
@@ -1880,7 +1793,7 @@ namespace Unibean.Repository.Migrations
                 name: "tbl_request_transaction");
 
             migrationBuilder.DropTable(
-                name: "tbl_wallet_transaction");
+                name: "tbl_staff");
 
             migrationBuilder.DropTable(
                 name: "tbl_wishlist");
@@ -1896,9 +1809,6 @@ namespace Unibean.Repository.Migrations
 
             migrationBuilder.DropTable(
                 name: "tbl_product");
-
-            migrationBuilder.DropTable(
-                name: "tbl_state");
 
             migrationBuilder.DropTable(
                 name: "tbl_order");
@@ -1931,7 +1841,13 @@ namespace Unibean.Repository.Migrations
                 name: "tbl_student");
 
             migrationBuilder.DropTable(
-                name: "tbl_wallet_type");
+                name: "tbl_campaign_detail");
+
+            migrationBuilder.DropTable(
+                name: "tbl_campus");
+
+            migrationBuilder.DropTable(
+                name: "tbl_major");
 
             migrationBuilder.DropTable(
                 name: "tbl_campaign");
@@ -1940,13 +1856,10 @@ namespace Unibean.Repository.Migrations
                 name: "tbl_voucher");
 
             migrationBuilder.DropTable(
-                name: "tbl_challenge_type");
+                name: "tbl_area");
 
             migrationBuilder.DropTable(
-                name: "tbl_campus");
-
-            migrationBuilder.DropTable(
-                name: "tbl_major");
+                name: "tbl_university");
 
             migrationBuilder.DropTable(
                 name: "tbl_campaign_type");
@@ -1958,22 +1871,7 @@ namespace Unibean.Repository.Migrations
                 name: "tbl_voucher_type");
 
             migrationBuilder.DropTable(
-                name: "tbl_area");
-
-            migrationBuilder.DropTable(
-                name: "tbl_university");
-
-            migrationBuilder.DropTable(
                 name: "tbl_account");
-
-            migrationBuilder.DropTable(
-                name: "tbl_district");
-
-            migrationBuilder.DropTable(
-                name: "tbl_role");
-
-            migrationBuilder.DropTable(
-                name: "tbl_city");
         }
     }
 }

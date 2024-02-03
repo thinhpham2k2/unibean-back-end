@@ -58,15 +58,15 @@ public class CampaignRepository : ICampaignRepository
                     .Include(b => b.Account)
                     .Include(b => b.Wallets).FirstOrDefault();
             var brandGreenWallet = brand.Wallets.FirstOrDefault();
-            var brandRedWallet = brand.Wallets.Skip(1).FirstOrDefault();
+            var brandRedWallet = brand.Wallets.FirstOrDefault();
 
             var amount = brandRedWallet.Balance - creation.TotalIncome;
 
-            // Cretae wallet transactions
+            // Cretae campaign transactions
             creation.CampaignTransactions = new List<CampaignTransaction>() {
                 new CampaignTransaction
             {
-                // Transaction for campaign's red bean
+                // Transaction for campaign's green bean
                 Id = Ulid.NewUlid().ToString(),
                 CampaignId = creation.Id,
                 WalletId = creation.Wallets.FirstOrDefault().Id,
@@ -76,7 +76,7 @@ public class CampaignRepository : ICampaignRepository
                 State = true,
                 Status = creation.Status,
             },
-                // Transaction for brand's red bean
+                // Transaction for brand's green bean
                 new CampaignTransaction
             {
                 Id = Ulid.NewUlid().ToString(),

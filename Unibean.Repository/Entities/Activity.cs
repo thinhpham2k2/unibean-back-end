@@ -40,14 +40,14 @@ public class Activity
     [Column("type", TypeName = "enum('Buy', 'Use')")]
     public Type? Type { get; set; }
 
-    [Column("description", TypeName = "text")]
-    public string Description { get; set; }
-
     [Column("date_created")]
     public DateTime? DateCreated { get; set; }
 
     [Column("date_updated")]
     public DateTime? DateUpdated { get; set; }
+
+    [Column("description", TypeName = "text")]
+    public string Description { get; set; }
 
     [Column("state", TypeName = "bit(1)")]
     public bool? State { get; set; }
