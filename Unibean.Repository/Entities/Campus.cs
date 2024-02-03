@@ -30,7 +30,7 @@ public class Campus
     [Column("closing_hours")]
     public TimeOnly? ClosingHours { get; set; }
 
-    [Column("Address", TypeName = "text")]
+    [Column("address", TypeName = "text")]
     public string Address { get; set; }
 
     [Column("phone", TypeName = "char(20)")]

@@ -41,7 +41,7 @@ public class BrandService : IBrandService
 
     private readonly IBonusTransactionService bonusTransactionService;
 
-    private readonly IWalletTransactionService walletTransactionService;
+    private readonly ICampaignTransactionService walletTransactionService;
 
     private readonly IRequestTransactionService requestTransactionService;
 
@@ -53,7 +53,7 @@ public class BrandService : IBrandService
         IStoreService storeService,
         IVoucherService voucherService,
         IBonusTransactionService bonusTransactionService,
-        IWalletTransactionService walletTransactionService,
+        ICampaignTransactionService walletTransactionService,
         IRequestTransactionService requestTransactionService)
     {
         var config = new MapperConfiguration(cfg

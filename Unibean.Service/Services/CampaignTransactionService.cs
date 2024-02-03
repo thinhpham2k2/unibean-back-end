@@ -6,13 +6,13 @@ using Unibean.Service.Services.Interfaces;
 
 namespace Unibean.Service.Services;
 
-public class WalletTransactionService : IWalletTransactionService
+public class CampaignTransactionService : ICampaignTransactionService
 {
     private readonly Mapper mapper;
 
-    private readonly IWalletTransactionRepository walletTransactionRepository;
+    private readonly ICampaignTransactionRepository campaignTransactionRepository;
 
-    public WalletTransactionService(IWalletTransactionRepository walletTransactionRepository)
+    public CampaignTransactionService(ICampaignTransactionRepository campaignTransactionRepository)
     {
         var config = new MapperConfiguration(cfg
             =>
@@ -28,7 +28,7 @@ public class WalletTransactionService : IWalletTransactionService
             .ReverseMap();
         });
         mapper = new Mapper(config);
-        this.walletTransactionRepository = walletTransactionRepository;
+        this.campaignTransactionRepository = campaignTransactionRepository;
     }
 
     public List<TransactionModel> GetAll

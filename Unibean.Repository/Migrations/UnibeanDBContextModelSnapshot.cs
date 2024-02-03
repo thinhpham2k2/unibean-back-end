@@ -834,7 +834,7 @@ namespace Unibean.Repository.Migrations
 
                     b.Property<string>("Address")
                         .HasColumnType("text")
-                        .HasColumnName("Address");
+                        .HasColumnName("address");
 
                     b.Property<string>("AreaId")
                         .HasColumnType("char(26)")

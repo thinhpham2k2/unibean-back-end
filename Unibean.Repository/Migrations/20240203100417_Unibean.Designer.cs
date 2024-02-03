@@ -11,7 +11,7 @@ using Unibean.Repository.Entities;
 namespace Unibean.Repository.Migrations
 {
     [DbContext(typeof(UnibeanDBContext))]
-    [Migration("20240203093704_Unibean")]
+    [Migration("20240203100417_Unibean")]
     partial class Unibean
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -836,7 +836,7 @@ namespace Unibean.Repository.Migrations
 
                     b.Property<string>("Address")
                         .HasColumnType("text")
-                        .HasColumnName("Address");
+                        .HasColumnName("address");
 
                     b.Property<string>("AreaId")
                         .HasColumnType("char(26)")

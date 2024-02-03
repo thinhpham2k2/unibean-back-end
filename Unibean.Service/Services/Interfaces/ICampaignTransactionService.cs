@@ -3,7 +3,7 @@ using Unibean.Service.Models.Transactions;
 
 namespace Unibean.Service.Services.Interfaces;
 
-public interface IWalletTransactionService
+public interface ICampaignTransactionService
 {
     List<TransactionModel> GetAll
         (List<string> walletIds, List<string> campaignIds, List<string> walletTypeIds, string search);

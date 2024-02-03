@@ -414,7 +414,7 @@ namespace Unibean.Repository.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     opening_hours = table.Column<TimeOnly>(type: "time(6)", nullable: true),
                     closing_hours = table.Column<TimeOnly>(type: "time(6)", nullable: true),
-                    Address = table.Column<string>(type: "text", nullable: true)
+                    address = table.Column<string>(type: "text", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     phone = table.Column<string>(type: "char(20)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
