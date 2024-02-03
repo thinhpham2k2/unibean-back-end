@@ -26,17 +26,17 @@ public class UnibeanDBContext : DbContext
     public virtual DbSet<BonusTransaction> BonusTransactions { get; set; }
     public virtual DbSet<Brand> Brands { get; set; }
     public virtual DbSet<Campaign> Campaigns { get; set; }
+    public virtual DbSet<CampaignActivity> CampaignActivities { get; set; }
     public virtual DbSet<CampaignCampus> CampaignCampuses { get; set; }
+    public virtual DbSet<CampaignDetail> CampaignDetails { get; set; }
     public virtual DbSet<CampaignMajor> CampaignMajors { get; set; }
     public virtual DbSet<CampaignStore> CampaignStores { get; set; }
+    public virtual DbSet<CampaignTransaction> CampaignTransactions { get; set; }
     public virtual DbSet<CampaignType> CampaignTypes { get; set; }
     public virtual DbSet<Campus> Campuses { get; set; }
     public virtual DbSet<Category> Categories { get; set; }
     public virtual DbSet<Challenge> Challenges { get; set; }
     public virtual DbSet<ChallengeTransaction> ChallengeTransactions { get; set; }
-    public virtual DbSet<ChallengeType> ChallengeTypes{ get; set; }
-    public virtual DbSet<City> Cities { get; set; }
-    public virtual DbSet<District> Districts { get; set; }
     public virtual DbSet<Image> Images { get; set; }
     public virtual DbSet<Invitation> Invitations { get; set; }
     public virtual DbSet<Major> Majors { get; set; }
@@ -47,8 +47,7 @@ public class UnibeanDBContext : DbContext
     public virtual DbSet<Product> Products { get; set; }
     public virtual DbSet<Request> Requests { get; set; }
     public virtual DbSet<RequestTransaction> RequestTransactions { get; set; }
-    public virtual DbSet<Role> Roles { get; set; }
-    public virtual DbSet<State> States { get; set; }
+    public virtual DbSet<Staff> Staffs { get; set; }
     public virtual DbSet<Station> Stations { get; set; }
     public virtual DbSet<Store> Stores { get; set; }
     public virtual DbSet<Student> Students { get; set; }
@@ -58,8 +57,6 @@ public class UnibeanDBContext : DbContext
     public virtual DbSet<VoucherItem> VoucherItems { get; set; }
     public virtual DbSet<VoucherType> VoucherTypes { get; set; }
     public virtual DbSet<Wallet> Wallets { get; set; }
-    public virtual DbSet<CampaignTransaction> WalletTransactions { get; set; }
-    public virtual DbSet<WalletType> WalletTypes { get; set; }
     public virtual DbSet<Wishlist> Wishlists { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

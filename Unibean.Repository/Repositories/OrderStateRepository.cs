@@ -40,7 +40,7 @@ public class OrderStateRepository : IOrderStateRepository
     }
 
     public PagedResultModel<OrderState> GetAll
-        (List<string> orderIds, List<string> stateIds, bool? state,
+        (List<string> orderIds, List<int> stateIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<OrderState> pagedResult = new();
@@ -48,10 +48,10 @@ public class OrderStateRepository : IOrderStateRepository
         {
             using var db = new UnibeanDBContext();
             var query = db.OrderStates
-                .Where(t => (EF.Functions.Like(t.State.StateName, "%" + search + "%")
+                .Where(t => (EF.Functions.Like((string)(object)t.State, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
                 && (orderIds.Count == 0 || orderIds.Contains(t.OrderId))
-                && (stateIds.Count == 0 || stateIds.Contains(t.StateId))
+                && (stateIds.Count == 0 || stateIds.Contains((int)t.State))
                 && (state == null || state.Equals(t.State))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));

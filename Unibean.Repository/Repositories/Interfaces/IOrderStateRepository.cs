@@ -10,7 +10,7 @@ public interface IOrderStateRepository
     void Delete(string id);
 
     PagedResultModel<OrderState> GetAll
-        (List<string> orderIds, List<string> stateIds, bool? state, 
+        (List<string> orderIds, List<int> stateIds, bool? state, 
         string propertySort, bool isAsc, string search, int page, int limit);
 
     OrderState GetById(string id);

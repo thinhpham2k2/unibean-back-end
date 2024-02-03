@@ -63,7 +63,7 @@ public class ChallengeRepository : IChallengeRepository
     }
 
     public PagedResultModel<Challenge> GetAll
-        (List<string> typeIds, bool? state, string propertySort, 
+        (List<int> typeIds, bool? state, string propertySort, 
         bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<Challenge> pagedResult = new();
@@ -72,9 +72,9 @@ public class ChallengeRepository : IChallengeRepository
             using var db = new UnibeanDBContext();
             var query = db.Challenges
                 .Where(t => (EF.Functions.Like(t.ChallengeName, "%" + search + "%")
-                || EF.Functions.Like(t.Type.TypeName, "%" + search + "%")
+                || EF.Functions.Like((string)(object)t.Type, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
-                && (typeIds.Count == 0 || typeIds.Contains(t.TypeId))
+                && (typeIds.Count == 0 || typeIds.Contains((int)t.Type))
                 && (state == null || state.Equals(t.State))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));

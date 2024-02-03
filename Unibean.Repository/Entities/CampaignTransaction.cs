@@ -10,15 +10,15 @@ public class CampaignTransaction
     [Column("id", TypeName = "char(26)")]
     public string Id { get; set; }
 
-    [Column("wallet_id", TypeName = "char(26)")]
-    public string WalletId { get; set; }
-
-    public Wallet Wallet { get; set; }
-
     [Column("campaign_id", TypeName = "char(26)")]
     public string CampaignId { get; set; }
 
     public Campaign Campaign { get; set; }
+
+    [Column("wallet_id", TypeName = "char(26)")]
+    public string WalletId { get; set; }
+
+    public Wallet Wallet { get; set; }
 
     [Column("amount", TypeName = "decimal(38,2)")]
     public decimal? Amount { get; set; }

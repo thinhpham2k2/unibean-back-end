@@ -41,7 +41,7 @@ public class ChallengeTransactionRepository : IChallengeTransactionRepository
             using var db = new UnibeanDBContext();
             result = db.ChallengeTransactions
                 .Where(t => (EF.Functions.Like(t.Challenge.Challenge.ChallengeName, "%" + search + "%")
-                || EF.Functions.Like(t.Wallet.Type.TypeName, "%" + search + "%")
+                || EF.Functions.Like((string)(object)t.Wallet.Type, "%" + search + "%")
                 || EF.Functions.Like("Thử thách", "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
                 && (walletIds.Count == 0 || walletIds.Contains(t.WalletId))

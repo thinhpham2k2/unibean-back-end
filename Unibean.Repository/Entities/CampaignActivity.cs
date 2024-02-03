@@ -1,14 +1,34 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel;
 
 namespace Unibean.Repository.Entities;
 
 public enum CampaignState
 {
-    Pending = 1, Active = 2, Inactive = 3, Expired = 4, Closed = 5
+    [Display(Name = "Chờ duyệt")]
+    [Description("Trạng thái chờ duyệt bởi quản trị viên")]
+    Pending = 1,
+
+    [Display(Name = "Hoạt động")]
+    [Description("Trạng thái hoạt động trên các nền tảng")]
+    Active = 2,
+
+    [Display(Name = "Không hoạt động")]
+    [Description("Trạng thái ngừng hoạt động trên các nền tảng")]
+    Inactive = 3,
+
+    [Display(Name = "Hết hạn")]
+    [Description("Trạng thái ngừng hoàn toàn trên các nền tảng")]
+    Expired = 4,
+
+    [Display(Name = "Đóng")]
+    [Description("Trạng thái kết thúc")]
+    Closed = 5
 }
 
+[Table("tbl_campaign_activity")]
 public class CampaignActivity
 {
     [Key]
@@ -22,7 +42,7 @@ public class CampaignActivity
 
     [Column("state", 
         TypeName = "enum('Pending', 'Active', 'Inactive', 'Expired', 'Closed')")]
-    public CampaignState State { get; set; }
+    public CampaignState? State { get; set; }
 
     [Column("date_created")]
     public DateTime? DateCreated { get; set; }

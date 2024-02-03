@@ -1,11 +1,30 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Unibean.Repository.Entities;
 
 public enum Role
 {
-    Admin = 1, Staff = 2, Brand = 3, Store = 4, Student = 5
+    [Display(Name = "Quản trị viên")]
+    [Description("Quản trị viên của hệ thống")]
+    Admin = 1,
+
+    [Display(Name = "Nhân viên")]
+    [Description("Nhân viên quản lí trạm")]
+    Staff = 2,
+
+    [Display(Name = "Thương hiệu")]
+    [Description("Quản lí thương hiệu")]
+    Brand = 3,
+
+    [Display(Name = "Cửa hàng")]
+    [Description("Quản lí chi nhánh cửa hàng")]
+    Store = 4,
+
+    [Display(Name = "Sinh viên")]
+    [Description("Sinh viên của các trường đại học")]
+    Student = 5
 }
 
 [Table("tbl_account")]

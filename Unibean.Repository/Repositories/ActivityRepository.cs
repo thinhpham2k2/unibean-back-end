@@ -30,7 +30,7 @@ public class ActivityRepository : IActivityRepository
                         Id = Ulid.NewUlid().ToString(),
                         ActivityId = creation.Id,
                         WalletId = studentWallet.Id,
-                        Amount = -creation.VoucherItem.Price,
+                        Amount = -creation.VoucherItem.CampaignDetail.Price,
                         Rate = 1,
                         Description = creation.Description,
                         State = creation.State,
@@ -46,8 +46,8 @@ public class ActivityRepository : IActivityRepository
                 if (creation != null)
                 {
                     // Update student wallet balance
-                    student.TotalSpending += creation.VoucherItem.Price;
-                    studentWallet.Balance -= creation.VoucherItem.Price;
+                    student.TotalSpending += creation.VoucherItem.CampaignDetail.Price;
+                    studentWallet.Balance -= creation.VoucherItem.CampaignDetail.Price;
                     studentWallet.DateUpdated = DateTime.Now;
 
                     db.Students.Update(student);
@@ -64,7 +64,7 @@ public class ActivityRepository : IActivityRepository
 
                 // Get red bean wallet campaign
                 var campaign = db.Campaigns
-                        .Where(s => s.Id.Equals(creation.VoucherItem.CampaignId) && (bool)s.Status)
+                        .Where(s => s.Id.Equals(creation.VoucherItem.CampaignDetail.CampaignId) && (bool)s.Status)
                         .Include(b => b.Wallets).FirstOrDefault();
                 var campaignWallet = campaign.Wallets.FirstOrDefault();
 
@@ -75,8 +75,8 @@ public class ActivityRepository : IActivityRepository
                         Id = Ulid.NewUlid().ToString(),
                         ActivityId = creation.Id,
                         WalletId = campaignWallet.Id,
-                        Amount = -creation.VoucherItem.Price * creation.VoucherItem.Rate,
-                        Rate = creation.VoucherItem.Rate,
+                        Amount = -creation.VoucherItem.CampaignDetail.Price * creation.VoucherItem.CampaignDetail.Rate,
+                        Rate = creation.VoucherItem.CampaignDetail.Rate,
                         Description = creation.Description,
                         State = creation.State,
                         Status = creation.Status,
@@ -86,8 +86,8 @@ public class ActivityRepository : IActivityRepository
                         Id = Ulid.NewUlid().ToString(),
                         ActivityId = creation.Id,
                         WalletId = studentWallet.Id,
-                        Amount = creation.VoucherItem.Price * creation.VoucherItem.Rate,
-                        Rate = creation.VoucherItem.Rate,
+                        Amount = creation.VoucherItem.CampaignDetail.Price * creation.VoucherItem.CampaignDetail.Rate,
+                        Rate = creation.VoucherItem.CampaignDetail.Rate,
                         Description = creation.Description,
                         State = creation.State,
                         Status = creation.Status,
@@ -102,12 +102,12 @@ public class ActivityRepository : IActivityRepository
                 if (creation != null)
                 {
                     // Update student wallet balance
-                    studentWallet.Balance += creation.VoucherItem.Price * creation.VoucherItem.Rate;
+                    studentWallet.Balance += creation.VoucherItem.CampaignDetail.Price * creation.VoucherItem.CampaignDetail.Rate;
                     studentWallet.DateUpdated = DateTime.Now;
 
                     // Update brand wallet balance
-                    campaign.TotalSpending += creation.VoucherItem.Price * creation.VoucherItem.Rate;
-                    campaignWallet.Balance -= creation.VoucherItem.Price * creation.VoucherItem.Rate;
+                    campaign.TotalSpending += creation.VoucherItem.CampaignDetail.Price * creation.VoucherItem.CampaignDetail.Rate;
+                    campaignWallet.Balance -= creation.VoucherItem.CampaignDetail.Price * creation.VoucherItem.CampaignDetail.Rate;
                     campaignWallet.DateUpdated = DateTime.Now;
 
                     db.Students.Update(student);
@@ -207,9 +207,9 @@ public class ActivityRepository : IActivityRepository
             .Include(s => s.Store)
                 .ThenInclude(s => s.Brand)
             .Include(s => s.VoucherItem)
-                .ThenInclude(v => v.Voucher)
+                .ThenInclude(v => v.Voucher.Type)
             .Include(s => s.VoucherItem)
-                .ThenInclude(v => v.Campaign)
+                .ThenInclude(v => v.CampaignDetail.Campaign)
             .FirstOrDefault();
         }
         catch (Exception ex)

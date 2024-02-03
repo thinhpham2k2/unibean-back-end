@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
 using System.Linq.Dynamic.Core;
+using System.Reflection;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
@@ -15,24 +17,21 @@ public class BrandRepository : IBrandRepository
             using var db = new UnibeanDBContext();
             creation = db.Brands.Add(creation).Entity;
 
-            if(creation != null)
+            if (creation != null)
             {
                 // Create wallet
-                foreach (var type in db.WalletTypes.Where(s => (bool)s.Status))
+                db.Wallets.Add(new Wallet
                 {
-                    db.Wallets.Add(new Wallet
-                    {
-                        Id = Ulid.NewUlid().ToString(),
-                        BrandId = creation.Id,
-                        TypeId = type.Id,
-                        Balance = 0,
-                        DateCreated = creation.DateCreated,
-                        DateUpdated = creation.DateUpdated,
-                        Description = type.Description,
-                        State = true,
-                        Status = true,
-                    });
-                }
+                    Id = Ulid.NewUlid().ToString(),
+                    BrandId = creation.Id,
+                    Type = WalletType.Green,
+                    Balance = 0,
+                    DateCreated = creation.DateCreated,
+                    DateUpdated = creation.DateUpdated,
+                    Description = WalletType.Green.GetType().GetCustomAttribute<DescriptionAttribute>().ToString(),
+                    State = true,
+                    Status = true,
+                });
             }
             db.SaveChanges();
         }

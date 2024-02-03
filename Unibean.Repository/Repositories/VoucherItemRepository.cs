@@ -50,13 +50,13 @@ public class VoucherItemRepository : IVoucherItemRepository
             using var db = new UnibeanDBContext();
             var query = db.VoucherItems
                 .Where(t => (EF.Functions.Like(t.VoucherCode, "%" + search + "%")
-                || EF.Functions.Like(t.Campaign.CampaignName, "%" + search + "%")
-                || EF.Functions.Like(t.Campaign.Condition, "%" + search + "%")
+                || EF.Functions.Like(t.CampaignDetail.Campaign.CampaignName, "%" + search + "%")
+                || EF.Functions.Like(t.CampaignDetail.Campaign.Condition, "%" + search + "%")
                 || EF.Functions.Like(t.Voucher.VoucherName, "%" + search + "%")
                 || EF.Functions.Like(t.Voucher.Condition, "%" + search + "%")
                 || EF.Functions.Like(t.Voucher.Brand.BrandName, "%" + search + "%")
-                || EF.Functions.Like(t.Description, "%" + search + "%"))
-                && (campaignIds.Count == 0 || campaignIds.Contains(t.CampaignId))
+                || EF.Functions.Like(t.CampaignDetail.Description, "%" + search + "%"))
+                && (campaignIds.Count == 0 || campaignIds.Contains(t.CampaignDetail.CampaignId))
                 && (voucherIds.Count == 0 || voucherIds.Contains(t.VoucherId))
                 && (brandIds.Count == 0 || brandIds.Contains(t.Voucher.BrandId))
                 && (typeIds.Count == 0 || typeIds.Contains(t.Voucher.TypeId))
@@ -69,8 +69,9 @@ public class VoucherItemRepository : IVoucherItemRepository
             var result = query
                .Skip((page - 1) * limit)
                .Take(limit)
-               .Include(s => s.Campaign)
-                    .ThenInclude(c => c.Type)
+               .Include(s => s.CampaignDetail)
+                    .ThenInclude(c => c.Campaign)
+                        .ThenInclude(v => v.Type)
                .Include(s => s.Voucher)
                     .ThenInclude(v => v.Type)
                .Include(s => s.Voucher)
@@ -107,8 +108,8 @@ public class VoucherItemRepository : IVoucherItemRepository
             using var db = new UnibeanDBContext();
 
             var query = db.VoucherItems
-                .Where(t => (campaignIds.Count == 0 || campaignIds.Contains(t.CampaignId))
-                && (voucherIds.Count == 0 || voucherIds.Contains(t.CampaignId))
+                .Where(t => (campaignIds.Count == 0 || campaignIds.Contains(t.CampaignDetail.CampaignId))
+                && (voucherIds.Count == 0 || voucherIds.Contains(t.CampaignDetail.CampaignId))
                 && !(bool)t.IsBought
                 && !(bool)t.IsUsed
                 && (bool)t.State
@@ -132,13 +133,14 @@ public class VoucherItemRepository : IVoucherItemRepository
             using var db = new UnibeanDBContext();
             voucher = db.VoucherItems
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
-            .Include(s => s.Campaign)
-                .ThenInclude(c => c.Type)
-            .Include(s => s.Campaign)
+            .Include(s => s.CampaignDetail)
+                .ThenInclude(c => c.Campaign)
+                    .ThenInclude(v => v.Type)
+            .Include(s => s.CampaignDetail.Campaign)
                 .ThenInclude(c => c.CampaignStores.Where(a => (bool)a.Status))
-            .Include(s => s.Campaign)
+            .Include(s => s.CampaignDetail.Campaign)
                 .ThenInclude(c => c.CampaignMajors.Where(a => (bool)a.Status))
-            .Include(s => s.Campaign)
+            .Include(s => s.CampaignDetail.Campaign)
                 .ThenInclude(c => c.CampaignCampuses.Where(a => (bool)a.Status))
             .Include(s => s.Voucher)
                 .ThenInclude(v => v.Type)

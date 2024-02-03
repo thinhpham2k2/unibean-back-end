@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
 using System.Linq.Dynamic.Core;
+using System.Reflection;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
@@ -36,17 +38,16 @@ public class CampaignRepository : ICampaignRepository
             }).ToList();
 
             // Create campaign wallet
-            var walletType = db.WalletTypes.Where(s => (bool)s.Status).Skip(1).FirstOrDefault();
             creation.Wallets = new List<Wallet>() {
                 new Wallet
             {
                     Id = Ulid.NewUlid().ToString(),
                     CampaignId = creation.Id,
-                    TypeId = walletType.Id,
+                    Type = WalletType.Green,
                     Balance = creation.TotalIncome,
                     DateCreated = creation.DateCreated,
                     DateUpdated = creation.DateUpdated,
-                    Description = walletType.Description,
+                    Description = WalletType.Green.GetType().GetCustomAttribute<DescriptionAttribute>().ToString(),
                     State = true,
                     Status = true,
             }};
@@ -62,7 +63,7 @@ public class CampaignRepository : ICampaignRepository
             var amount = brandRedWallet.Balance - creation.TotalIncome;
 
             // Cretae wallet transactions
-            creation.WalletTransactions = new List<CampaignTransaction>() {
+            creation.CampaignTransactions = new List<CampaignTransaction>() {
                 new CampaignTransaction
             {
                 // Transaction for campaign's red bean
@@ -72,7 +73,7 @@ public class CampaignRepository : ICampaignRepository
                 Amount = creation.TotalIncome,
                 Rate = 1,
                 DateCreated = creation.DateCreated,
-                State = creation.State,
+                State = true,
                 Status = creation.Status,
             },
                 // Transaction for brand's red bean
@@ -84,14 +85,14 @@ public class CampaignRepository : ICampaignRepository
                 Amount = amount > 0 ? -creation.TotalIncome : -brandRedWallet.Balance,
                 Rate = 1,
                 DateCreated = creation.DateCreated,
-                State = creation.State,
+                State = true,
                 Status = creation.Status,
             }};
 
             if (amount < 0)
             {
                 // Transaction for brand's green bean
-                creation.WalletTransactions.Add(new CampaignTransaction
+                creation.CampaignTransactions.Add(new CampaignTransaction
                 {
                     Id = Ulid.NewUlid().ToString(),
                     CampaignId = creation.Id,
@@ -99,7 +100,7 @@ public class CampaignRepository : ICampaignRepository
                     Amount = amount,
                     Rate = 1,
                     DateCreated = creation.DateCreated,
-                    State = creation.State,
+                    State = true,
                     Status = creation.Status,
                 });
             }
@@ -152,8 +153,8 @@ public class CampaignRepository : ICampaignRepository
     }
 
     public PagedResultModel<Campaign> GetAll
-        (List<string> brandIds, List<string> typeIds, List<string> storeIds, List<string> majorIds, 
-        List<string> campusIds, bool? state, string propertySort, bool isAsc, string search, int page, int limit)
+        (List<string> brandIds, List<string> typeIds, List<string> storeIds, List<string> majorIds, List<string> campusIds, 
+        List<int> stateIds, string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<Campaign> pagedResult = new();
         try
@@ -171,7 +172,7 @@ public class CampaignRepository : ICampaignRepository
                 && (storeIds.Count == 0 || t.CampaignStores.Select(c => c.StoreId).Any(s => storeIds.Contains(s)))
                 && (majorIds.Count == 0 || t.CampaignMajors.Select(c => c.MajorId).Any(s => majorIds.Contains(s)))
                 && (campusIds.Count == 0 || t.CampaignCampuses.Select(c => c.CampusId).Any(s => campusIds.Contains(s)))
-                && (state == null || state.Equals(t.State))
+                && (stateIds.Count == 0 || stateIds.Contains((int)t.CampaignActivities.LastOrDefault().State))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 
@@ -220,11 +221,12 @@ public class CampaignRepository : ICampaignRepository
                 .ThenInclude(s => s.Campus)
             .Include(s => s.Wallets.Where(w => (bool)w.Status))
                 .ThenInclude(s => s.Type)
-            .Include(s => s.WalletTransactions.Where(w => (bool)w.Status))
+            .Include(s => s.CampaignTransactions.Where(w => (bool)w.Status))
                 .ThenInclude(s => s.Wallet)
                     .ThenInclude(w => w.Type)
-            .Include(s => s.VoucherItems.Where(w => (bool)w.Status))
-                .ThenInclude(s => s.Activities)
+            .Include(s => s.CampaignDetails.Where(w => (bool)w.Status))
+                .ThenInclude(s => s.VoucherItems)
+                    .ThenInclude(v => v.Activities)
             .FirstOrDefault();
         }
         catch (Exception ex)

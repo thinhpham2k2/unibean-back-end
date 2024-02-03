@@ -1,7 +1,19 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Unibean.Repository.Entities;
+
+public enum WalletType
+{
+    [Display(Name = "Ví đậu xanh")]
+    [Description("Đơn vị điểm dùng để đổi khuyến mãi")]
+    Green = 1,
+
+    [Display(Name = "Ví đậu đỏ")]
+    [Description("Đơn vị điểm dùng để đổi quà")]
+    Red = 2
+}
 
 [Table("tbl_wallet")]
 public class Wallet
@@ -25,10 +37,8 @@ public class Wallet
 
     public Brand Brand { get; set; }
 
-    [Column("type_id", TypeName = "char(26)")]
-    public string TypeId { get; set; }
-
-    public WalletType Type { get; set; }
+    [Column("type", TypeName = "enum('Green', 'Red')")]
+    public WalletType? Type { get; set; }
 
     [Column("balance", TypeName = "decimal(38,2)")]
     public decimal? Balance { get; set; }
@@ -54,7 +64,7 @@ public class Wallet
 
     public virtual ICollection<BonusTransaction> BonusTransactions { get; set; }
 
-    public virtual ICollection<CampaignTransaction> WalletTransactions { get; set; }
+    public virtual ICollection<CampaignTransaction> CampaignTransactions { get; set; }
 
     public virtual ICollection<RequestTransaction> RequestTransactions { get; set; }
 

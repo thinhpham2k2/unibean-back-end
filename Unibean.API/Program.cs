@@ -128,7 +128,7 @@ builder.Services.AddSingleton<IVoucherItemRepository, VoucherItemRepository>();
 builder.Services.AddSingleton<IVoucherRepository, VoucherRepository>();
 builder.Services.AddSingleton<IVoucherTypeRepository, VoucherTypeRepository>();
 builder.Services.AddSingleton<IWalletRepository, WalletRepository>();
-builder.Services.AddSingleton<IWalletTransactionRepository, WalletTransactionRepository>();
+builder.Services.AddSingleton<IWalletTransactionRepository, CampaignTransactionRepository>();
 builder.Services.AddSingleton<IWalletTypeRepository, WalletTypeRepository>();
 builder.Services.AddSingleton<IWishlistRepository, WishlistRepository>();
 

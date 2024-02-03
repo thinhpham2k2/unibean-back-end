@@ -40,7 +40,7 @@ public class OrderTransactionRepository : IOrderTransactionRepository
             using var db = new UnibeanDBContext();
             result = db.OrderTransactions
                 .Where(o => (EF.Functions.Like("Tạo đơn hàng (" + o.Amount + " đậu)", "%" + search + "%")
-                || EF.Functions.Like(o.Wallet.Type.TypeName, "%" + search + "%")
+                || EF.Functions.Like((string)(object)o.Wallet.Type, "%" + search + "%")
                 || EF.Functions.Like("Đổi quà", "%" + search + "%")
                 || EF.Functions.Like(o.Description, "%" + search + "%"))
                 && (walletIds.Count == 0 || walletIds.Contains(o.WalletId))

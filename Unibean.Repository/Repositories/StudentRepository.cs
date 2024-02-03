@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
 using System.Linq.Dynamic.Core;
+using System.Reflection;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
@@ -19,21 +21,32 @@ public class StudentRepository : IStudentRepository
             if (creation != null)
             {
                 // Create wallet
-                foreach (var type in db.WalletTypes.Where(s => (bool)s.Status))
-                {
-                    db.Wallets.Add(new Wallet
+                db.Wallets.AddRange(new List<Wallet>() {
+                    new Wallet
                     {
-                        Id = Ulid.NewUlid().ToString(),
-                        StudentId = creation.Id,
-                        TypeId = type.Id,
-                        Balance = 0,
-                        DateCreated = creation.DateCreated,
-                        DateUpdated = creation.DateUpdated,
-                        Description = type.Description,
-                        State = true,
-                        Status = true,
-                    });
-                }
+                    Id = Ulid.NewUlid().ToString(),
+                    StudentId = creation.Id,
+                    Type = WalletType.Green,
+                    Balance = 0,
+                    DateCreated = creation.DateCreated,
+                    DateUpdated = creation.DateUpdated,
+                    Description = WalletType.Green.GetType().GetCustomAttribute<DescriptionAttribute>().ToString(),
+                    State = true,
+                    Status = true,
+                    },
+                    new Wallet
+                    {
+                    Id = Ulid.NewUlid().ToString(),
+                    StudentId = creation.Id,
+                    Type = WalletType.Red,
+                    Balance = 0,
+                    DateCreated = creation.DateCreated,
+                    DateUpdated = creation.DateUpdated,
+                    Description = WalletType.Red.GetType().GetCustomAttribute<DescriptionAttribute>().ToString(),
+                    State = true,
+                    Status = true,
+                    }
+                });
 
                 // Create student challenge
                 foreach (var challenge in db.Challenges.Where(s => (bool)s.Status))

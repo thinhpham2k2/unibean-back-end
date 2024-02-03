@@ -10,8 +10,8 @@ public interface IAreaRepository
     void Delete(string id);
 
     PagedResultModel<Area> GetAll
-        (List<string> districtIds, bool? state, string propertySort, 
-        bool isAsc, string search, int page, int limit);
+        (bool? state, string propertySort, bool isAsc, 
+        string search, int page, int limit);
 
     Area GetById(string id);
 

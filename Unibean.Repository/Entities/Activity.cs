@@ -1,11 +1,18 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Unibean.Repository.Entities;
 
 public enum Type
 {
-    Buy = 1, Use = 2
+    [Display(Name = "Mua")]
+    [Description("Mua khuyến mãi")]
+    Buy = 1,
+
+    [Display(Name = "Sử dụng")]
+    [Description("Sử dụng khuyến mãi")]
+    Use = 2
 }
 
 [Table("tbl_activity")]

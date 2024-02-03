@@ -4,14 +4,14 @@ using Unibean.Repository.Repositories.Interfaces;
 
 namespace Unibean.Repository.Repositories;
 
-public class WalletTransactionRepository : IWalletTransactionRepository
+public class CampaignTransactionRepository : ICampaignTransactionRepository
 {
     public CampaignTransaction Add(CampaignTransaction creation)
     {
         try
         {
             using var db = new UnibeanDBContext();
-            creation = db.WalletTransactions.Add(creation).Entity;
+            creation = db.CampaignTransactions.Add(creation).Entity;
 
             if (creation != null)
             {
@@ -32,20 +32,20 @@ public class WalletTransactionRepository : IWalletTransactionRepository
     }
 
     public List<CampaignTransaction> GetAll
-        (List<string> walletIds, List<string> campaignIds, List<string> walletTypeIds, string search)
+        (List<string> walletIds, List<string> campaignIds, List<int> walletTypeIds, string search)
     {
         List<CampaignTransaction> result;
         try
         {
             using var db = new UnibeanDBContext();
-            result = db.WalletTransactions
+            result = db.CampaignTransactions
                 .Where(t => (EF.Functions.Like(t.Campaign.CampaignName, "%" + search + "%")
                 || EF.Functions.Like(t.Wallet.Brand.BrandName, "%" + search + "%")
                 || EF.Functions.Like(t.Amount > 0 ? "Hoàn trả đậu" : "Tạo chiến dịch", "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
                 && (walletIds.Count == 0 || walletIds.Contains(t.WalletId))
                 && (campaignIds.Count == 0 || campaignIds.Contains(t.CampaignId))
-                && (walletTypeIds.Count == 0 || walletTypeIds.Contains(t.Wallet.TypeId))
+                && (walletTypeIds.Count == 0 || walletTypeIds.Contains((int)t.Wallet.Type))
                 && (bool)t.Status)
                 .Include(s => s.Wallet)
                     .ThenInclude(w => w.Type)
@@ -67,7 +67,7 @@ public class WalletTransactionRepository : IWalletTransactionRepository
         try
         {
             using var db = new UnibeanDBContext();
-            walletTransaction = db.WalletTransactions
+            walletTransaction = db.CampaignTransactions
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.Wallet)
                 .ThenInclude(w => w.Type)

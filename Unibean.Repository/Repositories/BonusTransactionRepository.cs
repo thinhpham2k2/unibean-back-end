@@ -7,7 +7,7 @@ namespace Unibean.Repository.Repositories;
 public class BonusTransactionRepository : IBonusTransactionRepository
 {
     public List<BonusTransaction> GetAll
-        (List<string> walletIds, List<string> bonusIds, List<string> walletTypeIds, string search)
+        (List<string> walletIds, List<string> bonusIds, List<int> walletTypeIds, string search)
     {
         List<BonusTransaction> result;
         try
@@ -20,7 +20,7 @@ public class BonusTransactionRepository : IBonusTransactionRepository
                 || EF.Functions.Like(a.Description, "%" + search + "%"))
                 && (walletIds.Count == 0 || walletIds.Contains(a.WalletId))
                 && (bonusIds.Count == 0 || bonusIds.Contains(a.BonusId))
-                && (walletTypeIds.Count == 0 || walletTypeIds.Contains(a.Wallet.TypeId))
+                && (walletTypeIds.Count == 0 || walletTypeIds.Contains((int)a.Wallet.Type))
                 && (bool)a.Status)
                 .Include(s => s.Wallet)
                     .ThenInclude(w => w.Type)
