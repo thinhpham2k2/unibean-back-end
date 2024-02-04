@@ -25,7 +25,9 @@ public class CampaignExtraModel
     public DateTime? DateCreated { get; set; }
     public DateTime? DateUpdated { get; set; }
     public string Description { get; set; }
-    public bool? State { get; set; }
+    public int? CurrentStateId { get; set; }
+    public string CurrentState { get; set; }
+    public string CurrentStateName { get; set; }
     public bool? Status { get; set; }
     public int? NumberOfParticipants { get; set; }
     public decimal? UsageCost { get; set; }

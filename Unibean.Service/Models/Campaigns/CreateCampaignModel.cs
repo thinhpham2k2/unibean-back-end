@@ -66,7 +66,5 @@ public class CreateCampaignModel
     [Required(ErrorMessage = "Danh sách cơ sở là bắt buộc")]
     public ICollection<CreateCampaignCampusModel> CampaignCampuses { get; set; }
 
-    [ValidVoucherItem]
-    [Required(ErrorMessage = "Danh sách khuyến mãi là bắt buộc")]
-    public ICollection<CreateVoucherItemModel> Vouchers { get; set; }
+    public ICollection<CreateVoucherItemModel> CampaignDetails { get; set; }
 }

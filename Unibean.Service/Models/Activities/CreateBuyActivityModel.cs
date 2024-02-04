@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using Unibean.Repository.Entities;
 using Unibean.Service.Validations;
 using Type = Unibean.Repository.Entities.Type;
 
@@ -7,7 +8,7 @@ namespace Unibean.Service.Models.Activities;
 
 public class CreateBuyActivityModel
 {
-    [ValidStudent]
+    [ValidStudent(new[] { StudentState.Active })]
     [Required(ErrorMessage = "Sinh viên là bắt buộc")]
     public string StudentId { get; set; }
 

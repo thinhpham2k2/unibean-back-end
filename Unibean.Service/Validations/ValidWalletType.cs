@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Unibean.Repository.Repositories.Interfaces;
-using Unibean.Repository.Repositories;
+using Unibean.Repository.Entities;
 
 namespace Unibean.Service.Validations;
 
@@ -8,14 +7,14 @@ public class ValidWalletType : ValidationAttribute
 {
     private new const string ErrorMessage = "Loại ví không hợp lệ";
 
-    private readonly IWalletTypeRepository typeRepo = new WalletTypeRepository();
-
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
-        var type = typeRepo.GetById(value.ToString());
-        if (type != null && (bool)type.State)
+        if (int.TryParse(value.ToString(), out int type))
         {
-            return ValidationResult.Success;
+            if (Enum.IsDefined(typeof(WalletType), type))
+            {
+                return ValidationResult.Success;
+            }
         }
         return new ValidationResult(ErrorMessage);
     }

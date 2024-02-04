@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Unibean.Repository.Entities;
 using Unibean.Service.Validations;
 using Type = Unibean.Repository.Entities.Type;
 
@@ -8,7 +9,7 @@ public class CreateActivityModel
 {
     public string StoreId { get; set; }
 
-    [ValidStudent]
+    [ValidStudent(new[] { StudentState.Active })]
     [Required(ErrorMessage = "Sinh viên là bắt buộc")]
     public string StudentId { get; set; }
 

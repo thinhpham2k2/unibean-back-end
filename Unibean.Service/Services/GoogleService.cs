@@ -1,4 +1,6 @@
-﻿using Unibean.Service.Models.Accounts;
+﻿using Enable.EnumDisplayName;
+using Unibean.Repository.Entities;
+using Unibean.Service.Models.Accounts;
 using Unibean.Service.Models.Authens;
 using Unibean.Service.Models.Brands;
 using Unibean.Service.Models.Exceptions;
@@ -13,15 +15,13 @@ public class GoogleService : IGoogleService
 
     private readonly IAccountService accountService;
 
-    private readonly IRoleService roleService;
-
     private readonly IBrandService brandService;
 
-    public GoogleService(IAccountService accountService,
-        IRoleService roleService, IBrandService brandService)
+    public GoogleService(
+        IAccountService accountService,
+        IBrandService brandService)
     {
         this.accountService = accountService;
-        this.roleService = roleService;
         this.brandService = brandService;
     }
 
@@ -40,7 +40,7 @@ public class GoogleService : IGoogleService
                     {
                         return account;
                     }
-                    var roleModel = roleService.GetRoleByName(role);
+
                     switch (role)
                     {
                         case "Brand":
@@ -48,11 +48,13 @@ public class GoogleService : IGoogleService
                             {
                                 Email = payload.Email,
                                 IsVerify = true,
-                                RoleId = roleModel?.Id,
+                                Role = (int)Role.Brand,
                                 Description = "Create by logging in with Google",
                                 State = true,
                             });
-                            account.RoleName = roleModel?.RoleName;
+                            account.RoleId = (int)Role.Brand;
+                            account.Role = Role.Brand.ToString();
+                            account.RoleName = Role.Brand.GetDisplayName();
 
                             var brand = brandService.AddGoogle(new CreateBrandGoogleModel
                             {
@@ -70,11 +72,13 @@ public class GoogleService : IGoogleService
                             {
                                 Email = payload.Email,
                                 IsVerify = false,
-                                RoleId = roleModel?.Id,
+                                Role = (int)Role.Student,
                                 Description = "Create by logging in with Google",
                                 State = false,
                             });
-                            account.RoleName = roleModel?.RoleName;
+                            account.RoleId = (int)Role.Student;
+                            account.Role = Role.Student.ToString();
+                            account.RoleName = Role.Student.GetDisplayName();
                             return account;
                     }
                 }

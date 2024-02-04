@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Unibean.Repository.Repositories.Interfaces;
-using Unibean.Repository.Repositories;
+using Unibean.Repository.Entities;
 
 namespace Unibean.Service.Validations;
 
@@ -8,14 +7,14 @@ public class ValidChallengeType : ValidationAttribute
 {
     private new const string ErrorMessage = "Loại thử thách không hợp lệ"; 
     
-    private readonly IChallengeTypeRepository challengeTypeRepo = new ChallengeTypeRepository(); 
-    
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
-        var type = challengeTypeRepo.GetById(value.ToString());
-        if (type != null && (bool)type.State)
+        if (int.TryParse(value.ToString(), out int type))
         {
-            return ValidationResult.Success;
+            if (Enum.IsDefined(typeof(ChallengeType), type))
+            {
+                return ValidationResult.Success;
+            }
         }
         return new ValidationResult(ErrorMessage);
     }

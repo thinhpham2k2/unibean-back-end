@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Enable.EnumDisplayName;
 using FirebaseAdmin.Messaging;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
@@ -67,6 +68,12 @@ public class CampaignService : ICampaignService
             .ForMember(c => c.BrandName, opt => opt.MapFrom(src => src.Brand.BrandName))
             .ForMember(c => c.BrandAcronym, opt => opt.MapFrom(src => src.Brand.Acronym))
             .ForMember(c => c.TypeName, opt => opt.MapFrom(src => src.Type.TypeName))
+            .ForMember(c => c.CurrentStateId, opt => opt.MapFrom(
+                src => (int)src.CampaignActivities.LastOrDefault().State))
+            .ForMember(c => c.CurrentState, opt => opt.MapFrom(
+                src => src.CampaignActivities.LastOrDefault().State))
+            .ForMember(c => c.CurrentStateName, opt => opt.MapFrom(
+                src => src.CampaignActivities.LastOrDefault().State.Value.GetDisplayName()))
             .ReverseMap();
             cfg.CreateMap<PagedResultModel<Campaign>, PagedResultModel<CampaignModel>>()
             .ReverseMap();
@@ -77,14 +84,16 @@ public class CampaignService : ICampaignService
             .ForMember(c => c.BrandLogo, opt => opt.MapFrom(src => src.Brand.Account.Avatar))
             .ForMember(c => c.TypeName, opt => opt.MapFrom(src => src.Type.TypeName))
             .ForMember(c => c.TypeImage, opt => opt.MapFrom(src => src.Type.Image))
+            .ForMember(c => c.CurrentStateId, opt => opt.MapFrom(
+                src => (int)src.CampaignActivities.LastOrDefault().State))
+            .ForMember(c => c.CurrentState, opt => opt.MapFrom(
+                src => src.CampaignActivities.LastOrDefault().State))
+            .ForMember(c => c.CurrentStateName, opt => opt.MapFrom(
+                src => src.CampaignActivities.LastOrDefault().State.Value.GetDisplayName()))
             .ForMember(c => c.NumberOfParticipants, opt => opt.MapFrom(src
-                => src.VoucherItems.Where(v => (bool)v.IsUsed).Count()))
+                => src.CampaignDetails.SelectMany(c => c.VoucherItems).Where(v => (bool)v.IsUsed).Count()))
             .ForMember(c => c.UsageCost, opt => opt.MapFrom(src
-                => src.VoucherItems.Where(v => (bool)v.IsUsed).Select(v
-                => v.Price * v.Rate).Sum()))
-            .ForMember(c => c.UsageCost, opt => opt.MapFrom(src
-                => src.VoucherItems.Where(v => (bool)v.IsUsed).Select(v
-                => v.Price * v.Rate).Sum()))
+                => src.CampaignDetails.Select(c => c.Price * c.Rate * c.VoucherItems.Where(v => (bool)v.IsUsed).Count()).Sum()))
             .ForMember(c => c.TotalCost, opt => opt.MapFrom(src => src.TotalIncome))
             .ReverseMap();
             // Map Campaign Store Model
@@ -111,7 +120,6 @@ public class CampaignService : ICampaignService
             .ForMember(c => c.TotalSpending, opt => opt.MapFrom(src => 0))
             .ForMember(c => c.DateCreated, opt => opt.MapFrom(src => DateTime.Now))
             .ForMember(c => c.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
-            .ForMember(c => c.State, opt => opt.MapFrom(src => false))
             .ForMember(c => c.Status, opt => opt.MapFrom(src => true));
             // Map Update Campaign Model
             cfg.CreateMap<Campaign, UpdateCampaignModel>()
@@ -149,7 +157,7 @@ public class CampaignService : ICampaignService
             campaign.Image = f.URL;
             campaign.ImageName = f.FileName;
         }
-        campaign.VoucherItems = new List<VoucherItem>();
+        campaign.CampaignDetails = new List<CampaignDetail>();
 
         foreach (var voucher in creation.Vouchers)
         {
@@ -157,11 +165,11 @@ public class CampaignService : ICampaignService
             for (var i = 0; i < voucher.Quantity; i++)
             {
                 var id = Ulid.NewUlid().ToString();
-                campaign.VoucherItems.Add(new VoucherItem
+                campaign.CampaignDetails.Add(new VoucherItem
                 {
                     Id = id,
                     VoucherId = voucher.VoucherId,
-                    CampaignId = campaign.Id,
+                    CampaignDetailId = campaign.Id,
                     VoucherCode = id,
                     Price = v.Price,
                     Rate = v.Rate,

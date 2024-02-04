@@ -16,6 +16,19 @@ public class CampaignRepository : ICampaignRepository
         {
             using var db = new UnibeanDBContext();
 
+            // Create campaign activity
+            creation.CampaignActivities = new List<CampaignActivity> { 
+                new CampaignActivity 
+                { 
+                    Id = Ulid.NewUlid().ToString(),
+                    CampaignId = creation.Id,
+                    State = CampaignState.Pending,
+                    DateCreated = creation.DateCreated,
+                    Description = CampaignState.Pending.GetType().GetCustomAttribute<DescriptionAttribute>().Description,
+                    Status = true,
+                }
+            };
+
             // Create campaign stores
             creation.CampaignStores = creation.CampaignStores.Select(c =>
             {
