@@ -153,8 +153,9 @@ public class CampaignRepository : ICampaignRepository
     }
 
     public PagedResultModel<Campaign> GetAll
-        (List<string> brandIds, List<string> typeIds, List<string> storeIds, List<string> majorIds, List<string> campusIds, 
-        List<int> stateIds, string propertySort, bool isAsc, string search, int page, int limit)
+        (List<string> brandIds, List<string> typeIds, List<string> storeIds, 
+        List<string> majorIds, List<string> campusIds, List<CampaignState> stateIds, 
+        string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<Campaign> pagedResult = new();
         try
@@ -172,7 +173,7 @@ public class CampaignRepository : ICampaignRepository
                 && (storeIds.Count == 0 || t.CampaignStores.Select(c => c.StoreId).Any(s => storeIds.Contains(s)))
                 && (majorIds.Count == 0 || t.CampaignMajors.Select(c => c.MajorId).Any(s => majorIds.Contains(s)))
                 && (campusIds.Count == 0 || t.CampaignCampuses.Select(c => c.CampusId).Any(s => campusIds.Contains(s)))
-                && (stateIds.Count == 0 || stateIds.Contains((int)t.CampaignActivities.LastOrDefault().State))
+                && (stateIds.Count == 0 || stateIds.Contains(t.CampaignActivities.LastOrDefault().State.Value))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 

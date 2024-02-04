@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Enable.EnumDisplayName;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
@@ -41,8 +42,10 @@ public class BonusService : IBonusService
             .ForMember(r => r.StudentAvatar, opt => opt.MapFrom(src => src.Student.Account.Avatar))
             .ReverseMap();
             cfg.CreateMap<BonusTransaction, BonusTransactionModel>()
-            .ForMember(r => r.WalletType, opt => opt.MapFrom(src => src.Wallet.Type.TypeName))
-            .ForMember(r => r.WalletImage, opt => opt.MapFrom(src => src.Wallet.Type.Image))
+            .ForMember(r => r.WalletTypeId, opt => opt.MapFrom(src => (int)src.Wallet.Type))
+            .ForMember(r => r.WalletType, opt => opt.MapFrom(src => src.Wallet.Type))
+            .ForMember(r => r.WalletTypeName, opt => opt.MapFrom(
+                src => src.Wallet.Type.Value.GetDisplayName()))
             .ReverseMap();
             cfg.CreateMap<Bonus, CreateBonusModel>()
             .ReverseMap()
@@ -57,8 +60,12 @@ public class BonusService : IBonusService
             .ForMember(t => t.Amount, opt => opt.MapFrom(src => src.BonusTransactions.FirstOrDefault().Amount))
             .ForMember(t => t.Rate, opt => opt.MapFrom(src => src.BonusTransactions.FirstOrDefault().Rate))
             .ForMember(t => t.WalletId, opt => opt.MapFrom(src => src.BonusTransactions.FirstOrDefault().WalletId))
-            .ForMember(t => t.WalletType, opt => opt.MapFrom(src => src.BonusTransactions.FirstOrDefault().Wallet.Type.TypeName))
-            .ForMember(t => t.WalletImage, opt => opt.MapFrom(src => src.BonusTransactions.FirstOrDefault().Wallet.Type.Image))
+            .ForMember(t => t.WalletTypeId, opt => opt.MapFrom(
+                src => (int)src.BonusTransactions.FirstOrDefault().Wallet.Type))
+            .ForMember(t => t.WalletType, opt => opt.MapFrom(
+                src => src.BonusTransactions.FirstOrDefault().Wallet.Type))
+            .ForMember(t => t.WalletTypeName, opt => opt.MapFrom(
+                src => src.BonusTransactions.FirstOrDefault().Wallet.Type.Value.GetDisplayName()))
             .ReverseMap();
         });
         mapper = new Mapper(config);

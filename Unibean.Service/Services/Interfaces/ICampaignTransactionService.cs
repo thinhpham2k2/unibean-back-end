@@ -6,5 +6,6 @@ namespace Unibean.Service.Services.Interfaces;
 public interface ICampaignTransactionService
 {
     List<TransactionModel> GetAll
-        (List<string> walletIds, List<string> campaignIds, List<string> walletTypeIds, string search);
+        (List<string> walletIds, List<string> campaignIds, 
+        List<WalletType> walletTypeIds, string search);
 }

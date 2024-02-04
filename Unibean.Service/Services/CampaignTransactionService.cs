@@ -32,9 +32,10 @@ public class CampaignTransactionService : ICampaignTransactionService
     }
 
     public List<TransactionModel> GetAll
-        (List<string> walletIds, List<string> campaignIds, List<string> walletTypeIds, string search)
+        (List<string> walletIds, List<string> campaignIds, 
+        List<WalletType> walletTypeIds, string search)
     {
-        return mapper.Map<List<TransactionModel>>(walletTransactionRepository.GetAll
+        return mapper.Map<List<TransactionModel>>(campaignTransactionRepository.GetAll
             (walletIds, campaignIds, walletTypeIds, search));
     }
 }

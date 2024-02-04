@@ -26,15 +26,11 @@ public class AreaService : IAreaService
                 =>
         {
             cfg.CreateMap<Area, AreaModel>()
-            .ForMember(t => t.DistrictName, opt => opt.MapFrom(src => src.District.DistrictName))
-            .ForMember(t => t.CityId, opt => opt.MapFrom(src => src.District.City.Id))
-            .ForMember(t => t.CityName, opt => opt.MapFrom(src => src.District.City.CityName))
             .ReverseMap();
             cfg.CreateMap<PagedResultModel<Area>, PagedResultModel<AreaModel>>()
             .ReverseMap();
             cfg.CreateMap<Area, UpdateAreaModel>()
             .ReverseMap()
-            .ForMember(t => t.District, opt => opt.MapFrom(src => (string)null))
             .ForMember(t => t.Image, opt => opt.Ignore())
             .ForMember(t => t.DateUpdated, opt => opt.MapFrom(src => DateTime.Now));
             cfg.CreateMap<Area, CreateAreaModel>()
@@ -82,11 +78,11 @@ public class AreaService : IAreaService
     }
 
     public PagedResultModel<AreaModel> GetAll
-        (List<string> districtIds, bool? state, string propertySort, 
-        bool isAsc, string search, int page, int limit)
+        (bool? state, string propertySort, bool isAsc, 
+        string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<AreaModel>>(areaRepository.GetAll
-            (districtIds, state, propertySort, isAsc, search, page, limit));
+            (state, propertySort, isAsc, search, page, limit));
     }
 
     public AreaModel GetById(string id)

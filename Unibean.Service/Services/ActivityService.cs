@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Enable.EnumDisplayName;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Service.Models.Activities;
@@ -26,15 +27,26 @@ public class ActivityService : IActivityService
         {
             cfg.CreateMap<Activity, StoreTransactionModel>()
             .ForMember(t => t.StudentName, opt => opt.MapFrom(src => src.Student.FullName))
-            .ForMember(t => t.Activity, opt => opt.MapFrom(src => " sử dụng " + src.VoucherItem.Voucher.VoucherName + " tại "))
-            .ForMember(t => t.StoreName, opt => opt.MapFrom(src => src.Store.StoreName))
-            .ForMember(t => t.Amount, opt => opt.MapFrom(src => src.ActivityTransactions.FirstOrDefault().Amount))
-            .ForMember(t => t.Rate, opt => opt.MapFrom(src => src.ActivityTransactions.FirstOrDefault().Rate))
-            .ForMember(t => t.WalletId, opt => opt.MapFrom(src => src.ActivityTransactions.FirstOrDefault().WalletId))
-            .ForMember(t => t.WalletType, opt => opt.MapFrom(src => src.ActivityTransactions.FirstOrDefault().Wallet.Type.TypeName))
-            .ForMember(t => t.WalletImage, opt => opt.MapFrom(src => src.ActivityTransactions.FirstOrDefault().Wallet.Type.Image))
+            .ForMember(t => t.Activity, opt => opt.MapFrom(
+                src => " sử dụng " + src.VoucherItem.Voucher.VoucherName + " tại "))
+            .ForMember(t => t.StoreName, opt => opt.MapFrom(
+                src => src.Store.StoreName))
+            .ForMember(t => t.Amount, opt => opt.MapFrom(
+                src => src.ActivityTransactions.FirstOrDefault().Amount))
+            .ForMember(t => t.Rate, opt => opt.MapFrom(
+                src => src.ActivityTransactions.FirstOrDefault().Rate))
+            .ForMember(t => t.WalletId, opt => opt.MapFrom(
+                src => src.ActivityTransactions.FirstOrDefault().WalletId))
+            .ForMember(t => t.WalletTypeId, opt => opt.MapFrom(
+                src => (int)src.ActivityTransactions.FirstOrDefault().Wallet.Type))
+            .ForMember(t => t.WalletType, opt => opt.MapFrom(
+                src => src.ActivityTransactions.FirstOrDefault().Wallet.Type))
+            .ForMember(t => t.WalletTypeName, opt => opt.MapFrom(
+                src => src.ActivityTransactions.FirstOrDefault().Wallet.Type.Value.GetDisplayName()))
             .ReverseMap();
             cfg.CreateMap<Activity, ActivityModel>()
+            .ForMember(t => t.TypeId, opt => opt.MapFrom(src => (int)src.Type))
+            .ForMember(t => t.TypeName, opt => opt.MapFrom(src => src.Type.Value.GetDisplayName()))
             .ReverseMap();
             cfg.CreateMap<Activity, CreateActivityModel>()
             .ReverseMap()
@@ -53,7 +65,6 @@ public class ActivityService : IActivityService
     {
         Activity entity = mapper.Map<Activity>(creation);
         entity.VoucherItem = voucherItemRepository.GetById(creation.VoucherItemId);
-        entity.VoucherItem.Campaign = null;
         return mapper.Map<ActivityModel>(activityRepository.Add(entity));
     }
 

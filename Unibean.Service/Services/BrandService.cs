@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Org.BouncyCastle.Asn1.Ocsp;
+using Enable.EnumDisplayName;
 using System.Linq.Dynamic.Core;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
@@ -29,8 +29,6 @@ public class BrandService : IBrandService
 
     private readonly IFireBaseService fireBaseService;
 
-    private readonly IRoleService roleService;
-
     private readonly IAccountRepository accountRepository;
 
     private readonly ICampaignService campaignService;
@@ -47,7 +45,6 @@ public class BrandService : IBrandService
 
     public BrandService(IBrandRepository brandRepository,
         IFireBaseService fireBaseService,
-        IRoleService roleService,
         IAccountRepository accountRepository,
         ICampaignService campaignService,
         IStoreService storeService,
@@ -66,10 +63,10 @@ public class BrandService : IBrandService
             .ForMember(p => p.LogoFileName, opt => opt.MapFrom(src => src.Account.FileName))
             .ForMember(p => p.Email, opt => opt.MapFrom(src => src.Account.Email))
             .ForMember(p => p.Phone, opt => opt.MapFrom(src => src.Account.Phone))
-            .ForMember(p => p.GreenWallet, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Balance))
-            .ForMember(p => p.GreenWalletImage, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Type.Image))
-            .ForMember(p => p.RedWallet, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Balance))
-            .ForMember(p => p.RedWalletImage, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Type.Image))
+            .ForMember(p => p.GreenWalletId, opt => opt.MapFrom(src => (int)src.Wallets.FirstOrDefault().Type))
+            .ForMember(p => p.GreenWallet, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Type))
+            .ForMember(p => p.GreenWalletName, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Type.Value.GetDisplayName()))
+            .ForMember(p => p.GreenWalletBalance, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Balance))
             .ReverseMap();
             cfg.CreateMap<PagedResultModel<Brand>, PagedResultModel<BrandModel>>()
             .ForMember(p => p.Result, opt => opt.Ignore())
@@ -82,10 +79,10 @@ public class BrandService : IBrandService
             .ForMember(p => p.Email, opt => opt.MapFrom(src => src.Account.Email))
             .ForMember(p => p.Phone, opt => opt.MapFrom(src => src.Account.Phone))
             .ForMember(p => p.NumberOfFollowers, opt => opt.MapFrom(src => src.Wishlists.Count))
-            .ForMember(p => p.GreenWallet, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Balance))
-            .ForMember(p => p.GreenWalletImage, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Type.Image))
-            .ForMember(p => p.RedWallet, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Balance))
-            .ForMember(p => p.RedWalletImage, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Type.Image))
+            .ForMember(p => p.GreenWalletId, opt => opt.MapFrom(src => (int)src.Wallets.FirstOrDefault().Type))
+            .ForMember(p => p.GreenWallet, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Type))
+            .ForMember(p => p.GreenWalletName, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Type.Value.GetDisplayName()))
+            .ForMember(p => p.GreenWalletBalance, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Balance))
             .ReverseMap();
             // Map Create Brand Google Model
             cfg.CreateMap<Brand, CreateBrandGoogleModel>()
@@ -108,6 +105,7 @@ public class BrandService : IBrandService
             cfg.CreateMap<Account, CreateBrandModel>()
             .ReverseMap()
             .ForMember(p => p.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
+            .ForMember(p => p.Role, opt => opt.MapFrom(src => Role.Brand))
             .ForMember(p => p.Password, opt => opt.MapFrom(src => BCryptNet.HashPassword(src.Password)))
             .ForMember(p => p.IsVerify, opt => opt.MapFrom(src => true))
             .ForMember(p => p.DateCreated, opt => opt.MapFrom(src => DateTime.Now))
@@ -126,7 +124,6 @@ public class BrandService : IBrandService
         mapper = new Mapper(config);
         this.brandRepository = brandRepository;
         this.fireBaseService = fireBaseService;
-        this.roleService = roleService;
         this.accountRepository = accountRepository;
         this.campaignService = campaignService;
         this.storeService = storeService;
@@ -139,7 +136,6 @@ public class BrandService : IBrandService
     public async Task<BrandModel> Add(CreateBrandModel creation)
     {
         Account account = mapper.Map<Account>(creation);
-        account.RoleId = roleService.GetRoleByName("Brand")?.Id;
 
         //Upload logo
         if (creation.Logo != null && creation.Logo.Length > 0)
@@ -250,7 +246,7 @@ public class BrandService : IBrandService
     }
 
     public PagedResultModel<TransactionModel> GetHistoryTransactionListByStudentId
-        (string id, List<string> walletTypeIds, bool? state, string propertySort, 
+        (string id, List<WalletType> walletTypeIds, bool? state, string propertySort, 
         bool isAsc, string search, int page, int limit)
     {
         Brand entity = brandRepository.GetById(id);

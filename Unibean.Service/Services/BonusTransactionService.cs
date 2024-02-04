@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Enable.EnumDisplayName;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Service.Models.Transactions;
@@ -18,10 +19,13 @@ public class BonusTransactionService : IBonusTransactionService
             =>
         {
             cfg.CreateMap<BonusTransaction, TransactionModel>()
-            .ForMember(t => t.Name, opt => opt.MapFrom(src => src.Bonus.Brand.BrandName + " - " + src.Description))
+            .ForMember(t => t.Name, opt => opt.MapFrom(
+                src => src.Bonus.Brand.BrandName + " - " + src.Description))
             .ForMember(t => t.RequestId, opt => opt.MapFrom(src => src.BonusId))
-            .ForMember(t => t.WalletType, opt => opt.MapFrom(src => src.Wallet.Type.TypeName))
-            .ForMember(t => t.WalletImage, opt => opt.MapFrom(src => src.Wallet.Type.Image))
+            .ForMember(t => t.WalletTypeId, opt => opt.MapFrom(src => (int)src.Wallet.Type))
+            .ForMember(t => t.WalletType, opt => opt.MapFrom(src => src.Wallet.Type))
+            .ForMember(t => t.WalletTypeName, opt => opt.MapFrom(
+                src => src.Wallet.Type.Value.GetDisplayName()))
             .ForMember(t => t.TypeName, opt => opt.MapFrom(src => "Thưởng đậu"))
             .ForMember(t => t.DateCreated, opt => opt.MapFrom(src => src.Bonus.DateCreated))
             .ReverseMap();
@@ -31,7 +35,7 @@ public class BonusTransactionService : IBonusTransactionService
     }
 
     public List<TransactionModel> GetAll
-        (List<string> walletIds, List<string> bonusIds, List<string> walletTypeIds, string search)
+        (List<string> walletIds, List<string> bonusIds, List<WalletType> walletTypeIds, string search)
     {
         return mapper.Map<List<TransactionModel>>(bonusTransactionRepository.GetAll
             (walletIds, bonusIds, walletTypeIds, search));

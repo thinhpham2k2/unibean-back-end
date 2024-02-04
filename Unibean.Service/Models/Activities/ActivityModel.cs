@@ -7,7 +7,9 @@ public class ActivityModel
     public string StoreName { get; set; }
     public string StudentId { get; set; }
     public string StudentName { get; set; }
+    public int TypeId{ get; set; }
     public string Type{ get; set; }
+    public string TypeName{ get; set; }
     public string VoucherItemId { get; set; }
     public string VoucherName { get; set; }
     public string Description { get; set; }

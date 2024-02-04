@@ -8,7 +8,7 @@ public interface IRequestTransactionRepository
 
     List<RequestTransaction> GetAll
         (List<string> walletIds, List<string> requestIds, 
-        List<int> walletTypeIds, string search);
+        List<WalletType> walletTypeIds, string search);
 
     RequestTransaction GetById(string id);
 }

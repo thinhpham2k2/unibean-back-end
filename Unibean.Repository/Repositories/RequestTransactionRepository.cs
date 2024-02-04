@@ -32,7 +32,7 @@ public class RequestTransactionRepository : IRequestTransactionRepository
     }
 
     public List<RequestTransaction> GetAll
-        (List<string> walletIds, List<string> requestIds, List<int> walletTypeIds, string search)
+        (List<string> walletIds, List<string> requestIds, List<WalletType> walletTypeIds, string search)
     {
         List<RequestTransaction> result;
         try
@@ -46,7 +46,7 @@ public class RequestTransactionRepository : IRequestTransactionRepository
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
                 && (walletIds.Count == 0 || walletIds.Contains(t.WalletId))
                 && (requestIds.Count == 0 || requestIds.Contains(t.RequestId))
-                && (walletTypeIds.Count == 0 || walletTypeIds.Contains((int)t.Wallet.Type))
+                && (walletTypeIds.Count == 0 || walletTypeIds.Contains(t.Wallet.Type.Value))
                 && (bool)t.Status)
                 .Include(s => s.Request)
                     .ThenInclude(w => w.Admin)

@@ -32,7 +32,8 @@ public class CampaignTransactionRepository : ICampaignTransactionRepository
     }
 
     public List<CampaignTransaction> GetAll
-        (List<string> walletIds, List<string> campaignIds, List<int> walletTypeIds, string search)
+        (List<string> walletIds, List<string> campaignIds, 
+        List<WalletType> walletTypeIds, string search)
     {
         List<CampaignTransaction> result;
         try
@@ -45,7 +46,7 @@ public class CampaignTransactionRepository : ICampaignTransactionRepository
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
                 && (walletIds.Count == 0 || walletIds.Contains(t.WalletId))
                 && (campaignIds.Count == 0 || campaignIds.Contains(t.CampaignId))
-                && (walletTypeIds.Count == 0 || walletTypeIds.Contains((int)t.Wallet.Type))
+                && (walletTypeIds.Count == 0 || walletTypeIds.Contains(t.Wallet.Type.Value))
                 && (bool)t.Status)
                 .Include(s => s.Wallet)
                     .ThenInclude(w => w.Type)

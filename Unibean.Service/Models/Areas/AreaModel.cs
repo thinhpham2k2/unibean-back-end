@@ -3,10 +3,6 @@
 public class AreaModel
 {
     public string Id { get; set; }
-    public string DistrictId { get; set; }
-    public string DistrictName { get; set; }
-    public string CityId { get; set; }
-    public string CityName { get; set; }
     public string AreaName { get; set; }
     public string Image { get; set; }
     public string FileName { get; set; }
