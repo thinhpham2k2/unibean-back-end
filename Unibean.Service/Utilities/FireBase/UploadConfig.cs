@@ -6,6 +6,7 @@ public record FireBaseFile
     public string FileName { get; set; } = default!;
     public string Extension { get; set; } = default!;
 }
+
 public class UploadConfig
 {
     // Vulnerable Data

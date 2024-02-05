@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using Unibean.Service.Models.CampaignCampuses;
+using Unibean.Service.Models.CampaignDetails;
 using Unibean.Service.Models.CampaignMajors;
 using Unibean.Service.Models.CampaignStores;
 using Unibean.Service.Models.VoucherItems;
@@ -66,5 +67,7 @@ public class CreateCampaignModel
     [Required(ErrorMessage = "Danh sách cơ sở là bắt buộc")]
     public ICollection<CreateCampaignCampusModel> CampaignCampuses { get; set; }
 
-    public ICollection<CreateVoucherItemModel> CampaignDetails { get; set; }
+    [ValidCampaignDetail]
+    [Required(ErrorMessage = "Chi tiết chiến dịch là bắt buộc")]
+    public ICollection<CreateCampaignDetailModel> CampaignDetails { get; set; }
 }

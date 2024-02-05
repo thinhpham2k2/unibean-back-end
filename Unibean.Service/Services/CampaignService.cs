@@ -6,6 +6,7 @@ using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Service.Models.Activities;
 using Unibean.Service.Models.CampaignCampuses;
+using Unibean.Service.Models.CampaignDetails;
 using Unibean.Service.Models.CampaignMajors;
 using Unibean.Service.Models.Campaigns;
 using Unibean.Service.Models.CampaignStores;
@@ -48,6 +49,8 @@ public class CampaignService : ICampaignService
 
     private readonly IStudentRepository studentRepository;
 
+    private readonly ICampaignDetailRepository campaignDetailRepository;
+
     public CampaignService(ICampaignRepository campaignRepository,
         IVoucherRepository voucherRepository,
         IFireBaseService fireBaseService,
@@ -58,7 +61,8 @@ public class CampaignService : ICampaignService
         IDiscordService discordService,
         IActivityService activityService,
         IVoucherItemRepository voucherItemRepository,
-        IStudentRepository studentRepository)
+        IStudentRepository studentRepository,
+        ICampaignDetailRepository campaignDetailRepository)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -111,6 +115,13 @@ public class CampaignService : ICampaignService
             .ReverseMap()
             .ForMember(c => c.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
             .ForMember(c => c.Status, opt => opt.MapFrom(src => true));
+            // Map Campaign Detail Model
+            cfg.CreateMap<CampaignDetail, CreateCampaignDetailModel>()
+            .ReverseMap()
+            .ForMember(c => c.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
+            .ForMember(c => c.DateCreated, opt => opt.MapFrom(src => DateTime.Now))
+            .ForMember(c => c.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
+            .ForMember(c => c.Status, opt => opt.MapFrom(src => true));
             // Map Create Campaign Model
             cfg.CreateMap<Campaign, CreateCampaignModel>()
             .ReverseMap()
@@ -144,6 +155,7 @@ public class CampaignService : ICampaignService
         this.activityService = activityService;
         this.voucherItemRepository = voucherItemRepository;
         this.studentRepository = studentRepository;
+        this.campaignDetailRepository = campaignDetailRepository;
     }
 
     public async Task<CampaignExtraModel> Add(CreateCampaignModel creation)
@@ -157,33 +169,20 @@ public class CampaignService : ICampaignService
             campaign.Image = f.URL;
             campaign.ImageName = f.FileName;
         }
-        campaign.CampaignDetails = new List<CampaignDetail>();
 
-        foreach (var voucher in creation.Vouchers)
+        campaign.CampaignDetails = campaign.CampaignDetails.Select(d =>
         {
-            var v = voucherRepository.GetById(voucher.VoucherId);
-            for (var i = 0; i < voucher.Quantity; i++)
-            {
-                var id = Ulid.NewUlid().ToString();
-                campaign.CampaignDetails.Add(new VoucherItem
-                {
-                    Id = id,
-                    VoucherId = voucher.VoucherId,
-                    CampaignDetailId = campaign.Id,
-                    VoucherCode = id,
-                    Price = v.Price,
-                    Rate = v.Rate,
-                    IsBought = false,
-                    IsUsed = false,
-                    ValidOn = campaign.StartOn,
-                    ExpireOn = campaign.EndOn,
-                    DateCreated = campaign.DateCreated,
-                    Description = v.Description,
-                    State = true,
-                    Status = true
-                });
-            }
-        }
+            var v = voucherRepository.GetById(d.VoucherId);
+            d.CampaignId = campaign.Id;
+            d.Price = v.Price;
+            d.Rate = v.Rate;
+            var i = voucherItemRepository.UpdateList
+                (d.VoucherId, d.Id, (int)d.Quantity,
+                (DateOnly)campaign.StartOn, (DateOnly)campaign.EndOn);
+            d.FromIndex = i.FromIndex;
+            d.ToIndex = i.ToIndex;
+            return d;
+        }).ToList();
 
         campaign = campaignRepository.Add(campaign);
 
@@ -247,18 +246,21 @@ public class CampaignService : ICampaignService
     }
 
     public bool AddActivity
-        (string id, string voucherId, CreateBuyActivityModel creation)
+        (string id, string detailId, CreateBuyActivityModel creation)
     {
-        var list = voucherItemRepository.GetAllByCampaign
-            (new() { id }, new() { voucherId }, (int)creation.Quantity);
+        var detail = campaignDetailRepository.GetById(detailId);
+        var items = detail.VoucherItems.Where(
+                        i => (bool)i.State && (bool)i.Status
+                        && !(bool)i.IsLocked && !(bool)i.IsBought
+                        && !(bool)i.IsUsed && i.CampaignDetail.Equals(null)).Select(v => v.Id);
 
-        if (list.Count.Equals(creation.Quantity))
+        if (items.Count().Equals(creation.Quantity))
         {
             if (studentRepository.GetById
-                (creation.StudentId)?.Wallets.FirstOrDefault().Balance  >= list.Select(l => l.Price).Sum())
+                (creation.StudentId)?.Wallets.FirstOrDefault().Balance >= detail.Price * creation.Quantity)
             {
-
-                foreach (string itemId in list.Select(v => v.Id))
+                items = items.Take((int)creation.Quantity);
+                foreach (string itemId in items)
                 {
                     CreateActivityModel create = mapper.Map<CreateActivityModel>(creation);
                     create.VoucherItemId = itemId;
@@ -278,7 +280,8 @@ public class CampaignService : ICampaignService
         Campaign entity = campaignRepository.GetById(id);
         if (entity != null)
         {
-            if (!(bool)entity.State && entity.EndOn < DateOnly.FromDateTime(DateTime.Now))
+            if (entity.CampaignActivities.LastOrDefault().State.Equals(CampaignState.Closed) 
+                && entity.EndOn < DateOnly.FromDateTime(DateTime.Now))
             {
                 if (entity.Image != null && entity.ImageName != null)
                 {
@@ -299,8 +302,9 @@ public class CampaignService : ICampaignService
     }
 
     public PagedResultModel<CampaignModel> GetAll
-        (List<string> brandIds, List<string> typeIds, List<string> storeIds, List<string> majorIds,
-        List<string> campusIds, bool? state, string propertySort, bool isAsc, string search, int page, int limit)
+        (List<string> brandIds, List<string> typeIds, List<string> storeIds, 
+        List<string> majorIds, List<string> campusIds, List<CampaignState> state, 
+        string propertySort, bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<CampaignModel>>(campaignRepository
             .GetAll(brandIds, typeIds, storeIds, majorIds, campusIds, state,
@@ -411,10 +415,8 @@ public class CampaignService : ICampaignService
         {
             if (entity.EndOn >= DateOnly.FromDateTime(DateTime.Now))
             {
-                if (!(bool)entity.State)
+                if (entity.CampaignActivities.LastOrDefault().State.Equals(CampaignState.Pending))
                 {
-                    entity.State = true;
-
                     fireBaseService.PushNotificationToStudent(new Message
                     {
                         Data = new Dictionary<string, string>()

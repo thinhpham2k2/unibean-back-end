@@ -3,6 +3,12 @@ using Unibean.Repository.Paging;
 
 namespace Unibean.Repository.Repositories.Interfaces;
 
+public record ItemIndex
+{
+    public int? FromIndex { get; set; }
+    public int? ToIndex { get; set; }
+}
+
 public interface IVoucherItemRepository
 {
     VoucherItem Add(VoucherItem creation);
@@ -20,4 +26,8 @@ public interface IVoucherItemRepository
     VoucherItem GetById(string id);
 
     VoucherItem Update(VoucherItem update);
+
+    ItemIndex UpdateList
+        (string voucherId, string campaignDetailId, 
+        int quantity, DateOnly StartOn, DateOnly EndOn);
 }

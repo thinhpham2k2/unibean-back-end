@@ -323,7 +323,7 @@ public class CampaignController : ControllerBase
     /// <param name="typeIds">Filter by voucher type Id.</param>
     /// <param name="state">Filter by voucher state.</param>
     /// <param name="paging">Paging parameter.</param>
-    [HttpGet("{id}/vouchers")]
+    [HttpGet("{id}/details")]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(PagedResultModel<VoucherModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
@@ -360,7 +360,7 @@ public class CampaignController : ControllerBase
     /// </summary>
     /// <param name="id">Campaign id.</param>
     /// <param name="voucherId">Voucher id.</param>
-    [HttpGet("{id}/vouchers/{voucherId}")]
+    [HttpGet("{id}/details/{detailId}")]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(VoucherModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
@@ -383,24 +383,24 @@ public class CampaignController : ControllerBase
     /// Redeem voucher
     /// </summary>
     /// <param name="id">Campaign id.</param>
-    /// <param name="voucherId">Voucher id.</param>
+    /// <param name="detailId">Campaign detail id.</param>
     /// <param name="creation">Buy activities model.</param>
-    [HttpPost("{id}/vouchers/{voucherId}")]
+    [HttpPost("{id}/details/{detailId}")]
     [Authorize(Roles = "Student")]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.Created)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<string> BuyVoucher(
-        [ValidCampaign] string id, 
-        [ValidVoucher] string voucherId, 
+        [ValidCampaign(new[] { CampaignState.Active })] string id, 
+        [ValidCampaignDetailId] string detailId, 
         CreateBuyActivityModel creation)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         try
         {
-            return campaignService.AddActivity(id, voucherId, creation) ?
+            return campaignService.AddActivity(id, detailId, creation) ?
                 StatusCode(StatusCodes.Status201Created, "Thanh toán thành công") :
                 StatusCode(StatusCodes.Status404NotFound, "Thanh toán khuyến mãi thất bại");
         }
