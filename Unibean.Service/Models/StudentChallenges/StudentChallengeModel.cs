@@ -4,7 +4,9 @@ public class StudentChallengeModel
 {
     public string Id { get; set; }
     public string ChallengeId { get; set; }
+    public string ChallengeTypeId { get; set; }
     public string ChallengeType { get; set; }
+    public string ChallengeTypeName { get; set; }
     public string ChallengeName { get; set; }
     public string ChallengeImage{ get; set; }
     public string StudentId { get; set; }

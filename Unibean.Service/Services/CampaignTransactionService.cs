@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Enable.EnumDisplayName;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Service.Models.Transactions;
@@ -22,8 +23,9 @@ public class CampaignTransactionService : ICampaignTransactionService
                 => src.Amount > 0 ? 
                 "Chiến dịch " + src.Campaign.CampaignName + " kết thúc" : "Tạo chiến dịch " + src.Campaign.CampaignName))
             .ForMember(t => t.RequestId, opt => opt.MapFrom(src => src.CampaignId))
-            .ForMember(t => t.WalletType, opt => opt.MapFrom(src => src.Wallet.Type.TypeName))
-            .ForMember(t => t.WalletImage, opt => opt.MapFrom(src => src.Wallet.Type.Image))
+            .ForMember(t => t.WalletTypeId, opt => opt.MapFrom(src => (int)src.Wallet.Type))
+            .ForMember(t => t.WalletType, opt => opt.MapFrom(src => src.Wallet.Type))
+            .ForMember(t => t.WalletTypeName, opt => opt.MapFrom(src => src.Wallet.Type.GetDisplayName()))
             .ForMember(t => t.TypeName, opt => opt.MapFrom(src => src.Amount > 0 ? "Hoàn trả đậu" : "Tạo chiến dịch"))
             .ReverseMap();
         });

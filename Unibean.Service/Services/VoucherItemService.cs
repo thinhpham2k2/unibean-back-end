@@ -49,8 +49,8 @@ public class VoucherItemService : IVoucherItemService
             .ForMember(s => s.BrandId, opt => opt.MapFrom(src => src.Voucher.Brand.Id))
             .ForMember(s => s.BrandName, opt => opt.MapFrom(src => src.Voucher.Brand.BrandName))
             .ForMember(s => s.BrandImage, opt => opt.MapFrom(src => src.Voucher.Brand.Account.Avatar))
-            .ForMember(s => s.CampaignName, opt => opt.MapFrom(src => src.Campaign.CampaignName))
-            .ForMember(s => s.CampaignImage, opt => opt.MapFrom(src => src.Campaign.Image))
+            .ForMember(s => s.CampaignName, opt => opt.MapFrom(src => src.CampaignDetail.Campaign.CampaignName))
+            .ForMember(s => s.CampaignImage, opt => opt.MapFrom(src => src.CampaignDetail.Campaign.Image))
             .ForMember(s => s.UsedAt, opt => opt.MapFrom(src => src.Activities.Where(a
                 => a.Type.Equals(Type.Use)).FirstOrDefault().Store.StoreName))
             .ForMember(s => s.DateBought, opt => opt.MapFrom(src => src.Activities.Where(a

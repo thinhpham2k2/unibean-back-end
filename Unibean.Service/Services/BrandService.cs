@@ -65,7 +65,7 @@ public class BrandService : IBrandService
             .ForMember(p => p.Phone, opt => opt.MapFrom(src => src.Account.Phone))
             .ForMember(p => p.GreenWalletId, opt => opt.MapFrom(src => (int)src.Wallets.FirstOrDefault().Type))
             .ForMember(p => p.GreenWallet, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Type))
-            .ForMember(p => p.GreenWalletName, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Type.Value.GetDisplayName()))
+            .ForMember(p => p.GreenWalletName, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Type.GetDisplayName()))
             .ForMember(p => p.GreenWalletBalance, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Balance))
             .ReverseMap();
             cfg.CreateMap<PagedResultModel<Brand>, PagedResultModel<BrandModel>>()
@@ -81,7 +81,7 @@ public class BrandService : IBrandService
             .ForMember(p => p.NumberOfFollowers, opt => opt.MapFrom(src => src.Wishlists.Count))
             .ForMember(p => p.GreenWalletId, opt => opt.MapFrom(src => (int)src.Wallets.FirstOrDefault().Type))
             .ForMember(p => p.GreenWallet, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Type))
-            .ForMember(p => p.GreenWalletName, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Type.Value.GetDisplayName()))
+            .ForMember(p => p.GreenWalletName, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Type.GetDisplayName()))
             .ForMember(p => p.GreenWalletBalance, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Balance))
             .ReverseMap();
             // Map Create Brand Google Model
@@ -234,7 +234,7 @@ public class BrandService : IBrandService
 
     public PagedResultModel<CampaignModel> GetCampaignListByBrandId
         (string id, List<string> typeIds, List<string> storeIds, List<string> majorIds, List<string> campusIds,
-        bool? state, string propertySort, bool isAsc, string search, int page, int limit)
+        List<CampaignState> state, string propertySort, bool isAsc, string search, int page, int limit)
     {
         Brand entity = brandRepository.GetById(id);
         if (entity != null)

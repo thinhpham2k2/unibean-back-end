@@ -19,14 +19,21 @@ public class UpdateStudentModel
     [Required(ErrorMessage = "Cơ sở là bắt buộc")]
     public string CampusId { get; set; }
 
+    /// <summary>
+    /// Nữ = 1, Nam = 2
+    /// </summary>
     [ValidGender]
     [Required(ErrorMessage = "Giới tính là bắt buộc")]
-    public int Gender { get; set; }
+    public int? Gender { get; set; }
 
     public IFormFile Avatar { get; set; }
 
     public string Address { get; set; }
 
+    /// <summary>
+    /// Pending = 1, Active = 2, Inactive = 3, Rejected = 4
+    /// </summary>
+    [ValidStudentState]
     [Required(ErrorMessage = "Trạng thái là bắt buộc")]
-    public bool? State { get; set; }
+    public int? State { get; set; }
 }

@@ -42,11 +42,11 @@ public class ActivityService : IActivityService
             .ForMember(t => t.WalletType, opt => opt.MapFrom(
                 src => src.ActivityTransactions.FirstOrDefault().Wallet.Type))
             .ForMember(t => t.WalletTypeName, opt => opt.MapFrom(
-                src => src.ActivityTransactions.FirstOrDefault().Wallet.Type.Value.GetDisplayName()))
+                src => src.ActivityTransactions.FirstOrDefault().Wallet.Type.GetDisplayName()))
             .ReverseMap();
             cfg.CreateMap<Activity, ActivityModel>()
             .ForMember(t => t.TypeId, opt => opt.MapFrom(src => (int)src.Type))
-            .ForMember(t => t.TypeName, opt => opt.MapFrom(src => src.Type.Value.GetDisplayName()))
+            .ForMember(t => t.TypeName, opt => opt.MapFrom(src => src.Type.GetDisplayName()))
             .ReverseMap();
             cfg.CreateMap<Activity, CreateActivityModel>()
             .ReverseMap()

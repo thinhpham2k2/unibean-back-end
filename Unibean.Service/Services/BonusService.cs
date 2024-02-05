@@ -45,7 +45,7 @@ public class BonusService : IBonusService
             .ForMember(r => r.WalletTypeId, opt => opt.MapFrom(src => (int)src.Wallet.Type))
             .ForMember(r => r.WalletType, opt => opt.MapFrom(src => src.Wallet.Type))
             .ForMember(r => r.WalletTypeName, opt => opt.MapFrom(
-                src => src.Wallet.Type.Value.GetDisplayName()))
+                src => src.Wallet.Type.GetDisplayName()))
             .ReverseMap();
             cfg.CreateMap<Bonus, CreateBonusModel>()
             .ReverseMap()
@@ -65,7 +65,7 @@ public class BonusService : IBonusService
             .ForMember(t => t.WalletType, opt => opt.MapFrom(
                 src => src.BonusTransactions.FirstOrDefault().Wallet.Type))
             .ForMember(t => t.WalletTypeName, opt => opt.MapFrom(
-                src => src.BonusTransactions.FirstOrDefault().Wallet.Type.Value.GetDisplayName()))
+                src => src.BonusTransactions.FirstOrDefault().Wallet.Type.GetDisplayName()))
             .ReverseMap();
         });
         mapper = new Mapper(config);

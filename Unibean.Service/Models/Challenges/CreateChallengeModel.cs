@@ -6,9 +6,12 @@ namespace Unibean.Service.Models.Challenges;
 
 public class CreateChallengeModel
 {
+    /// <summary>
+    /// Verify = 1, Welcome = 2, Spread = 3, Consume = 4
+    /// </summary>
     [ValidChallengeType]
     [Required(ErrorMessage = "Loại thử thách là bắt buộc")]
-    public string TypeId { get; set; }
+    public int? Type { get; set; }
 
     [Required(ErrorMessage = "Tên của thử thách là bắt buộc")]
     [StringLength(255, MinimumLength = 3,

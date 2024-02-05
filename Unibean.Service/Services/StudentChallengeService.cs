@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Enable.EnumDisplayName;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
@@ -21,7 +22,9 @@ public class StudentChallengeService : IStudentChallengeService
         {
             cfg.CreateMap<StudentChallenge, StudentChallengeModel>()
             .ForMember(c => c.StudentName, opt => opt.MapFrom(src => src.Student.FullName))
-            .ForMember(c => c.ChallengeType, opt => opt.MapFrom(src => src.Challenge.Type.TypeName))
+            .ForMember(c => c.ChallengeTypeId, opt => opt.MapFrom(src => (int)src.Challenge.Type))
+            .ForMember(c => c.ChallengeType, opt => opt.MapFrom(src => src.Challenge.Type))
+            .ForMember(c => c.ChallengeTypeName, opt => opt.MapFrom(src => src.Challenge.Type.GetDisplayName()))
             .ForMember(c => c.ChallengeName, opt => opt.MapFrom(src => src.Challenge.ChallengeName))
             .ForMember(c => c.IsClaimed, opt => opt.MapFrom(src => src.ChallengeTransactions.Any()))
             .ReverseMap();
@@ -58,11 +61,11 @@ public class StudentChallengeService : IStudentChallengeService
     }
 
     public PagedResultModel<StudentChallengeModel> GetAll
-        (List<string> studentIds, List<string> challengeIds, bool? state,
-        string propertySort, bool isAsc, string search, int page, int limit)
+        (List<string> studentIds, List<string> challengeIds, List<ChallengeType> typeIds,
+        bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<StudentChallengeModel>>(studentChallengeRepository
-            .GetAll(studentIds, challengeIds, state, propertySort, isAsc, search, page, limit));
+            .GetAll(studentIds, challengeIds, typeIds, state, propertySort, isAsc, search, page, limit));
     }
 
     public StudentChallengeModel GetById(string id)

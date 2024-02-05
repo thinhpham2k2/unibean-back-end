@@ -127,7 +127,7 @@ public class StationService : IStationService
     }
 
     public PagedResultModel<OrderModel> GetOrderListByStudentId
-        (string id, List<string> studentIds, List<string> stateIds, bool? state, 
+        (string id, List<string> studentIds, List<State> stateIds, bool? state, 
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         Station entity = stationRepository.GetById(id);

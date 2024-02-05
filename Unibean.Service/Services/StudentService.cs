@@ -128,6 +128,7 @@ public class StudentService : IStudentService
             .ForMember(s => s.TotalSpending, opt => opt.MapFrom(src => 0))
             .ForMember(s => s.DateCreated, opt => opt.MapFrom(src => DateTime.Now))
             .ForMember(s => s.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
+            .ForMember(s => s.State, opt => opt.MapFrom(src => StudentState.Pending))
             .ForMember(s => s.Status, opt => opt.MapFrom(src => true));
             cfg.CreateMap<Student, CreateStudentModel>()
             .ReverseMap()

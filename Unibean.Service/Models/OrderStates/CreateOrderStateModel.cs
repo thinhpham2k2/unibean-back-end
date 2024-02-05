@@ -5,9 +5,12 @@ namespace Unibean.Service.Models.OrderStates;
 
 public class CreateOrderStateModel
 {
+    /// <summary>
+    /// Order = 1, Confirmation = 2, Preparation = 3, Arrival = 4, Receipt = 5, Abort = 6
+    /// </summary>
     [ValidState]
     [Required(ErrorMessage = "Trạng thái là bắt buộc")]
-    public string StateId { get; set; }
+    public int? State { get; set; }
 
     public string Description { get; set; }
 }

@@ -49,7 +49,7 @@ public class CreateStudentModel
     /// </summary>
     [ValidGender]
     [Required(ErrorMessage = "Giới tính là bắt buộc")]
-    public int Gender { get; set; }
+    public int? Gender { get; set; }
 
     [ValidInviteCode]
     public string InviteCode { get; set; }
@@ -75,6 +75,10 @@ public class CreateStudentModel
     [Required(ErrorMessage = "Xác minh là bắt buộc")]
     public bool? IsVerify { get; set; }
 
+    /// <summary>
+    /// Pending = 1, Active = 2, Inactive = 3, Rejected = 4
+    /// </summary>
+    [ValidStudentState]
     [Required(ErrorMessage = "Trạng thái là bắt buộc")]
-    public bool? State { get; set; }
+    public int? State { get; set; }
 }

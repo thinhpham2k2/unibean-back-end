@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Enable.EnumDisplayName;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
@@ -33,16 +34,24 @@ public class OrderService : IOrderService
                 => (bool)i.IsCover).FirstOrDefault().Url))
             .ForMember(o => o.StudentName, opt => opt.MapFrom(src => src.Student.FullName))
             .ForMember(o => o.StationName, opt => opt.MapFrom(src => src.Station.StationName))
-            .ForMember(o => o.StateCurrent, opt => opt.MapFrom(src => src.OrderStates.Select(s
-                => s.State).OrderByDescending(s => s.Id).FirstOrDefault().StateName))
+            .ForMember(o => o.CurrentStateId, opt => opt.MapFrom(
+                src => (int)src.OrderStates.LastOrDefault().State))
+            .ForMember(o => o.CurrentState, opt => opt.MapFrom(
+                src => src.OrderStates.LastOrDefault().State))
+            .ForMember(o => o.CurrentStateName, opt => opt.MapFrom(
+                src => src.OrderStates.LastOrDefault().State.GetDisplayName()))
             .ReverseMap();
             cfg.CreateMap<PagedResultModel<Order>, PagedResultModel<OrderModel>>()
             .ReverseMap();
             cfg.CreateMap<Order, OrderExtraModel>()
             .ForMember(o => o.StudentName, opt => opt.MapFrom(src => src.Student.FullName))
             .ForMember(o => o.StationName, opt => opt.MapFrom(src => src.Station.StationName))
-            .ForMember(o => o.StateCurrent, opt => opt.MapFrom(src => src.OrderStates.Select(s
-                => s.State).OrderByDescending(s => s.Id).FirstOrDefault().StateName))
+            .ForMember(o => o.CurrentStateId, opt => opt.MapFrom(
+                src => (int)src.OrderStates.LastOrDefault().State))
+            .ForMember(o => o.CurrentState, opt => opt.MapFrom(
+                src => src.OrderStates.LastOrDefault().State))
+            .ForMember(o => o.CurrentStateName, opt => opt.MapFrom(
+                src => src.OrderStates.LastOrDefault().State.GetDisplayName()))
             .ForMember(o => o.StateDetails, opt => opt.MapFrom(src => src.OrderStates))
             .ReverseMap();
             cfg.CreateMap<OrderDetail, OrderDetailModel>()
@@ -51,9 +60,9 @@ public class OrderService : IOrderService
                 => i.IsCover.Equals(true)).FirstOrDefault().Url))
             .ReverseMap();
             cfg.CreateMap<OrderState, OrderStateModel>()
-            .ForMember(s => s.StateName, opt => opt.MapFrom(src => src.State.StateName))
-            .ForMember(s => s.StateImage, opt => opt.MapFrom(src => src.State.Image))
-            .ForMember(s => s.State, opt => opt.MapFrom(src => src.States))
+            .ForMember(s => s.StateId, opt => opt.MapFrom(src => (int)src.State))
+            .ForMember(s => s.State, opt => opt.MapFrom(src => src.State))
+            .ForMember(s => s.StateName, opt => opt.MapFrom(src => src.State.GetDisplayName()))
             .ReverseMap();
             // Map Create Order Model
             cfg.CreateMap<Order, CreateOrderModel>()
@@ -111,7 +120,7 @@ public class OrderService : IOrderService
     }
 
     public PagedResultModel<OrderModel> GetAll
-        (List<string> stationIds, List<string> studentIds, List<string> stateIds,
+        (List<string> stationIds, List<string> studentIds, List<State> stateIds,
         bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<OrderModel>>(orderRepository.GetAll

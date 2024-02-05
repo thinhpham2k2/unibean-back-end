@@ -77,7 +77,7 @@ public class CampaignService : ICampaignService
             .ForMember(c => c.CurrentState, opt => opt.MapFrom(
                 src => src.CampaignActivities.LastOrDefault().State))
             .ForMember(c => c.CurrentStateName, opt => opt.MapFrom(
-                src => src.CampaignActivities.LastOrDefault().State.Value.GetDisplayName()))
+                src => src.CampaignActivities.LastOrDefault().State.GetDisplayName()))
             .ReverseMap();
             cfg.CreateMap<PagedResultModel<Campaign>, PagedResultModel<CampaignModel>>()
             .ReverseMap();
@@ -93,7 +93,7 @@ public class CampaignService : ICampaignService
             .ForMember(c => c.CurrentState, opt => opt.MapFrom(
                 src => src.CampaignActivities.LastOrDefault().State))
             .ForMember(c => c.CurrentStateName, opt => opt.MapFrom(
-                src => src.CampaignActivities.LastOrDefault().State.Value.GetDisplayName()))
+                src => src.CampaignActivities.LastOrDefault().State.GetDisplayName()))
             .ForMember(c => c.NumberOfParticipants, opt => opt.MapFrom(src
                 => src.CampaignDetails.SelectMany(c => c.VoucherItems).Where(v => (bool)v.IsUsed).Count()))
             .ForMember(c => c.UsageCost, opt => opt.MapFrom(src

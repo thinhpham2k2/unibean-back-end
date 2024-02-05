@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
+using Unibean.Service.Validations;
 
 namespace Unibean.Service.Models.Stations;
 
@@ -27,6 +28,10 @@ public class UpdateStationModel
 
     public string Description { get; set; }
 
+    /// <summary>
+    /// Active = 1, Inactive = 2, Closed = 3
+    /// </summary>
+    [ValidStationState]
     [Required(ErrorMessage = "Trạng thái là bắt buộc")]
-    public bool? State { get; set; }
+    public int? State { get; set; }
 }

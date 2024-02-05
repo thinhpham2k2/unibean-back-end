@@ -40,8 +40,8 @@ public class StudentChallengeRepository : IStudentChallengeRepository
     }
 
     public PagedResultModel<StudentChallenge> GetAll
-        (List<string> studentIds, List<string> challengeIds, bool? state,
-        string propertySort, bool isAsc, string search, int page, int limit)
+        (List<string> studentIds, List<string> challengeIds, List<ChallengeType> typeIds, 
+        bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<StudentChallenge> pagedResult = new();
         try
@@ -53,6 +53,7 @@ public class StudentChallengeRepository : IStudentChallengeRepository
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
                 && (studentIds.Count == 0 || studentIds.Contains(t.StudentId))
                 && (challengeIds.Count == 0 || challengeIds.Contains(t.ChallengeId))
+                && (typeIds.Count == 0 || typeIds.Contains(t.Challenge.Type.Value))
                 && (state == null || state.Equals(t.State))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));

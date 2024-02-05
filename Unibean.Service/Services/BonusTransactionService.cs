@@ -25,7 +25,7 @@ public class BonusTransactionService : IBonusTransactionService
             .ForMember(t => t.WalletTypeId, opt => opt.MapFrom(src => (int)src.Wallet.Type))
             .ForMember(t => t.WalletType, opt => opt.MapFrom(src => src.Wallet.Type))
             .ForMember(t => t.WalletTypeName, opt => opt.MapFrom(
-                src => src.Wallet.Type.Value.GetDisplayName()))
+                src => src.Wallet.Type.GetDisplayName()))
             .ForMember(t => t.TypeName, opt => opt.MapFrom(src => "Thưởng đậu"))
             .ForMember(t => t.DateCreated, opt => opt.MapFrom(src => src.Bonus.DateCreated))
             .ReverseMap();

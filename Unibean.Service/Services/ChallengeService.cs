@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Enable.EnumDisplayName;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
@@ -26,13 +27,14 @@ public class ChallengeService : IChallengeService
                 =>
         {
             cfg.CreateMap<Challenge, ChallengeModel>()
-            .ForMember(t => t.TypeName, opt => opt.MapFrom(src => src.Type.TypeName))
+            .ForMember(t => t.TypeId, opt => opt.MapFrom(src => (int)src.Type))
+            .ForMember(t => t.Type, opt => opt.MapFrom(src => src.Type))
+            .ForMember(t => t.TypeName, opt => opt.MapFrom(src => src.Type.GetDisplayName()))
             .ReverseMap();
             cfg.CreateMap<PagedResultModel<Challenge>, PagedResultModel<ChallengeModel>>()
             .ReverseMap();
             cfg.CreateMap<Challenge, UpdateChallengeModel>()
             .ReverseMap()
-            .ForMember(t => t.Type, opt => opt.MapFrom(src => (string)null))
             .ForMember(t => t.Image, opt => opt.Ignore())
             .ForMember(t => t.DateUpdated, opt => opt.MapFrom(src => DateTime.Now));
             cfg.CreateMap<Challenge, CreateChallengeModel>()
@@ -80,7 +82,7 @@ public class ChallengeService : IChallengeService
     }
 
     public PagedResultModel<ChallengeModel> GetAll
-        (List<string> typeIds, bool? state, string propertySort, 
+        (List<ChallengeType> typeIds, bool? state, string propertySort, 
         bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<ChallengeModel>>(challengeRepository.GetAll

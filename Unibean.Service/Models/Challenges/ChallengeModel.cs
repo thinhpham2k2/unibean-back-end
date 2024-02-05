@@ -3,7 +3,8 @@
 public class ChallengeModel
 {
     public string Id { get; set; }
-    public string TypeId { get; set; }
+    public int TypeId { get; set; }
+    public string Type { get; set; }
     public string TypeName { get; set; }
     public string ChallengeName { get; set; }
     public decimal? Amount { get; set; }

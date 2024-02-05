@@ -45,7 +45,7 @@ public class AccountService : IAccountService
         {
             cfg.CreateMap<Account, AccountModel>()
             .ForMember(a => a.RoleId, opt => opt.MapFrom(src => (int)src.Role))
-            .ForMember(a => a.RoleName, opt => opt.MapFrom(src => src.Role.Value.GetDisplayName()))
+            .ForMember(a => a.RoleName, opt => opt.MapFrom(src => src.Role.GetDisplayName()))
             .ForMember(a => a.UserId, opt => opt.MapFrom((src, dest) =>
             {
                 if (src.Role != null)

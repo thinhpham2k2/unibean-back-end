@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.IdentityModel.Tokens;
 using System.Linq.Dynamic.Core;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
@@ -31,8 +30,6 @@ public class StoreService : IStoreService
 
     private readonly IFireBaseService fireBaseService;
 
-    private readonly IRoleService roleService;
-
     private readonly IAccountRepository accountRepository;
 
     private readonly IVoucherService voucherService;
@@ -47,7 +44,6 @@ public class StoreService : IStoreService
 
     public StoreService(IStoreRepository storeRepository,
         IFireBaseService fireBaseService,
-        IRoleService roleService,
         IAccountRepository accountRepository,
         IVoucherService voucherService,
         IActivityService activityService,
@@ -95,6 +91,7 @@ public class StoreService : IStoreService
             cfg.CreateMap<Account, CreateStoreModel>()
             .ReverseMap()
             .ForMember(s => s.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
+            .ForMember(s => s.Role, opt => opt.MapFrom(src => Role.Store))
             .ForMember(s => s.Password, opt => opt.MapFrom(src => BCryptNet.HashPassword(src.Password)))
             .ForMember(s => s.IsVerify, opt => opt.MapFrom(src => true))
             .ForMember(s => s.DateCreated, opt => opt.MapFrom(src => DateTime.Now))
@@ -114,7 +111,6 @@ public class StoreService : IStoreService
         mapper = new Mapper(config);
         this.storeRepository = storeRepository;
         this.fireBaseService = fireBaseService;
-        this.roleService = roleService;
         this.accountRepository = accountRepository;
         this.voucherService = voucherService;
         this.activityService = activityService;
@@ -126,7 +122,6 @@ public class StoreService : IStoreService
     public async Task<StoreModel> Add(CreateStoreModel creation)
     {
         Account account = mapper.Map<Account>(creation);
-        account.RoleId = roleService.GetRoleByName("Store")?.Id;
 
         //Upload avatar
         if (creation.Avatar != null && creation.Avatar.Length > 0)
@@ -147,7 +142,7 @@ public class StoreService : IStoreService
         (string id, string voucherItemId, CreateUseActivityModel creation)
     {
         var item = voucherItemRepository.GetById(voucherItemId);
-        if (item.Campaign.CampaignStores.Any(c => c.StoreId.Equals(id)))
+        if (item.CampaignDetail.Campaign.CampaignStores.Any(c => c.StoreId.Equals(id)))
         {
             if ((bool)item.IsBought && item.Activities.FirstOrDefault() != null)
             {
@@ -155,7 +150,7 @@ public class StoreService : IStoreService
                 {
                     var stu = studentRepository.GetById
                         (item.Activities.FirstOrDefault().StudentId);
-                    if (stu != null && (bool)stu.State)
+                    if (stu != null && stu.State.Equals(StudentState.Active))
                     {
                         CreateActivityModel create = mapper.Map<CreateActivityModel>(creation);
                         create.StudentId = item.Activities.FirstOrDefault().StudentId;

@@ -40,7 +40,7 @@ public class CreateStudentGoogleModel
     /// </summary>
     [ValidGender]
     [Required(ErrorMessage = "Giới tính là bắt buộc")]
-    public int Gender { get; set; }
+    public int? Gender { get; set; }
 
     [ValidInviteCode]
     public string InviteCode { get; set; }
@@ -59,7 +59,4 @@ public class CreateStudentGoogleModel
     public string Phone { get; set; }
 
     public string Address { get; set; }
-
-    [Required(ErrorMessage = "Trạng thái là bắt buộc")]
-    public bool? State { get; set; }
 }
