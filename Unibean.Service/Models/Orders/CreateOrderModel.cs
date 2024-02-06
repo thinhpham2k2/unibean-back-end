@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Unibean.Repository.Entities;
 using Unibean.Service.Models.OrderDetails;
 using Unibean.Service.Validations;
 
@@ -6,7 +7,7 @@ namespace Unibean.Service.Models.Orders;
 
 public class CreateOrderModel
 {
-    [ValidStation]
+    [ValidStation(new[] { StationState.Active })]
     [Required(ErrorMessage = "Trạm là bắt buộc")]
     public string StationId { get; set; }
 

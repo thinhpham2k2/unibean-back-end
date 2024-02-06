@@ -25,7 +25,7 @@ public class StudentController : ControllerBase
 
     private readonly IOrderService orderService;
 
-    public StudentController(IStudentService studentService, 
+    public StudentController(IStudentService studentService,
         IOrderService orderService)
     {
         this.studentService = studentService;
@@ -37,7 +37,7 @@ public class StudentController : ControllerBase
     /// </summary>
     /// <param name="majorIds">Filter by major Id.</param>
     /// <param name="campusIds">Filter by campus Id.</param>
-    /// <param name="state">Filter by student state.</param>
+    /// <param name="stateIds">Filter by student state --- Pending = 1, Active = 2, Inactive = 3, Rejected = 4</param>
     /// <param name="isVerify">Filter by student verification status.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
@@ -49,7 +49,7 @@ public class StudentController : ControllerBase
     public ActionResult<PagedResultModel<StudentModel>> GetList(
         [FromQuery] List<string> majorIds,
         [FromQuery] List<string> campusIds,
-        [FromQuery] bool? state,
+        [FromQuery] List<StudentState> stateIds,
         [FromQuery] bool? isVerify,
         [FromQuery] PagingModel paging)
     {
@@ -61,7 +61,7 @@ public class StudentController : ControllerBase
         {
             PagedResultModel<StudentModel>
                 result = studentService.GetAll
-                (majorIds, campusIds, state, isVerify, propertySort, 
+                (majorIds, campusIds, stateIds, isVerify, propertySort,
                 paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
             return StatusCode(StatusCodes.Status200OK, result);
         }
@@ -201,6 +201,7 @@ public class StudentController : ControllerBase
     /// Get challenge list by student id
     /// </summary>
     /// <param name="id">Student id.</param>
+    /// <param name="typeIds">Filter by challenge type id --- Verify = 1, Welcome = 2, Spread = 3, Consume = 4</param>
     /// <param name="state">Filter by challenge state.</param>
     /// <param name="isCompleted">Filter by challenge completion status.</param>
     /// <param name="isClaimed">Filter by challenge claim status.</param>
@@ -211,6 +212,7 @@ public class StudentController : ControllerBase
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<StudentChallengeModel>> GetChallengeListByStudentId(string id,
+        [FromQuery] List<ChallengeType> typeIds,
         [FromQuery] bool? state,
         [FromQuery] bool? isCompleted,
         [FromQuery] bool? isClaimed,
@@ -226,7 +228,7 @@ public class StudentController : ControllerBase
             {
                 PagedResultModel<StudentChallengeModel>
                 result = studentService.GetChallengeListByStudentId
-                    (id, state, isCompleted, isClaimed, propertySort, 
+                    (typeIds, id, state, isCompleted, isClaimed, propertySort,
                     paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
                 return StatusCode(StatusCodes.Status200OK, result);
             }
@@ -265,7 +267,7 @@ public class StudentController : ControllerBase
             {
                 PagedResultModel<TransactionModel>
                 result = studentService.GetHistoryTransactionListByStudentId
-                    (id, typeIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                    (id, typeIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"),
                     paging.Search, paging.Page, paging.Limit);
                 return StatusCode(StatusCodes.Status200OK, result);
             }
@@ -282,7 +284,7 @@ public class StudentController : ControllerBase
     /// </summary>
     /// <param name="id">Student id.</param>
     /// <param name="stationIds">Filter by station Id.</param>
-    /// <param name="stateIds">Filter by state Id.</param>
+    /// <param name="stateIds">Filter by state Id --- Order = 1, Confirmation = 2, Preparation = 3, Arrival = 4, Receipt = 5, Abort = 6</param>
     /// <param name="state">Filter by order state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/orders")]
@@ -292,7 +294,7 @@ public class StudentController : ControllerBase
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<OrderModel>> GetOrderListByStudentId(string id,
         [FromQuery] List<string> stationIds,
-        [FromQuery] List<string> stateIds,
+        [FromQuery] List<State> stateIds,
         [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
@@ -328,13 +330,13 @@ public class StudentController : ControllerBase
     [ProducesResponseType(typeof(OrderExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public IActionResult CreateOrder([ValidStudent] string id, [FromBody] CreateOrderModel create)
+    public IActionResult CreateOrder([ValidStudent(new[] { StudentState.Active })] string id, [FromBody] CreateOrderModel create)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         try
         {
-            return StatusCode(StatusCodes.Status201Created, 
+            return StatusCode(StatusCodes.Status201Created,
                 orderService.Add(id, create));
         }
         catch (InvalidParameterException e)
@@ -400,8 +402,8 @@ public class StudentController : ControllerBase
             {
                 PagedResultModel<VoucherItemModel>
                 result = studentService.GetVoucherListByStudentId
-                    (campaignIds, voucherIds, brandIds, typeIds, id, state, 
-                    propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                    (campaignIds, voucherIds, brandIds, typeIds, id, state,
+                    propertySort, paging.Sort.Split(",")[1].Equals("asc"),
                     paging.Search, paging.Page, paging.Limit);
                 return StatusCode(StatusCodes.Status200OK, result);
             }

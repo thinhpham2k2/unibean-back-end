@@ -20,7 +20,7 @@ public interface ICampaignService
 
     PagedResultModel<CampaignModel> GetAll
         (List<string> brandIds, List<string> typeIds, List<string> storeIds, 
-        List<string> majorIds, List<string> campusIds, List<CampaignState> state, 
+        List<string> majorIds, List<string> campusIds, List<CampaignState> stateIds, 
         string propertySort, bool isAsc, string search, int page, int limit);
 
     CampaignExtraModel GetById(string id);

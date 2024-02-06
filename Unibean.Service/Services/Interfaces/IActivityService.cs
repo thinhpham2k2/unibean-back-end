@@ -1,6 +1,5 @@
 ﻿using Unibean.Service.Models.Activities;
 using Unibean.Service.Models.Activity;
-using Unibean.Service.Models.Students;
 using Unibean.Service.Models.Transactions;
 
 namespace Unibean.Service.Services.Interfaces;

@@ -33,10 +33,14 @@ public class StudentExtraModel
     public bool? IsVerify { get; set; }
     public bool? State { get; set; }
     public bool? Status { get; set; }
-    public decimal? GreenWallet { get; set; }
-    public string GreenWalletImage { get; set; }
-    public decimal? RedWallet { get; set; }
-    public string RedWalletImage { get; set; }
+    public int? GreenWalletId { get; set; }
+    public string GreenWallet { get; set; }
+    public string GreenWalletName { get; set; }
+    public decimal? GreenWalletBalance { get; set; }
+    public int? RedWalletId { get; set; }
+    public string RedWallet { get; set; }
+    public string RedWalletName { get; set; }
+    public decimal? RedWalletBalance { get; set; }
     public decimal? Following { get; set; }
     public string Inviter { get; set; }
     public decimal? Invitee { get; set; }

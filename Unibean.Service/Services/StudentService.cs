@@ -14,6 +14,7 @@ using BCryptNet = BCrypt.Net.BCrypt;
 using System.Linq.Dynamic.Core;
 using Unibean.Service.Models.Orders;
 using Unibean.Service.Models.VoucherItems;
+using Enable.EnumDisplayName;
 
 namespace Unibean.Service.Services;
 
@@ -43,8 +44,6 @@ public class StudentService : IStudentService
 
     private readonly IStudentChallengeService studentChallengeService;
 
-    private readonly IRoleService roleService;
-
     private readonly IChallengeTransactionService challengeTransactionService;
 
     private readonly IOrderTransactionService orderTransactionService;
@@ -62,7 +61,6 @@ public class StudentService : IStudentService
         IAccountRepository accountRepository,
         IInvitationService invitationService,
         IStudentChallengeService studentChallengeService,
-        IRoleService roleService,
         IChallengeTransactionService challengeTransactionService,
         IOrderTransactionService orderTransactionService,
         IBonusTransactionService bonusTransactionService,
@@ -84,10 +82,14 @@ public class StudentService : IStudentService
             .ForMember(s => s.ImageName, opt => opt.MapFrom(src => src.Account.FileName))
             .ForMember(s => s.DateVerified, opt => opt.MapFrom(src => src.Account.DateVerified))
             .ForMember(s => s.IsVerify, opt => opt.MapFrom(src => src.Account.IsVerify))
-            .ForMember(s => s.GreenWallet, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Balance))
-            .ForMember(s => s.GreenWalletImage, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Type.Image))
-            .ForMember(s => s.RedWallet, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Balance))
-            .ForMember(s => s.RedWalletImage, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Type.Image))
+            .ForMember(s => s.GreenWalletId, opt => opt.MapFrom(src => (int)src.Wallets.FirstOrDefault().Type))
+            .ForMember(s => s.GreenWallet, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Type))
+            .ForMember(s => s.GreenWalletName, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Type.GetDisplayName()))
+            .ForMember(s => s.GreenWalletBalance, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Balance))
+            .ForMember(s => s.RedWalletId, opt => opt.MapFrom(src => (int)src.Wallets.Skip(1).FirstOrDefault().Type))
+            .ForMember(s => s.RedWallet, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Type))
+            .ForMember(s => s.RedWalletName, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Type.GetDisplayName()))
+            .ForMember(s => s.RedWalletBalance, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Balance))
             .ReverseMap();
             // Map Student Extra Model
             cfg.CreateMap<Student, StudentExtraModel>()
@@ -103,17 +105,23 @@ public class StudentService : IStudentService
             .ForMember(s => s.ImageName, opt => opt.MapFrom(src => src.Account.FileName))
             .ForMember(s => s.DateVerified, opt => opt.MapFrom(src => src.Account.DateVerified))
             .ForMember(s => s.IsVerify, opt => opt.MapFrom(src => src.Account.IsVerify))
-            .ForMember(s => s.GreenWallet, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Balance))
-            .ForMember(s => s.GreenWalletImage, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Type.Image))
-            .ForMember(s => s.RedWallet, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Balance))
-            .ForMember(s => s.RedWalletImage, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Type.Image))
+            .ForMember(s => s.GreenWalletId, opt => opt.MapFrom(src => (int)src.Wallets.FirstOrDefault().Type))
+            .ForMember(s => s.GreenWallet, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Type))
+            .ForMember(s => s.GreenWalletName, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Type.GetDisplayName()))
+            .ForMember(s => s.GreenWalletBalance, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Balance))
+            .ForMember(s => s.RedWalletId, opt => opt.MapFrom(src => (int)src.Wallets.Skip(1).FirstOrDefault().Type))
+            .ForMember(s => s.RedWallet, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Type))
+            .ForMember(s => s.RedWalletName, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Type.GetDisplayName()))
+            .ForMember(s => s.RedWalletBalance, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Balance))
             .ForMember(s => s.Following, opt => opt.MapFrom(src => src.Wishlists.Count))
             .ForMember(s => s.Inviter, opt => opt.MapFrom(src => src.Invitees.FirstOrDefault().Inviter.FullName))
             .ForMember(s => s.Invitee, opt => opt.MapFrom(src => src.Inviters.Count))
             .ReverseMap();
             cfg.CreateMap<StudentChallenge, StudentChallengeModel>()
             .ForMember(c => c.StudentName, opt => opt.MapFrom(src => src.Student.FullName))
-            .ForMember(c => c.ChallengeType, opt => opt.MapFrom(src => src.Challenge.Type.TypeName))
+            .ForMember(c => c.ChallengeTypeId, opt => opt.MapFrom(src => (int)src.Challenge.Type))
+            .ForMember(c => c.ChallengeType, opt => opt.MapFrom(src => src.Challenge.Type))
+            .ForMember(c => c.ChallengeTypeName, opt => opt.MapFrom(src => src.Challenge.Type.GetDisplayName()))
             .ForMember(c => c.ChallengeName, opt => opt.MapFrom(src => src.Challenge.ChallengeName))
             .ForMember(c => c.ChallengeImage, opt => opt.MapFrom(src => src.Challenge.Image))
             .ForMember(c => c.IsClaimed, opt => opt.MapFrom(src => src.ChallengeTransactions.Any()))
@@ -141,6 +149,7 @@ public class StudentService : IStudentService
             cfg.CreateMap<Account, CreateStudentModel>()
             .ReverseMap()
             .ForMember(s => s.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
+            .ForMember(s => s.Role, opt => opt.MapFrom(src => Role.Student))
             .ForMember(s => s.Password, opt => opt.MapFrom(src => BCryptNet.HashPassword(src.Password)))
             .ForMember(s => s.DateCreated, opt => opt.MapFrom(src => DateTime.Now))
             .ForMember(s => s.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
@@ -164,7 +173,6 @@ public class StudentService : IStudentService
         this.accountRepository = accountRepository;
         this.invitationService = invitationService;
         this.studentChallengeService = studentChallengeService;
-        this.roleService = roleService;
         this.challengeTransactionService = challengeTransactionService;
         this.orderTransactionService = orderTransactionService;
         this.bonusTransactionService = bonusTransactionService;
@@ -176,7 +184,6 @@ public class StudentService : IStudentService
     public async Task<StudentModel> Add(CreateStudentModel creation)
     {
         Account account = mapper.Map<Account>(creation);
-        account.RoleId = roleService.GetRoleByName("Student")?.Id;
 
         //Upload avatar
         if (creation.Avatar != null && creation.Avatar.Length > 0)
@@ -226,13 +233,13 @@ public class StudentService : IStudentService
                     .GetById(student.Id).StudentChallenges
                     .Where(s => (bool)s.Status
                     && s.IsCompleted.Equals(false)
-                    && s.Challenge.Type.TypeName.Equals("Welcome")), 1);
+                    && s.Challenge.Type.Equals(ChallengeType.Welcome)), 1);
 
                 studentChallengeService.Update(studentRepository
                     .GetById(creation.InviteCode).StudentChallenges
                     .Where(s => (bool)s.Status
                     && s.IsCompleted.Equals(false)
-                    && s.Challenge.Type.TypeName.Equals("Spread")), 1);
+                    && s.Challenge.Type.Equals(ChallengeType.Spread)), 1);
             }
 
             if ((bool)creation.IsVerify)
@@ -241,7 +248,7 @@ public class StudentService : IStudentService
                 .GetById(student.Id).StudentChallenges
                 .Where(s => (bool)s.Status
                 && s.IsCompleted.Equals(false)
-                && s.Challenge.Type.TypeName.Equals("Verify")), 1);
+                && s.Challenge.Type.Equals(ChallengeType.Verify)), 1);
             }
         }
 
@@ -254,7 +261,7 @@ public class StudentService : IStudentService
 
         Account account = accountRepository.GetById(creation.AccountId);
 
-        if (!account.Email.Equals(creation.Email) || !account.Role.RoleName.Equals("Student"))
+        if (!account.Email.Equals(creation.Email) || !account.Role.Equals(Role.Student))
         {
             throw new InvalidParameterException("Đăng nhập bằng tài khoản Google của bạn không hợp lệ");
         }
@@ -300,13 +307,13 @@ public class StudentService : IStudentService
                     .GetById(entity.Id).StudentChallenges
                     .Where(s => (bool)s.Status
                     && s.IsCompleted.Equals(false)
-                    && s.Challenge.Type.TypeName.Equals("Welcome")), 1);
+                    && s.Challenge.Type.Equals(ChallengeType.Welcome)), 1);
 
                 studentChallengeService.Update(studentRepository
                     .GetById(creation.InviteCode).StudentChallenges
                     .Where(s => (bool)s.Status
                     && s.IsCompleted.Equals(false)
-                    && s.Challenge.Type.TypeName.Equals("Spread")), 1);
+                    && s.Challenge.Type.Equals(ChallengeType.Spread)), 1);
             }
         }
 
@@ -349,11 +356,11 @@ public class StudentService : IStudentService
     }
 
     public PagedResultModel<StudentModel> GetAll
-        (List<string> majorIds, List<string> campusIds, bool? state, bool? isVerify, 
-        string propertySort, bool isAsc, string search, int page, int limit)
+        (List<string> majorIds, List<string> campusIds, List<StudentState> stateIds,
+        bool? isVerify, string propertySort, bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<StudentModel>>
-            (studentRepository.GetAll(majorIds, campusIds, state, 
+            (studentRepository.GetAll(majorIds, campusIds, stateIds, 
             isVerify, propertySort, isAsc, search, page, limit));
     }
 
@@ -368,14 +375,14 @@ public class StudentService : IStudentService
     }
 
     public PagedResultModel<StudentChallengeModel> GetChallengeListByStudentId
-        (string id, bool? isCompleted, bool? state, bool? isClaimed, 
-        string propertySort, bool isAsc, string search, int page, int limit)
+        (List<ChallengeType> typeIds, string id, bool? isCompleted, bool? state, 
+        bool? isClaimed, string propertySort, bool isAsc, string search, int page, int limit)
     {
         Student entity = studentRepository.GetById(id);
         if (entity != null)
         {
             PagedResultModel<StudentChallengeModel> result = studentChallengeService.GetAll
-                (new() { id }, new(), state, propertySort, isAsc, search, page, limit);
+                (new() { id }, new(), typeIds, state, propertySort, isAsc, search, page, limit);
 
             result.Result = result.Result
                 .Where(c => (isCompleted == null || c.IsCompleted.Equals(isCompleted))
@@ -447,7 +454,7 @@ public class StudentService : IStudentService
     }
 
     public PagedResultModel<OrderModel> GetOrderListByStudentId
-        (List<string> stationIds, List<string> stateIds, string id, bool? state,
+        (List<string> stationIds, List<State> stateIds, string id, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         Student entity = studentRepository.GetById(id);

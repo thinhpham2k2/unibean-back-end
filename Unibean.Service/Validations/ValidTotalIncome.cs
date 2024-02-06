@@ -19,11 +19,11 @@ public class ValidTotalIncome : ValidationAttribute
     {
         if (validationContext.ObjectInstance is CreateCampaignModel create)
         {
-            if (create.Vouchers != null)
+            if (create.CampaignDetails != null)
             {
                 if (decimal.TryParse(value.ToString(), out decimal amount))
                 {
-                    if (amount.Equals(create.Vouchers.Select(v
+                    if (amount.Equals(create.CampaignDetails.Select(v
                         =>
                     {
                         var voucher = voucherRepo.GetById(v.VoucherId);

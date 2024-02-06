@@ -25,7 +25,6 @@ public class AreaController : ControllerBase
     /// <summary>
     /// Get area list
     /// </summary>
-    /// <param name="districtIds">Filter by district Id.</param>
     /// <param name="state">Filter by area state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
@@ -35,7 +34,6 @@ public class AreaController : ControllerBase
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<AreaModel>> GetList(
-        [FromQuery] List<string> districtIds,
         [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
@@ -47,7 +45,7 @@ public class AreaController : ControllerBase
         {
             PagedResultModel<AreaModel>
                 result = areaService.GetAll
-                (districtIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                (state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
                 paging.Search, paging.Page, paging.Limit);
             return StatusCode(StatusCodes.Status200OK, result);
         }

@@ -234,13 +234,13 @@ public class BrandService : IBrandService
 
     public PagedResultModel<CampaignModel> GetCampaignListByBrandId
         (string id, List<string> typeIds, List<string> storeIds, List<string> majorIds, List<string> campusIds,
-        List<CampaignState> state, string propertySort, bool isAsc, string search, int page, int limit)
+        List<CampaignState> stateIds, string propertySort, bool isAsc, string search, int page, int limit)
     {
         Brand entity = brandRepository.GetById(id);
         if (entity != null)
         {
             return campaignService.GetAll(new() { id }, typeIds, storeIds, majorIds,
-                campusIds, state, propertySort, isAsc, search, page, limit);
+                campusIds, stateIds, propertySort, isAsc, search, page, limit);
         }
         throw new InvalidParameterException("Không tìm thấy thương hiệu");
     }

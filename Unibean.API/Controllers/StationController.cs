@@ -159,7 +159,7 @@ public class StationController : ControllerBase
     /// </summary>
     /// <param name="id">Station id.</param>
     /// <param name="studentIds">Filter by student Id.</param>
-    /// <param name="stateIds">Filter by state Id.</param>
+    /// <param name="stateIds">Filter by state Id --- Order = 1, Confirmation = 2, Preparation = 3, Arrival = 4, Receipt = 5, Abort = 6</param>
     /// <param name="state">Filter by order state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/orders")]
@@ -168,7 +168,7 @@ public class StationController : ControllerBase
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public ActionResult<PagedResultModel<OrderModel>> GetOrderListByStudentId(string id,
         [FromQuery] List<string> studentIds,
-        [FromQuery] List<string> stateIds,
+        [FromQuery] List<State> stateIds,
         [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {

@@ -303,11 +303,11 @@ public class CampaignService : ICampaignService
 
     public PagedResultModel<CampaignModel> GetAll
         (List<string> brandIds, List<string> typeIds, List<string> storeIds, 
-        List<string> majorIds, List<string> campusIds, List<CampaignState> state, 
+        List<string> majorIds, List<string> campusIds, List<CampaignState> stateIds, 
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<CampaignModel>>(campaignRepository
-            .GetAll(brandIds, typeIds, storeIds, majorIds, campusIds, state,
+            .GetAll(brandIds, typeIds, storeIds, majorIds, campusIds, stateIds,
             propertySort, isAsc, search, page, limit));
     }
 

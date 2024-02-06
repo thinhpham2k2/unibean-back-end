@@ -173,7 +173,7 @@ public class BrandController : ControllerBase
     /// <param name="storeIds">Filter by store Id.</param>
     /// <param name="majorIds">Filter by major Id.</param>
     /// <param name="campusIds">Filter by campus Id.</param>
-    /// <param name="state">Filter by campaign state.</param>
+    /// <param name="stateIds">Filter by campaign state --- Pending = 1, Active = 2, Inactive = 3, Expired = 4, Closed = 5</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/campaigns")]
     [Authorize(Roles = "Admin, Brand")]
@@ -185,7 +185,7 @@ public class BrandController : ControllerBase
         [FromQuery] List<string> storeIds,
         [FromQuery] List<string> majorIds,
         [FromQuery] List<string> campusIds,
-        [FromQuery] bool? state,
+        [FromQuery] List<CampaignState> stateIds,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -198,7 +198,7 @@ public class BrandController : ControllerBase
             {
                 PagedResultModel<CampaignModel>
                 result = brandService.GetCampaignListByBrandId
-                    (id, typeIds, storeIds, majorIds, campusIds, state, propertySort,
+                    (id, typeIds, storeIds, majorIds, campusIds, stateIds, propertySort,
                     paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
                 return StatusCode(StatusCodes.Status200OK, result);
             }
@@ -214,7 +214,7 @@ public class BrandController : ControllerBase
     /// Get history transaction by brand id
     /// </summary>
     /// <param name="id">Brand id.</param>
-    /// <param name="walletTypeIds">Filter by wallet type Id.</param>
+    /// <param name="walletTypeIds">Filter by wallet type Id --- Green = 1, Red = 2</param>
     /// <param name="state">Filter by history transaction state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/histories")]
@@ -223,7 +223,7 @@ public class BrandController : ControllerBase
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<TransactionModel>> GetHistoryTransactionByStudentId(string id,
-        [FromQuery] List<string> walletTypeIds,
+        [FromQuery] List<WalletType> walletTypeIds,
         [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
