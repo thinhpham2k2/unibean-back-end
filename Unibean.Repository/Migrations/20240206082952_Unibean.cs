@@ -851,8 +851,8 @@ namespace Unibean.Repository.Migrations
                     price = table.Column<decimal>(type: "decimal(38,2)", nullable: true),
                     rate = table.Column<decimal>(type: "decimal(38,2)", nullable: true),
                     quantity = table.Column<int>(type: "int", nullable: true),
-                    from_index = table.Column<ulong>(type: "bit(1)", nullable: true),
-                    to_index = table.Column<ulong>(type: "bit(1)", nullable: true),
+                    from_index = table.Column<int>(type: "int", nullable: true),
+                    to_index = table.Column<int>(type: "int", nullable: true),
                     date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     date_updated = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     description = table.Column<string>(type: "text", nullable: true)

@@ -30,10 +30,10 @@ public class CampaignDetail
     [Column("quantity")]
     public int? Quantity { get; set; }
 
-    [Column("from_index", TypeName = "bit(1)")]
+    [Column("from_index")]
     public int? FromIndex { get; set; }
 
-    [Column("to_index", TypeName = "bit(1)")]
+    [Column("to_index")]
     public int? ToIndex { get; set; }
 
     [Column("date_created")]

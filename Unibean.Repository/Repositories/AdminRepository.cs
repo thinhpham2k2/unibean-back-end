@@ -59,7 +59,6 @@ public class AdminRepository : IAdminRepository
                .Skip((page - 1) * limit)
                .Take(limit)
                .Include(b => b.Account)
-                    .ThenInclude(a => a.Role)
                .Include(s => s.Requests.Where(r => (bool)r.Status))
                    .ThenInclude(w => w.RequestTransactions)
                .ToList();
@@ -90,7 +89,6 @@ public class AdminRepository : IAdminRepository
             admin = db.Admins
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(b => b.Account)
-                .ThenInclude(a => a.Role)
             .Include(s => s.Requests.Where(r => (bool)r.Status))
                 .ThenInclude(w => w.RequestTransactions)
             .FirstOrDefault();

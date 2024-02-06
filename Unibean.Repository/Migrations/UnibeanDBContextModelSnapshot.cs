@@ -624,8 +624,8 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("text")
                         .HasColumnName("description");
 
-                    b.Property<ulong?>("FromIndex")
-                        .HasColumnType("bit(1)")
+                    b.Property<int?>("FromIndex")
+                        .HasColumnType("int")
                         .HasColumnName("from_index");
 
                     b.Property<decimal?>("Price")
@@ -648,8 +648,8 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("bit(1)")
                         .HasColumnName("status");
 
-                    b.Property<ulong?>("ToIndex")
-                        .HasColumnType("bit(1)")
+                    b.Property<int?>("ToIndex")
+                        .HasColumnType("int")
                         .HasColumnName("to_index");
 
                     b.Property<string>("VoucherId")

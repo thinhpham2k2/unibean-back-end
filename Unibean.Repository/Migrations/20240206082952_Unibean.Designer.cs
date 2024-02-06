@@ -11,7 +11,7 @@ using Unibean.Repository.Entities;
 namespace Unibean.Repository.Migrations
 {
     [DbContext(typeof(UnibeanDBContext))]
-    [Migration("20240203100417_Unibean")]
+    [Migration("20240206082952_Unibean")]
     partial class Unibean
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -626,8 +626,8 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("text")
                         .HasColumnName("description");
 
-                    b.Property<ulong?>("FromIndex")
-                        .HasColumnType("bit(1)")
+                    b.Property<int?>("FromIndex")
+                        .HasColumnType("int")
                         .HasColumnName("from_index");
 
                     b.Property<decimal?>("Price")
@@ -650,8 +650,8 @@ namespace Unibean.Repository.Migrations
                         .HasColumnType("bit(1)")
                         .HasColumnName("status");
 
-                    b.Property<ulong?>("ToIndex")
-                        .HasColumnType("bit(1)")
+                    b.Property<int?>("ToIndex")
+                        .HasColumnType("int")
                         .HasColumnName("to_index");
 
                     b.Property<string>("VoucherId")
