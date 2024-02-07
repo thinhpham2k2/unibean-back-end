@@ -6,6 +6,9 @@ public class StudentExtraModel
     public string MajorId { get; set; }
     public string MajorName { get; set; }
     public string MajorImage { get; set; }
+    public string UniversityId { get; set; }
+    public string UniversityName { get; set; }
+    public string UniversityImage { get; set; }
     public string CampusId { get; set; }
     public string CampusName { get; set; }
     public string CampusImage { get; set; }

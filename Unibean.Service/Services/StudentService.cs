@@ -73,6 +73,8 @@ public class StudentService : IStudentService
         {
             cfg.CreateMap<Student, StudentModel>()
             .ForMember(s => s.MajorName, opt => opt.MapFrom(src => src.Major.MajorName))
+            .ForMember(s => s.UniversityId, opt => opt.MapFrom(src => src.Campus.UniversityId))
+            .ForMember(s => s.UniversityName, opt => opt.MapFrom(src => src.Campus.University.UniversityName))
             .ForMember(s => s.CampusName, opt => opt.MapFrom(src => src.Campus.CampusName))
             .ForMember(s => s.InviteCode, opt => opt.MapFrom(src => src.Id))
             .ForMember(s => s.UserName, opt => opt.MapFrom(src => src.Account.UserName))
@@ -95,6 +97,9 @@ public class StudentService : IStudentService
             cfg.CreateMap<Student, StudentExtraModel>()
             .ForMember(s => s.MajorName, opt => opt.MapFrom(src => src.Major.MajorName))
             .ForMember(s => s.MajorImage, opt => opt.MapFrom(src => src.Major.Image))
+            .ForMember(s => s.UniversityId, opt => opt.MapFrom(src => src.Campus.UniversityId))
+            .ForMember(s => s.UniversityName, opt => opt.MapFrom(src => src.Campus.University.UniversityName))
+            .ForMember(s => s.UniversityImage, opt => opt.MapFrom(src => src.Campus.University.Image))
             .ForMember(s => s.CampusName, opt => opt.MapFrom(src => src.Campus.CampusName))
             .ForMember(s => s.CampusImage, opt => opt.MapFrom(src => src.Campus.Image))
             .ForMember(s => s.InviteCode, opt => opt.MapFrom(src => src.Id))
