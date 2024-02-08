@@ -17,12 +17,16 @@ public class GoogleService : IGoogleService
 
     private readonly IBrandService brandService;
 
+    private readonly IEmailService emailService;
+
     public GoogleService(
         IAccountService accountService,
-        IBrandService brandService)
+        IBrandService brandService,
+        IEmailService emailService)
     {
         this.accountService = accountService;
         this.brandService = brandService;
+        this.emailService = emailService;
     }
 
     public async Task<AccountModel> LoginWithGoogle(GoogleTokenModel token, string role)
@@ -55,6 +59,7 @@ public class GoogleService : IGoogleService
                             account.RoleId = (int)Role.Brand;
                             account.Role = Role.Brand.ToString();
                             account.RoleName = Role.Brand.GetDisplayName();
+                            emailService.SendEmailBrandRegister(account.Email);
 
                             var brand = brandService.AddGoogle(new CreateBrandGoogleModel
                             {
@@ -79,6 +84,7 @@ public class GoogleService : IGoogleService
                             account.RoleId = (int)Role.Student;
                             account.Role = Role.Student.ToString();
                             account.RoleName = Role.Student.GetDisplayName();
+                            emailService.SendEmailStudentRegister(account.Email);
                             return account;
                     }
                 }

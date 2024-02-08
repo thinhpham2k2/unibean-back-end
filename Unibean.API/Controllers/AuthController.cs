@@ -231,7 +231,8 @@ public class AuthController : ControllerBase
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public async Task<IActionResult> RegisterMobileAccountByGoogle([FromForm] CreateStudentGoogleModel student)
+    public async Task<IActionResult> RegisterMobileAccountByGoogle
+        ([FromForm] CreateStudentGoogleModel student)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
         try

@@ -1,5 +1,6 @@
 ﻿using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
+using Unibean.Service.Models.Accounts;
 using Unibean.Service.Models.Orders;
 using Unibean.Service.Models.StudentChallenges;
 using Unibean.Service.Models.Students;

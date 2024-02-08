@@ -553,7 +553,7 @@ namespace Unibean.Repository.Migrations
                         .HasColumnName("description");
 
                     b.Property<string>("State")
-                        .HasColumnType("enum('Pending', 'Active', 'Inactive', 'Expired', 'Closed')")
+                        .HasColumnType("enum('Pending', 'Rejected', 'Active', 'Inactive', 'Expired', 'Closed')")
                         .HasColumnName("state");
 
                     b.Property<ulong?>("Status")

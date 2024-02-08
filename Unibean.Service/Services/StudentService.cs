@@ -56,6 +56,8 @@ public class StudentService : IStudentService
 
     private readonly IVoucherItemService voucherItemService;
 
+    private readonly IEmailService emailService;
+
     public StudentService(IStudentRepository studentRepository,
         IFireBaseService fireBaseService,
         IAccountRepository accountRepository,
@@ -66,7 +68,8 @@ public class StudentService : IStudentService
         IBonusTransactionService bonusTransactionService,
         IActivityTransactionService activityTransactionService,
         IOrderService orderService,
-        IVoucherItemService voucherItemService)
+        IVoucherItemService voucherItemService,
+        IEmailService emailService)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -170,7 +173,7 @@ public class StudentService : IStudentService
             .ForMember(t => t.Campus, opt => opt.MapFrom(src => (string)null))
             .ForMember(s => s.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
             .ForPath(s => s.Account.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
-            .ForPath(s => s.Account.State, opt => opt.MapFrom(src => src.State));
+            .ForPath(s => s.Account.State, opt => opt.MapFrom(src => true));
         });
         mapper = new Mapper(config);
         this.studentRepository = studentRepository;
@@ -184,6 +187,7 @@ public class StudentService : IStudentService
         this.activityTransactionService = activityTransactionService;
         this.orderService = orderService;
         this.voucherItemService = voucherItemService;
+        this.emailService = emailService;
     }
 
     public async Task<StudentModel> Add(CreateStudentModel creation)
@@ -275,6 +279,7 @@ public class StudentService : IStudentService
         account.Email = creation.Email;
         account.State = true;
         accountRepository.Update(account);
+        emailService.SendEmailStudentRegister(account.Email);
 
         // Upload the student card front image
         if (creation.StudentCardFront != null && creation.StudentCardFront.Length > 0)

@@ -33,12 +33,16 @@ public class AccountService : IAccountService
 
     private readonly IStudentChallengeService studentChallengeService;
 
-    public AccountService(IAccountRepository accountRepository,
+    private readonly IEmailService emailService;
+
+    public AccountService(
+        IAccountRepository accountRepository,
         IFireBaseService fireBaseService,
         IBrandRepository brandRepository,
         IStudentRepository studentRepository,
         IInvitationService invitationService,
-        IStudentChallengeService studentChallengeService)
+        IStudentChallengeService studentChallengeService,
+        IEmailService emailService)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -157,6 +161,7 @@ public class AccountService : IAccountService
         this.studentRepository = studentRepository;
         this.invitationService = invitationService;
         this.studentChallengeService = studentChallengeService;
+        this.emailService = emailService;
     }
 
     public async Task<AccountModel> AddBrand(CreateBrandAccountModel creation)
@@ -186,6 +191,7 @@ public class AccountService : IAccountService
         }
 
         brandRepository.Add(brand);
+        emailService.SendEmailBrandRegister(account.Email);
 
         return mapper.Map<AccountModel>(account);
     }
@@ -222,6 +228,7 @@ public class AccountService : IAccountService
         }
 
         student = studentRepository.Add(student);
+        emailService.SendEmailStudentRegister(account.Email);
 
         if (student != null)
         {

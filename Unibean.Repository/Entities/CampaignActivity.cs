@@ -11,21 +11,25 @@ public enum CampaignState
     [Description("Trạng thái chờ duyệt bởi quản trị viên")]
     Pending = 1,
 
+    [Display(Name = "Từ chối")]
+    [Description("Từ chối phê duyệt chiến dịch")]
+    Rejected = 2,
+
     [Display(Name = "Hoạt động")]
     [Description("Trạng thái hoạt động trên các nền tảng")]
-    Active = 2,
+    Active = 3,
 
     [Display(Name = "Không hoạt động")]
     [Description("Trạng thái ngừng hoạt động trên các nền tảng")]
-    Inactive = 3,
+    Inactive = 4,
 
     [Display(Name = "Hết hạn")]
     [Description("Trạng thái ngừng hoàn toàn trên các nền tảng")]
-    Expired = 4,
+    Expired = 5,
 
     [Display(Name = "Đóng")]
     [Description("Trạng thái kết thúc")]
-    Closed = 5
+    Closed = 6
 }
 
 [Table("tbl_campaign_activity")]
@@ -41,7 +45,7 @@ public class CampaignActivity
     public Campaign Campaign { get; set; }
 
     [Column("state", 
-        TypeName = "enum('Pending', 'Active', 'Inactive', 'Expired', 'Closed')")]
+        TypeName = "enum('Pending', 'Rejected', 'Active', 'Inactive', 'Expired', 'Closed')")]
     public CampaignState? State { get; set; }
 
     [Column("date_created")]
