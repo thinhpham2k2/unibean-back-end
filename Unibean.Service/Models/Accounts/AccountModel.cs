@@ -18,6 +18,7 @@ public class AccountModel
     public DateTime? DateUpdated { get; set; }
     public DateTime? DateVerified { get; set; }
     public string Description { get; set; }
-    public bool? State { get; set; }
+    public int? StateId { get; set; }
+    public string State { get; set; }
     public bool? Status { get; set; }
 }

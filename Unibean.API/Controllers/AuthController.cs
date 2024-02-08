@@ -58,8 +58,8 @@ public class AuthController : ControllerBase
         {
             var account = accountService.GetByUserNameAndPassword(requestLogin.UserName, requestLogin.Password);
             return AccountAuthentication(account != null
-                && (account.RoleName.Equals("Admin")
-                || account.RoleName.Equals("Brand"))
+                && (account.Role.Equals("Admin")
+                || account.Role.Equals("Brand"))
                 ? account : null);
         }
         catch (InvalidParameterException e)
@@ -85,8 +85,8 @@ public class AuthController : ControllerBase
         {
             var account = accountService.GetByUserNameAndPassword(requestLogin.UserName, requestLogin.Password);
             return AccountAuthentication(account != null
-                && (account.RoleName.Equals("Store")
-                || account.RoleName.Equals("Student"))
+                && (account.Role.Equals("Store")
+                || account.Role.Equals("Student"))
                 ? account : null);
         }
         catch (InvalidParameterException e)
@@ -103,11 +103,16 @@ public class AuthController : ControllerBase
         if (user != null)
         {
             bool isVerify = (bool)(user.GetType().GetProperty("IsVerify").GetValue(user) ?? false);
-            string role = (user.GetType().GetProperty("RoleName").GetValue(user) ?? string.Empty).ToString();
-            if (isVerify)
+            string role = (user.GetType().GetProperty("Role").GetValue(user) ?? string.Empty).ToString();
+            string state = (user.GetType().GetProperty("State").GetValue(user) ?? string.Empty).ToString();
+            if (state.Equals("Inactive"))
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, "Tài khoản của bạn đã bị vô hiệu");
+            }
+            else if (isVerify)
             {
                 JwtResponseModel response = new();
-                
+
                 var claims = new List<Claim>
                 {
                     new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
@@ -137,15 +142,11 @@ public class AuthController : ControllerBase
             }
             else
             {
-                bool state = (bool)(user.GetType().GetProperty("State").GetValue(user) ?? false);
-                if (role.Equals("Student") && !state)
-                {
-                    return StatusCode(StatusCodes.Status303SeeOther, user);
-                }
-                else
+                if (state.Equals("Pending"))
                 {
                     return StatusCode(StatusCodes.Status400BadRequest, "Tài khoản của bạn đang được xác minh. Vui lòng quay lại sau");
                 }
+                return StatusCode(StatusCodes.Status303SeeOther, user);
             }
         }
         else
@@ -174,7 +175,7 @@ public class AuthController : ControllerBase
         {
             var account = await googleService.LoginWithGoogle(token, "Brand");
 
-            if (account.RoleName.Equals("Admin") || account.RoleName.Equals("Brand"))
+            if (account.Role.Equals("Admin") || account.Role.Equals("Brand"))
             {
                 return AccountAuthentication(account);
             }
@@ -206,7 +207,7 @@ public class AuthController : ControllerBase
         {
             var account = await googleService.LoginWithGoogle(token, "Student");
 
-            if(account.RoleName.Equals("Store") || account.RoleName.Equals("Student"))
+            if (account.Role.Equals("Store") || account.Role.Equals("Student"))
             {
                 return AccountAuthentication(account);
             }

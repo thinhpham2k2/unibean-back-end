@@ -29,6 +29,10 @@ public class AreaService : IAreaService
             .ReverseMap();
             cfg.CreateMap<PagedResultModel<Area>, PagedResultModel<AreaModel>>()
             .ReverseMap();
+            cfg.CreateMap<Area, AreaExtraModel>()
+            .ForMember(t => t.NumberOfCampuses, opt => opt.MapFrom(src => src.Campuses.Count))
+            .ForMember(t => t.NumberOfStores, opt => opt.MapFrom(src => src.Stores.Count))
+            .ReverseMap();
             cfg.CreateMap<Area, UpdateAreaModel>()
             .ReverseMap()
             .ForMember(t => t.Image, opt => opt.Ignore())
@@ -45,7 +49,7 @@ public class AreaService : IAreaService
         this.fireBaseService = fireBaseService;
     }
 
-    public async Task<AreaModel> Add(CreateAreaModel creation)
+    public async Task<AreaExtraModel> Add(CreateAreaModel creation)
     {
         Area entity = mapper.Map<Area>(creation);
 
@@ -56,7 +60,7 @@ public class AreaService : IAreaService
             entity.Image = f.URL;
             entity.FileName = f.FileName;
         }
-        return mapper.Map<AreaModel>(areaRepository.Add(entity));
+        return mapper.Map<AreaExtraModel>(areaRepository.Add(entity));
     }
 
     public void Delete(string id)
@@ -64,12 +68,19 @@ public class AreaService : IAreaService
         Area entity = areaRepository.GetById(id);
         if (entity != null)
         {
-            if (entity.Image != null && entity.FileName != null)
+            if (!entity.Campuses.Any() && !entity.Stores.Any())
             {
-                //Remove image
-                fireBaseService.RemoveFileAsync(entity.FileName, FOLDER_NAME);
+                if (entity.Image != null && entity.FileName != null)
+                {
+                    //Remove image
+                    fireBaseService.RemoveFileAsync(entity.FileName, FOLDER_NAME);
+                }
+                areaRepository.Delete(id);
             }
-            areaRepository.Delete(id);
+            else
+            {
+                throw new InvalidParameterException("Xóa thất bại do tồn tại cơ sở hoặc cửa hàng ở khu vực");
+            }
         }
         else
         {
@@ -85,17 +96,17 @@ public class AreaService : IAreaService
             (state, propertySort, isAsc, search, page, limit));
     }
 
-    public AreaModel GetById(string id)
+    public AreaExtraModel GetById(string id)
     {
         Area entity = areaRepository.GetById(id);
         if (entity != null)
         {
-            return mapper.Map<AreaModel>(entity);
+            return mapper.Map<AreaExtraModel>(entity);
         }
         throw new InvalidParameterException("Không tìm thấy khu vực");
     }
 
-    public async Task<AreaModel> Update(string id, UpdateAreaModel update)
+    public async Task<AreaExtraModel> Update(string id, UpdateAreaModel update)
     {
         Area entity = areaRepository.GetById(id);
         if (entity != null)
@@ -111,7 +122,7 @@ public class AreaService : IAreaService
                 entity.Image = f.URL;
                 entity.FileName = f.FileName;
             }
-            return mapper.Map<AreaModel>(areaRepository.Update(entity));
+            return mapper.Map<AreaExtraModel>(areaRepository.Update(entity));
         }
         throw new InvalidParameterException("Không tìm thấy khu vực");
     }

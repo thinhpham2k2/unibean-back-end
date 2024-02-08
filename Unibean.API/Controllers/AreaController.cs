@@ -57,7 +57,7 @@ public class AreaController : ControllerBase
     /// </summary>
     [HttpGet("{id}")]
     [AllowAnonymous]
-    [ProducesResponseType(typeof(AreaModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(AreaExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult GetById(string id)
@@ -79,7 +79,7 @@ public class AreaController : ControllerBase
     /// </summary>
     [HttpPost]
     [Authorize(Roles = "Admin")]
-    [ProducesResponseType(typeof(AreaModel), (int)HttpStatusCode.Created)]
+    [ProducesResponseType(typeof(AreaExtraModel), (int)HttpStatusCode.Created)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
@@ -89,10 +89,10 @@ public class AreaController : ControllerBase
 
         try
         {
-            var type = await areaService.Add(creation);
-            if (type != null)
+            var area = await areaService.Add(creation);
+            if (area != null)
             {
-                return StatusCode(StatusCodes.Status201Created, type);
+                return StatusCode(StatusCodes.Status201Created, area);
             }
             return StatusCode(StatusCodes.Status404NotFound, "Tạo thất bại");
         }
@@ -107,7 +107,7 @@ public class AreaController : ControllerBase
     /// </summary>
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin")]
-    [ProducesResponseType(typeof(AreaModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(AreaExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
@@ -117,10 +117,10 @@ public class AreaController : ControllerBase
 
         try
         {
-            var type = await areaService.Update(id, update);
-            if (type != null)
+            var area = await areaService.Update(id, update);
+            if (area != null)
             {
-                return StatusCode(StatusCodes.Status200OK, type);
+                return StatusCode(StatusCodes.Status200OK, area);
             }
             return StatusCode(StatusCodes.Status404NotFound, "Cập nhật thất bại");
         }

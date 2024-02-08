@@ -49,6 +49,7 @@ public class AreaRepository : IAreaRepository
             using var db = new UnibeanDBContext();
             var query = db.Areas
                 .Where(t => (EF.Functions.Like(t.AreaName, "%" + search + "%")
+                || EF.Functions.Like(t.Address, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
                 && (state == null || state.Equals(t.State))
                 && (bool)t.Status)
@@ -84,6 +85,8 @@ public class AreaRepository : IAreaRepository
             using var db = new UnibeanDBContext();
             area = db.Areas
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
+            .Include(s => s.Campuses.Where(c => (bool)c.Status))
+            .Include(s => s.Stores.Where(s => (bool)s.Status))
             .FirstOrDefault();
         }
         catch (Exception ex)

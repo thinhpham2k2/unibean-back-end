@@ -78,6 +78,30 @@ public class AccountService : IAccountService
                 }
                 return null;
             }))
+            .ForMember(a => a.StateId, opt => opt.MapFrom((src, dest) =>
+            {
+                if (src.Role != null)
+                {
+                    return src.Role switch
+                    {
+                        Role.Student => src.Students.FirstOrDefault()?.State,
+                        _ => StudentState.Active,
+                    };
+                }
+                return null;
+            }))
+            .ForMember(a => a.State, opt => opt.MapFrom((src, dest) =>
+            {
+                if (src.Role != null)
+                {
+                    return src.Role switch
+                    {
+                        Role.Student => src.Students.FirstOrDefault()?.State,
+                        _ => StudentState.Active,
+                    };
+                }
+                return null;
+            }))
             .ReverseMap();
             cfg.CreateMap<Account, CreateGoogleAccountModel>()
            .ReverseMap()

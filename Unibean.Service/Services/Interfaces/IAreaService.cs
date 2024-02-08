@@ -5,7 +5,7 @@ namespace Unibean.Service.Services.Interfaces;
 
 public interface IAreaService
 {
-    Task<AreaModel> Add(CreateAreaModel creation);
+    Task<AreaExtraModel> Add(CreateAreaModel creation);
 
     void Delete(string id);
 
@@ -13,7 +13,7 @@ public interface IAreaService
         (bool? state, string propertySort, bool isAsc,
         string search, int page, int limit);
 
-    AreaModel GetById(string id);
+    AreaExtraModel GetById(string id);
 
-    Task<AreaModel> Update(string id, UpdateAreaModel update);
+    Task<AreaExtraModel> Update(string id, UpdateAreaModel update);
 }
