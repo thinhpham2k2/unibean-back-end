@@ -87,6 +87,8 @@ public class StudentService : IStudentService
             .ForMember(s => s.ImageName, opt => opt.MapFrom(src => src.Account.FileName))
             .ForMember(s => s.DateVerified, opt => opt.MapFrom(src => src.Account.DateVerified))
             .ForMember(s => s.IsVerify, opt => opt.MapFrom(src => src.Account.IsVerify))
+            .ForMember(s => s.StateId, opt => opt.MapFrom(src => (int)src.State))
+            .ForMember(s => s.StateName, opt => opt.MapFrom(src => src.State.GetDisplayName()))
             .ForMember(s => s.GreenWalletId, opt => opt.MapFrom(src => (int)src.Wallets.FirstOrDefault().Type))
             .ForMember(s => s.GreenWallet, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Type))
             .ForMember(s => s.GreenWalletName, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Type.GetDisplayName()))
@@ -113,6 +115,8 @@ public class StudentService : IStudentService
             .ForMember(s => s.ImageName, opt => opt.MapFrom(src => src.Account.FileName))
             .ForMember(s => s.DateVerified, opt => opt.MapFrom(src => src.Account.DateVerified))
             .ForMember(s => s.IsVerify, opt => opt.MapFrom(src => src.Account.IsVerify))
+            .ForMember(s => s.StateId, opt => opt.MapFrom(src => (int)src.State))
+            .ForMember(s => s.StateName, opt => opt.MapFrom(src => src.State.GetDisplayName()))
             .ForMember(s => s.GreenWalletId, opt => opt.MapFrom(src => (int)src.Wallets.FirstOrDefault().Type))
             .ForMember(s => s.GreenWallet, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Type))
             .ForMember(s => s.GreenWalletName, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Type.GetDisplayName()))
@@ -270,7 +274,9 @@ public class StudentService : IStudentService
 
         Account account = accountRepository.GetById(creation.AccountId);
 
-        if (!account.Email.Equals(creation.Email) || !account.Role.Equals(Role.Student))
+        if (account.Email.IsNullOrEmpty() 
+            || !account.Email.Equals(creation.Email) 
+            || !account.Role.Equals(Role.Student))
         {
             throw new InvalidParameterException("Đăng nhập bằng tài khoản Google của bạn không hợp lệ");
         }

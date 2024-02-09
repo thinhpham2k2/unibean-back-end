@@ -75,7 +75,7 @@ public class GoogleService : IGoogleService
                                 IsVerify = false,
                                 Role = (int)Role.Student,
                                 Description = "Create by logging in with Google",
-                                State = false,
+                                State = true,
                             });
                             return account;
                     }

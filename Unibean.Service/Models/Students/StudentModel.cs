@@ -31,7 +31,9 @@ public class StudentModel
     public DateTime? DateUpdated { get; set; }
     public DateTime? DateVerified { get; set; }
     public bool? IsVerify { get; set; }
-    public bool? State { get; set; }
+    public int? StateId { get; set; }
+    public string State { get; set; }
+    public string StateName { get; set; }
     public bool? Status { get; set; }
     public int? GreenWalletId { get; set; }
     public string GreenWallet { get; set; }

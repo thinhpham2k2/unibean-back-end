@@ -59,7 +59,8 @@ public class AuthController : ControllerBase
             var account = accountService.GetByUserNameAndPassword(requestLogin.UserName, requestLogin.Password);
             return AccountAuthentication(account != null
                 && (account.Role.Equals("Admin")
-                || account.Role.Equals("Brand"))
+                || account.Role.Equals("Brand")
+                || account.Role.Equals("Staff"))
                 ? account : null);
         }
         catch (InvalidParameterException e)
@@ -175,7 +176,9 @@ public class AuthController : ControllerBase
         {
             var account = await googleService.LoginWithGoogle(token, "Brand");
 
-            if (account.Role.Equals("Admin") || account.Role.Equals("Brand"))
+            if (account.Role.Equals("Admin") 
+                || account.Role.Equals("Brand") 
+                || account.Role.Equals("Staff"))
             {
                 return AccountAuthentication(account);
             }

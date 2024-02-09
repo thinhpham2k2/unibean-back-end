@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel;
 using System.Linq.Dynamic.Core;
-using System.Reflection;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
@@ -100,7 +98,8 @@ public class StudentRepository : IStudentRepository
         {
             using var db = new UnibeanDBContext();
             student = db.Students
-                .Where(s => s.Id.Equals(inviteCode) && (bool)s.Status).FirstOrDefault();
+                .Where(s => s.Id.Equals(inviteCode) && (bool)s.Status 
+                && s.State.Equals(StudentState.Active)).FirstOrDefault();
         }
         catch (Exception ex)
         {
@@ -190,14 +189,12 @@ public class StudentRepository : IStudentRepository
             .Include(b => b.Account)
             .Include(s => s.Activities.Where(a => (bool)a.Status))
             .Include(s => s.Wallets.Where(w => (bool)w.Status))
-                .ThenInclude(w => w.Type)
             .Include(s => s.Wishlists.Where(w => (bool)w.Status))
             .Include(s => s.Inviters.Where(i => (bool)i.Status))
             .Include(s => s.Invitees.Where(i => (bool)i.Status))
                 .ThenInclude(i => i.Inviter)
             .Include(s => s.StudentChallenges.Where(s => (bool)s.Status))
                 .ThenInclude(s => s.Challenge)
-                    .ThenInclude(c => c.Type)
             .FirstOrDefault();
         }
         catch (Exception ex)
