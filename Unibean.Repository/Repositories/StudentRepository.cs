@@ -30,7 +30,7 @@ public class StudentRepository : IStudentRepository
                     Balance = 0,
                     DateCreated = creation.DateCreated,
                     DateUpdated = creation.DateUpdated,
-                    Description = WalletType.Green.GetType().GetCustomAttribute<DescriptionAttribute>().ToString(),
+                    Description = WalletType.Green.GetEnumDescription(),
                     State = true,
                     Status = true,
                     },
@@ -42,7 +42,7 @@ public class StudentRepository : IStudentRepository
                     Balance = 0,
                     DateCreated = creation.DateCreated,
                     DateUpdated = creation.DateUpdated,
-                    Description = WalletType.Red.GetType().GetCustomAttribute<DescriptionAttribute>().ToString(),
+                    Description = WalletType.Red.GetEnumDescription(),
                     State = true,
                     Status = true,
                     }

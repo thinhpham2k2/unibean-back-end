@@ -20,7 +20,7 @@ public class EmailService : IEmailService
             var email = new MimeMessage();
             email.From.Add(new MailboxAddress("Unibean", EmailConfig.EmailUsername));
             email.To.Add(MailboxAddress.Parse(receiver));
-            email.Subject = "📢Đăng kí thành công";
+            email.Subject = "📢󠀠󠀠󠁝‍‍・Đăng kí thành công";
             email.Body = new TextPart(TextFormat.Html) { Text = body };
 
             using var smtp = new SmtpClient();
@@ -46,7 +46,7 @@ public class EmailService : IEmailService
             var email = new MimeMessage();
             email.From.Add(new MailboxAddress("Unibean", EmailConfig.EmailUsername));
             email.To.Add(MailboxAddress.Parse(receiver));
-            email.Subject = "📢Đăng kí thành công";
+            email.Subject = "📢・Đăng kí thành công";
             email.Body = new TextPart(TextFormat.Html) { Text = body };
 
             using var smtp = new SmtpClient();
@@ -72,7 +72,7 @@ public class EmailService : IEmailService
             var email = new MimeMessage();
             email.From.Add(new MailboxAddress("Unibean", EmailConfig.EmailUsername));
             email.To.Add(MailboxAddress.Parse(receiver));
-            email.Subject = "✔️Xác minh thành công";
+            email.Subject = "✔️・Xác minh thành công";
             email.Body = new TextPart(TextFormat.Html) { Text = body };
 
             using var smtp = new SmtpClient();
@@ -98,7 +98,7 @@ public class EmailService : IEmailService
             var email = new MimeMessage();
             email.From.Add(new MailboxAddress("Unibean", EmailConfig.EmailUsername));
             email.To.Add(MailboxAddress.Parse(receiver));
-            email.Subject = "❌Xác minh thất bại";
+            email.Subject = "❌・Xác minh thất bại";
             email.Body = new TextPart(TextFormat.Html) { Text = body };
 
             using var smtp = new SmtpClient();
@@ -129,7 +129,7 @@ public class EmailService : IEmailService
             var email = new MimeMessage();
             email.From.Add(new MailboxAddress("Unibean", EmailConfig.EmailUsername));
             email.To.Add(MailboxAddress.Parse(receiver));
-            email.Subject = "🔐Xác nhận Email";
+            email.Subject = "🔐・Xác nhận Email";
             email.Body = new TextPart(TextFormat.Html) { Text = body };
 
             using var smtp = new SmtpClient();

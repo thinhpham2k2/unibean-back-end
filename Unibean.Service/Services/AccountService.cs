@@ -56,11 +56,11 @@ public class AccountService : IAccountService
                 {
                     return src.Role switch
                     {
-                        Role.Admin => src.Admins.FirstOrDefault()?.Id,
-                        Role.Staff => src.Staffs.FirstOrDefault()?.Id,
-                        Role.Brand => src.Brands.FirstOrDefault()?.Id,
-                        Role.Store => src.Stores.FirstOrDefault()?.Id,
-                        Role.Student => src.Students.FirstOrDefault()?.Id,
+                        Role.Admin => src.Admins?.FirstOrDefault().Id,
+                        Role.Staff => src.Staffs?.FirstOrDefault().Id,
+                        Role.Brand => src.Brands?.FirstOrDefault().Id ,
+                        Role.Store => src.Stores?.FirstOrDefault().Id,
+                        Role.Student => src.Students?.FirstOrDefault().Id,
                         _ => null,
                     };
                 }
@@ -72,11 +72,11 @@ public class AccountService : IAccountService
                 {
                     return src.Role switch
                     {
-                        Role.Admin => src.Admins.FirstOrDefault()?.FullName,
-                        Role.Staff => src.Staffs.FirstOrDefault()?.FullName,
-                        Role.Brand => src.Brands.FirstOrDefault()?.BrandName,
-                        Role.Store => src.Stores.FirstOrDefault()?.StoreName,
-                        Role.Student => src.Students.FirstOrDefault()?.FullName,
+                        Role.Admin => src.Admins?.FirstOrDefault().FullName,
+                        Role.Staff => src.Staffs?.FirstOrDefault().FullName,
+                        Role.Brand => src.Brands?.FirstOrDefault().BrandName,
+                        Role.Store => src.Stores?.FirstOrDefault().StoreName,
+                        Role.Student => src.Students?.FirstOrDefault().FullName,
                         _ => null,
                     };
                 }
@@ -88,7 +88,7 @@ public class AccountService : IAccountService
                 {
                     return src.Role switch
                     {
-                        Role.Student => src.Students.FirstOrDefault()?.State,
+                        Role.Student => src.Students?.FirstOrDefault().State,
                         _ => StudentState.Active,
                     };
                 }
@@ -100,7 +100,7 @@ public class AccountService : IAccountService
                 {
                     return src.Role switch
                     {
-                        Role.Student => src.Students.FirstOrDefault()?.State,
+                        Role.Student => src.Students?.FirstOrDefault().State,
                         _ => StudentState.Active,
                     };
                 }

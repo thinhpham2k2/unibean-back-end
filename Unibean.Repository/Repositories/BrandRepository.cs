@@ -28,7 +28,7 @@ public class BrandRepository : IBrandRepository
                     Balance = 0,
                     DateCreated = creation.DateCreated,
                     DateUpdated = creation.DateUpdated,
-                    Description = WalletType.Green.GetType().GetCustomAttribute<DescriptionAttribute>().ToString(),
+                    Description = WalletType.Green.GetEnumDescription(),
                     State = true,
                     Status = true,
                 });

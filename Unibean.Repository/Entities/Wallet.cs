@@ -7,7 +7,7 @@ namespace Unibean.Repository.Entities;
 public enum WalletType
 {
     [Display(Name = "Ví đậu xanh")]
-    [Description("Đơn vị điểm dùng để đổi khuyến mãi")]
+    [Description("Đơn vị điểm dùng để đổi khuyến mãi hoặc tạo chiến dịch")]
     Green = 1,
 
     [Display(Name = "Ví đậu đỏ")]

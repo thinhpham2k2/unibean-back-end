@@ -24,7 +24,7 @@ public class CampaignRepository : ICampaignRepository
                     CampaignId = creation.Id,
                     State = CampaignState.Pending,
                     DateCreated = creation.DateCreated,
-                    Description = CampaignState.Pending.GetType().GetCustomAttribute<DescriptionAttribute>().Description,
+                    Description = CampaignState.Pending.GetEnumDescription(),
                     Status = true,
                 }
             };
@@ -60,7 +60,7 @@ public class CampaignRepository : ICampaignRepository
                     Balance = creation.TotalIncome,
                     DateCreated = creation.DateCreated,
                     DateUpdated = creation.DateUpdated,
-                    Description = WalletType.Green.GetType().GetCustomAttribute<DescriptionAttribute>().ToString(),
+                    Description = WalletType.Green.GetEnumDescription(),
                     State = true,
                     Status = true,
             }};

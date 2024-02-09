@@ -1,5 +1,4 @@
-﻿using Enable.EnumDisplayName;
-using Unibean.Repository.Entities;
+﻿using Unibean.Repository.Entities;
 using Unibean.Service.Models.Accounts;
 using Unibean.Service.Models.Authens;
 using Unibean.Service.Models.Brands;
@@ -56,9 +55,6 @@ public class GoogleService : IGoogleService
                                 Description = "Create by logging in with Google",
                                 State = true,
                             });
-                            account.RoleId = (int)Role.Brand;
-                            account.Role = Role.Brand.ToString();
-                            account.RoleName = Role.Brand.GetDisplayName();
                             emailService.SendEmailBrandRegister(account.Email);
 
                             var brand = brandService.AddGoogle(new CreateBrandGoogleModel
@@ -81,10 +77,6 @@ public class GoogleService : IGoogleService
                                 Description = "Create by logging in with Google",
                                 State = false,
                             });
-                            account.RoleId = (int)Role.Student;
-                            account.Role = Role.Student.ToString();
-                            account.RoleName = Role.Student.GetDisplayName();
-                            emailService.SendEmailStudentRegister(account.Email);
                             return account;
                     }
                 }
