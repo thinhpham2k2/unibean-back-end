@@ -196,7 +196,7 @@ public class CampaignRepository : ICampaignRepository
                .Include(s => s.Brand)
                .Include(s => s.Type)
                .Include(s => s.Wallets.Where(w => (bool)w.Status))
-                    .ThenInclude(s => s.Type)
+               .Include(s => s.CampaignActivities.Where(a => (bool)a.Status))
                .ToList();
 
             pagedResult = new PagedResultModel<Campaign>
@@ -234,10 +234,8 @@ public class CampaignRepository : ICampaignRepository
             .Include(s => s.CampaignCampuses.Where(s => (bool)s.Status))
                 .ThenInclude(s => s.Campus)
             .Include(s => s.Wallets.Where(w => (bool)w.Status))
-                .ThenInclude(s => s.Type)
             .Include(s => s.CampaignTransactions.Where(w => (bool)w.Status))
                 .ThenInclude(s => s.Wallet)
-                    .ThenInclude(w => w.Type)
             .Include(s => s.CampaignDetails.Where(w => (bool)w.Status))
                 .ThenInclude(s => s.VoucherItems)
                     .ThenInclude(v => v.Activities)

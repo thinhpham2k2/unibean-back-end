@@ -18,5 +18,5 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Unibean.Service\Unibean.Service.csproj" />
 	</ItemGroup>
-	
+
 </Project>

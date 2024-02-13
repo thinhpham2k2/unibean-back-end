@@ -120,7 +120,6 @@ public class BonusRepository : IBonusRepository
                .Take(limit)
                .Include(s => s.BonusTransactions.Where(b => (bool)b.Status))
                     .ThenInclude(a => a.Wallet)
-                        .ThenInclude(w => w.Type)
                .Include(s => s.Brand)
                .Include(s => s.Store)
                .Include(s => s.Student)
@@ -153,7 +152,6 @@ public class BonusRepository : IBonusRepository
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.BonusTransactions.Where(b => (bool)b.Status))
                 .ThenInclude(a => a.Wallet)
-                    .ThenInclude(w => w.Type)
             .Include(s => s.Brand)
                 .ThenInclude(b => b.Account)
             .Include(s => s.Store)
@@ -188,7 +186,6 @@ public class BonusRepository : IBonusRepository
                 && (bool)t.Status)
                .Include(s => s.BonusTransactions.Where(b => (bool)b.Status && b.Amount > 0))
                     .ThenInclude(a => a.Wallet)
-                        .ThenInclude(w => w.Type)
                .Include(s => s.Brand)
                .Include(s => s.Store)
                .Include(s => s.Student).ToList();
