@@ -310,7 +310,7 @@ public class CampaignService : ICampaignService
         Campaign entity = campaignRepository.GetById(id);
         if (entity != null)
         {
-            if (entity.CampaignActivities.LastOrDefault().State.Equals(CampaignState.Closed) 
+            if (entity.CampaignActivities.LastOrDefault().State.Equals(CampaignState.Closed)
                 && entity.EndOn < DateOnly.FromDateTime(DateTime.Now))
             {
                 if (entity.Image != null && entity.ImageName != null)
@@ -332,8 +332,8 @@ public class CampaignService : ICampaignService
     }
 
     public PagedResultModel<CampaignModel> GetAll
-        (List<string> brandIds, List<string> typeIds, List<string> storeIds, 
-        List<string> majorIds, List<string> campusIds, List<CampaignState> stateIds, 
+        (List<string> brandIds, List<string> typeIds, List<string> storeIds,
+        List<string> majorIds, List<string> campusIds, List<CampaignState> stateIds,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<CampaignModel>>(campaignRepository
@@ -357,7 +357,7 @@ public class CampaignService : ICampaignService
         if (entity != null)
         {
             CampaignDetailExtraModel detail = campaignDetailService.GetById(detailId);
-            if(detail != null && detail.CampaignId.Equals(id))
+            if (detail != null && detail.CampaignId.Equals(id))
             {
                 return detail;
             }
@@ -367,7 +367,7 @@ public class CampaignService : ICampaignService
     }
 
     public PagedResultModel<CampaignDetailModel> GetCampaignDetailListByCampaignId
-        (string id, List<string> typeIds, bool? state, 
+        (string id, List<string> typeIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         Campaign entity = campaignRepository.GetById(id);
@@ -427,18 +427,24 @@ public class CampaignService : ICampaignService
         Campaign entity = campaignRepository.GetById(id);
         if (entity != null)
         {
-            entity = mapper.Map(update, entity);
-            if (update.Image != null && update.Image.Length > 0)
+            if (new[] { CampaignState.Pending, CampaignState.Rejected }.Contains(entity.CampaignActivities.LastOrDefault().State.Value)
+                || (new[] { CampaignState.Active, CampaignState.Inactive }.Contains(entity.CampaignActivities.LastOrDefault().State.Value)
+                && entity.StartOn > DateOnly.FromDateTime(DateTime.Now)))
             {
-                // Remove image
-                await fireBaseService.RemoveFileAsync(entity.ImageName, FOLDER_NAME);
+                entity = mapper.Map(update, entity);
+                if (update.Image != null && update.Image.Length > 0)
+                {
+                    // Remove image
+                    await fireBaseService.RemoveFileAsync(entity.ImageName, FOLDER_NAME);
 
-                //Upload new image update
-                FireBaseFile f = await fireBaseService.UploadFileAsync(update.Image, FOLDER_NAME);
-                entity.Image = f.URL;
-                entity.ImageName = f.FileName;
+                    //Upload new image update
+                    FireBaseFile f = await fireBaseService.UploadFileAsync(update.Image, FOLDER_NAME);
+                    entity.Image = f.URL;
+                    entity.ImageName = f.FileName;
+                }
+                return mapper.Map<CampaignExtraModel>(campaignRepository.Update(entity));
             }
-            return mapper.Map<CampaignExtraModel>(campaignRepository.Update(entity));
+            throw new InvalidParameterException("Chiến dịch đã quá hạn cập nhật");
         }
         throw new InvalidParameterException("Không tìm thấy chiến dịch");
     }

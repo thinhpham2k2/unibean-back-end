@@ -12,6 +12,11 @@ namespace Unibean.Service.Services;
 
 public class DiscordService : IDiscordService
 {
+    static bool ValidateUrl(string url)
+    {
+        return Uri.IsWellFormedUriString(url, UriKind.Absolute);
+    }
+
     public async void CreateWebHooks(DiscordWebhookModel webhookModel)
     {
         try
@@ -25,7 +30,7 @@ public class DiscordService : IDiscordService
             {
                 ["content"] = webhookModel.Content,
                 ["username"] = webhookModel.Username,
-                ["avatar_url"] = webhookModel.AvatarUrl,
+                ["avatar_url"] = ValidateUrl(webhookModel.AvatarUrl) ? webhookModel.AvatarUrl : null,
                 ["tts"] = webhookModel.Tts
             };
 
@@ -39,7 +44,7 @@ public class DiscordService : IDiscordService
                     {
                         ["title"] = embed.Title,
                         ["description"] = embed.Description,
-                        ["url"] = embed.Url
+                        ["url"] = ValidateUrl(embed.Url) ? embed.Url : null
                     };
 
                     Color color = embed.Color;
@@ -58,7 +63,7 @@ public class DiscordService : IDiscordService
                         JObject jsonFooter = new()
                         {
                             ["text"] = footer.Text,
-                            ["icon_url"] = footer.IconUrl
+                            ["icon_url"] = ValidateUrl(footer.IconUrl) ? footer.IconUrl : null
                         };
                         jsonEmbed["footer"] = jsonFooter;
                     }
@@ -67,7 +72,7 @@ public class DiscordService : IDiscordService
                     {
                         JObject jsonImage = new()
                         {
-                            ["url"] = image.Url
+                            ["url"] = ValidateUrl(image.Url) ? image.Url : null
                         };
                         jsonEmbed["image"] = jsonImage;
                     }
@@ -76,7 +81,7 @@ public class DiscordService : IDiscordService
                     {
                         JObject jsonThumbnail = new()
                         {
-                            ["url"] = thumbnail.Url
+                            ["url"] = ValidateUrl(thumbnail.Url) ? thumbnail.Url : null
                         };
                         jsonEmbed["thumbnail"] = jsonThumbnail;
                     }
@@ -86,8 +91,8 @@ public class DiscordService : IDiscordService
                         JObject jsonAuthor = new()
                         {
                             ["name"] = author.Name,
-                            ["url"] = author.Url,
-                            ["icon_url"] = author.IconUrl
+                            ["url"] = ValidateUrl(author.Url) ? author.Url : null,
+                            ["icon_url"] = ValidateUrl(author.IconUrl) ? author.IconUrl : null
                         };
                         jsonEmbed["author"] = jsonAuthor;
                     }
