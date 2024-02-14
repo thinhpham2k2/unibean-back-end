@@ -43,6 +43,8 @@ public class BrandService : IBrandService
 
     private readonly IRequestTransactionService requestTransactionService;
 
+    private readonly IEmailService emailService;
+
     public BrandService(IBrandRepository brandRepository,
         IFireBaseService fireBaseService,
         IAccountRepository accountRepository,
@@ -51,7 +53,8 @@ public class BrandService : IBrandService
         IVoucherService voucherService,
         IBonusTransactionService bonusTransactionService,
         ICampaignTransactionService walletTransactionService,
-        IRequestTransactionService requestTransactionService)
+        IRequestTransactionService requestTransactionService,
+        IEmailService emailService)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -131,6 +134,7 @@ public class BrandService : IBrandService
         this.bonusTransactionService = bonusTransactionService;
         this.walletTransactionService = walletTransactionService;
         this.requestTransactionService = requestTransactionService;
+        this.emailService = emailService;
     }
 
     public async Task<BrandModel> Add(CreateBrandModel creation)
@@ -146,6 +150,7 @@ public class BrandService : IBrandService
         }
 
         account = accountRepository.Add(account);
+        emailService.SendEmailBrandRegister(account.Email);
         Brand brand = mapper.Map<Brand>(creation);
         brand.AccountId = account.Id;
 
@@ -170,22 +175,29 @@ public class BrandService : IBrandService
         Brand entity = brandRepository.GetById(id);
         if (entity != null)
         {
-            // Cover photo
-            if (entity.CoverPhoto != null && entity.CoverPhoto.Length > 0)
+            if (entity.Campaigns.All(c => c.CampaignActivities.LastOrDefault().State.Equals(CampaignState.Closed)))
             {
-                // Remove image
-                fireBaseService.RemoveFileAsync(entity.CoverFileName, FOLDER_NAME);
-            }
+                // Cover photo
+                if (entity.CoverPhoto != null && entity.CoverPhoto.Length > 0)
+                {
+                    // Remove image
+                    fireBaseService.RemoveFileAsync(entity.CoverFileName, FOLDER_NAME);
+                }
 
-            // Logo (Avatar)
-            if (entity.Account.Avatar != null && entity.Account.Avatar.Length > 0)
+                // Logo (Avatar)
+                if (entity.Account.Avatar != null && entity.Account.Avatar.Length > 0)
+                {
+                    // Remove image
+                    fireBaseService.RemoveFileAsync(entity.Account.FileName, ACCOUNT_FOLDER_NAME);
+                }
+
+                brandRepository.Delete(id);
+                accountRepository.Delete(entity.Account.Id);
+            }
+            else
             {
-                // Remove image
-                fireBaseService.RemoveFileAsync(entity.Account.FileName, ACCOUNT_FOLDER_NAME);
+                throw new InvalidParameterException("Không thể xóa thương hiệu đang chạy chiến dịch");
             }
-
-            brandRepository.Delete(id);
-            accountRepository.Delete(entity.Account.Id);
         }
         else
         {
@@ -194,7 +206,7 @@ public class BrandService : IBrandService
     }
 
     public PagedResultModel<BrandModel> GetAll
-        (bool? state, string propertySort, bool isAsc, string search, 
+        (bool? state, string propertySort, bool isAsc, string search,
         int page, int limit, JwtRequestModel request)
     {
         if (request.Role.Equals("Student"))
@@ -246,7 +258,7 @@ public class BrandService : IBrandService
     }
 
     public PagedResultModel<TransactionModel> GetHistoryTransactionListByStudentId
-        (string id, List<WalletType> walletTypeIds, bool? state, string propertySort, 
+        (string id, List<WalletType> walletTypeIds, bool? state, string propertySort,
         bool isAsc, string search, int page, int limit)
     {
         Brand entity = brandRepository.GetById(id);
@@ -281,7 +293,7 @@ public class BrandService : IBrandService
     }
 
     public PagedResultModel<StoreModel> GetStoreListByBrandId
-        (string id, List<string> areaIds, bool? state, string propertySort, 
+        (string id, List<string> areaIds, bool? state, string propertySort,
         bool isAsc, string search, int page, int limit)
     {
         Brand entity = brandRepository.GetById(id);

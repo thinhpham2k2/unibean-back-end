@@ -51,8 +51,6 @@ public class RequestTransactionRepository : IRequestTransactionRepository
                 .Include(s => s.Request)
                     .ThenInclude(w => w.Admin)
                 .Include(s => s.Wallet)
-                    .ThenInclude(c => c.Type)
-                .Include(s => s.Wallet)
                     .ThenInclude(c => c.Brand).ToList();
         }
         catch (Exception ex)
@@ -72,8 +70,6 @@ public class RequestTransactionRepository : IRequestTransactionRepository
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.Request)
                 .ThenInclude(w => w.Admin)
-            .Include(s => s.Wallet)
-                .ThenInclude(c => c.Type)
             .Include(s => s.Wallet)
                 .ThenInclude(c => c.Brand)
             .FirstOrDefault();

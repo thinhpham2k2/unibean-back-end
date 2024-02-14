@@ -23,7 +23,6 @@ public class BonusTransactionRepository : IBonusTransactionRepository
                 && (walletTypeIds.Count == 0 || walletTypeIds.Contains(a.Wallet.Type.Value))
                 && (bool)a.Status)
                 .Include(s => s.Wallet)
-                    .ThenInclude(w => w.Type)
                 .Include(s => s.Bonus)
                     .ThenInclude(a => a.Brand)
                 .Include(s => s.Bonus)

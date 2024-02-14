@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel;
 using System.Linq.Dynamic.Core;
-using System.Reflection;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
@@ -17,9 +15,8 @@ public class CampaignRepository : ICampaignRepository
             using var db = new UnibeanDBContext();
 
             // Create campaign activity
-            creation.CampaignActivities = new List<CampaignActivity> { 
-                new CampaignActivity 
-                { 
+            creation.CampaignActivities = new List<CampaignActivity> {
+                new() { 
                     Id = Ulid.NewUlid().ToString(),
                     CampaignId = creation.Id,
                     State = CampaignState.Pending,
@@ -52,8 +49,7 @@ public class CampaignRepository : ICampaignRepository
 
             // Create campaign wallet
             creation.Wallets = new List<Wallet>() {
-                new Wallet
-            {
+                new() {
                     Id = Ulid.NewUlid().ToString(),
                     CampaignId = creation.Id,
                     Type = WalletType.Green,
@@ -77,8 +73,7 @@ public class CampaignRepository : ICampaignRepository
 
             // Cretae campaign transactions
             creation.CampaignTransactions = new List<CampaignTransaction>() {
-                new CampaignTransaction
-            {
+                new() {
                 // Transaction for campaign's green bean
                 Id = Ulid.NewUlid().ToString(),
                 CampaignId = creation.Id,
@@ -90,8 +85,7 @@ public class CampaignRepository : ICampaignRepository
                 Status = creation.Status,
             },
                 // Transaction for brand's green bean
-                new CampaignTransaction
-            {
+                new() {
                 Id = Ulid.NewUlid().ToString(),
                 CampaignId = creation.Id,
                 WalletId = brandRedWallet.Id,
@@ -186,7 +180,7 @@ public class CampaignRepository : ICampaignRepository
                 && (storeIds.Count == 0 || t.CampaignStores.Select(c => c.StoreId).Any(s => storeIds.Contains(s)))
                 && (majorIds.Count == 0 || t.CampaignMajors.Select(c => c.MajorId).Any(s => majorIds.Contains(s)))
                 && (campusIds.Count == 0 || t.CampaignCampuses.Select(c => c.CampusId).Any(s => campusIds.Contains(s)))
-                && (stateIds.Count == 0 || stateIds.Contains(t.CampaignActivities.LastOrDefault().State.Value))
+                && (stateIds.Count == 0 || stateIds.Contains(t.CampaignActivities.OrderBy(a => a.Id).LastOrDefault().State.Value))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 
@@ -196,7 +190,7 @@ public class CampaignRepository : ICampaignRepository
                .Include(s => s.Brand)
                .Include(s => s.Type)
                .Include(s => s.Wallets.Where(w => (bool)w.Status))
-               .Include(s => s.CampaignActivities.Where(a => (bool)a.Status))
+               .Include(s => s.CampaignActivities.Where(a => (bool)a.Status).OrderBy(a => a.Id))
                .ToList();
 
             pagedResult = new PagedResultModel<Campaign>
@@ -239,6 +233,7 @@ public class CampaignRepository : ICampaignRepository
             .Include(s => s.CampaignDetails.Where(w => (bool)w.Status))
                 .ThenInclude(s => s.VoucherItems)
                     .ThenInclude(v => v.Activities)
+            .Include(s => s.CampaignActivities)
             .FirstOrDefault();
         }
         catch (Exception ex)

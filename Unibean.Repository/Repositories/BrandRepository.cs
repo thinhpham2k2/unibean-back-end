@@ -112,6 +112,8 @@ public class BrandRepository : IBrandRepository
             .Include(s => s.Wallets.Where(w => (bool)w.Status))
             .Include(s => s.Campaigns.Where(c => (bool)c.Status))
                 .ThenInclude(c => c.Type)
+            .Include(s => s.Campaigns.Where(c => (bool)c.Status))
+                .ThenInclude(c => c.CampaignActivities.Where(c => (bool)c.Status))
             .Include(s => s.Stores.Where(s => (bool)s.Status))
                 .ThenInclude(s => s.Area)
             .Include(s => s.Vouchers.Where(s => (bool)s.Status))

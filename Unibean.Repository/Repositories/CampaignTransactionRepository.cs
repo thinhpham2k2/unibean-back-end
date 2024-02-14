@@ -48,8 +48,6 @@ public class CampaignTransactionRepository : ICampaignTransactionRepository
                 && (campaignIds.Count == 0 || campaignIds.Contains(t.CampaignId))
                 && (walletTypeIds.Count == 0 || walletTypeIds.Contains(t.Wallet.Type.Value))
                 && (bool)t.Status)
-                .Include(s => s.Wallet)
-                    .ThenInclude(w => w.Type)
                 .Include(s => s.Campaign)
                     .ThenInclude(c => c.Type)
                 .Include(s => s.Wallet)
@@ -70,8 +68,6 @@ public class CampaignTransactionRepository : ICampaignTransactionRepository
             using var db = new UnibeanDBContext();
             walletTransaction = db.CampaignTransactions
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
-            .Include(s => s.Wallet)
-                .ThenInclude(w => w.Type)
             .Include(s => s.Campaign)
                 .ThenInclude(c => c.Type)
             .Include(s => s.Wallet)

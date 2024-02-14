@@ -36,7 +36,7 @@ public class CampaignController : ControllerBase
     /// <param name="storeIds">Filter by store Id.</param>
     /// <param name="majorIds">Filter by major Id.</param>
     /// <param name="campusIds">Filter by campus Id.</param>
-    /// <param name="stateIds">Filter by campaign state --- Pending = 1, Active = 2, Inactive = 3, Expired = 4, Closed = 5</param>
+    /// <param name="stateIds">Filter by campaign state --- Pending = 1, Rejected = 2, Active = 3, Inactive = 4, Expired = 5, Closed = 6</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
