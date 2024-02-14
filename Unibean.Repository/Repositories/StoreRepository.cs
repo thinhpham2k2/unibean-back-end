@@ -141,7 +141,6 @@ public class StoreRepository : IStoreRepository
                 .ThenInclude(b => b.Account)
             .Include(s => s.Brand)
                 .ThenInclude(b => b.Wallets.Where(w => (bool)w.Status))
-                    .ThenInclude(w => w.Type)
             .Include(s => s.Area)
             .Include(s => s.Account)
             .Include(s => s.CampaignStores.Where(c => (bool)c.Status))

@@ -4,6 +4,7 @@ using System.Net;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Service.Models.Activities;
+using Unibean.Service.Models.CampaignDetails;
 using Unibean.Service.Models.Campaigns;
 using Unibean.Service.Models.Campuses;
 using Unibean.Service.Models.Exceptions;
@@ -321,14 +322,14 @@ public class CampaignController : ControllerBase
     /// </summary>
     /// <param name="id">Campaign id.</param>
     /// <param name="typeIds">Filter by voucher type Id.</param>
-    /// <param name="state">Filter by voucher state.</param>
+    /// <param name="state">Filter by campaign detail state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/details")]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
-    [ProducesResponseType(typeof(PagedResultModel<VoucherModel>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(PagedResultModel<CampaignDetailModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public ActionResult<PagedResultModel<VoucherModel>> GetVoucherListByCampaignId(string id,
+    public ActionResult<PagedResultModel<CampaignDetailModel>> GetCampaignDetailListByCampaignId(string id,
         [FromQuery] List<string> typeIds,
         [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
@@ -341,13 +342,13 @@ public class CampaignController : ControllerBase
             var propertyInfo = typeof(Voucher).GetProperty(propertySort);
             if (propertySort != null && propertyInfo != null)
             {
-                PagedResultModel<VoucherModel>
-                result = campaignService.GetVoucherListByCampaignId
+                PagedResultModel<CampaignDetailModel>
+                result = campaignService.GetCampaignDetailListByCampaignId
                     (id, typeIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"),
                     paging.Search, paging.Page, paging.Limit);
                 return StatusCode(StatusCodes.Status200OK, result);
             }
-            return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của khuyến mãi");
+            return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của chi tiết chiến dịch");
         }
         catch (InvalidParameterException e)
         {
@@ -359,19 +360,19 @@ public class CampaignController : ControllerBase
     /// Get voucher by campaign id
     /// </summary>
     /// <param name="id">Campaign id.</param>
-    /// <param name="voucherId">Voucher id.</param>
+    /// <param name="detailId">Campaign detail id.</param>
     [HttpGet("{id}/details/{detailId}")]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
-    [ProducesResponseType(typeof(VoucherModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(CampaignDetailExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public ActionResult<VoucherModel> GetVoucherByCampaignId(string id, string voucherId)
+    public ActionResult<CampaignDetailExtraModel> GetCampaignDetailById(string id, string detailId)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         try
         {
-            return StatusCode(StatusCodes.Status200OK, campaignService.GetVoucherById(id, voucherId));
+            return StatusCode(StatusCodes.Status200OK, campaignService.GetCampaignDetailById(id, detailId));
         }
         catch (InvalidParameterException e)
         {

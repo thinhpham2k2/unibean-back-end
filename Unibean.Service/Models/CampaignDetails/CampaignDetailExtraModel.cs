@@ -1,11 +1,15 @@
 ﻿namespace Unibean.Service.Models.CampaignDetails;
 
-public class CampaignDetailModel
+public class CampaignDetailExtraModel
 {
     public string Id { get; set; }
     public string VoucherId { get; set; }
     public string VoucherName { get; set; }
     public string VoucherImage { get; set; }
+    public string VoucherCondition { get; set; }
+    public string VoucherDescription { get; set; }
+    public string TypeId { get; set; }
+    public string TypeName { get; set; }
     public string CampaignId { get; set; }
     public string CampaignName { get; set; }
     public decimal? Price { get; set; }
@@ -19,4 +23,6 @@ public class CampaignDetailModel
     public bool? State { get; set; }
     public bool? Status { get; set; }
     public int? QuantityInStock { get; set; }
+    public int? QuantityInBought { get; set; }
+    public int? QuantityInUsed { get; set; }
 }

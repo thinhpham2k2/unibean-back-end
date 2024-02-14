@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Enable.EnumDisplayName;
 using FirebaseAdmin.Messaging;
+using Microsoft.IdentityModel.Tokens;
+using MoreLinq;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
@@ -14,7 +16,6 @@ using Unibean.Service.Models.Campuses;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Majors;
 using Unibean.Service.Models.Stores;
-using Unibean.Service.Models.Vouchers;
 using Unibean.Service.Models.WebHooks;
 using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Utilities.FireBase;
@@ -33,8 +34,6 @@ public class CampaignService : ICampaignService
 
     private readonly IFireBaseService fireBaseService;
 
-    private readonly IVoucherService voucherService;
-
     private readonly IStoreService storeService;
 
     private readonly IMajorService majorService;
@@ -51,10 +50,11 @@ public class CampaignService : ICampaignService
 
     private readonly ICampaignDetailRepository campaignDetailRepository;
 
+    private readonly ICampaignDetailService campaignDetailService;
+
     public CampaignService(ICampaignRepository campaignRepository,
         IVoucherRepository voucherRepository,
         IFireBaseService fireBaseService,
-        IVoucherService voucherService,
         IStoreService storeService,
         IMajorService majorService,
         ICampusService campusService,
@@ -62,7 +62,8 @@ public class CampaignService : ICampaignService
         IActivityService activityService,
         IVoucherItemRepository voucherItemRepository,
         IStudentRepository studentRepository,
-        ICampaignDetailRepository campaignDetailRepository)
+        ICampaignDetailRepository campaignDetailRepository,
+        ICampaignDetailService campaignDetailService)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -94,10 +95,29 @@ public class CampaignService : ICampaignService
                 src => src.CampaignActivities.LastOrDefault().State))
             .ForMember(c => c.CurrentStateName, opt => opt.MapFrom(
                 src => src.CampaignActivities.LastOrDefault().State.GetDisplayName()))
-            .ForMember(c => c.NumberOfParticipants, opt => opt.MapFrom(src
-                => src.CampaignDetails.SelectMany(c => c.VoucherItems).Where(v => (bool)v.IsUsed).Count()))
-            .ForMember(c => c.UsageCost, opt => opt.MapFrom(src
-                => src.CampaignDetails.Select(c => c.Price * c.Rate * c.VoucherItems.Where(v => (bool)v.IsUsed).Count()).Sum()))
+            .ForMember(c => c.NumberOfParticipants, opt => opt.MapFrom((src, dest) =>
+            {
+                try
+                {
+                    var i = src.CampaignDetails?.SelectMany(c => c.VoucherItems);
+                    return i.IsNullOrEmpty() ? 0 : i.Where(v => (bool)v.IsUsed).Count();
+                }
+                catch
+                {
+                    return 0;
+                }
+            }))
+            .ForMember(c => c.UsageCost, opt => opt.MapFrom((src, dest) =>
+            {
+                try
+                {
+                    return src.CampaignDetails.Select(c => c.Price * c.Rate * c.VoucherItems.Where(v => (bool)v.IsUsed).Count()).Sum();
+                }
+                catch
+                {
+                    return 0;
+                }
+            }))
             .ForMember(c => c.TotalCost, opt => opt.MapFrom(src => src.TotalIncome))
             .ReverseMap();
             // Map Campaign Store Model
@@ -147,7 +167,6 @@ public class CampaignService : ICampaignService
         this.campaignRepository = campaignRepository;
         this.voucherRepository = voucherRepository;
         this.fireBaseService = fireBaseService;
-        this.voucherService = voucherService;
         this.storeService = storeService;
         this.majorService = majorService;
         this.campusService = campusService;
@@ -156,6 +175,7 @@ public class CampaignService : ICampaignService
         this.voucherItemRepository = voucherItemRepository;
         this.studentRepository = studentRepository;
         this.campaignDetailRepository = campaignDetailRepository;
+        this.campaignDetailService = campaignDetailService;
     }
 
     public async Task<CampaignExtraModel> Add(CreateCampaignModel creation)
@@ -176,9 +196,8 @@ public class CampaignService : ICampaignService
             d.CampaignId = campaign.Id;
             d.Price = v.Price;
             d.Rate = v.Rate;
-            var i = voucherItemRepository.UpdateList
-                (d.VoucherId, d.Id, (int)d.Quantity,
-                (DateOnly)campaign.StartOn, (DateOnly)campaign.EndOn);
+            var i = voucherItemRepository.GetIndex
+                (d.VoucherId, (int)d.Quantity);
             d.FromIndex = i.FromIndex;
             d.ToIndex = i.ToIndex;
             return d;
@@ -188,6 +207,17 @@ public class CampaignService : ICampaignService
 
         if (campaign != null)
         {
+            campaign.CampaignDetails.ForEach(d =>
+            {
+                voucherItemRepository.UpdateList
+                (d.VoucherId, d.Id, (int)d.Quantity,
+                (DateOnly)campaign.StartOn, (DateOnly)campaign.EndOn, new ItemIndex
+                {
+                    FromIndex = d.FromIndex,
+                    ToIndex = d.ToIndex,
+                });
+            });
+
             discordService.CreateWebHooks(new DiscordWebhookModel
             {
                 Embeds = new() {
@@ -297,7 +327,7 @@ public class CampaignService : ICampaignService
         }
         else
         {
-            throw new InvalidParameterException("Không tìm thấy Chiến dịch");
+            throw new InvalidParameterException("Không tìm thấy chiến dịch");
         }
     }
 
@@ -318,7 +348,36 @@ public class CampaignService : ICampaignService
         {
             return mapper.Map<CampaignExtraModel>(entity);
         }
-        throw new InvalidParameterException("Không tìm thấy Chiến dịch");
+        throw new InvalidParameterException("Không tìm thấy chiến dịch");
+    }
+
+    public CampaignDetailExtraModel GetCampaignDetailById(string id, string detailId)
+    {
+        Campaign entity = campaignRepository.GetById(id);
+        if (entity != null)
+        {
+            CampaignDetailExtraModel detail = campaignDetailService.GetById(detailId);
+            if(detail != null && detail.CampaignId.Equals(id))
+            {
+                return detail;
+            }
+            throw new InvalidParameterException("Không tìm thấy chi tiết chiến dịch");
+        }
+        throw new InvalidParameterException("Không tìm thấy chiến dịch");
+    }
+
+    public PagedResultModel<CampaignDetailModel> GetCampaignDetailListByCampaignId
+        (string id, List<string> typeIds, bool? state, 
+        string propertySort, bool isAsc, string search, int page, int limit)
+    {
+        Campaign entity = campaignRepository.GetById(id);
+        if (entity != null)
+        {
+            return campaignDetailService.GetAll
+                (new() { id }, typeIds, state, propertySort,
+                isAsc, search, page, limit);
+        }
+        throw new InvalidParameterException("Không tìm thấy chiến dịch");
     }
 
     public PagedResultModel<CampusModel> GetCampusListByCampaignId
@@ -332,7 +391,7 @@ public class CampaignService : ICampaignService
                 (new() { id }, universityIds, areaIds, state,
                 propertySort, isAsc, search, page, limit);
         }
-        throw new InvalidParameterException("Không tìm thấy Chiến dịch");
+        throw new InvalidParameterException("Không tìm thấy chiến dịch");
     }
 
     public PagedResultModel<MajorModel> GetMajorListByCampaignId
@@ -346,7 +405,7 @@ public class CampaignService : ICampaignService
                 (new() { id }, state, propertySort,
                 isAsc, search, page, limit);
         }
-        throw new InvalidParameterException("Không tìm thấy Chiến dịch");
+        throw new InvalidParameterException("Không tìm thấy chiến dịch");
     }
 
     public PagedResultModel<StoreModel> GetStoreListByCampaignId
@@ -360,31 +419,7 @@ public class CampaignService : ICampaignService
                 (new() { id }, brandIds, areaIds, state,
                 propertySort, isAsc, search, page, limit);
         }
-        throw new InvalidParameterException("Không tìm thấy Chiến dịch");
-    }
-
-    public VoucherModel GetVoucherById(string id, string voucherId)
-    {
-        Campaign entity = campaignRepository.GetById(id);
-        if (entity != null)
-        {
-            return voucherService.GetByIdAndCampaign(voucherId, id);
-        }
-        throw new InvalidParameterException("Không tìm thấy Chiến dịch");
-    }
-
-    public PagedResultModel<VoucherModel> GetVoucherListByCampaignId
-        (string id, List<string> typeIds, bool? state, string propertySort,
-        bool isAsc, string search, int page, int limit)
-    {
-        Campaign entity = campaignRepository.GetById(id);
-        if (entity != null)
-        {
-            return voucherService.GetAllByCampaign
-                (new() { id }, typeIds, state, propertySort,
-                isAsc, search, page, limit);
-        }
-        throw new InvalidParameterException("Không tìm thấy Chiến dịch");
+        throw new InvalidParameterException("Không tìm thấy chiến dịch");
     }
 
     public async Task<CampaignExtraModel> Update(string id, UpdateCampaignModel update)
@@ -405,7 +440,7 @@ public class CampaignService : ICampaignService
             }
             return mapper.Map<CampaignExtraModel>(campaignRepository.Update(entity));
         }
-        throw new InvalidParameterException("Không tìm thấy Chiến dịch");
+        throw new InvalidParameterException("Không tìm thấy chiến dịch");
     }
 
     public CampaignExtraModel UpdateState(string id)
@@ -440,6 +475,6 @@ public class CampaignService : ICampaignService
             }
             throw new InvalidParameterException("Chiến dịch này đã kết thúc");
         }
-        throw new InvalidParameterException("Không tìm thấy Chiến dịch");
+        throw new InvalidParameterException("Không tìm thấy chiến dịch");
     }
 }

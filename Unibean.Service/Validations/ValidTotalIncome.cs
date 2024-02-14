@@ -9,7 +9,7 @@ public class ValidTotalIncome : ValidationAttribute
 {
     private new const string ErrorMessage = "Chi phí không hợp lệ";
 
-    private const string ErrorMessage1 = "Số dư ví xanh và đỏ của thương hiệu là không đủ";
+    private const string ErrorMessage1 = "Số dư ví xanh của thương hiệu là không đủ";
 
     private readonly IBrandRepository brandRepo = new BrandRepository();
 

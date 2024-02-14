@@ -83,6 +83,7 @@ public class CampaignTypeRepository : ICampaignTypeRepository
             using var db = new UnibeanDBContext();
             type = db.CampaignTypes
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
+            .Include(t => t.Campaigns.Where(c => (bool)c.Status))
             .FirstOrDefault();
         }
         catch (Exception ex)

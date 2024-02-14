@@ -16,7 +16,7 @@ public class CampaignRepository : ICampaignRepository
 
             // Create campaign activity
             creation.CampaignActivities = new List<CampaignActivity> {
-                new() { 
+                new() {
                     Id = Ulid.NewUlid().ToString(),
                     CampaignId = creation.Id,
                     State = CampaignState.Pending,
@@ -67,9 +67,6 @@ public class CampaignRepository : ICampaignRepository
                     .Include(b => b.Account)
                     .Include(b => b.Wallets).FirstOrDefault();
             var brandGreenWallet = brand.Wallets.FirstOrDefault();
-            var brandRedWallet = brand.Wallets.FirstOrDefault();
-
-            var amount = brandRedWallet.Balance - creation.TotalIncome;
 
             // Cretae campaign transactions
             creation.CampaignTransactions = new List<CampaignTransaction>() {
@@ -84,53 +81,28 @@ public class CampaignRepository : ICampaignRepository
                 State = true,
                 Status = creation.Status,
             },
-                // Transaction for brand's green bean
+                // Transaction for brand's green bean wallet
                 new() {
                 Id = Ulid.NewUlid().ToString(),
                 CampaignId = creation.Id,
-                WalletId = brandRedWallet.Id,
-                Amount = amount > 0 ? -creation.TotalIncome : -brandRedWallet.Balance,
+                WalletId = brandGreenWallet.Id,
+                Amount = -creation.TotalIncome,
                 Rate = 1,
                 DateCreated = creation.DateCreated,
                 State = true,
                 Status = creation.Status,
             }};
 
-            if (amount < 0)
-            {
-                // Transaction for brand's green bean
-                creation.CampaignTransactions.Add(new CampaignTransaction
-                {
-                    Id = Ulid.NewUlid().ToString(),
-                    CampaignId = creation.Id,
-                    WalletId = brandGreenWallet.Id,
-                    Amount = amount,
-                    Rate = 1,
-                    DateCreated = creation.DateCreated,
-                    State = true,
-                    Status = creation.Status,
-                });
-            }
-
             creation = db.Campaigns.Add(creation).Entity;
             creation.Brand = brand;
 
             if (creation != null)
             {
-                // Update brand red wallet balance
-                brandRedWallet.Balance -= amount > 0 ? creation.TotalIncome : brandRedWallet.Balance;
-                brandRedWallet.DateUpdated = DateTime.Now;
-                db.Wallets.Update(brandRedWallet);
-
-                if (amount < 0)
-                {
-                    // Update brand green wallet balance
-                    brand.TotalSpending += -amount;
-                    brandGreenWallet.Balance -= -amount;
-                    brandGreenWallet.DateUpdated = DateTime.Now;
-                    db.Wallets.Update(brandGreenWallet);
-                }
-
+                // Update brand green wallet balance
+                brand.TotalSpending += creation.TotalIncome;
+                brandGreenWallet.Balance -= creation.TotalIncome;
+                brandGreenWallet.DateUpdated = DateTime.Now;
+                db.Wallets.Update(brandGreenWallet);
                 db.Brands.Update(brand);
             }
 
@@ -160,8 +132,8 @@ public class CampaignRepository : ICampaignRepository
     }
 
     public PagedResultModel<Campaign> GetAll
-        (List<string> brandIds, List<string> typeIds, List<string> storeIds, 
-        List<string> majorIds, List<string> campusIds, List<CampaignState> stateIds, 
+        (List<string> brandIds, List<string> typeIds, List<string> storeIds,
+        List<string> majorIds, List<string> campusIds, List<CampaignState> stateIds,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<Campaign> pagedResult = new();

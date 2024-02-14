@@ -40,7 +40,7 @@ public class CampaignDetailRepository : ICampaignDetailRepository
     }
 
     public PagedResultModel<CampaignDetail> GetAll
-        (List<string> voucherIds, List<string> campaignIds, bool? state, 
+        (List<string> campaignIds, List<string> typeIds, bool? state, 
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<CampaignDetail> pagedResult = new();
@@ -51,8 +51,8 @@ public class CampaignDetailRepository : ICampaignDetailRepository
                 .Where(t => (EF.Functions.Like(t.Voucher.VoucherName, "%" + search + "%")
                 || EF.Functions.Like(t.Campaign.CampaignName, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
-                && (voucherIds.Count == 0 || voucherIds.Contains(t.VoucherId))
                 && (campaignIds.Count == 0 || campaignIds.Contains(t.CampaignId))
+                && (typeIds.Count == 0 || typeIds.Contains(t.Voucher.TypeId))
                 && (state == null || state.Equals(t.State))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
@@ -61,9 +61,11 @@ public class CampaignDetailRepository : ICampaignDetailRepository
                .Skip((page - 1) * limit)
                .Take(limit)
                .Include(a => a.Voucher)
+                    .ThenInclude(v => v.Type)
                .Include(d => d.Campaign)
-                    .ThenInclude(c => c.CampaignActivities)
-               .Include(d => d.VoucherItems.Where(v => (bool)v.Status))
+               .Include(d => d.VoucherItems.Where(
+                   v => (bool)v.Status && (bool)v.State && (bool)v.IsLocked 
+                   && !(bool)v.IsBought && !(bool)v.IsUsed))
                .ToList();
 
             pagedResult = new PagedResultModel<CampaignDetail>
@@ -92,9 +94,9 @@ public class CampaignDetailRepository : ICampaignDetailRepository
             detail = db.CampaignDetails
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(a => a.Voucher)
+                .ThenInclude(v => v.Type)
             .Include(d => d.Campaign)
-                .ThenInclude(c => c.CampaignActivities)
-            .Include(d => d.VoucherItems.Where(v => (bool)v.Status))
+            .Include(d => d.VoucherItems.Where(v => (bool)v.Status && (bool)v.State))
             .FirstOrDefault();
         }
         catch (Exception ex)

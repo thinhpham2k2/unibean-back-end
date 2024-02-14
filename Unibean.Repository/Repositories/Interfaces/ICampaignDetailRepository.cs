@@ -10,7 +10,7 @@ public interface ICampaignDetailRepository
     void Delete(string id);
 
     PagedResultModel<CampaignDetail> GetAll
-        (List<string> voucherIds, List<string> campaignIds, bool? state, 
+        (List<string> campaignIds, List<string> typeIds, bool? state, 
         string propertySort, bool isAsc, string search, int page, int limit);
 
     CampaignDetail GetById(string id);

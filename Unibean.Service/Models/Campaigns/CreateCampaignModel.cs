@@ -6,7 +6,6 @@ using Unibean.Service.Models.CampaignCampuses;
 using Unibean.Service.Models.CampaignDetails;
 using Unibean.Service.Models.CampaignMajors;
 using Unibean.Service.Models.CampaignStores;
-using Unibean.Service.Models.VoucherItems;
 using Unibean.Service.Validations;
 
 namespace Unibean.Service.Models.Campaigns;

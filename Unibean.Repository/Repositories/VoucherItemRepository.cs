@@ -3,7 +3,6 @@ using System.Linq.Dynamic.Core;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Unibean.Repository.Repositories;
 
@@ -161,6 +160,32 @@ public class VoucherItemRepository : IVoucherItemRepository
         return voucher;
     }
 
+    public ItemIndex GetIndex
+        (string voucherId, int quantity)
+    {
+
+        try
+        {
+            using var db = new UnibeanDBContext();
+
+            var list = db.VoucherItems.Where(
+                i => i.VoucherId.Equals(voucherId)
+                && (bool)i.State && (bool)i.Status
+                && !(bool)i.IsLocked && !(bool)i.IsBought && !(bool)i.IsUsed
+                && i.CampaignDetail.Equals(null)).Take(quantity).ToList();
+
+            return new ItemIndex
+            {
+                FromIndex = list.FirstOrDefault().Index,
+                ToIndex = list.LastOrDefault().Index
+            };
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+
     public VoucherItem Update(VoucherItem update)
     {
         try
@@ -176,9 +201,9 @@ public class VoucherItemRepository : IVoucherItemRepository
         return update;
     }
 
-    public ItemIndex UpdateList
+    public void UpdateList
         (string voucherId, string campaignDetailId, 
-        int quantity, DateOnly StartOn, DateOnly EndOn)
+        int quantity, DateOnly StartOn, DateOnly EndOn, ItemIndex index)
     {
         try
         {
@@ -186,9 +211,9 @@ public class VoucherItemRepository : IVoucherItemRepository
 
             var list = db.VoucherItems.Where(
                 i => i.VoucherId.Equals(voucherId) 
-                && (bool)i.State && (bool)i.Status
-                && !(bool)i.IsLocked && !(bool)i.IsBought && !(bool)i.IsUsed 
-                && i.CampaignDetail.Equals(null)).Take(quantity).ToList()
+                && (bool)i.State && (bool)i.Status && i.Index >= index.FromIndex 
+                && i.Index <= index.ToIndex && !(bool)i.IsLocked && !(bool)i.IsBought 
+                && !(bool)i.IsUsed && i.CampaignDetail.Equals(null)).Take(quantity).ToList()
                 .Select(i =>
                 {
                     i.CampaignDetailId = campaignDetailId;
@@ -201,12 +226,6 @@ public class VoucherItemRepository : IVoucherItemRepository
 
             db.VoucherItems.UpdateRange(list);
             db.SaveChanges();
-
-            return new ItemIndex
-            {
-                FromIndex = list.FirstOrDefault().Index,
-                ToIndex = list.LastOrDefault().Index
-            };
         }
         catch (Exception ex)
         {

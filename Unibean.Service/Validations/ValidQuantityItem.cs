@@ -3,6 +3,7 @@ using Unibean.Repository.Entities;
 using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Repository.Repositories;
 using Unibean.Service.Models.CampaignDetails;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Unibean.Service.Validations;
 
@@ -24,11 +25,11 @@ public class ValidQuantityItem : ValidationAttribute
                     if (voucher.VoucherItems.Where(
                         i => (bool)i.State && (bool)i.Status 
                         && !(bool)i.IsLocked && !(bool)i.IsBought 
-                        && !(bool)i.IsUsed && i.CampaignDetail.Equals(null)).Count() >= quantity)
+                        && !(bool)i.IsUsed && i.CampaignDetailId.IsNullOrEmpty()).Count() >= quantity)
                     {
                         return ValidationResult.Success;
                     }
-                    return new ValidationResult("Số lượng của " + voucher.VoucherName + " không đủ");
+                    return new ValidationResult("Số lượng của khuyến mãi " + voucher.VoucherName + " không đủ");
                 }
             }
         }

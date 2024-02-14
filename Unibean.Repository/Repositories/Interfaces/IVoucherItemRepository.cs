@@ -25,9 +25,12 @@ public interface IVoucherItemRepository
 
     VoucherItem GetById(string id);
 
+    ItemIndex GetIndex
+        (string voucherId, int quantity);
+
     VoucherItem Update(VoucherItem update);
 
-    ItemIndex UpdateList
+    void UpdateList
         (string voucherId, string campaignDetailId, 
-        int quantity, DateOnly StartOn, DateOnly EndOn);
+        int quantity, DateOnly StartOn, DateOnly EndOn, ItemIndex index);
 }
