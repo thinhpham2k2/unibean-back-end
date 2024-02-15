@@ -1,13 +1,12 @@
 ﻿using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Service.Models.Activities;
-using Unibean.Service.Models.Activity;
+using Unibean.Service.Models.CampaignActivities;
 using Unibean.Service.Models.CampaignDetails;
 using Unibean.Service.Models.Campaigns;
 using Unibean.Service.Models.Campuses;
 using Unibean.Service.Models.Majors;
 using Unibean.Service.Models.Stores;
-using Unibean.Service.Models.Vouchers;
 
 namespace Unibean.Service.Services.Interfaces;
 
@@ -25,6 +24,10 @@ public interface ICampaignService
         string propertySort, bool isAsc, string search, int page, int limit);
 
     CampaignExtraModel GetById(string id);
+
+    PagedResultModel<CampaignActivityModel> GetCampaignActivityListByCampaignId
+        (string id, List<CampaignState> stateIds, string propertySort,
+        bool isAsc, string search, int page, int limit);
 
     CampaignDetailExtraModel GetCampaignDetailById(string id, string detailId);
 

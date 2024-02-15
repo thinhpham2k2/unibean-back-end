@@ -7,6 +7,7 @@ using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Service.Models.Activities;
+using Unibean.Service.Models.CampaignActivities;
 using Unibean.Service.Models.CampaignCampuses;
 using Unibean.Service.Models.CampaignDetails;
 using Unibean.Service.Models.CampaignMajors;
@@ -52,6 +53,8 @@ public class CampaignService : ICampaignService
 
     private readonly ICampaignDetailService campaignDetailService;
 
+    private readonly ICampaignActivityService campaignActivityService;
+
     public CampaignService(ICampaignRepository campaignRepository,
         IVoucherRepository voucherRepository,
         IFireBaseService fireBaseService,
@@ -63,7 +66,8 @@ public class CampaignService : ICampaignService
         IVoucherItemRepository voucherItemRepository,
         IStudentRepository studentRepository,
         ICampaignDetailRepository campaignDetailRepository,
-        ICampaignDetailService campaignDetailService)
+        ICampaignDetailService campaignDetailService,
+        ICampaignActivityService campaignActivityService)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -176,6 +180,7 @@ public class CampaignService : ICampaignService
         this.studentRepository = studentRepository;
         this.campaignDetailRepository = campaignDetailRepository;
         this.campaignDetailService = campaignDetailService;
+        this.campaignActivityService = campaignActivityService;
     }
 
     public async Task<CampaignExtraModel> Add(CreateCampaignModel creation)
@@ -310,8 +315,7 @@ public class CampaignService : ICampaignService
         Campaign entity = campaignRepository.GetById(id);
         if (entity != null)
         {
-            if (entity.CampaignActivities.LastOrDefault().State.Equals(CampaignState.Closed)
-                && entity.EndOn < DateOnly.FromDateTime(DateTime.Now))
+            if (entity.CampaignActivities.LastOrDefault().State.Equals(CampaignState.Closed))
             {
                 if (entity.Image != null && entity.ImageName != null)
                 {
@@ -347,6 +351,20 @@ public class CampaignService : ICampaignService
         if (entity != null)
         {
             return mapper.Map<CampaignExtraModel>(entity);
+        }
+        throw new InvalidParameterException("Không tìm thấy chiến dịch");
+    }
+
+    public PagedResultModel<CampaignActivityModel> GetCampaignActivityListByCampaignId
+        (string id, List<CampaignState> stateIds, 
+        string propertySort, bool isAsc, string search, int page, int limit)
+    {
+        Campaign entity = campaignRepository.GetById(id);
+        if (entity != null)
+        {
+            return campaignActivityService.GetAll
+                (new() { id }, stateIds, propertySort, 
+                isAsc, search, page, limit);
         }
         throw new InvalidParameterException("Không tìm thấy chiến dịch");
     }
@@ -433,7 +451,7 @@ public class CampaignService : ICampaignService
             {
                 entity = mapper.Map(update, entity);
                 if (update.Image != null && update.Image.Length > 0)
-                {
+                {   
                     // Remove image
                     await fireBaseService.RemoveFileAsync(entity.ImageName, FOLDER_NAME);
 

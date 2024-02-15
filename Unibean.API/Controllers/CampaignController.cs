@@ -4,6 +4,7 @@ using System.Net;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Service.Models.Activities;
+using Unibean.Service.Models.CampaignActivities;
 using Unibean.Service.Models.CampaignDetails;
 using Unibean.Service.Models.Campaigns;
 using Unibean.Service.Models.Campuses;
@@ -11,7 +12,6 @@ using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Majors;
 using Unibean.Service.Models.Parameters;
 using Unibean.Service.Models.Stores;
-using Unibean.Service.Models.Vouchers;
 using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Validations;
 
@@ -191,6 +191,43 @@ public class CampaignController : ControllerBase
         {
             campaignService.Delete(id);
             return StatusCode(StatusCodes.Status204NoContent);
+        }
+        catch (InvalidParameterException e)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Get activity list by campaign id
+    /// </summary>
+    /// <param name="id">Campaign id.</param>
+    /// <param name="stateIds">Filter by campaign state --- Pending = 1, Rejected = 2, Active = 3, Inactive = 4, Expired = 5, Closed = 6</param>
+    /// <param name="paging">Paging parameter.</param>
+    [HttpGet("{id}/activities")]
+    [Authorize(Roles = "Admin, Brand, Store, Student")]
+    [ProducesResponseType(typeof(PagedResultModel<CampaignActivityModel>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public ActionResult<PagedResultModel<CampaignActivityModel>> GetActivityListByStoreId(string id,
+        [FromQuery] List<CampaignState> stateIds,
+        [FromQuery] PagingModel paging)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            string propertySort = paging.Sort.Split(",")[0];
+            var propertyInfo = typeof(CampaignActivity).GetProperty(propertySort);
+            if (propertySort != null && propertyInfo != null)
+            {
+                PagedResultModel<CampaignActivityModel>
+                result = campaignService.GetCampaignActivityListByCampaignId
+                    (id, stateIds, propertySort, paging.Sort.Split(",")[1].Equals("asc"),
+                    paging.Search, paging.Page, paging.Limit);
+                return StatusCode(StatusCodes.Status200OK, result);
+            }
+            return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của hoạt động chiến dịch");
         }
         catch (InvalidParameterException e)
         {

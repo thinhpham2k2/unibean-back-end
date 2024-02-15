@@ -220,6 +220,18 @@ public class CampaignRepository : ICampaignRepository
         try
         {
             using var db = new UnibeanDBContext();
+            if(!update.CampaignActivities.LastOrDefault().State.Equals(CampaignState.Pending))
+            {
+                db.CampaignActivities.Add(new CampaignActivity
+                {
+                    Id = Ulid.NewUlid().ToString(),
+                    CampaignId = update.Id,
+                    State = CampaignState.Pending,
+                    DateCreated = DateTime.Now,
+                    Description = CampaignState.Pending.GetEnumDescription(),
+                    Status = true,
+                });
+            }
             update = db.Campaigns.Update(update).Entity;
             db.SaveChanges();
         }
