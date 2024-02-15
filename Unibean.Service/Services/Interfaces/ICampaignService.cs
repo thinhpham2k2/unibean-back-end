@@ -49,5 +49,5 @@ public interface ICampaignService
 
     Task<CampaignExtraModel> Update(string id, UpdateCampaignModel update);
 
-    CampaignExtraModel UpdateState(string id);
+    CampaignExtraModel UpdateState(string id, CampaignState stateId);
 }

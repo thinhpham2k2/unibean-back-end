@@ -49,8 +49,6 @@ public class CampaignService : ICampaignService
 
     private readonly IStudentRepository studentRepository;
 
-    private readonly ICampaignDetailRepository campaignDetailRepository;
-
     private readonly ICampaignDetailService campaignDetailService;
 
     private readonly ICampaignActivityService campaignActivityService;
@@ -65,7 +63,6 @@ public class CampaignService : ICampaignService
         IActivityService activityService,
         IVoucherItemRepository voucherItemRepository,
         IStudentRepository studentRepository,
-        ICampaignDetailRepository campaignDetailRepository,
         ICampaignDetailService campaignDetailService,
         ICampaignActivityService campaignActivityService)
     {
@@ -111,17 +108,7 @@ public class CampaignService : ICampaignService
                     return 0;
                 }
             }))
-            .ForMember(c => c.UsageCost, opt => opt.MapFrom((src, dest) =>
-            {
-                try
-                {
-                    return src.CampaignDetails.Select(c => c.Price * c.Rate * c.VoucherItems.Where(v => (bool)v.IsUsed).Count()).Sum();
-                }
-                catch
-                {
-                    return 0;
-                }
-            }))
+            .ForMember(c => c.UsageCost, opt => opt.MapFrom(src => src.TotalSpending))
             .ForMember(c => c.TotalCost, opt => opt.MapFrom(src => src.TotalIncome))
             .ReverseMap();
             // Map Campaign Store Model
@@ -178,7 +165,6 @@ public class CampaignService : ICampaignService
         this.activityService = activityService;
         this.voucherItemRepository = voucherItemRepository;
         this.studentRepository = studentRepository;
-        this.campaignDetailRepository = campaignDetailRepository;
         this.campaignDetailService = campaignDetailService;
         this.campaignActivityService = campaignActivityService;
     }
@@ -283,31 +269,37 @@ public class CampaignService : ICampaignService
     public bool AddActivity
         (string id, string detailId, CreateBuyActivityModel creation)
     {
-        var detail = campaignDetailRepository.GetById(detailId);
-        var items = detail.VoucherItems.Where(
-                        i => (bool)i.State && (bool)i.Status
-                        && !(bool)i.IsLocked && !(bool)i.IsBought
-                        && !(bool)i.IsUsed && i.CampaignDetail.Equals(null)).Select(v => v.Id);
-
-        if (items.Count().Equals(creation.Quantity))
+        Campaign entity = campaignRepository.GetById(id);
+        DateOnly today = DateOnly.FromDateTime(DateTime.Now);
+        if (entity != null && entity.StartOn <= today && today <= entity.EndOn)
         {
-            if (studentRepository.GetById
-                (creation.StudentId)?.Wallets.FirstOrDefault().Balance >= detail.Price * creation.Quantity)
+            CampaignDetailExtraModel detail = campaignDetailService.GetById(detailId);
+            if (detail != null && detail.CampaignId.Equals(entity.Id))
             {
-                items = items.Take((int)creation.Quantity);
-                foreach (string itemId in items)
+                var items = campaignDetailService.GetAllVoucherItemByCampaignDetail(detailId);
+
+                if (items.Count >= creation.Quantity)
                 {
-                    CreateActivityModel create = mapper.Map<CreateActivityModel>(creation);
-                    create.VoucherItemId = itemId;
-                    activityService.Add(create);
+                    if (studentRepository.GetById
+                        (creation.StudentId)?.Wallets.Where(w => w.Type.Equals(WalletType.Green)).FirstOrDefault().Balance
+                        >= detail.Price * creation.Quantity)
+                    {
+                        items = items.Take((int)creation.Quantity).ToList();
+                        foreach (string itemId in items)
+                        {
+                            CreateActivityModel create = mapper.Map<CreateActivityModel>(creation);
+                            create.VoucherItemId = itemId;
+                            activityService.Add(create);
+                        }
+                        return true;
+                    }
+                    throw new InvalidParameterException("Số dư đậu xanh của sinh viên không đủ");
                 }
-                return true;
+                throw new InvalidParameterException("Số lượng của khuyến mãi không đủ");
             }
-            throw new InvalidParameterException
-                ("Số dư đậu xanh của sinh viên không đủ");
+            throw new InvalidParameterException("Chi tiết chiến dịch không hợp lệ");
         }
-        throw new InvalidParameterException
-            ("Số lượng của khuyến mãi không đủ");
+        throw new InvalidParameterException("Chiến dịch chưa khởi chạy");
     }
 
     public void Delete(string id)
@@ -356,14 +348,14 @@ public class CampaignService : ICampaignService
     }
 
     public PagedResultModel<CampaignActivityModel> GetCampaignActivityListByCampaignId
-        (string id, List<CampaignState> stateIds, 
+        (string id, List<CampaignState> stateIds,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         Campaign entity = campaignRepository.GetById(id);
         if (entity != null)
         {
             return campaignActivityService.GetAll
-                (new() { id }, stateIds, propertySort, 
+                (new() { id }, stateIds, propertySort,
                 isAsc, search, page, limit);
         }
         throw new InvalidParameterException("Không tìm thấy chiến dịch");
@@ -451,7 +443,7 @@ public class CampaignService : ICampaignService
             {
                 entity = mapper.Map(update, entity);
                 if (update.Image != null && update.Image.Length > 0)
-                {   
+                {
                     // Remove image
                     await fireBaseService.RemoveFileAsync(entity.ImageName, FOLDER_NAME);
 
@@ -467,38 +459,42 @@ public class CampaignService : ICampaignService
         throw new InvalidParameterException("Không tìm thấy chiến dịch");
     }
 
-    public CampaignExtraModel UpdateState(string id)
+    public CampaignExtraModel UpdateState(string id, CampaignState stateId)
     {
-        Campaign entity = campaignRepository.GetById(id);
-        if (entity != null)
+        if (!stateId.Equals(CampaignState.Pending))
         {
-            if (entity.EndOn >= DateOnly.FromDateTime(DateTime.Now))
+            Campaign entity = campaignRepository.GetById(id);
+            if (entity != null)
             {
-                if (entity.CampaignActivities.LastOrDefault().State.Equals(CampaignState.Pending))
+                if (entity.EndOn >= DateOnly.FromDateTime(DateTime.Now))
                 {
-                    fireBaseService.PushNotificationToStudent(new Message
+                    if (entity.CampaignActivities.LastOrDefault().State.Equals(CampaignState.Pending))
                     {
-                        Data = new Dictionary<string, string>()
+                        fireBaseService.PushNotificationToStudent(new Message
+                        {
+                            Data = new Dictionary<string, string>()
                     {
                         { "brandId", entity.BrandId },
                         { "campaignId", entity.Id },
                     },
-                        //Token = registrationToken,
-                        Topic = entity.BrandId,
-                        Notification = new Notification()
-                        {
-                            Title = entity.Brand.BrandName + " tạo chiến dịch mới!",
-                            Body = "Chiến dịch " + entity.CampaignName,
-                            ImageUrl = entity.Image
-                        }
-                    });
+                            //Token = registrationToken,
+                            Topic = entity.BrandId,
+                            Notification = new Notification()
+                            {
+                                Title = entity.Brand.BrandName + " tạo chiến dịch mới!",
+                                Body = "Chiến dịch " + entity.CampaignName,
+                                ImageUrl = entity.Image
+                            }
+                        });
 
-                    return mapper.Map<CampaignExtraModel>(campaignRepository.Update(entity));
+                        return mapper.Map<CampaignExtraModel>(campaignRepository.Update(entity));
+                    }
+                    throw new InvalidParameterException("Chiến dịch này đã được phê duyệt");
                 }
-                throw new InvalidParameterException("Chiến dịch này đã được phê duyệt");
+                throw new InvalidParameterException("Chiến dịch này đã kết thúc");
             }
-            throw new InvalidParameterException("Chiến dịch này đã kết thúc");
+            throw new InvalidParameterException("Không tìm thấy chiến dịch");
         }
-        throw new InvalidParameterException("Không tìm thấy chiến dịch");
+        throw new InvalidParameterException("Trạng thái chiến dịch không hợp lệ");
     }
 }

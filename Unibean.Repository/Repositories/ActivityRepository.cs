@@ -21,12 +21,11 @@ public class ActivityRepository : IActivityRepository
                 var student = db.Students
                         .Where(s => s.Id.Equals(creation.StudentId) && (bool)s.Status)
                         .Include(b => b.Wallets).FirstOrDefault();
-                var studentWallet = student.Wallets.FirstOrDefault();
+                var studentWallet = student.Wallets.Where(w => w.Type.Equals(WalletType.Green)).FirstOrDefault();
 
                 // Create Activity Transaction List
                 creation.ActivityTransactions = new List<ActivityTransaction> {
-                    new ActivityTransaction
-                    {
+                    new() {
                         Id = Ulid.NewUlid().ToString(),
                         ActivityId = creation.Id,
                         WalletId = studentWallet.Id,
@@ -60,18 +59,17 @@ public class ActivityRepository : IActivityRepository
                 var student = db.Students
                         .Where(s => s.Id.Equals(creation.StudentId) && (bool)s.Status)
                         .Include(b => b.Wallets).FirstOrDefault();
-                var studentWallet = student.Wallets.Skip(1).FirstOrDefault();
+                var studentWallet = student.Wallets.Where(w => w.Type.Equals(WalletType.Red)).FirstOrDefault();
 
-                // Get red bean wallet campaign
+                // Get green bean wallet campaign
                 var campaign = db.Campaigns
                         .Where(s => s.Id.Equals(creation.VoucherItem.CampaignDetail.CampaignId) && (bool)s.Status)
                         .Include(b => b.Wallets).FirstOrDefault();
-                var campaignWallet = campaign.Wallets.FirstOrDefault();
+                var campaignWallet = campaign.Wallets.Where(w => w.Type.Equals(WalletType.Green)).FirstOrDefault();
 
                 // Create Activity Transaction List
                 creation.ActivityTransactions = new List<ActivityTransaction> {
-                    new ActivityTransaction
-                    {
+                    new() {
                         Id = Ulid.NewUlid().ToString(),
                         ActivityId = creation.Id,
                         WalletId = campaignWallet.Id,
@@ -81,8 +79,7 @@ public class ActivityRepository : IActivityRepository
                         State = creation.State,
                         Status = creation.Status,
                     },
-                    new ActivityTransaction
-                    {
+                    new() {
                         Id = Ulid.NewUlid().ToString(),
                         ActivityId = creation.Id,
                         WalletId = studentWallet.Id,

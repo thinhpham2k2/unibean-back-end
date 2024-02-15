@@ -18,13 +18,13 @@ public class BonusRepository : IBonusRepository
             var student = db.Students
                     .Where(s => s.Id.Equals(creation.StudentId) && (bool)s.Status)
                     .Include(b => b.Wallets).FirstOrDefault();
-            var studentWallet = student.Wallets.FirstOrDefault();
+            var studentWallet = student.Wallets.Where(w => w.Type.Equals(WalletType.Green)).FirstOrDefault();
 
             // Get green bean wallet brand
             var brand = db.Brands
                     .Where(s => s.Id.Equals(creation.BrandId) && (bool)s.Status)
                     .Include(b => b.Wallets).FirstOrDefault();
-            var brandWallet = brand.Wallets.FirstOrDefault();
+            var brandWallet = brand.Wallets.Where(w => w.Type.Equals(WalletType.Green)).FirstOrDefault();
 
             creation.BonusTransactions = new List<BonusTransaction>() {
                 new BonusTransaction

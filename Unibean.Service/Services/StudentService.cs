@@ -89,14 +89,22 @@ public class StudentService : IStudentService
             .ForMember(s => s.IsVerify, opt => opt.MapFrom(src => src.Account.IsVerify))
             .ForMember(s => s.StateId, opt => opt.MapFrom(src => (int)src.State))
             .ForMember(s => s.StateName, opt => opt.MapFrom(src => src.State.GetDisplayName()))
-            .ForMember(s => s.GreenWalletId, opt => opt.MapFrom(src => (int)src.Wallets.FirstOrDefault().Type))
-            .ForMember(s => s.GreenWallet, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Type))
-            .ForMember(s => s.GreenWalletName, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Type.GetDisplayName()))
-            .ForMember(s => s.GreenWalletBalance, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Balance))
-            .ForMember(s => s.RedWalletId, opt => opt.MapFrom(src => (int)src.Wallets.Skip(1).FirstOrDefault().Type))
-            .ForMember(s => s.RedWallet, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Type))
-            .ForMember(s => s.RedWalletName, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Type.GetDisplayName()))
-            .ForMember(s => s.RedWalletBalance, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Balance))
+            .ForMember(s => s.GreenWalletId, opt => opt.MapFrom(src => (int)src.Wallets.Where(
+                w => w.Type.Equals(WalletType.Green)).FirstOrDefault().Type))
+            .ForMember(s => s.GreenWallet, opt => opt.MapFrom(src => src.Wallets.Where(
+                w => w.Type.Equals(WalletType.Green)).FirstOrDefault().Type))
+            .ForMember(s => s.GreenWalletName, opt => opt.MapFrom(src => src.Wallets.Where(
+                w => w.Type.Equals(WalletType.Green)).FirstOrDefault().Type.GetDisplayName()))
+            .ForMember(s => s.GreenWalletBalance, opt => opt.MapFrom(src => src.Wallets.Where(
+                w => w.Type.Equals(WalletType.Green)).FirstOrDefault().Balance))
+            .ForMember(s => s.RedWalletId, opt => opt.MapFrom(src => (int)src.Wallets.Where(
+                w => w.Type.Equals(WalletType.Red)).FirstOrDefault().Type))
+            .ForMember(s => s.RedWallet, opt => opt.MapFrom(src => src.Wallets.Where(
+                w => w.Type.Equals(WalletType.Red)).FirstOrDefault().Type))
+            .ForMember(s => s.RedWalletName, opt => opt.MapFrom(src => src.Wallets.Where(
+                w => w.Type.Equals(WalletType.Red)).FirstOrDefault().Type.GetDisplayName()))
+            .ForMember(s => s.RedWalletBalance, opt => opt.MapFrom(src => src.Wallets.Where(
+                w => w.Type.Equals(WalletType.Red)).FirstOrDefault().Balance))
             .ReverseMap();
             // Map Student Extra Model
             cfg.CreateMap<Student, StudentExtraModel>()
@@ -117,14 +125,22 @@ public class StudentService : IStudentService
             .ForMember(s => s.IsVerify, opt => opt.MapFrom(src => src.Account.IsVerify))
             .ForMember(s => s.StateId, opt => opt.MapFrom(src => (int)src.State))
             .ForMember(s => s.StateName, opt => opt.MapFrom(src => src.State.GetDisplayName()))
-            .ForMember(s => s.GreenWalletId, opt => opt.MapFrom(src => (int)src.Wallets.FirstOrDefault().Type))
-            .ForMember(s => s.GreenWallet, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Type))
-            .ForMember(s => s.GreenWalletName, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Type.GetDisplayName()))
-            .ForMember(s => s.GreenWalletBalance, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Balance))
-            .ForMember(s => s.RedWalletId, opt => opt.MapFrom(src => (int)src.Wallets.Skip(1).FirstOrDefault().Type))
-            .ForMember(s => s.RedWallet, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Type))
-            .ForMember(s => s.RedWalletName, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Type.GetDisplayName()))
-            .ForMember(s => s.RedWalletBalance, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Balance))
+            .ForMember(s => s.GreenWalletId, opt => opt.MapFrom(src => (int)src.Wallets.Where(
+                w => w.Type.Equals(WalletType.Green)).FirstOrDefault().Type))
+            .ForMember(s => s.GreenWallet, opt => opt.MapFrom(src => src.Wallets.Where(
+                w => w.Type.Equals(WalletType.Green)).FirstOrDefault().Type))
+            .ForMember(s => s.GreenWalletName, opt => opt.MapFrom(src => src.Wallets.Where(
+                w => w.Type.Equals(WalletType.Green)).FirstOrDefault().Type.GetDisplayName()))
+            .ForMember(s => s.GreenWalletBalance, opt => opt.MapFrom(src => src.Wallets.Where(
+                w => w.Type.Equals(WalletType.Green)).FirstOrDefault().Balance))
+            .ForMember(s => s.RedWalletId, opt => opt.MapFrom(src => (int)src.Wallets.Where(
+                w => w.Type.Equals(WalletType.Red)).FirstOrDefault().Type))
+            .ForMember(s => s.RedWallet, opt => opt.MapFrom(src => src.Wallets.Where(
+                w => w.Type.Equals(WalletType.Red)).FirstOrDefault().Type))
+            .ForMember(s => s.RedWalletName, opt => opt.MapFrom(src => src.Wallets.Where(
+                w => w.Type.Equals(WalletType.Red)).FirstOrDefault().Type.GetDisplayName()))
+            .ForMember(s => s.RedWalletBalance, opt => opt.MapFrom(src => src.Wallets.Where(
+                w => w.Type.Equals(WalletType.Red)).FirstOrDefault().Balance))
             .ForMember(s => s.Following, opt => opt.MapFrom(src => src.Wishlists.Count))
             .ForMember(s => s.Inviter, opt => opt.MapFrom(src => src.Invitees.FirstOrDefault().Inviter.FullName))
             .ForMember(s => s.Invitee, opt => opt.MapFrom(src => src.Inviters.Count))

@@ -87,7 +87,7 @@ public class OrderService : IOrderService
         Student student = studentRepository.GetById(id);
         if (student != null)
         {
-            Wallet wallet = student.Wallets.Skip(1).FirstOrDefault();
+            Wallet wallet = student.Wallets.Where(w => w.Type.Equals(WalletType.Red)).FirstOrDefault();
             if (wallet != null)
             {
                 if (wallet.Balance >= creation.Amount)

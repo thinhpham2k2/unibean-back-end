@@ -18,7 +18,7 @@ public class RequestRepository : IRequestRepository
             var brand = db.Brands
                     .Where(s => s.Id.Equals(creation.BrandId) && (bool)s.Status)
                     .Include(b => b.Wallets).FirstOrDefault();
-            var wallet = brand.Wallets.FirstOrDefault();
+            var wallet = brand.Wallets.Where(w => w.Type.Equals(WalletType.Green)).FirstOrDefault();
 
             // Create request transactions
             creation.RequestTransactions = new List<RequestTransaction>() {

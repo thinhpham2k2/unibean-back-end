@@ -85,6 +85,27 @@ public class CampaignDetailRepository : ICampaignDetailRepository
         return pagedResult;
     }
 
+    public List<string> GetAllVoucherItemByCampaignDetail
+        (string id)
+    {
+        List<string> items = new();
+        try
+        {
+            using var db = new UnibeanDBContext();
+            items = db.CampaignDetails
+            .Where(s => s.Id.Equals(id) && (bool)s.Status)
+            .SelectMany(d => d.VoucherItems.Where(
+                v => (bool)v.Status && (bool)v.State 
+                && (bool)v.IsLocked && !(bool)v.IsBought 
+                && !(bool)v.IsUsed && v.CampaignDetailId != null).Select(v => v.Id)).ToList();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return items;
+    }
+
     public CampaignDetail GetById(string id)
     {
         CampaignDetail detail = new();

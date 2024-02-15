@@ -53,11 +53,16 @@ public class CampaignDetailService : ICampaignDetailService
     }
 
     public PagedResultModel<CampaignDetailModel> GetAll
-        (List<string> campaignIds, List<string> typeIds, bool? state, 
+        (List<string> campaignIds, List<string> typeIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<CampaignDetailModel>>(campaignDetailRepository.GetAll
             (campaignIds, typeIds, state, propertySort, isAsc, search, page, limit));
+    }
+
+    public List<string> GetAllVoucherItemByCampaignDetail(string id)
+    {
+        return campaignDetailRepository.GetAllVoucherItemByCampaignDetail(id);
     }
 
     public CampaignDetailExtraModel GetById(string id)

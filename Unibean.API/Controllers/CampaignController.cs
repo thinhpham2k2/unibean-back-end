@@ -150,19 +150,23 @@ public class CampaignController : ControllerBase
     /// <summary>
     /// Update campaign state
     /// </summary>
-    [HttpPut("{id}/state")]
-    [Authorize(Roles = "Admin")]
+    /// <param name="id">Campaign id.</param>
+    /// <param name="stateId">Campaign state id --- Rejected = 2, Active = 3, Inactive = 4, Closed = 6</param>
+    [HttpPut("{id}/states/{stateId}")]
+    [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType(typeof(CampaignExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public ActionResult UpdateState(string id)
+    public ActionResult UpdateState(
+        string id, 
+        [ValidCampaignState] CampaignState stateId)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         try
         {
-            var campaign = campaignService.UpdateState(id);
+            var campaign = campaignService.UpdateState(id, stateId);
             if (campaign != null)
             {
                 return StatusCode(StatusCodes.Status200OK, campaign);

@@ -9,5 +9,7 @@ public interface ICampaignDetailService
         (List<string> campaignIds, List<string> typeIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit);
 
+    List<string> GetAllVoucherItemByCampaignDetail(string id);
+
     CampaignDetailExtraModel GetById(string id);
 }

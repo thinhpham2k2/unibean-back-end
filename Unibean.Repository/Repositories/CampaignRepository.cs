@@ -66,7 +66,7 @@ public class CampaignRepository : ICampaignRepository
                     .Where(s => s.Id.Equals(creation.BrandId) && (bool)s.Status)
                     .Include(b => b.Account)
                     .Include(b => b.Wallets).FirstOrDefault();
-            var brandGreenWallet = brand.Wallets.FirstOrDefault();
+            var brandGreenWallet = brand.Wallets.Where(w => w.Type.Equals(WalletType.Green)).FirstOrDefault();
 
             // Cretae campaign transactions
             creation.CampaignTransactions = new List<CampaignTransaction>() {
@@ -74,7 +74,7 @@ public class CampaignRepository : ICampaignRepository
                 // Transaction for campaign's green bean
                 Id = Ulid.NewUlid().ToString(),
                 CampaignId = creation.Id,
-                WalletId = creation.Wallets.FirstOrDefault().Id,
+                WalletId = creation.Wallets.Where(w => w.Type.Equals(WalletType.Green)).FirstOrDefault().Id,
                 Amount = creation.TotalIncome,
                 Rate = 1,
                 DateCreated = creation.DateCreated,
