@@ -115,6 +115,86 @@ public class CampaignRepository : ICampaignRepository
         return creation;
     }
 
+    public bool AllToClosed(string id)
+    {
+        try
+        {
+            using var db = new UnibeanDBContext();
+
+            // Get campaign wallet
+            var campaign = db.Campaigns
+            .Where(s => s.Id.Equals(id) && (bool)s.Status)
+            .FirstOrDefault();
+            var campaignWallet = campaign.Wallets.FirstOrDefault();
+
+            // Get campaign wallet
+            var brand = db.Brands
+            .Where(s => s.Id.Equals(campaign.BrandId) && (bool)s.Status)
+            .FirstOrDefault();
+            var brandWallet = brand.Wallets.FirstOrDefault();
+
+            // Refund For Brand
+            // Cretae campaign transactions
+            db.CampaignTransactions.AddRange(new List<CampaignTransaction>() {
+                new() {
+                // Transaction for campaign's green bean
+                Id = Ulid.NewUlid().ToString(),
+                CampaignId = campaign.Id,
+                WalletId = campaignWallet.Id,
+                Amount = -campaignWallet.Balance,
+                Rate = 1,
+                DateCreated = DateTime.Now,
+                State = true,
+                Status = true,
+            },
+                // Transaction for brand's green bean wallet
+                new() {
+                Id = Ulid.NewUlid().ToString(),
+                CampaignId = campaign.Id,
+                WalletId = brandWallet.Id,
+                Amount = campaignWallet.Balance,
+                Rate = 1,
+                DateCreated = DateTime.Now,
+                State = true,
+                Status = true,
+            }});
+
+            // Update campaign green wallet balance
+            campaignWallet.Balance = 0;
+            campaignWallet.DateUpdated = DateTime.Now;
+
+            // Update brand green wallet balance
+            brandWallet.Balance += campaignWallet.Balance;
+            brandWallet.DateUpdated = DateTime.Now;
+
+            List<Wallet> walletList = new() { campaignWallet, brandWallet };
+
+            //Refund For Student
+            var itemList = campaign.CampaignDetails.SelectMany(d => d.VoucherItems.Where(
+                i => (bool)i.State && (bool)i.Status
+                && (bool)i.IsLocked && (bool)i.IsBought
+                && !(bool)i.IsUsed && i.CampaignDetailId != null))
+                .ToList();
+
+            List<Activity> activityList = new();
+
+            foreach (var item in itemList)
+            {
+                activityList.Add(new()
+                {
+                    
+                });
+            }
+
+            db.Wallets.UpdateRange(walletList);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return true;
+    }
+
     public void Delete(string id)
     {
         try
@@ -129,6 +209,11 @@ public class CampaignRepository : ICampaignRepository
         {
             throw new Exception(ex.Message);
         }
+    }
+
+    public bool ExpiredToClosed(string id)
+    {
+        throw new NotImplementedException();
     }
 
     public PagedResultModel<Campaign> GetAll
@@ -220,7 +305,7 @@ public class CampaignRepository : ICampaignRepository
         try
         {
             using var db = new UnibeanDBContext();
-            if(!update.CampaignActivities.LastOrDefault().State.Equals(CampaignState.Pending))
+            if (!update.CampaignActivities.LastOrDefault().State.Equals(CampaignState.Pending))
             {
                 db.CampaignActivities.Add(new CampaignActivity
                 {

@@ -507,6 +507,7 @@ public class CampaignService : ICampaignService
                     if (stateId.Equals(CampaignState.Closed))
                     {
                         // Handle refund
+                        campaignRepository.AllToClosed(entity.Id);
                     }
                     return campaignActivityRepository.Add(new CampaignActivity
                     {

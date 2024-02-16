@@ -11,7 +11,7 @@ using Unibean.Repository.Entities;
 namespace Unibean.Repository.Migrations
 {
     [DbContext(typeof(UnibeanDBContext))]
-    [Migration("20240208092916_Unibean")]
+    [Migration("20240216082002_Unibean")]
     partial class Unibean
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -126,7 +126,7 @@ namespace Unibean.Repository.Migrations
                         .HasColumnName("student_id");
 
                     b.Property<string>("Type")
-                        .HasColumnType("enum('Buy', 'Use')")
+                        .HasColumnType("enum('Buy', 'Use', 'Refund')")
                         .HasColumnName("type");
 
                     b.Property<string>("VoucherItemId")

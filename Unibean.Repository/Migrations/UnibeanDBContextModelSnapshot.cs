@@ -124,7 +124,7 @@ namespace Unibean.Repository.Migrations
                         .HasColumnName("student_id");
 
                     b.Property<string>("Type")
-                        .HasColumnType("enum('Buy', 'Use')")
+                        .HasColumnType("enum('Buy', 'Use', 'Refund')")
                         .HasColumnName("type");
 
                     b.Property<string>("VoucherItemId")

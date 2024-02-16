@@ -12,7 +12,11 @@ public enum Type
 
     [Display(Name = "Sử dụng")]
     [Description("Sử dụng khuyến mãi")]
-    Use = 2
+    Use = 2,
+
+    [Display(Name = "Hoàn trả")]
+    [Description("Hoàn trả khuyến mãi")]
+    Refund = 3
 }
 
 [Table("tbl_activity")]
@@ -37,7 +41,7 @@ public class Activity
 
     public VoucherItem VoucherItem { get; set; }
 
-    [Column("type", TypeName = "enum('Buy', 'Use')")]
+    [Column("type", TypeName = "enum('Buy', 'Use', 'Refund')")]
     public Type? Type { get; set; }
 
     [Column("date_created")]
