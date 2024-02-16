@@ -24,9 +24,14 @@ public class CampaignController : ControllerBase
 {
     private readonly ICampaignService campaignService;
 
-    public CampaignController(ICampaignService campaignService)
+    private readonly IJwtService jwtService;
+
+    public CampaignController(
+        ICampaignService campaignService,
+        IJwtService jwtService)
     {
         this.campaignService = campaignService;
+        this.jwtService = jwtService;
     }
 
     /// <summary>
@@ -154,22 +159,27 @@ public class CampaignController : ControllerBase
     /// <param name="stateId">Campaign state id --- Rejected = 2, Active = 3, Inactive = 4, Closed = 6</param>
     [HttpPut("{id}/states/{stateId}")]
     [Authorize(Roles = "Admin, Brand")]
-    [ProducesResponseType(typeof(CampaignExtraModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult UpdateState(
-        string id, 
-        [ValidCampaignState] CampaignState stateId)
+        [ValidCampaign(new[] {
+            CampaignState.Pending,
+            CampaignState.Active,
+            CampaignState.Inactive, })] string id,
+        CampaignState stateId)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
+        string jwtToken = HttpContext.Request.Headers["Authorization"];
+
         try
         {
-            var campaign = campaignService.UpdateState(id, stateId);
-            if (campaign != null)
+            if (campaignService.UpdateState
+                (id, stateId, jwtService.GetJwtRequest(jwtToken.Split(" ")[1])))
             {
-                return StatusCode(StatusCodes.Status200OK, campaign);
+                return StatusCode(StatusCodes.Status200OK, "Cập nhật trạng thái thành công");
             }
             return NotFound("Cập nhật trạng thái thất bại");
         }
@@ -268,7 +278,7 @@ public class CampaignController : ControllerBase
             {
                 PagedResultModel<CampusModel>
                 result = campaignService.GetCampusListByCampaignId
-                    (id, universityIds, areaIds, state, propertySort, 
+                    (id, universityIds, areaIds, state, propertySort,
                     paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
                 return StatusCode(StatusCodes.Status200OK, result);
             }
@@ -434,8 +444,8 @@ public class CampaignController : ControllerBase
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<string> BuyVoucher(
-        [ValidCampaign(new[] { CampaignState.Active })] string id, 
-        [ValidCampaignDetailId] string detailId, 
+        [ValidCampaign(new[] { CampaignState.Active })] string id,
+        [ValidCampaignDetailId] string detailId,
         CreateBuyActivityModel creation)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);

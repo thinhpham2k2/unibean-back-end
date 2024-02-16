@@ -1,6 +1,7 @@
 ﻿using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Service.Models.Activities;
+using Unibean.Service.Models.Authens;
 using Unibean.Service.Models.CampaignActivities;
 using Unibean.Service.Models.CampaignDetails;
 using Unibean.Service.Models.Campaigns;
@@ -49,5 +50,5 @@ public interface ICampaignService
 
     Task<CampaignExtraModel> Update(string id, UpdateCampaignModel update);
 
-    CampaignExtraModel UpdateState(string id, CampaignState stateId);
+    bool UpdateState(string id, CampaignState stateId, JwtRequestModel request);
 }

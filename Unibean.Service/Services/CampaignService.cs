@@ -7,6 +7,7 @@ using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Service.Models.Activities;
+using Unibean.Service.Models.Authens;
 using Unibean.Service.Models.CampaignActivities;
 using Unibean.Service.Models.CampaignCampuses;
 using Unibean.Service.Models.CampaignDetails;
@@ -53,6 +54,8 @@ public class CampaignService : ICampaignService
 
     private readonly ICampaignActivityService campaignActivityService;
 
+    private readonly ICampaignActivityRepository campaignActivityRepository;
+
     public CampaignService(ICampaignRepository campaignRepository,
         IVoucherRepository voucherRepository,
         IFireBaseService fireBaseService,
@@ -64,7 +67,8 @@ public class CampaignService : ICampaignService
         IVoucherItemRepository voucherItemRepository,
         IStudentRepository studentRepository,
         ICampaignDetailService campaignDetailService,
-        ICampaignActivityService campaignActivityService)
+        ICampaignActivityService campaignActivityService,
+        ICampaignActivityRepository campaignActivityRepository)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -167,6 +171,7 @@ public class CampaignService : ICampaignService
         this.studentRepository = studentRepository;
         this.campaignDetailService = campaignDetailService;
         this.campaignActivityService = campaignActivityService;
+        this.campaignActivityRepository = campaignActivityRepository;
     }
 
     public async Task<CampaignExtraModel> Add(CreateCampaignModel creation)
@@ -459,37 +464,59 @@ public class CampaignService : ICampaignService
         throw new InvalidParameterException("Không tìm thấy chiến dịch");
     }
 
-    public CampaignExtraModel UpdateState(string id, CampaignState stateId)
+    public bool UpdateState(string id, CampaignState stateId, JwtRequestModel request)
     {
-        if (!stateId.Equals(CampaignState.Pending))
+        if (!new[] { CampaignState.Pending, CampaignState.Expired }.Contains(stateId))
         {
             Campaign entity = campaignRepository.GetById(id);
             if (entity != null)
             {
                 if (entity.EndOn >= DateOnly.FromDateTime(DateTime.Now))
                 {
-                    if (entity.CampaignActivities.LastOrDefault().State.Equals(CampaignState.Pending))
+                    switch (entity.CampaignActivities.LastOrDefault().State)
                     {
-                        fireBaseService.PushNotificationToStudent(new Message
-                        {
-                            Data = new Dictionary<string, string>()
-                    {
-                        { "brandId", entity.BrandId },
-                        { "campaignId", entity.Id },
-                    },
-                            //Token = registrationToken,
-                            Topic = entity.BrandId,
-                            Notification = new Notification()
-                            {
-                                Title = entity.Brand.BrandName + " tạo chiến dịch mới!",
-                                Body = "Chiến dịch " + entity.CampaignName,
-                                ImageUrl = entity.Image
-                            }
-                        });
-
-                        return mapper.Map<CampaignExtraModel>(campaignRepository.Update(entity));
+                        case CampaignState.Pending
+                        when request.Role.Equals("Brand") || new[] { CampaignState.Inactive, CampaignState.Closed }.Contains(stateId):
+                            throw new InvalidParameterException("Trạng thái không hợp lệ cho chiến dịch");
+                        case CampaignState.Active
+                        when new[] { CampaignState.Rejected, CampaignState.Active }.Contains(stateId):
+                            throw new InvalidParameterException("Trạng thái không hợp lệ cho chiến dịch");
+                        case CampaignState.Inactive
+                        when new[] { CampaignState.Rejected, CampaignState.Inactive }.Contains(stateId):
+                            throw new InvalidParameterException("Trạng thái không hợp lệ cho chiến dịch");
                     }
-                    throw new InvalidParameterException("Chiến dịch này đã được phê duyệt");
+
+                    // Push notification to mobile app
+                    fireBaseService.PushNotificationToStudent(new Message
+                    {
+                        Data = new Dictionary<string, string>()
+                                    {
+                                        { "brandId", entity.BrandId },
+                                        { "campaignId", entity.Id },
+                                    },
+                        //Token = registrationToken,
+                        Topic = entity.BrandId,
+                        Notification = new Notification()
+                        {
+                            Title = entity.Brand.BrandName + " tạo chiến dịch mới!",
+                            Body = "Chiến dịch " + entity.CampaignName,
+                            ImageUrl = entity.Image
+                        }
+                    });
+
+                    if (stateId.Equals(CampaignState.Closed))
+                    {
+                        // Handle refund
+                    }
+                    return campaignActivityRepository.Add(new CampaignActivity
+                    {
+                        Id = Ulid.NewUlid().ToString(),
+                        CampaignId = entity.Id,
+                        State = stateId,
+                        DateCreated = DateTime.Now,
+                        Description = stateId.GetEnumDescription(),
+                        Status = true,
+                    }) != null;
                 }
                 throw new InvalidParameterException("Chiến dịch này đã kết thúc");
             }
