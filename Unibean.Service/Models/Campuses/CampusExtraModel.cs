@@ -21,5 +21,5 @@ public class CampusExtraModel
     public string Description { get; set; }
     public bool? State { get; set; }
     public bool? Status { get; set; }
-    public int? NumberOfStudent { get; set; }
+    public int? NumberOfStudents { get; set; }
 }

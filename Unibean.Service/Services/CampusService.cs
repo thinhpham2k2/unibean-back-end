@@ -34,7 +34,7 @@ public class CampusService : ICampusService
             cfg.CreateMap<Campus, CampusExtraModel>()
             .ForMember(c => c.UniversityName, opt => opt.MapFrom(src => src.University.UniversityName))
             .ForMember(c => c.AreaName, opt => opt.MapFrom(src => src.Area.AreaName))
-            .ForMember(c => c.NumberOfStudent, opt => opt.MapFrom(src => src.Students.Count))
+            .ForMember(c => c.NumberOfStudents, opt => opt.MapFrom(src => src.Students.Count))
             .ReverseMap();
             cfg.CreateMap<Campus, UpdateCampusModel>()
             .ReverseMap()

@@ -83,6 +83,7 @@ public class CategoryRepository : ICategoryRepository
             using var db = new UnibeanDBContext();
             category = db.Categories
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
+            .Include(c => c.Products.Where(p => (bool)p.Status))
             .FirstOrDefault();
         }
         catch (Exception ex)
