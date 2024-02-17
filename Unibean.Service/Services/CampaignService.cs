@@ -56,6 +56,8 @@ public class CampaignService : ICampaignService
 
     private readonly ICampaignActivityRepository campaignActivityRepository;
 
+    private readonly IStudentChallengeService studentChallengeService;
+
     public CampaignService(ICampaignRepository campaignRepository,
         IVoucherRepository voucherRepository,
         IFireBaseService fireBaseService,
@@ -68,7 +70,8 @@ public class CampaignService : ICampaignService
         IStudentRepository studentRepository,
         ICampaignDetailService campaignDetailService,
         ICampaignActivityService campaignActivityService,
-        ICampaignActivityRepository campaignActivityRepository)
+        ICampaignActivityRepository campaignActivityRepository,
+        IStudentChallengeService studentChallengeService)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -172,6 +175,7 @@ public class CampaignService : ICampaignService
         this.campaignDetailService = campaignDetailService;
         this.campaignActivityService = campaignActivityService;
         this.campaignActivityRepository = campaignActivityRepository;
+        this.studentChallengeService = studentChallengeService;
     }
 
     public async Task<CampaignExtraModel> Add(CreateCampaignModel creation)
@@ -285,8 +289,8 @@ public class CampaignService : ICampaignService
 
                 if (items.Count >= creation.Quantity)
                 {
-                    if (studentRepository.GetById
-                        (creation.StudentId)?.Wallets.Where(w => w.Type.Equals(WalletType.Green)).FirstOrDefault().Balance
+                    var student = studentRepository.GetById(creation.StudentId);
+                    if (student?.Wallets.Where(w => w.Type.Equals(WalletType.Green)).FirstOrDefault().Balance
                         >= detail.Price * creation.Quantity)
                     {
                         items = items.Take((int)creation.Quantity).ToList();
@@ -296,6 +300,14 @@ public class CampaignService : ICampaignService
                             create.VoucherItemId = itemId;
                             activityService.Add(create);
                         }
+
+                        // Take the challenge
+                        studentChallengeService.Update(studentRepository
+                            .GetById(student.Id).StudentChallenges
+                            .Where(s => (bool)s.Status
+                            && s.IsCompleted.Equals(false)
+                            && s.Challenge.Type.Equals(ChallengeType.Consume)), (decimal)(detail.Price * creation.Quantity));
+
                         return true;
                     }
                     throw new InvalidParameterException("Số dư đậu xanh của sinh viên không đủ");

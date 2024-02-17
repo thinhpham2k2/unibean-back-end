@@ -33,6 +33,13 @@ public class ChallengeService : IChallengeService
             .ReverseMap();
             cfg.CreateMap<PagedResultModel<Challenge>, PagedResultModel<ChallengeModel>>()
             .ReverseMap();
+            cfg.CreateMap<Challenge, ChallengeExtraModel>()
+            .ForMember(t => t.TypeId, opt => opt.MapFrom(src => (int)src.Type))
+            .ForMember(t => t.Type, opt => opt.MapFrom(src => src.Type))
+            .ForMember(t => t.TypeName, opt => opt.MapFrom(src => src.Type.GetDisplayName()))
+            .ForMember(t => t.TypeDescription, opt => opt.MapFrom(src => src.Type.GetEnumDescription()))
+            .ForMember(t => t.NumberOfChallenges, opt => opt.MapFrom(src => src.StudentChallenges.Count))
+            .ReverseMap();
             cfg.CreateMap<Challenge, UpdateChallengeModel>()
             .ReverseMap()
             .ForMember(t => t.Image, opt => opt.Ignore())
@@ -49,7 +56,7 @@ public class ChallengeService : IChallengeService
         this.fireBaseService = fireBaseService;
     }
 
-    public async Task<ChallengeModel> Add(CreateChallengeModel creation)
+    public async Task<ChallengeExtraModel> Add(CreateChallengeModel creation)
     {
         Challenge entity = mapper.Map<Challenge>(creation);
 
@@ -60,7 +67,7 @@ public class ChallengeService : IChallengeService
             entity.Image = f.URL;
             entity.FileName = f.FileName;
         }
-        return mapper.Map<ChallengeModel>(challengeRepository.Add(entity));
+        return mapper.Map<ChallengeExtraModel>(challengeRepository.Add(entity));
     }
 
     public void Delete(string id)
@@ -68,12 +75,19 @@ public class ChallengeService : IChallengeService
         Challenge entity = challengeRepository.GetById(id);
         if (entity != null)
         {
-            if (entity.Image != null && entity.FileName != null)
+            if (entity.StudentChallenges.Count.Equals(0))
             {
-                //Remove image
-                fireBaseService.RemoveFileAsync(entity.FileName, FOLDER_NAME);
+                if (entity.Image != null && entity.FileName != null)
+                {
+                    //Remove image
+                    fireBaseService.RemoveFileAsync(entity.FileName, FOLDER_NAME);
+                }
+                challengeRepository.Delete(id);
             }
-            challengeRepository.Delete(id);
+            else
+            {
+                throw new InvalidParameterException("Xóa thất bại do tồn tại sinh viên đang thực hiện thử thách");
+            }
         }
         else
         {
@@ -89,17 +103,17 @@ public class ChallengeService : IChallengeService
             (typeIds, state, propertySort, isAsc, search, page, limit));
     }
 
-    public ChallengeModel GetById(string id)
+    public ChallengeExtraModel GetById(string id)
     {
         Challenge entity = challengeRepository.GetById(id);
         if (entity != null)
         {
-            return mapper.Map<ChallengeModel>(entity);
+            return mapper.Map<ChallengeExtraModel>(entity);
         }
         throw new InvalidParameterException("Không tìm thấy thử thách");
     }
 
-    public async Task<ChallengeModel> Update(string id, UpdateChallengeModel update)
+    public async Task<ChallengeExtraModel> Update(string id, UpdateChallengeModel update)
     {
         Challenge entity = challengeRepository.GetById(id);
         if (entity != null)
@@ -115,7 +129,7 @@ public class ChallengeService : IChallengeService
                 entity.Image = f.URL;
                 entity.FileName = f.FileName;
             }
-            return mapper.Map<ChallengeModel>(challengeRepository.Update(entity));
+            return mapper.Map<ChallengeExtraModel>(challengeRepository.Update(entity));
         }
         throw new InvalidParameterException("Không tìm thấy thử thách");
     }

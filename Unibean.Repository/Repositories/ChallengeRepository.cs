@@ -18,17 +18,23 @@ public class ChallengeRepository : IChallengeRepository
             if (creation != null)
             {
                 // Create student challenge
-                foreach (var student in db.Students.Where(s => (bool)s.Status))
+                foreach (var student in db.Students.Where(
+                    s => (bool)s.Status).Include(s => s.StudentChallenges.Where(
+                        s => (bool)s.Status)).ThenInclude(s => s.Challenge))
                 {
+                    var current = student.StudentChallenges.Where(
+                        s => s.Challenge.Type.Value.Equals(creation.Type.Value)).OrderBy(s => s.Id)
+                        .LastOrDefault()?.Current;
+                    
                     db.StudentChallenges.Add(new StudentChallenge
                     {
                         Id = Ulid.NewUlid().ToString(),
                         ChallengeId = creation.Id,
                         StudentId = student.Id,
                         Amount = creation.Amount,
-                        Current = 0,
+                        Current = current ?? 0,
                         Condition = creation.Condition,
-                        IsCompleted = false,
+                        IsCompleted = current >= creation.Condition,
                         DateCreated = creation.DateCreated,
                         DateUpdated = creation.DateUpdated,
                         Description = creation.Description,
@@ -82,7 +88,7 @@ public class ChallengeRepository : IChallengeRepository
             var result = query
                .Skip((page - 1) * limit)
                .Take(limit)
-               .Include(c => c.Type)
+               .Include(c => c.StudentChallenges.Where(s => (bool)s.Status))
                .ToList();
 
             pagedResult = new PagedResultModel<Challenge>
@@ -110,7 +116,7 @@ public class ChallengeRepository : IChallengeRepository
             using var db = new UnibeanDBContext();
             challenge = db.Challenges
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
-            .Include(c => c.Type)
+            .Include(c => c.StudentChallenges.Where(s => (bool)s.Status))
             .FirstOrDefault();
         }
         catch (Exception ex)

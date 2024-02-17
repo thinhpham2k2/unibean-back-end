@@ -6,7 +6,7 @@ namespace Unibean.Service.Services.Interfaces;
 
 public interface IChallengeService
 {
-    Task<ChallengeModel> Add(CreateChallengeModel creation);
+    Task<ChallengeExtraModel> Add(CreateChallengeModel creation);
 
     void Delete(string id);
 
@@ -14,7 +14,7 @@ public interface IChallengeService
         (List<ChallengeType> typeIds, bool? state, string propertySort, 
         bool isAsc, string search, int page, int limit);
 
-    ChallengeModel GetById(string id);
+    ChallengeExtraModel GetById(string id);
 
-    Task<ChallengeModel> Update(string id, UpdateChallengeModel update);
+    Task<ChallengeExtraModel> Update(string id, UpdateChallengeModel update);
 }
