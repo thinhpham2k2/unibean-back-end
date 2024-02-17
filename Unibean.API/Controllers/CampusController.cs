@@ -61,7 +61,7 @@ public class CampusController : ControllerBase
     /// </summary>
     [HttpGet("{id}")]
     [AllowAnonymous]
-    [ProducesResponseType(typeof(CampusModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(CampusExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult GetById(string id)
@@ -83,7 +83,7 @@ public class CampusController : ControllerBase
     /// </summary>
     [HttpPost]
     [Authorize(Roles = "Admin")]
-    [ProducesResponseType(typeof(CampusModel), (int)HttpStatusCode.Created)]
+    [ProducesResponseType(typeof(CampusExtraModel), (int)HttpStatusCode.Created)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
@@ -111,7 +111,7 @@ public class CampusController : ControllerBase
     /// </summary>
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin")]
-    [ProducesResponseType(typeof(CampusModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(CampusExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]

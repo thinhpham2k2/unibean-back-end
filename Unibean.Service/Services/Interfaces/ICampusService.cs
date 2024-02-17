@@ -5,7 +5,7 @@ namespace Unibean.Service.Services.Interfaces;
 
 public interface ICampusService
 {
-    Task<CampusModel> Add(CreateCampusModel creation);
+    Task<CampusExtraModel> Add(CreateCampusModel creation);
 
     void Delete(string id);
 
@@ -17,7 +17,7 @@ public interface ICampusService
         (List<string> campaignIds, List<string> universityIds, List<string> areaIds,
          bool? state, string propertySort, bool isAsc, string search, int page, int limit);
 
-    CampusModel GetById(string id);
+    CampusExtraModel GetById(string id);
 
-    Task<CampusModel> Update(string id, UpdateCampusModel update);
+    Task<CampusExtraModel> Update(string id, UpdateCampusModel update);
 }
