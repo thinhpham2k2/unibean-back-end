@@ -509,6 +509,7 @@ public class CampaignService : ICampaignService
                         // Handle refund
                         campaignRepository.AllToClosed(entity.Id);
                     }
+
                     return campaignActivityRepository.Add(new CampaignActivity
                     {
                         Id = Ulid.NewUlid().ToString(),

@@ -3,6 +3,7 @@ using System.Linq.Dynamic.Core;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
+using Type = Unibean.Repository.Entities.Type;
 
 namespace Unibean.Repository.Repositories;
 
@@ -124,12 +125,20 @@ public class CampaignRepository : ICampaignRepository
             // Get campaign wallet
             var campaign = db.Campaigns
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
+            .Include(c => c.Wallets.Where(w => (bool)w.Status))
+            .Include(c => c.CampaignDetails.Where(d => (bool)d.Status))
+                .ThenInclude(d => d.VoucherItems.Where(i => (bool)i.Status))
+                    .ThenInclude(i => i.Activities.Where(a => (bool)a.Status))
+                        .ThenInclude(a => a.Student)
+                            .ThenInclude(s => s.Wallets.Where(w => (bool)w.Status))
+            .Include(c => c.CampaignActivities.Where(d => (bool)d.Status))
             .FirstOrDefault();
             var campaignWallet = campaign.Wallets.FirstOrDefault();
 
             // Get campaign wallet
             var brand = db.Brands
             .Where(s => s.Id.Equals(campaign.BrandId) && (bool)s.Status)
+            .Include(c => c.Wallets.Where(w => (bool)w.Status))
             .FirstOrDefault();
             var brandWallet = brand.Wallets.FirstOrDefault();
 
@@ -159,17 +168,17 @@ public class CampaignRepository : ICampaignRepository
                 Status = true,
             }});
 
-            // Update campaign green wallet balance
-            campaignWallet.Balance = 0;
-            campaignWallet.DateUpdated = DateTime.Now;
-
             // Update brand green wallet balance
             brandWallet.Balance += campaignWallet.Balance;
             brandWallet.DateUpdated = DateTime.Now;
 
+            // Update campaign green wallet balance
+            campaignWallet.Balance = 0;
+            campaignWallet.DateUpdated = DateTime.Now;
+
             List<Wallet> walletList = new() { campaignWallet, brandWallet };
 
-            //Refund For Student
+            // Refund For Student
             var itemList = campaign.CampaignDetails.SelectMany(d => d.VoucherItems.Where(
                 i => (bool)i.State && (bool)i.Status
                 && (bool)i.IsLocked && (bool)i.IsBought
@@ -178,15 +187,60 @@ public class CampaignRepository : ICampaignRepository
 
             List<Activity> activityList = new();
 
+            // Refund voucher item
             foreach (var item in itemList)
             {
+                item.State = false;
+                var activityId = Ulid.NewUlid().ToString();
+                var wallet = item.Activities.Where(
+                    a => a.Type.Equals(Type.Buy)).FirstOrDefault().Student.Wallets.Where(
+                    w => w.Type.Equals(WalletType.Green)).FirstOrDefault();
+
                 activityList.Add(new()
                 {
-                    
+                    Id = activityId,
+                    StudentId = item.Activities.Where(
+                        a => a.Type.Equals(Type.Buy)).First().StudentId,
+                    VoucherItemId = item.Id,
+                    Type = Type.Refund,
+                    DateCreated = DateTime.Now,
+                    DateUpdated = DateTime.Now,
+                    Description = Type.Refund.GetEnumDescription(),
+                    State = true,
+                    Status = true,
+                    ActivityTransactions = new List<ActivityTransaction>()
+                    {
+                        new()
+                        {
+                            Id = Ulid.NewUlid().ToString(),
+                            ActivityId = activityId,
+                            WalletId = wallet.Id,
+                            Amount = item.CampaignDetail.Price,
+                            Rate = 1,
+                            Description = Type.Refund.GetEnumDescription(),
+                            State = true,
+                            Status = true,
+                        }
+                    }
                 });
+
+                var w = walletList.Find(w => w.Id.Equals(wallet.Id));
+                if (w != null)
+                {
+                    w.Balance += item.CampaignDetail.Price;
+                }
+                else
+                {
+                    wallet.Balance += item.CampaignDetail.Price;
+                    walletList.Add(wallet);
+                }
             }
 
+            db.Activities.AddRange(activityList);
+            db.VoucherItems.UpdateRange(itemList);
             db.Wallets.UpdateRange(walletList);
+
+            db.SaveChanges();
         }
         catch (Exception ex)
         {
@@ -213,7 +267,67 @@ public class CampaignRepository : ICampaignRepository
 
     public bool ExpiredToClosed(string id)
     {
-        throw new NotImplementedException();
+        try
+        {
+            using var db = new UnibeanDBContext();
+
+            // Get campaign wallet
+            var campaign = db.Campaigns
+            .Where(s => s.Id.Equals(id) && (bool)s.Status)
+            .Include(c => c.Wallets.Where(w => (bool)w.Status))
+            .FirstOrDefault();
+            var campaignWallet = campaign.Wallets.FirstOrDefault();
+
+            // Get campaign wallet
+            var brand = db.Brands
+            .Where(s => s.Id.Equals(campaign.BrandId) && (bool)s.Status)
+            .Include(c => c.Wallets.Where(w => (bool)w.Status))
+            .FirstOrDefault();
+            var brandWallet = brand.Wallets.FirstOrDefault();
+
+            // Refund For Brand
+            // Cretae campaign transactions
+            db.CampaignTransactions.AddRange(new List<CampaignTransaction>() {
+                new() {
+                // Transaction for campaign's green bean
+                Id = Ulid.NewUlid().ToString(),
+                CampaignId = campaign.Id,
+                WalletId = campaignWallet.Id,
+                Amount = -campaignWallet.Balance,
+                Rate = 1,
+                DateCreated = DateTime.Now,
+                State = true,
+                Status = true,
+            },
+                // Transaction for brand's green bean wallet
+                new() {
+                Id = Ulid.NewUlid().ToString(),
+                CampaignId = campaign.Id,
+                WalletId = brandWallet.Id,
+                Amount = campaignWallet.Balance,
+                Rate = 1,
+                DateCreated = DateTime.Now,
+                State = true,
+                Status = true,
+            }});
+
+            // Update brand green wallet balance
+            brandWallet.Balance += campaignWallet.Balance;
+            brandWallet.DateUpdated = DateTime.Now;
+
+            // Update campaign green wallet balance
+            campaignWallet.Balance = 0;
+            campaignWallet.DateUpdated = DateTime.Now;
+
+            db.Wallets.UpdateRange(campaignWallet, brandWallet);
+
+            db.SaveChanges();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return true;
     }
 
     public PagedResultModel<Campaign> GetAll
