@@ -37,11 +37,11 @@ public class CampaignController : ControllerBase
     /// <summary>
     /// Get campaign list
     /// </summary>
-    /// <param name="brandIds">Filter by brand Id.</param>
-    /// <param name="typeIds">Filter by campaign type Id.</param>
-    /// <param name="storeIds">Filter by store Id.</param>
-    /// <param name="majorIds">Filter by major Id.</param>
-    /// <param name="campusIds">Filter by campus Id.</param>
+    /// <param name="brandIds">Filter by brand id.</param>
+    /// <param name="typeIds">Filter by campaign type id.</param>
+    /// <param name="storeIds">Filter by store id.</param>
+    /// <param name="majorIds">Filter by major id.</param>
+    /// <param name="campusIds">Filter by campus id.</param>
     /// <param name="stateIds">Filter by campaign state --- Pending = 1, Rejected = 2, Active = 3, Inactive = 4, Expired = 5, Closed = 6</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
@@ -167,7 +167,7 @@ public class CampaignController : ControllerBase
         [ValidCampaign(new[] {
             CampaignState.Pending,
             CampaignState.Active,
-            CampaignState.Inactive, })] string id,
+            CampaignState.Inactive })] string id,
         CampaignState stateId)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -253,8 +253,8 @@ public class CampaignController : ControllerBase
     /// Get campus list by campaign id
     /// </summary>
     /// <param name="id">Campaign id.</param>
-    /// <param name="universityIds">Filter by university Id.</param>
-    /// <param name="areaIds">Filter by area Id.</param>
+    /// <param name="universityIds">Filter by university id.</param>
+    /// <param name="areaIds">Filter by area id.</param>
     /// <param name="state">Filter by campus state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/campuses")]
@@ -331,8 +331,8 @@ public class CampaignController : ControllerBase
     /// Get store list by campaign id
     /// </summary>
     /// <param name="id">Campaign id.</param>
-    /// <param name="brandIds">Filter by brand Id.</param>
-    /// <param name="areaIds">Filter by area Id.</param>
+    /// <param name="brandIds">Filter by brand id.</param>
+    /// <param name="areaIds">Filter by area id.</param>
     /// <param name="state">Filter by store state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/stores")]
@@ -372,7 +372,7 @@ public class CampaignController : ControllerBase
     /// Get voucher list by campaign id
     /// </summary>
     /// <param name="id">Campaign id.</param>
-    /// <param name="typeIds">Filter by voucher type Id.</param>
+    /// <param name="typeIds">Filter by voucher type id.</param>
     /// <param name="state">Filter by campaign detail state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/details")]

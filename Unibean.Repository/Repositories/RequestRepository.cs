@@ -130,7 +130,6 @@ public class RequestRepository : IRequestRepository
                 .ThenInclude(a => a.Account)
             .Include(s => s.RequestTransactions.Where(r => (bool)r.Status))
                 .ThenInclude(r => r.Wallet)
-                    .ThenInclude(w => w.Type)
             .FirstOrDefault();
         }
         catch (Exception ex)

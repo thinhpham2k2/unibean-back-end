@@ -25,8 +25,8 @@ public class CampusController : ControllerBase
     /// <summary>
     /// Get campus list
     /// </summary>
-    /// <param name="universityIds">Filter by university Id.</param>
-    /// <param name="areaIds">Filter by area Id.</param>
+    /// <param name="universityIds">Filter by university id.</param>
+    /// <param name="areaIds">Filter by area id.</param>
     /// <param name="state">Filter by campus state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]

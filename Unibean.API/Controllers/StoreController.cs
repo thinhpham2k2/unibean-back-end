@@ -35,8 +35,8 @@ public class StoreController : ControllerBase
     /// <summary>
     /// Get store list
     /// </summary>
-    /// <param name="brandIds">Filter by brand Id.</param>
-    /// <param name="areaIds">Filter by area Id.</param>
+    /// <param name="brandIds">Filter by brand id.</param>
+    /// <param name="areaIds">Filter by area id.</param>
     /// <param name="state">Filter by store state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
@@ -199,7 +199,7 @@ public class StoreController : ControllerBase
     /// Get history transaction by store id
     /// </summary>
     /// <param name="id">Store id.</param>
-    /// <param name="typeIds">Filter by transaction type Id --- ActivityTransaction = 1, BonusTransaction = 2</param>
+    /// <param name="typeIds">Filter by transaction type id --- ActivityTransaction = 1, BonusTransaction = 2</param>
     /// <param name="state">Filter by history transaction state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/histories")]
@@ -238,8 +238,8 @@ public class StoreController : ControllerBase
     /// Get voucher list by store id
     /// </summary>
     /// <param name="id">Store id.</param>
-    /// <param name="campaignIds">Filter by campaign Id.</param>
-    /// <param name="typeIds">Filter by voucher type Id.</param>
+    /// <param name="campaignIds">Filter by campaign id.</param>
+    /// <param name="typeIds">Filter by voucher type id.</param>
     /// <param name="state">Filter by voucher state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/vouchers")]

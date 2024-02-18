@@ -14,11 +14,15 @@ public class StationExtraModel
     public DateTime? DateCreated { get; set; }
     public DateTime? DateUpdated { get; set; }
     public string Description { get; set; }
-    public bool? State { get; set; }
+    public int? StateId { get; set; }
+    public string State { get; set; }
+    public string StateName { get; set; }
     public bool? Status { get; set; }
     public int? NumberOfOrder { get; set; }
     public int? NumberOfAccept { get; set; }
     public int? NumberOfPrepare { get; set; }
     public int? NumberOfDelivery { get; set; }
     public int? NumberOfDone { get; set; }
+    public int? NumberOfAbort { get; set; }
+    public int? NumberOfStaffs { get; set; }
 }

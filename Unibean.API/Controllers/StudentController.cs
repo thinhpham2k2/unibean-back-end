@@ -35,8 +35,8 @@ public class StudentController : ControllerBase
     /// <summary>
     /// Get student list
     /// </summary>
-    /// <param name="majorIds">Filter by major Id.</param>
-    /// <param name="campusIds">Filter by campus Id.</param>
+    /// <param name="majorIds">Filter by major id.</param>
+    /// <param name="campusIds">Filter by campus id.</param>
     /// <param name="stateIds">Filter by student state --- Pending = 1, Active = 2, Inactive = 3, Rejected = 4</param>
     /// <param name="isVerify">Filter by student verification status.</param>
     /// <param name="paging">Paging parameter.</param>
@@ -244,7 +244,7 @@ public class StudentController : ControllerBase
     /// Get history transaction by student id
     /// </summary>
     /// <param name="id">Student id.</param>
-    /// <param name="typeIds">Filter by transaction type Id --- ActivityTransaction = 1, OrderTransaction = 2, ChallengeTransaction = 3, BonusTransaction = 4</param>
+    /// <param name="typeIds">Filter by transaction type id --- ActivityTransaction = 1, OrderTransaction = 2, ChallengeTransaction = 3, BonusTransaction = 4</param>
     /// <param name="state">Filter by history transaction state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/histories")]
@@ -283,8 +283,8 @@ public class StudentController : ControllerBase
     /// Get order list by student id
     /// </summary>
     /// <param name="id">Student id.</param>
-    /// <param name="stationIds">Filter by station Id.</param>
-    /// <param name="stateIds">Filter by state Id --- Order = 1, Confirmation = 2, Preparation = 3, Arrival = 4, Receipt = 5, Abort = 6</param>
+    /// <param name="stationIds">Filter by station id.</param>
+    /// <param name="stateIds">Filter by state id --- Order = 1, Confirmation = 2, Preparation = 3, Arrival = 4, Receipt = 5, Abort = 6</param>
     /// <param name="state">Filter by order state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/orders")]
@@ -373,10 +373,10 @@ public class StudentController : ControllerBase
     /// Get voucher list by student id
     /// </summary>
     /// <param name="id">Student id.</param>
-    /// <param name="campaignIds">Filter by campaign Id.</param>
-    /// <param name="voucherIds">Filter by voucher Id.</param>
-    /// <param name="brandIds">Filter by brand Id.</param>
-    /// <param name="typeIds">Filter by voucher type Id.</param>
+    /// <param name="campaignIds">Filter by campaign id.</param>
+    /// <param name="voucherIds">Filter by voucher id.</param>
+    /// <param name="brandIds">Filter by brand id.</param>
+    /// <param name="typeIds">Filter by voucher type id.</param>
     /// <param name="state">Filter by voucher state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/vouchers")]

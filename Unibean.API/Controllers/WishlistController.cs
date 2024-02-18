@@ -25,8 +25,8 @@ public class WishlistController : ControllerBase
     /// <summary>
     /// Get wishlists
     /// </summary>
-    /// <param name="studentIds">Filter by student Id.</param>
-    /// <param name="brandIds">Filter by brand Id.</param>
+    /// <param name="studentIds">Filter by student id.</param>
+    /// <param name="brandIds">Filter by brand id.</param>
     /// <param name="state">Filter by wishlists state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]

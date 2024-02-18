@@ -25,8 +25,8 @@ public class VoucherController : ControllerBase
     /// <summary>
     /// Get voucher list
     /// </summary>
-    /// <param name="brandIds">Filter by brand Id.</param>
-    /// <param name="typeIds">Filter by voucher type Id.</param>
+    /// <param name="brandIds">Filter by brand id.</param>
+    /// <param name="typeIds">Filter by voucher type id.</param>
     /// <param name="state">Filter by voucher state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]

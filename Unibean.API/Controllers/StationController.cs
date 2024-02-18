@@ -8,6 +8,9 @@ using Unibean.Service.Models.Stations;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Repository.Entities;
 using Unibean.Service.Models.Orders;
+using Unibean.Service.Models.OrderStates;
+using Unibean.Service.Services;
+using Unibean.Service.Validations;
 
 namespace Unibean.API.Controllers;
 
@@ -26,7 +29,7 @@ public class StationController : ControllerBase
     /// <summary>
     /// Get station list
     /// </summary>
-    /// <param name="state">Filter by station state.</param>
+    /// <param name="stateIds">Filter by station state id --- Active = 1, Inactive = 2, Closed = 3</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
@@ -35,7 +38,7 @@ public class StationController : ControllerBase
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<StationModel>> GetList(
-        [FromQuery] bool? state,
+        [FromQuery] List<StationState> stateIds,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -46,7 +49,7 @@ public class StationController : ControllerBase
         {
             PagedResultModel<StationModel>
                 result = stationService.GetAll
-                (state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                (stateIds, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
                 paging.Search, paging.Page, paging.Limit);
             return StatusCode(StatusCodes.Status200OK, result);
         }
@@ -155,39 +158,32 @@ public class StationController : ControllerBase
     }
 
     /// <summary>
-    /// Get order list by station id
+    /// Update station state
     /// </summary>
     /// <param name="id">Station id.</param>
-    /// <param name="studentIds">Filter by student Id.</param>
-    /// <param name="stateIds">Filter by state Id --- Order = 1, Confirmation = 2, Preparation = 3, Arrival = 4, Receipt = 5, Abort = 6</param>
-    /// <param name="state">Filter by order state.</param>
-    /// <param name="paging">Paging parameter.</param>
-    [HttpGet("{id}/orders")]
-    [Authorize(Roles = "Admin")]
-    [ProducesResponseType(typeof(PagedResultModel<OrderModel>), (int)HttpStatusCode.OK)]
+    /// <param name="stateId">Station state id --- Active = 1, Inactive = 2, Closed = 3</param>
+    [HttpPut("{id}/states/{stateId}")]
+    [Authorize(Roles = "Admin, Staff")]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public ActionResult<PagedResultModel<OrderModel>> GetOrderListByStudentId(string id,
-        [FromQuery] List<string> studentIds,
-        [FromQuery] List<State> stateIds,
-        [FromQuery] bool? state,
-        [FromQuery] PagingModel paging)
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public ActionResult UpdateState(
+        [ValidStation(new[] {
+            StationState.Active,
+            StationState.Inactive,
+            StationState.Closed })] string id,
+        StationState stateId)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         try
         {
-            string propertySort = paging.Sort.Split(",")[0];
-            var propertyInfo = typeof(Order).GetProperty(propertySort);
-            if (propertySort != null && propertyInfo != null || propertySort.Equals("StateCurrent"))
+            if (stationService.UpdateState(id, stateId))
             {
-                PagedResultModel<OrderModel>
-                result = stationService.GetOrderListByStudentId
-                    (id, studentIds, stateIds, state, propertySort.Equals("StateCurrent")
-                        ? "OrderStates.Max(s => s.StateId)" : propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
-                        paging.Search, paging.Page, paging.Limit);
-                return StatusCode(StatusCodes.Status200OK, result);
+                return StatusCode(StatusCodes.Status200OK, "Cập nhật trạng thái thành công");
             }
-            return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính của đơn đặt hàng không hợp lệ");
+            return NotFound("Cập nhật trạng thái thất bại");
         }
         catch (InvalidParameterException e)
         {

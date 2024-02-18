@@ -25,7 +25,7 @@ public class ProductController : ControllerBase
     /// <summary>
     /// Get product list
     /// </summary>
-    /// <param name="categoryIds">Filter by category Id.</param>
+    /// <param name="categoryIds">Filter by category id.</param>
     /// <param name="state">Filter by product state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]

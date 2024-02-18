@@ -22,7 +22,7 @@ public class AdminService : IAdminService
 
     private readonly IAccountRepository accountRepository;
 
-    public AdminService(IAdminRepository adminRepository, 
+    public AdminService(IAdminRepository adminRepository,
         IFireBaseService fireBaseService,
         IAccountRepository accountRepository)
     {
@@ -94,15 +94,22 @@ public class AdminService : IAdminService
         Admin entity = adminRepository.GetById(id);
         if (entity != null)
         {
-            // Avatar
-            if (entity.Account.Avatar != null && entity.Account.Avatar.Length > 0)
+            if (entity.Requests.Count.Equals(0))
             {
-                // Remove image
-                fireBaseService.RemoveFileAsync(entity.Account.FileName, ACCOUNT_FOLDER_NAME);
-            }
+                // Avatar
+                if (entity.Account.Avatar != null && entity.Account.Avatar.Length > 0)
+                {
+                    // Remove image
+                    fireBaseService.RemoveFileAsync(entity.Account.FileName, ACCOUNT_FOLDER_NAME);
+                }
 
-            adminRepository.Delete(id);
-            accountRepository.Delete(entity.Account.Id);
+                adminRepository.Delete(id);
+                accountRepository.Delete(entity.Account.Id);
+            }
+            else
+            {
+                throw new InvalidParameterException("Không thể xóa quản trị viên");
+            }
         }
         else
         {

@@ -169,10 +169,10 @@ public class BrandController : ControllerBase
     /// Get campaign list by brand id
     /// </summary>
     /// <param name="id">Brand id.</param>
-    /// <param name="typeIds">Filter by campaign type Id.</param>
-    /// <param name="storeIds">Filter by store Id.</param>
-    /// <param name="majorIds">Filter by major Id.</param>
-    /// <param name="campusIds">Filter by campus Id.</param>
+    /// <param name="typeIds">Filter by campaign type id.</param>
+    /// <param name="storeIds">Filter by store id.</param>
+    /// <param name="majorIds">Filter by major id.</param>
+    /// <param name="campusIds">Filter by campus id.</param>
     /// <param name="stateIds">Filter by campaign state --- Pending = 1, Rejected = 2, Active = 3, Inactive = 4, Expired = 5, Closed = 6</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/campaigns")]
@@ -214,7 +214,7 @@ public class BrandController : ControllerBase
     /// Get history transaction by brand id
     /// </summary>
     /// <param name="id">Brand id.</param>
-    /// <param name="walletTypeIds">Filter by wallet type Id --- Green = 1, Red = 2</param>
+    /// <param name="walletTypeIds">Filter by wallet type id --- Green = 1, Red = 2</param>
     /// <param name="state">Filter by history transaction state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/histories")]
@@ -253,7 +253,7 @@ public class BrandController : ControllerBase
     /// Get store list by brand id
     /// </summary>
     /// <param name="id">Brand id.</param>
-    /// <param name="areaIds">Filter by area Id.</param>
+    /// <param name="areaIds">Filter by area id.</param>
     /// <param name="state">Filter by store state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/stores")]
@@ -292,7 +292,7 @@ public class BrandController : ControllerBase
     /// Get voucher list by brand id
     /// </summary>
     /// <param name="id">Brand id.</param>
-    /// <param name="typeIds">Filter by voucher type Id.</param>
+    /// <param name="typeIds">Filter by voucher type id.</param>
     /// <param name="state">Filter by voucher state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/vouchers")]

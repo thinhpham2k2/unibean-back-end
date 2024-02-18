@@ -30,9 +30,9 @@ public class OrderController : ControllerBase
     /// <summary>
     /// Get order list
     /// </summary>
-    /// <param name="stationIds">Filter by station Id.</param>
-    /// <param name="studentIds">Filter by student Id.</param>
-    /// <param name="stateIds">Filter by state Id --- Order = 1, Confirmation = 2, Preparation = 3, Arrival = 4, Receipt = 5, Abort = 6</param>
+    /// <param name="stationIds">Filter by station id.</param>
+    /// <param name="studentIds">Filter by student id.</param>
+    /// <param name="stateIds">Filter by state id --- Order = 1, Confirmation = 2, Preparation = 3, Arrival = 4, Receipt = 5, Abort = 6</param>
     /// <param name="state">Filter by order state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
@@ -89,8 +89,8 @@ public class OrderController : ControllerBase
     /// <summary>
     /// Create state for order
     /// </summary>
-    /// <param name="id">Order Id.</param>
-    /// <param name="create">State Id --- Order = 1, Confirmation = 2, Preparation = 3, Arrival = 4, Receipt = 5, Abort = 6</param>
+    /// <param name="id">Order id.</param>
+    /// <param name="create">State id --- Order = 1, Confirmation = 2, Preparation = 3, Arrival = 4, Receipt = 5, Abort = 6</param>
     [HttpPost("{id}/states")]
     [Authorize(Roles = "Admin, Staff")]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.Created)]

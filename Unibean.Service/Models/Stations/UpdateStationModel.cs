@@ -27,11 +27,4 @@ public class UpdateStationModel
     public string Email { get; set; }
 
     public string Description { get; set; }
-
-    /// <summary>
-    /// Active = 1, Inactive = 2, Closed = 3
-    /// </summary>
-    [ValidStationState]
-    [Required(ErrorMessage = "Trạng thái là bắt buộc")]
-    public int? State { get; set; }
 }

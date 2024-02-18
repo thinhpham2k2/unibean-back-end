@@ -25,7 +25,7 @@ public class ChallengeController : ControllerBase
     /// <summary>
     /// Get challenge list
     /// </summary>
-    /// <param name="typeIds">Filter by challenge type Id --- Verify = 1, Welcome = 2, Spread = 3, Consume = 4</param>
+    /// <param name="typeIds">Filter by challenge type id --- Verify = 1, Welcome = 2, Spread = 3, Consume = 4</param>
     /// <param name="state">Filter by challenge state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]

@@ -25,8 +25,8 @@ public class RequestController : ControllerBase
     /// <summary>
     /// Get request list
     /// </summary>
-    /// <param name="brandIds">Filter by brand Id.</param>
-    /// <param name="adminIds">Filter by admin Id.</param>
+    /// <param name="brandIds">Filter by brand id.</param>
+    /// <param name="adminIds">Filter by admin id.</param>
     /// <param name="state">Filter by request state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
