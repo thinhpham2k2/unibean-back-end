@@ -60,6 +60,14 @@ public class CampaignDetailService : ICampaignDetailService
             (campaignIds, typeIds, state, propertySort, isAsc, search, page, limit));
     }
 
+    public PagedResultModel<CampaignDetailModel> GetAllByStore
+        (string storeId, List<string> campaignIds, List<string> typeIds, bool? state,
+        string propertySort, bool isAsc, string search, int page, int limit)
+    {
+        return mapper.Map<PagedResultModel<CampaignDetailModel>>(campaignDetailRepository.GetAllByStore
+            (storeId, campaignIds, typeIds, state, propertySort, isAsc, search, page, limit));
+    }
+
     public List<string> GetAllVoucherItemByCampaignDetail(string id)
     {
         return campaignDetailRepository.GetAllVoucherItemByCampaignDetail(id);

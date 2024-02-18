@@ -34,7 +34,7 @@ public class BonusController : ControllerBase
     [Authorize(Roles = "Admin, Brand, Store")]
     [ProducesResponseType(typeof(PagedResultModel<BonusModel>),
         (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<BonusModel>> GetList(
         [FromQuery] List<string> brandIds,
@@ -64,7 +64,7 @@ public class BonusController : ControllerBase
     [HttpGet("{id}")]
     [Authorize(Roles = "Admin, Brand, Store")]
     [ProducesResponseType(typeof(BonusExtraModel), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult GetById(string id)
     {

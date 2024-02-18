@@ -90,6 +90,9 @@ public class ActivityRepository : IActivityRepository
                         Status = creation.Status,
                     }};
 
+                var amount = creation.VoucherItem.CampaignDetail.Price * creation.VoucherItem.CampaignDetail.Rate;
+                creation.VoucherItem.Voucher = null;
+                creation.VoucherItem.CampaignDetail = null;
                 creation.VoucherItem.Activities = null;
                 creation.VoucherItem.IsUsed = true;
                 db.VoucherItems.Update(creation.VoucherItem);
@@ -99,12 +102,12 @@ public class ActivityRepository : IActivityRepository
                 if (creation != null)
                 {
                     // Update student wallet balance
-                    studentWallet.Balance += creation.VoucherItem.CampaignDetail.Price * creation.VoucherItem.CampaignDetail.Rate;
+                    studentWallet.Balance += amount;
                     studentWallet.DateUpdated = DateTime.Now;
 
                     // Update brand wallet balance
-                    campaign.TotalSpending += creation.VoucherItem.CampaignDetail.Price * creation.VoucherItem.CampaignDetail.Rate;
-                    campaignWallet.Balance -= creation.VoucherItem.CampaignDetail.Price * creation.VoucherItem.CampaignDetail.Rate;
+                    campaign.TotalSpending += amount;
+                    campaignWallet.Balance -= amount;
                     campaignWallet.DateUpdated = DateTime.Now;
 
                     db.Students.Update(student);
@@ -236,7 +239,6 @@ public class ActivityRepository : IActivityRepository
                 && (bool)t.Status && t.Type.Equals(Type.Use))
                .Include(s => s.ActivityTransactions.Where(a => (bool)a.Status && a.Amount > 0))
                     .ThenInclude(a => a.Wallet)
-                        .ThenInclude(w => w.Type)
                .Include(s => s.Store)
                .Include(s => s.Student)
                .Include(s => s.VoucherItem)

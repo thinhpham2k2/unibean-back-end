@@ -13,6 +13,10 @@ public interface ICampaignDetailRepository
         (List<string> campaignIds, List<string> typeIds, bool? state, 
         string propertySort, bool isAsc, string search, int page, int limit);
 
+    PagedResultModel<CampaignDetail> GetAllByStore
+        (string storeId, List<string> campaignIds, List<string> typeIds, 
+        bool? state, string propertySort, bool isAsc, string search, int page, int limit);
+
     List<string> GetAllVoucherItemByCampaignDetail(string id);
 
     CampaignDetail GetById(string id);

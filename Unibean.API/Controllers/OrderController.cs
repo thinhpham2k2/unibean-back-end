@@ -39,7 +39,7 @@ public class OrderController : ControllerBase
     [Authorize(Roles = "Admin, Staff")]
     [ProducesResponseType(typeof(PagedResultModel<OrderModel>),
         (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult GetOrderList(
         [FromQuery] List<string> stationIds,
@@ -70,7 +70,7 @@ public class OrderController : ControllerBase
     [HttpGet("{id}")]
     [Authorize(Roles = "Admin, Staff")]
     [ProducesResponseType(typeof(OrderExtraModel), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult GetById(string id)
     {
@@ -94,7 +94,7 @@ public class OrderController : ControllerBase
     [HttpPost("{id}/states")]
     [Authorize(Roles = "Admin, Staff")]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.Created)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult CreateStateForOrder(string id, [FromBody] CreateOrderStateModel create)
     {

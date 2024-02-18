@@ -144,6 +144,7 @@ public class StoreRepository : IStoreRepository
             .Include(s => s.Area)
             .Include(s => s.Account)
             .Include(s => s.CampaignStores.Where(c => (bool)c.Status))
+                .ThenInclude(s => s.Campaign.CampaignActivities.Where(a => (bool)a.Status))
             .Include(s => s.Activities.Where(a => (bool)a.Status))
             .Include(s => s.Bonuses.Where(b => (bool)b.Status))
             .FirstOrDefault();

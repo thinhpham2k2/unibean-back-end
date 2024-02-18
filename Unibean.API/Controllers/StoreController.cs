@@ -5,11 +5,11 @@ using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Service.Models.Activities;
 using Unibean.Service.Models.Bonuses;
+using Unibean.Service.Models.CampaignDetails;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Parameters;
 using Unibean.Service.Models.Stores;
 using Unibean.Service.Models.Transactions;
-using Unibean.Service.Models.Vouchers;
 using Unibean.Service.Services;
 using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Validations;
@@ -43,7 +43,7 @@ public class StoreController : ControllerBase
     [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(PagedResultModel<StoreModel>),
         (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<StoreModel>> GetList(
         [FromQuery] List<string> brandIds,
@@ -72,7 +72,7 @@ public class StoreController : ControllerBase
     [HttpGet("{id}")]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(StoreExtraModel), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult GetById(string id)
     {
@@ -94,7 +94,7 @@ public class StoreController : ControllerBase
     [HttpPost]
     [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType(typeof(StoreModel), (int)HttpStatusCode.Created)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> Create([FromForm] CreateStoreModel creation)
@@ -122,7 +122,7 @@ public class StoreController : ControllerBase
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType(typeof(StoreExtraModel), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> Update(string id, [FromForm] UpdateStoreModel update)
@@ -150,7 +150,7 @@ public class StoreController : ControllerBase
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType((int)HttpStatusCode.NoContent)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult Delete(string id)
     {
@@ -173,7 +173,7 @@ public class StoreController : ControllerBase
     [HttpPost("{id}/bonuses")]
     [Authorize(Roles = "Brand, Store")]
     [ProducesResponseType(typeof(BonusModel), (int)HttpStatusCode.Created)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult CreateBonus([ValidStore] string id, [FromBody] CreateBonusModel creation)
@@ -205,9 +205,9 @@ public class StoreController : ControllerBase
     [HttpGet("{id}/histories")]
     [Authorize(Roles = "Admin, Brand, Store")]
     [ProducesResponseType(typeof(PagedResultModel<StoreTransactionModel>), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public ActionResult<PagedResultModel<VoucherModel>> GetHistoryTransactionByStoreId(string id,
+    public ActionResult<PagedResultModel<StoreTransactionModel>> GetHistoryTransactionByStoreId(string id,
         [FromQuery] List<StoreTransactionType> typeIds,
         [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
@@ -235,19 +235,19 @@ public class StoreController : ControllerBase
     }
 
     /// <summary>
-    /// Get voucher list by store id
+    /// Get campaign detail list by store id
     /// </summary>
     /// <param name="id">Store id.</param>
     /// <param name="campaignIds">Filter by campaign id.</param>
     /// <param name="typeIds">Filter by voucher type id.</param>
     /// <param name="state">Filter by voucher state.</param>
     /// <param name="paging">Paging parameter.</param>
-    [HttpGet("{id}/vouchers")]
+    [HttpGet("{id}/campaign-details")]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
-    [ProducesResponseType(typeof(PagedResultModel<VoucherModel>), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(PagedResultModel<CampaignDetailModel>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public ActionResult<PagedResultModel<VoucherModel>> GetVoucherListByStoreId(string id,
+    public ActionResult<PagedResultModel<CampaignDetailModel>> GetVoucherListByStoreId(string id,
         [FromQuery] List<string> campaignIds,
         [FromQuery] List<string> typeIds,
         [FromQuery] bool? state,
@@ -261,14 +261,38 @@ public class StoreController : ControllerBase
             var propertyInfo = typeof(Voucher).GetProperty(propertySort);
             if (propertySort != null && propertyInfo != null)
             {
-                PagedResultModel<VoucherModel>
-                result = storeService.GetVoucherListByStoreId
+                PagedResultModel<CampaignDetailModel>
+                result = storeService.GetCampaignDetailByStoreId
                     (id, campaignIds, typeIds, state, propertySort, 
                     paging.Sort.Split(",")[1].Equals("asc"), 
                     paging.Search, paging.Page, paging.Limit);
                 return StatusCode(StatusCodes.Status200OK, result);
             }
-            return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của khuyến mãi");
+            return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của chi tiết chiến dịch");
+        }
+        catch (InvalidParameterException e)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Get campaign detail by campaign id
+    /// </summary>
+    /// <param name="id">Store id.</param>
+    /// <param name="detailId">Campaign detail id.</param>
+    [HttpGet("{id}/campaign-details/{detailId}")]
+    [Authorize(Roles = "Admin, Brand, Store, Student")]
+    [ProducesResponseType(typeof(CampaignDetailExtraModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public ActionResult<CampaignDetailExtraModel> GetCampaignDetailById(string id, string detailId)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            return StatusCode(StatusCodes.Status200OK, storeService.GetCampaignDetailById(id, detailId));
         }
         catch (InvalidParameterException e)
         {
@@ -282,10 +306,10 @@ public class StoreController : ControllerBase
     /// <param name="id">Store id.</param>
     /// <param name="voucherId">Voucher id.</param>
     /// <param name="creation">Buy activities model.</param>
-    [HttpPost("{id}/vouchers/{voucherId}")]
+    [HttpPost("{id}/campaign-details/{voucherId}")]
     [Authorize(Roles = "Store")]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.Created)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<string> BuyVoucher(

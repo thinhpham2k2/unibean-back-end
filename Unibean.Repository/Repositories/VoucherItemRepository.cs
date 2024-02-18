@@ -142,6 +142,8 @@ public class VoucherItemRepository : IVoucherItemRepository
                 .ThenInclude(c => c.CampaignMajors.Where(a => (bool)a.Status))
             .Include(s => s.CampaignDetail.Campaign)
                 .ThenInclude(c => c.CampaignCampuses.Where(a => (bool)a.Status))
+            .Include(s => s.CampaignDetail.Campaign)
+                .ThenInclude(c => c.CampaignActivities.Where(a => (bool)a.Status))
             .Include(s => s.Voucher)
                 .ThenInclude(v => v.Type)
             .Include(s => s.Voucher)
