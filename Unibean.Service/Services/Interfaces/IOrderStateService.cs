@@ -1,5 +1,4 @@
-﻿using Unibean.Service.Models.Campuses;
-using Unibean.Service.Models.OrderStates;
+﻿using Unibean.Service.Models.OrderStates;
 
 namespace Unibean.Service.Services.Interfaces;
 

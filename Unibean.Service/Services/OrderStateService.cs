@@ -1,5 +1,4 @@
 ﻿using Microsoft.IdentityModel.Tokens;
-using System.Linq;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Service.Models.Exceptions;
@@ -29,10 +28,20 @@ public class OrderStateService : IOrderStateService
             List<State> stateIds = entity.OrderStates.Select(s => (State)s.State).ToList();
             if (!stateIds.IsNullOrEmpty())
             {
-                if (creation.State > (int)stateIds.Max() || creation.State.Equals(6))
+                if ((creation.State > (int)stateIds.Max() || creation.State.Equals(6))
+                    && !stateIds.Max().Equals(State.Abort))
                 {
                     if (creation.State.Equals(6))
                     {
+                        orderStateRepository.AddAbort(new OrderState
+                        {
+                            Id = Ulid.NewUlid().ToString(),
+                            OrderId = id,
+                            State = State.Abort,
+                            DateCreated = DateTime.Now,
+                            Description = creation.Description,
+                            Status = true,
+                        });
                         return "Hủy đơn hàng thành công";
                     }
                     else

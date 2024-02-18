@@ -24,8 +24,7 @@ public class OrderRepository : IOrderRepository
                 return o;
             }).ToList();
 
-            creation.OrderStates = new List<OrderState>() { new OrderState
-            {
+            creation.OrderStates = new List<OrderState>() { new() {
                 Id = Ulid.NewUlid().ToString(),
                 OrderId = creation.Id,
                 State = State.Order,
@@ -92,7 +91,7 @@ public class OrderRepository : IOrderRepository
                 && (stationIds.Count == 0 || stationIds.Contains(o.StationId))
                 && (studentIds.Count == 0 || studentIds.Contains(o.StudentId))
                 && (stateIds.Count == 0 || stateIds.Contains(o.OrderStates
-                    .Where(s => (bool)s.Status).Select(d => d.State.Value).LastOrDefault()))
+                    .Where(s => (bool)s.Status).OrderBy(s => s.Id).LastOrDefault().State.Value))
                 && (state == null || state.Equals(o.State))
                 && (bool)o.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
@@ -105,8 +104,7 @@ public class OrderRepository : IOrderRepository
                .Include(o => o.OrderDetails.Where(d => (bool)d.Status))
                     .ThenInclude(o => o.Product)
                         .ThenInclude(p => p.Images.Where(i => (bool)i.Status))
-               .Include(o => o.OrderStates.Where(s => (bool)s.Status))
-                    .ThenInclude(o => o.State)
+               .Include(o => o.OrderStates.Where(s => (bool)s.Status).OrderBy(s => s.Id))
                .ToList();
 
             pagedResult = new PagedResultModel<Order>
@@ -139,8 +137,7 @@ public class OrderRepository : IOrderRepository
             .Include(o => o.OrderDetails.Where(d => (bool)d.Status))
                 .ThenInclude(o => o.Product)
                     .ThenInclude(p => p.Images.Where(i => (bool)i.Status))
-            .Include(o => o.OrderStates.Where(s => (bool)s.Status))
-                .ThenInclude(o => o.State)
+            .Include(o => o.OrderStates.Where(s => (bool)s.Status).OrderBy(s => s.Id))
             .FirstOrDefault();
         }
         catch (Exception ex)

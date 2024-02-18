@@ -36,7 +36,7 @@ public class OrderController : ControllerBase
     /// <param name="state">Filter by order state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, Staff")]
     [ProducesResponseType(typeof(PagedResultModel<OrderModel>),
         (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
@@ -68,7 +68,7 @@ public class OrderController : ControllerBase
     /// Get order by id
     /// </summary>
     [HttpGet("{id}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, Staff")]
     [ProducesResponseType(typeof(OrderExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
@@ -89,8 +89,10 @@ public class OrderController : ControllerBase
     /// <summary>
     /// Create state for order
     /// </summary>
+    /// <param name="id">Order Id.</param>
+    /// <param name="create">State Id --- Order = 1, Confirmation = 2, Preparation = 3, Arrival = 4, Receipt = 5, Abort = 6</param>
     [HttpPost("{id}/states")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, Staff")]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.Created)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]

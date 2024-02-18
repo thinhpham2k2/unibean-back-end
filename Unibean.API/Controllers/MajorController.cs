@@ -57,7 +57,7 @@ public class MajorController : ControllerBase
     /// </summary>
     [HttpGet("{id}")]
     [AllowAnonymous]
-    [ProducesResponseType(typeof(MajorModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(MajorExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult GetById(string id)
@@ -79,7 +79,7 @@ public class MajorController : ControllerBase
     /// </summary>
     [HttpPost]
     [Authorize(Roles = "Admin")]
-    [ProducesResponseType(typeof(MajorModel), (int)HttpStatusCode.Created)]
+    [ProducesResponseType(typeof(MajorExtraModel), (int)HttpStatusCode.Created)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
@@ -107,7 +107,7 @@ public class MajorController : ControllerBase
     /// </summary>
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin")]
-    [ProducesResponseType(typeof(MajorModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(MajorExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]

@@ -7,6 +7,8 @@ public interface IOrderStateRepository
 {
     OrderState Add(OrderState creation);
 
+    OrderState AddAbort(OrderState creation);
+
     void Delete(string id);
 
     PagedResultModel<OrderState> GetAll

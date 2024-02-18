@@ -23,6 +23,50 @@ public class OrderStateRepository : IOrderStateRepository
         return creation;
     }
 
+    public OrderState AddAbort(OrderState creation)
+    {
+        try
+        {
+            using var db = new UnibeanDBContext();
+            creation = db.OrderStates.Add(creation).Entity;
+
+            if (creation != null)
+            {
+                var order = db.Orders
+                .Where(s => s.Id.Equals(creation.OrderId) && (bool)s.Status)
+                .Include(o => o.OrderTransactions.Where(s => (bool)s.Status).OrderBy(s => s.Id))
+                    .ThenInclude(t => t.Wallet)
+                .FirstOrDefault();
+
+                db.OrderTransactions.Add(
+                    new()
+                    {
+                        Id = Ulid.NewUlid().ToString(),
+                        OrderId = creation.OrderId,
+                        WalletId = order.OrderTransactions.FirstOrDefault().WalletId,
+                        Amount = order.Amount,
+                        Rate = 1,
+                        Description = creation.Description,
+                        State = true,
+                        Status = true
+                    });
+
+                var wallet = order.OrderTransactions.FirstOrDefault().Wallet;
+                wallet.Balance += order.Amount;
+                wallet.DateUpdated = DateTime.Now;
+
+                db.Wallets.Update(wallet);
+            }
+
+            db.SaveChanges();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return creation;
+    }
+
     public void Delete(string id)
     {
         try
