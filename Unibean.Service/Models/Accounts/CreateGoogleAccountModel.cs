@@ -6,7 +6,7 @@ namespace Unibean.Service.Models.Accounts;
 public class CreateGoogleAccountModel
 {
     [ValidRole]
-    public string RoleId { get; set; }
+    public int Role { get; set; }
 
     [ValidEmail]
     [EmailAddress(ErrorMessage = "Email không hợp lệ")]

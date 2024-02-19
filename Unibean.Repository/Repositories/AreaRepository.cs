@@ -40,8 +40,8 @@ public class AreaRepository : IAreaRepository
     }
 
     public PagedResultModel<Area> GetAll
-        (List<string> districtIds, bool? state, string propertySort, 
-        bool isAsc, string search, int page, int limit)
+        (bool? state, string propertySort, bool isAsc, 
+        string search, int page, int limit)
     {
         PagedResultModel<Area> pagedResult = new();
         try
@@ -49,10 +49,8 @@ public class AreaRepository : IAreaRepository
             using var db = new UnibeanDBContext();
             var query = db.Areas
                 .Where(t => (EF.Functions.Like(t.AreaName, "%" + search + "%")
-                || EF.Functions.Like(t.District.DistrictName, "%" + search + "%")
-                || EF.Functions.Like(t.District.City.CityName, "%" + search + "%")
+                || EF.Functions.Like(t.Address, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
-                && (districtIds.Count == 0 || districtIds.Contains(t.DistrictId))
                 && (state == null || state.Equals(t.State))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
@@ -60,8 +58,6 @@ public class AreaRepository : IAreaRepository
             var result = query
                .Skip((page - 1) * limit)
                .Take(limit)
-               .Include(a => a.District)
-               .ThenInclude(d => d.City)
                .ToList();
 
             pagedResult = new PagedResultModel<Area>
@@ -89,8 +85,8 @@ public class AreaRepository : IAreaRepository
             using var db = new UnibeanDBContext();
             area = db.Areas
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
-            .Include(a => a.District)
-            .ThenInclude(d => d.City)
+            .Include(s => s.Campuses.Where(c => (bool)c.Status))
+            .Include(s => s.Stores.Where(s => (bool)s.Status))
             .FirstOrDefault();
         }
         catch (Exception ex)

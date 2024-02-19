@@ -1,12 +1,38 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel;
 
 namespace Unibean.Repository.Entities;
 
 public enum Gender
 {
-    Nữ = 1, Nam = 2
+    [Display(Name = "Nữ")]
+    [Description("Nữ giới")]
+    Female = 1,
+
+    [Display(Name = "Nam")]
+    [Description("Nam giới")]
+    Male = 2
+}
+
+public enum StudentState
+{
+    [Display(Name = "Chờ duyệt")]
+    [Description("Trạng thái chờ duyệt bởi quản trị viên")]
+    Pending = 1,
+
+    [Display(Name = "Hoạt động")]
+    [Description("Trạng thái hoạt động trên các nền tảng")]
+    Active = 2,
+
+    [Display(Name = "Không hoạt động")]
+    [Description("Trạng thái ngừng hoạt động trên các nền tảng")]
+    Inactive = 3,
+
+    [Display(Name = "Từ chối")]
+    [Description("Từ chối xác nhận tài khoản")]
+    Rejected = 4,
 }
 
 [Table("tbl_student")]
@@ -51,7 +77,7 @@ public class Student
     [Column("code")]
     public string Code { get; set; }
 
-    [Column("gender", TypeName = "enum('Nữ', 'Nam')")]
+    [Column("gender", TypeName = "enum('Female', 'Male')")]
     public Gender? Gender { get; set; }
 
     [Column("date_of_birth")]
@@ -72,8 +98,9 @@ public class Student
     [Column("date_updated")]
     public DateTime? DateUpdated { get; set; }
 
-    [Column("state", TypeName = "bit(1)")]
-    public bool? State { get; set; }
+    [Column("state",
+        TypeName = "enum('Pending', 'Active', 'Inactive', 'Rejected')")]
+    public StudentState? State { get; set; }
 
     [Column("status", TypeName = "bit(1)")]
     public bool? Status { get; set; }

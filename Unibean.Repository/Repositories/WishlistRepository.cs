@@ -61,7 +61,9 @@ public class WishlistRepository : IWishlistRepository
                .Skip((page - 1) * limit)
                .Take(limit)
                .Include(s => s.Student)
+                    .ThenInclude(s => s.Account)
                .Include(s => s.Brand)
+                    .ThenInclude(s => s.Account)
                .ToList();
 
             pagedResult = new PagedResultModel<Wishlist>
@@ -90,7 +92,9 @@ public class WishlistRepository : IWishlistRepository
             wishlist = db.Wishlists
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.Student)
+                .ThenInclude(s => s.Account)
             .Include(s => s.Brand)
+                .ThenInclude(s => s.Account)
             .FirstOrDefault();
         }
         catch (Exception ex)

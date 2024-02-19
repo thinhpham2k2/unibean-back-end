@@ -31,6 +31,11 @@ public class CampusService : ICampusService
             .ReverseMap();
             cfg.CreateMap<PagedResultModel<Campus>, PagedResultModel<CampusModel>>()
             .ReverseMap();
+            cfg.CreateMap<Campus, CampusExtraModel>()
+            .ForMember(c => c.UniversityName, opt => opt.MapFrom(src => src.University.UniversityName))
+            .ForMember(c => c.AreaName, opt => opt.MapFrom(src => src.Area.AreaName))
+            .ForMember(c => c.NumberOfStudents, opt => opt.MapFrom(src => src.Students.Count))
+            .ReverseMap();
             cfg.CreateMap<Campus, UpdateCampusModel>()
             .ReverseMap()
             .ForMember(t => t.University, opt => opt.MapFrom(src => (string)null))
@@ -49,7 +54,7 @@ public class CampusService : ICampusService
         this.fireBaseService = fireBaseService;
     }
 
-    public async Task<CampusModel> Add(CreateCampusModel creation)
+    public async Task<CampusExtraModel> Add(CreateCampusModel creation)
     {
         Campus entity = mapper.Map<Campus>(creation);
 
@@ -60,7 +65,7 @@ public class CampusService : ICampusService
             entity.Image = f.URL;
             entity.FileName = f.FileName;
         }
-        return mapper.Map<CampusModel>(campusRepository.Add(entity));
+        return mapper.Map<CampusExtraModel>(campusRepository.Add(entity));
     }
 
     public void Delete(string id)
@@ -68,12 +73,19 @@ public class CampusService : ICampusService
         Campus entity = campusRepository.GetById(id);
         if (entity != null)
         {
-            if (entity.Image != null && entity.FileName != null)
+            if (entity.Students.Count.Equals(0))
             {
-                //Remove image
-                fireBaseService.RemoveFileAsync(entity.FileName, FOLDER_NAME);
+                if (entity.Image != null && entity.FileName != null)
+                {
+                    //Remove image
+                    fireBaseService.RemoveFileAsync(entity.FileName, FOLDER_NAME);
+                }
+                campusRepository.Delete(id);
             }
-            campusRepository.Delete(id);
+            else
+            {
+                throw new InvalidParameterException("Xóa thất bại do tồn tại tài khoản ở cơ sở");
+            }
         }
         else
         {
@@ -97,17 +109,17 @@ public class CampusService : ICampusService
             (campaignIds, universityIds, areaIds, state, propertySort, isAsc, search, page, limit));
     }
 
-    public CampusModel GetById(string id)
+    public CampusExtraModel GetById(string id)
     {
         Campus entity = campusRepository.GetById(id);
         if (entity != null)
         {
-            return mapper.Map<CampusModel>(entity);
+            return mapper.Map<CampusExtraModel>(entity);
         }
         throw new InvalidParameterException("Không tìm thấy cơ sở");
     }
 
-    public async Task<CampusModel> Update(string id, UpdateCampusModel update)
+    public async Task<CampusExtraModel> Update(string id, UpdateCampusModel update)
     {
         Campus entity = campusRepository.GetById(id);
         if (entity != null)
@@ -123,7 +135,7 @@ public class CampusService : ICampusService
                 entity.Image = f.URL;
                 entity.FileName = f.FileName;
             }
-            return mapper.Map<CampusModel>(campusRepository.Update(entity));
+            return mapper.Map<CampusExtraModel>(campusRepository.Update(entity));
         }
         throw new InvalidParameterException("Không tìm thấy cơ sở");
     }

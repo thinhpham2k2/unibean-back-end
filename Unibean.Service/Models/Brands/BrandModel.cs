@@ -25,8 +25,8 @@ public class BrandModel
     public bool? State { get; set; }
     public bool? Status { get; set; }
     public bool? IsFavor { get; set; }
-    public decimal? GreenWallet { get; set; }
-    public string GreenWalletImage { get; set; }
-    public decimal? RedWallet { get; set; }
-    public string RedWalletImage { get; set; }
+    public int? GreenWalletId { get; set; }
+    public string GreenWallet { get; set; }
+    public string GreenWalletName { get; set; }
+    public decimal? GreenWalletBalance { get; set; }
 }

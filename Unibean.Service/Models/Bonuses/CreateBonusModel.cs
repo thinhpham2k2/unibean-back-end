@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Unibean.Repository.Entities;
 using Unibean.Service.Validations;
 
 namespace Unibean.Service.Models.Bonuses;
 
 public class CreateBonusModel
 {
-    [ValidStudent]
+    [ValidStudent(new[] { StudentState.Active })]
     [Required(ErrorMessage = "Sinh viên là bắt buộc")]
     public string StudentId { get; set; }
 

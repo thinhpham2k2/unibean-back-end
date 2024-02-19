@@ -25,15 +25,15 @@ public class WishlistController : ControllerBase
     /// <summary>
     /// Get wishlists
     /// </summary>
-    /// <param name="studentIds">Filter by student Id.</param>
-    /// <param name="brandIds">Filter by brand Id.</param>
+    /// <param name="studentIds">Filter by student id.</param>
+    /// <param name="brandIds">Filter by brand id.</param>
     /// <param name="state">Filter by wishlists state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(PagedResultModel<WishlistModel>),
         (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<WishlistModel>> GetList(
         [FromQuery] List<string> studentIds,
@@ -62,7 +62,7 @@ public class WishlistController : ControllerBase
     [HttpPost]
     [Authorize(Roles = "Admin, Student")]
     [ProducesResponseType(typeof(WishlistModel), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult Update([FromBody] UpdateWishlistModel update)

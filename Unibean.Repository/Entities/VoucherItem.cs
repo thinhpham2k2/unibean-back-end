@@ -15,19 +15,19 @@ public class VoucherItem
 
     public Voucher Voucher { get; set; }
 
-    [Column("campaign_id", TypeName = "char(26)")]
-    public string CampaignId { get; set; }
+    [Column("campaign_detail_id", TypeName = "char(26)")]
+    public string CampaignDetailId { get; set; }
 
-    public Campaign Campaign { get; set; }
+    public CampaignDetail CampaignDetail { get; set; }
 
     [Column("voucher_code", TypeName = "text")]
     public string VoucherCode { get; set; }
 
-    [Column("price", TypeName = "decimal(38,2)")]
-    public decimal? Price { get; set; }
+    [Column("index")]
+    public int? Index { get; set; }
 
-    [Column("rate", TypeName = "decimal(38,2)")]
-    public decimal? Rate { get; set; }
+    [Column("is_locked", TypeName = "bit(1)")]
+    public bool? IsLocked { get; set; }
 
     [Column("is_bought", TypeName = "bit(1)")]
     public bool? IsBought { get; set; }
@@ -44,8 +44,8 @@ public class VoucherItem
     [Column("date_created")]
     public DateTime? DateCreated { get; set; }
 
-    [Column("description", TypeName = "text")]
-    public string Description { get; set; }
+    [Column("date_issued")]
+    public DateTime? DateIssued { get; set; }
 
     [Column("state", TypeName = "bit(1)")]
     public bool? State { get; set; }

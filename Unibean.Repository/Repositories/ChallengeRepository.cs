@@ -18,17 +18,23 @@ public class ChallengeRepository : IChallengeRepository
             if (creation != null)
             {
                 // Create student challenge
-                foreach (var student in db.Students.Where(s => (bool)s.Status))
+                foreach (var student in db.Students.Where(
+                    s => (bool)s.Status).Include(s => s.StudentChallenges.Where(
+                        s => (bool)s.Status)).ThenInclude(s => s.Challenge))
                 {
+                    var current = student.StudentChallenges.Where(
+                        s => s.Challenge.Type.Value.Equals(creation.Type.Value)).OrderBy(s => s.Id)
+                        .LastOrDefault()?.Current;
+                    
                     db.StudentChallenges.Add(new StudentChallenge
                     {
                         Id = Ulid.NewUlid().ToString(),
                         ChallengeId = creation.Id,
                         StudentId = student.Id,
                         Amount = creation.Amount,
-                        Current = 0,
+                        Current = current ?? 0,
                         Condition = creation.Condition,
-                        IsCompleted = false,
+                        IsCompleted = current >= creation.Condition,
                         DateCreated = creation.DateCreated,
                         DateUpdated = creation.DateUpdated,
                         Description = creation.Description,
@@ -63,7 +69,7 @@ public class ChallengeRepository : IChallengeRepository
     }
 
     public PagedResultModel<Challenge> GetAll
-        (List<string> typeIds, bool? state, string propertySort, 
+        (List<ChallengeType> typeIds, bool? state, string propertySort, 
         bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<Challenge> pagedResult = new();
@@ -72,9 +78,9 @@ public class ChallengeRepository : IChallengeRepository
             using var db = new UnibeanDBContext();
             var query = db.Challenges
                 .Where(t => (EF.Functions.Like(t.ChallengeName, "%" + search + "%")
-                || EF.Functions.Like(t.Type.TypeName, "%" + search + "%")
+                || EF.Functions.Like((string)(object)t.Type, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
-                && (typeIds.Count == 0 || typeIds.Contains(t.TypeId))
+                && (typeIds.Count == 0 || typeIds.Contains(t.Type.Value))
                 && (state == null || state.Equals(t.State))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
@@ -82,7 +88,7 @@ public class ChallengeRepository : IChallengeRepository
             var result = query
                .Skip((page - 1) * limit)
                .Take(limit)
-               .Include(c => c.Type)
+               .Include(c => c.StudentChallenges.Where(s => (bool)s.Status))
                .ToList();
 
             pagedResult = new PagedResultModel<Challenge>
@@ -110,7 +116,7 @@ public class ChallengeRepository : IChallengeRepository
             using var db = new UnibeanDBContext();
             challenge = db.Challenges
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
-            .Include(c => c.Type)
+            .Include(c => c.StudentChallenges.Where(s => (bool)s.Status))
             .FirstOrDefault();
         }
         catch (Exception ex)

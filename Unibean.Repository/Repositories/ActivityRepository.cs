@@ -21,16 +21,15 @@ public class ActivityRepository : IActivityRepository
                 var student = db.Students
                         .Where(s => s.Id.Equals(creation.StudentId) && (bool)s.Status)
                         .Include(b => b.Wallets).FirstOrDefault();
-                var studentWallet = student.Wallets.FirstOrDefault();
+                var studentWallet = student.Wallets.Where(w => w.Type.Equals(WalletType.Green)).FirstOrDefault();
 
                 // Create Activity Transaction List
                 creation.ActivityTransactions = new List<ActivityTransaction> {
-                    new ActivityTransaction
-                    {
+                    new() {
                         Id = Ulid.NewUlid().ToString(),
                         ActivityId = creation.Id,
                         WalletId = studentWallet.Id,
-                        Amount = -creation.VoucherItem.Price,
+                        Amount = -creation.VoucherItem.CampaignDetail.Price,
                         Rate = 1,
                         Description = creation.Description,
                         State = creation.State,
@@ -46,8 +45,8 @@ public class ActivityRepository : IActivityRepository
                 if (creation != null)
                 {
                     // Update student wallet balance
-                    student.TotalSpending += creation.VoucherItem.Price;
-                    studentWallet.Balance -= creation.VoucherItem.Price;
+                    student.TotalSpending += creation.VoucherItem.CampaignDetail.Price;
+                    studentWallet.Balance -= creation.VoucherItem.CampaignDetail.Price;
                     studentWallet.DateUpdated = DateTime.Now;
 
                     db.Students.Update(student);
@@ -59,40 +58,41 @@ public class ActivityRepository : IActivityRepository
                 // Get red bean wallet student
                 var student = db.Students
                         .Where(s => s.Id.Equals(creation.StudentId) && (bool)s.Status)
-                        .Include(b => b.Wallets).Skip(1).FirstOrDefault();
-                var studentWallet = student.Wallets.FirstOrDefault();
-
-                // Get red bean wallet campaign
-                var campaign = db.Campaigns
-                        .Where(s => s.Id.Equals(creation.VoucherItem.CampaignId) && (bool)s.Status)
                         .Include(b => b.Wallets).FirstOrDefault();
-                var campaignWallet = campaign.Wallets.FirstOrDefault();
+                var studentWallet = student.Wallets.Where(w => w.Type.Equals(WalletType.Red)).FirstOrDefault();
+
+                // Get green bean wallet campaign
+                var campaign = db.Campaigns
+                        .Where(s => s.Id.Equals(creation.VoucherItem.CampaignDetail.CampaignId) && (bool)s.Status)
+                        .Include(b => b.Wallets).FirstOrDefault();
+                var campaignWallet = campaign.Wallets.Where(w => w.Type.Equals(WalletType.Green)).FirstOrDefault();
 
                 // Create Activity Transaction List
                 creation.ActivityTransactions = new List<ActivityTransaction> {
-                    new ActivityTransaction
-                    {
+                    new() {
                         Id = Ulid.NewUlid().ToString(),
                         ActivityId = creation.Id,
                         WalletId = campaignWallet.Id,
-                        Amount = -creation.VoucherItem.Price * creation.VoucherItem.Rate,
-                        Rate = creation.VoucherItem.Rate,
+                        Amount = -creation.VoucherItem.CampaignDetail.Price * creation.VoucherItem.CampaignDetail.Rate,
+                        Rate = creation.VoucherItem.CampaignDetail.Rate,
                         Description = creation.Description,
                         State = creation.State,
                         Status = creation.Status,
                     },
-                    new ActivityTransaction
-                    {
+                    new() {
                         Id = Ulid.NewUlid().ToString(),
                         ActivityId = creation.Id,
                         WalletId = studentWallet.Id,
-                        Amount = creation.VoucherItem.Price * creation.VoucherItem.Rate,
-                        Rate = creation.VoucherItem.Rate,
+                        Amount = creation.VoucherItem.CampaignDetail.Price * creation.VoucherItem.CampaignDetail.Rate,
+                        Rate = creation.VoucherItem.CampaignDetail.Rate,
                         Description = creation.Description,
                         State = creation.State,
                         Status = creation.Status,
                     }};
 
+                var amount = creation.VoucherItem.CampaignDetail.Price * creation.VoucherItem.CampaignDetail.Rate;
+                creation.VoucherItem.Voucher = null;
+                creation.VoucherItem.CampaignDetail = null;
                 creation.VoucherItem.Activities = null;
                 creation.VoucherItem.IsUsed = true;
                 db.VoucherItems.Update(creation.VoucherItem);
@@ -102,12 +102,12 @@ public class ActivityRepository : IActivityRepository
                 if (creation != null)
                 {
                     // Update student wallet balance
-                    studentWallet.Balance += creation.VoucherItem.Price * creation.VoucherItem.Rate;
+                    studentWallet.Balance += amount;
                     studentWallet.DateUpdated = DateTime.Now;
 
                     // Update brand wallet balance
-                    campaign.TotalSpending += creation.VoucherItem.Price * creation.VoucherItem.Rate;
-                    campaignWallet.Balance -= creation.VoucherItem.Price * creation.VoucherItem.Rate;
+                    campaign.TotalSpending += amount;
+                    campaignWallet.Balance -= amount;
                     campaignWallet.DateUpdated = DateTime.Now;
 
                     db.Students.Update(student);
@@ -207,9 +207,9 @@ public class ActivityRepository : IActivityRepository
             .Include(s => s.Store)
                 .ThenInclude(s => s.Brand)
             .Include(s => s.VoucherItem)
-                .ThenInclude(v => v.Voucher)
+                .ThenInclude(v => v.Voucher.Type)
             .Include(s => s.VoucherItem)
-                .ThenInclude(v => v.Campaign)
+                .ThenInclude(v => v.CampaignDetail.Campaign)
             .FirstOrDefault();
         }
         catch (Exception ex)
@@ -239,7 +239,6 @@ public class ActivityRepository : IActivityRepository
                 && (bool)t.Status && t.Type.Equals(Type.Use))
                .Include(s => s.ActivityTransactions.Where(a => (bool)a.Status && a.Amount > 0))
                     .ThenInclude(a => a.Wallet)
-                        .ThenInclude(w => w.Type)
                .Include(s => s.Store)
                .Include(s => s.Student)
                .Include(s => s.VoucherItem)

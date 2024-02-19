@@ -30,21 +30,21 @@ public class OrderController : ControllerBase
     /// <summary>
     /// Get order list
     /// </summary>
-    /// <param name="stationIds">Filter by station Id.</param>
-    /// <param name="studentIds">Filter by student Id.</param>
-    /// <param name="stateIds">Filter by state Id.</param>
+    /// <param name="stationIds">Filter by station id.</param>
+    /// <param name="studentIds">Filter by student id.</param>
+    /// <param name="stateIds">Filter by state id --- Order = 1, Confirmation = 2, Preparation = 3, Arrival = 4, Receipt = 5, Abort = 6</param>
     /// <param name="state">Filter by order state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, Staff")]
     [ProducesResponseType(typeof(PagedResultModel<OrderModel>),
         (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult GetOrderList(
         [FromQuery] List<string> stationIds,
         [FromQuery] List<string> studentIds,
-        [FromQuery] List<string> stateIds,
+        [FromQuery] List<State> stateIds,
         [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
@@ -68,9 +68,9 @@ public class OrderController : ControllerBase
     /// Get order by id
     /// </summary>
     [HttpGet("{id}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, Staff")]
     [ProducesResponseType(typeof(OrderExtraModel), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult GetById(string id)
     {
@@ -89,10 +89,12 @@ public class OrderController : ControllerBase
     /// <summary>
     /// Create state for order
     /// </summary>
+    /// <param name="id">Order id.</param>
+    /// <param name="create">State id --- Order = 1, Confirmation = 2, Preparation = 3, Arrival = 4, Receipt = 5, Abort = 6</param>
     [HttpPost("{id}/states")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, Staff")]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.Created)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult CreateStateForOrder(string id, [FromBody] CreateOrderStateModel create)
     {

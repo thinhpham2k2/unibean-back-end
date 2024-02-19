@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Enable.EnumDisplayName;
 using Microsoft.IdentityModel.Tokens;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Repositories.Interfaces;
@@ -24,8 +25,6 @@ public class AccountService : IAccountService
 
     private readonly IFireBaseService fireBaseService;
 
-    private readonly IRoleService roleService;
-
     private readonly IBrandRepository brandRepository;
 
     private readonly IStudentRepository studentRepository;
@@ -34,29 +33,34 @@ public class AccountService : IAccountService
 
     private readonly IStudentChallengeService studentChallengeService;
 
-    public AccountService(IAccountRepository accountRepository,
+    private readonly IEmailService emailService;
+
+    public AccountService(
+        IAccountRepository accountRepository,
         IFireBaseService fireBaseService,
-        IRoleService roleService,
         IBrandRepository brandRepository,
         IStudentRepository studentRepository,
         IInvitationService invitationService,
-        IStudentChallengeService studentChallengeService)
+        IStudentChallengeService studentChallengeService,
+        IEmailService emailService)
     {
         var config = new MapperConfiguration(cfg
                 =>
         {
             cfg.CreateMap<Account, AccountModel>()
-            .ForMember(a => a.RoleName, opt => opt.MapFrom(src => src.Role.RoleName))
+            .ForMember(a => a.RoleId, opt => opt.MapFrom(src => (int)src.Role))
+            .ForMember(a => a.RoleName, opt => opt.MapFrom(src => src.Role.GetDisplayName()))
             .ForMember(a => a.UserId, opt => opt.MapFrom((src, dest) =>
             {
                 if (src.Role != null)
                 {
-                    return src.Role.RoleName switch
+                    return src.Role switch
                     {
-                        "Admin" => src.Admins.FirstOrDefault()?.Id,
-                        "Brand" => src.Brands.FirstOrDefault()?.Id,
-                        "Store" => src.Stores.FirstOrDefault()?.Id,
-                        "Student" => src.Students.FirstOrDefault()?.Id,
+                        Role.Admin => src.Admins?.FirstOrDefault()?.Id,
+                        Role.Staff => src.Staffs?.FirstOrDefault()?.Id,
+                        Role.Brand => src.Brands?.FirstOrDefault()?.Id ,
+                        Role.Store => src.Stores?.FirstOrDefault()?.Id,
+                        Role.Student => src.Students?.FirstOrDefault()?.Id,
                         _ => null,
                     };
                 }
@@ -66,13 +70,38 @@ public class AccountService : IAccountService
             {
                 if (src.Role != null)
                 {
-                    return src.Role.RoleName switch
+                    return src.Role switch
                     {
-                        "Admin" => src.Admins.FirstOrDefault()?.FullName,
-                        "Brand" => src.Brands.FirstOrDefault()?.BrandName,
-                        "Store" => src.Stores.FirstOrDefault()?.StoreName,
-                        "Student" => src.Students.FirstOrDefault()?.FullName,
+                        Role.Admin => src.Admins?.FirstOrDefault()?.FullName,
+                        Role.Staff => src.Staffs?.FirstOrDefault()?.FullName,
+                        Role.Brand => src.Brands?.FirstOrDefault()?.BrandName,
+                        Role.Store => src.Stores?.FirstOrDefault()?.StoreName,
+                        Role.Student => src.Students?.FirstOrDefault()?.FullName,
                         _ => null,
+                    };
+                }
+                return null;
+            }))
+            .ForMember(a => a.StateId, opt => opt.MapFrom((src, dest) =>
+            {
+                if (src.Role != null)
+                {
+                    return src.Role switch
+                    {
+                        Role.Student => src.Students?.FirstOrDefault()?.State,
+                        _ => StudentState.Active,
+                    };
+                }
+                return null;
+            }))
+            .ForMember(a => a.State, opt => opt.MapFrom((src, dest) =>
+            {
+                if (src.Role != null)
+                {
+                    return src.Role switch
+                    {
+                        Role.Student => src.Students?.FirstOrDefault()?.State,
+                        _ => StudentState.Active,
                     };
                 }
                 return null;
@@ -89,6 +118,7 @@ public class AccountService : IAccountService
             cfg.CreateMap<Account, CreateBrandAccountModel>()
            .ReverseMap()
            .ForMember(t => t.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
+           .ForMember(t => t.Role, opt => opt.MapFrom(src => Role.Brand))
            .ForMember(t => t.Password, opt => opt.MapFrom(src => BCryptNet.HashPassword(src.Password)))
            .ForMember(t => t.IsVerify, opt => opt.MapFrom(src => true))
            .ForMember(t => t.DateCreated, opt => opt.MapFrom(src => DateTime.Now))
@@ -107,6 +137,7 @@ public class AccountService : IAccountService
             cfg.CreateMap<Account, CreateStudentAccountModel>()
            .ReverseMap()
            .ForMember(t => t.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
+           .ForMember(t => t.Role, opt => opt.MapFrom(src => Role.Student))
            .ForMember(t => t.Password, opt => opt.MapFrom(src => BCryptNet.HashPassword(src.Password)))
            .ForMember(t => t.IsVerify, opt => opt.MapFrom(src => false))
            .ForMember(t => t.DateCreated, opt => opt.MapFrom(src => DateTime.Now))
@@ -119,24 +150,23 @@ public class AccountService : IAccountService
            .ForMember(s => s.TotalSpending, opt => opt.MapFrom(src => 0))
            .ForMember(t => t.DateCreated, opt => opt.MapFrom(src => DateTime.Now))
            .ForMember(t => t.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
+           .ForMember(t => t.State, opt => opt.MapFrom(src => StudentState.Pending))
            .ForMember(t => t.Status, opt => opt.MapFrom(src => true));
 
         });
         mapper = new Mapper(config);
         this.accountRepository = accountRepository;
         this.fireBaseService = fireBaseService;
-        this.roleService = roleService;
         this.brandRepository = brandRepository;
         this.studentRepository = studentRepository;
         this.invitationService = invitationService;
         this.studentChallengeService = studentChallengeService;
+        this.emailService = emailService;
     }
 
     public async Task<AccountModel> AddBrand(CreateBrandAccountModel creation)
     {
         Account account = mapper.Map<Account>(creation);
-        // Set role
-        account.RoleId = roleService.GetRoleByName("Brand")?.Id;
 
         // Upload the cover photo
         if (creation.Logo != null && creation.Logo.Length > 0)
@@ -161,6 +191,7 @@ public class AccountService : IAccountService
         }
 
         brandRepository.Add(brand);
+        emailService.SendEmailBrandRegister(account.Email);
 
         return mapper.Map<AccountModel>(account);
     }
@@ -174,8 +205,6 @@ public class AccountService : IAccountService
     public async Task<AccountModel> AddStudent(CreateStudentAccountModel creation)
     {
         Account account = mapper.Map<Account>(creation);
-        // Set role
-        account.RoleId = roleService.GetRoleByName("Student")?.Id;
         account = accountRepository.Add(account);
 
         Student student = mapper.Map<Student>(creation);
@@ -199,6 +228,7 @@ public class AccountService : IAccountService
         }
 
         student = studentRepository.Add(student);
+        emailService.SendEmailStudentRegister(account.Email);
 
         if (student != null)
         {
@@ -218,13 +248,13 @@ public class AccountService : IAccountService
                     .GetById(student.Id).StudentChallenges
                     .Where(s => (bool)s.Status 
                     && s.IsCompleted.Equals(false) 
-                    && s.Challenge.Type.TypeName.Equals("Welcome")), 1);
+                    && s.Challenge.Type.Equals(ChallengeType.Welcome)), 1);
 
                 studentChallengeService.Update(studentRepository
                     .GetById(creation.InviteCode).StudentChallenges
                     .Where(s => (bool)s.Status 
                     && s.IsCompleted.Equals(false) 
-                    && s.Challenge.Type.TypeName.Equals("Spread")), 1);
+                    && s.Challenge.Type.Equals(ChallengeType.Spread)), 1);
             }
         }
 

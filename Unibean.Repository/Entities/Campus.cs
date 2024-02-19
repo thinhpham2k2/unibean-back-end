@@ -30,7 +30,7 @@ public class Campus
     [Column("closing_hours")]
     public TimeOnly? ClosingHours { get; set; }
 
-    [Column("Address", TypeName = "text")]
+    [Column("address", TypeName = "text")]
     public string Address { get; set; }
 
     [Column("phone", TypeName = "char(20)")]
@@ -50,14 +50,14 @@ public class Campus
     [Column("file_name", TypeName = "text")]
     public string FileName { get; set; }
 
-    [Column("description", TypeName = "text")]
-    public string Description { get; set; }
-
     [Column("date_created")]
     public DateTime? DateCreated { get; set; }
 
     [Column("date_updated")]
     public DateTime? DateUpdated { get; set; }
+
+    [Column("description", TypeName = "text")]
+    public string Description { get; set; }
 
     [Column("state", TypeName = "bit(1)")]
     public bool? State { get; set; }

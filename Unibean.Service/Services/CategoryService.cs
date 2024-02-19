@@ -25,8 +25,12 @@ public class CategoryService : ICategoryService
         var config = new MapperConfiguration(cfg
                 =>
         {
-            cfg.CreateMap<Category, CategoryModel>().ReverseMap();
+            cfg.CreateMap<Category, CategoryModel>()
+            .ReverseMap();
             cfg.CreateMap<PagedResultModel<Category>, PagedResultModel<CategoryModel>>()
+            .ReverseMap();
+            cfg.CreateMap<Category, CategoryExtraModel>()
+            .ForMember(c => c.NumberOfProducts, opt => opt.MapFrom(src => src.Products.Count))
             .ReverseMap();
             cfg.CreateMap<Category, UpdateCategoryModel>()
             .ReverseMap()
@@ -44,7 +48,7 @@ public class CategoryService : ICategoryService
         this.fireBaseService = fireBaseService;
     }
 
-    public async Task<CategoryModel> Add(CreateCategoryModel creation)
+    public async Task<CategoryExtraModel> Add(CreateCategoryModel creation)
     {
         Category entity = mapper.Map<Category>(creation);
 
@@ -55,7 +59,7 @@ public class CategoryService : ICategoryService
             entity.Image = f.URL;
             entity.FileName = f.FileName;
         }
-        return mapper.Map<CategoryModel>(categoryRepository.Add(entity));
+        return mapper.Map<CategoryExtraModel>(categoryRepository.Add(entity));
     }
 
     public void Delete(string id)
@@ -63,12 +67,19 @@ public class CategoryService : ICategoryService
         Category entity = categoryRepository.GetById(id);
         if (entity != null)
         {
-            if (entity.Image != null && entity.FileName != null)
+            if(entity.Products.Count.Equals(0))
             {
-                //Remove image
-                fireBaseService.RemoveFileAsync(entity.FileName, FOLDER_NAME);
+                if (entity.Image != null && entity.FileName != null)
+                {
+                    //Remove image
+                    fireBaseService.RemoveFileAsync(entity.FileName, FOLDER_NAME);
+                }
+                categoryRepository.Delete(id);
             }
-            categoryRepository.Delete(id);
+            else
+            {
+                throw new InvalidParameterException("Xóa thất bại do tồn tại sản phẩm thuộc thể loại");
+            }
         }
         else
         {
@@ -83,17 +94,17 @@ public class CategoryService : ICategoryService
             categoryRepository.GetAll(state, propertySort, isAsc, search, page, limit));
     }
 
-    public CategoryModel GetById(string id)
+    public CategoryExtraModel GetById(string id)
     {
         Category entity = categoryRepository.GetById(id);
         if (entity != null)
         {
-            return mapper.Map<CategoryModel>(entity);
+            return mapper.Map<CategoryExtraModel>(entity);
         }
         throw new InvalidParameterException("Không tìm thấy thể loại sản phẩm");
     }
 
-    public async Task<CategoryModel> Update(string id, UpdateCategoryModel update)
+    public async Task<CategoryExtraModel> Update(string id, UpdateCategoryModel update)
     {
         Category entity = categoryRepository.GetById(id);
         if (entity != null)
@@ -109,7 +120,7 @@ public class CategoryService : ICategoryService
                 entity.Image = f.URL;
                 entity.FileName = f.FileName;
             }
-            return mapper.Map<CategoryModel>(categoryRepository.Update(entity));
+            return mapper.Map<CategoryExtraModel>(categoryRepository.Update(entity));
         }
         throw new InvalidParameterException("Không tìm thấy thể loại sản phẩm");
     }

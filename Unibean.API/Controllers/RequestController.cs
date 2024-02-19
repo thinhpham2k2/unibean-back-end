@@ -25,15 +25,15 @@ public class RequestController : ControllerBase
     /// <summary>
     /// Get request list
     /// </summary>
-    /// <param name="brandIds">Filter by brand Id.</param>
-    /// <param name="adminIds">Filter by admin Id.</param>
+    /// <param name="brandIds">Filter by brand id.</param>
+    /// <param name="adminIds">Filter by admin id.</param>
     /// <param name="state">Filter by request state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
     [Authorize(Roles = "Admin, Brand, Store")]
     [ProducesResponseType(typeof(PagedResultModel<RequestModel>),
         (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<RequestModel>> GetList(
         [FromQuery] List<string> brandIds,
@@ -53,7 +53,7 @@ public class RequestController : ControllerBase
                 paging.Search, paging.Page, paging.Limit);
             return StatusCode(StatusCodes.Status200OK, result);
         }
-        return StatusCode(StatusCodes.Status400BadRequest, "Invalid property of request");
+        return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính yêu cầu không hợp lệ");
     }
 
     /// <summary>
@@ -62,7 +62,7 @@ public class RequestController : ControllerBase
     [HttpGet("{id}")]
     [Authorize(Roles = "Admin, Brand, Store")]
     [ProducesResponseType(typeof(RequestExtraModel), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult GetById(string id)
     {

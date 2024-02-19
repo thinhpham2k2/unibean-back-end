@@ -39,7 +39,7 @@ public class BrandController : ControllerBase
     [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(PagedResultModel<BrandModel>),
         (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<BrandModel>> GetList(
         [FromQuery] bool? state,
@@ -68,7 +68,7 @@ public class BrandController : ControllerBase
     [HttpGet("{id}")]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(BrandExtraModel), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult GetById(string id)
     {
@@ -92,7 +92,7 @@ public class BrandController : ControllerBase
     [HttpPost]
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(BrandModel), (int)HttpStatusCode.Created)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> Create([FromForm] CreateBrandModel creation)
@@ -120,7 +120,7 @@ public class BrandController : ControllerBase
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(BrandExtraModel), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> Update(string id, [FromForm] UpdateBrandModel update)
@@ -148,7 +148,7 @@ public class BrandController : ControllerBase
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin")]
     [ProducesResponseType((int)HttpStatusCode.NoContent)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult Delete(string id)
     {
@@ -169,23 +169,23 @@ public class BrandController : ControllerBase
     /// Get campaign list by brand id
     /// </summary>
     /// <param name="id">Brand id.</param>
-    /// <param name="typeIds">Filter by campaign type Id.</param>
-    /// <param name="storeIds">Filter by store Id.</param>
-    /// <param name="majorIds">Filter by major Id.</param>
-    /// <param name="campusIds">Filter by campus Id.</param>
-    /// <param name="state">Filter by campaign state.</param>
+    /// <param name="typeIds">Filter by campaign type id.</param>
+    /// <param name="storeIds">Filter by store id.</param>
+    /// <param name="majorIds">Filter by major id.</param>
+    /// <param name="campusIds">Filter by campus id.</param>
+    /// <param name="stateIds">Filter by campaign state --- Pending = 1, Rejected = 2, Active = 3, Inactive = 4, Expired = 5, Closed = 6</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/campaigns")]
     [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType(typeof(PagedResultModel<CampaignModel>), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<CampaignModel>> GetCampaignListByBrandId(string id,
         [FromQuery] List<string> typeIds,
         [FromQuery] List<string> storeIds,
         [FromQuery] List<string> majorIds,
         [FromQuery] List<string> campusIds,
-        [FromQuery] bool? state,
+        [FromQuery] List<CampaignState> stateIds,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -198,7 +198,7 @@ public class BrandController : ControllerBase
             {
                 PagedResultModel<CampaignModel>
                 result = brandService.GetCampaignListByBrandId
-                    (id, typeIds, storeIds, majorIds, campusIds, state, propertySort,
+                    (id, typeIds, storeIds, majorIds, campusIds, stateIds, propertySort,
                     paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
                 return StatusCode(StatusCodes.Status200OK, result);
             }
@@ -214,16 +214,16 @@ public class BrandController : ControllerBase
     /// Get history transaction by brand id
     /// </summary>
     /// <param name="id">Brand id.</param>
-    /// <param name="walletTypeIds">Filter by wallet type Id.</param>
+    /// <param name="walletTypeIds">Filter by wallet type id --- Green = 1, Red = 2</param>
     /// <param name="state">Filter by history transaction state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/histories")]
     [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType(typeof(PagedResultModel<TransactionModel>), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<TransactionModel>> GetHistoryTransactionByStudentId(string id,
-        [FromQuery] List<string> walletTypeIds,
+        [FromQuery] List<WalletType> walletTypeIds,
         [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
@@ -253,13 +253,13 @@ public class BrandController : ControllerBase
     /// Get store list by brand id
     /// </summary>
     /// <param name="id">Brand id.</param>
-    /// <param name="areaIds">Filter by area Id.</param>
+    /// <param name="areaIds">Filter by area id.</param>
     /// <param name="state">Filter by store state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/stores")]
     [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType(typeof(PagedResultModel<StoreModel>), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<StoreModel>> GetStoreListByBrandId(string id,
         [FromQuery] List<string> areaIds,
@@ -292,13 +292,13 @@ public class BrandController : ControllerBase
     /// Get voucher list by brand id
     /// </summary>
     /// <param name="id">Brand id.</param>
-    /// <param name="typeIds">Filter by voucher type Id.</param>
+    /// <param name="typeIds">Filter by voucher type id.</param>
     /// <param name="state">Filter by voucher state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/vouchers")]
     [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType(typeof(PagedResultModel<VoucherModel>), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<VoucherModel>> GetVoucherListByBrandId(string id,
         [FromQuery] List<string> typeIds,

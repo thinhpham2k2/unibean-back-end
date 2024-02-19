@@ -5,6 +5,8 @@ public class StudentModel
     public string Id { get; set; }
     public string MajorId { get; set; }
     public string MajorName { get; set; }
+    public string UniversityId { get; set; }
+    public string UniversityName { get; set; }
     public string CampusId { get; set; }
     public string CampusName { get; set; }
     public string AccountId { get; set; }
@@ -29,10 +31,16 @@ public class StudentModel
     public DateTime? DateUpdated { get; set; }
     public DateTime? DateVerified { get; set; }
     public bool? IsVerify { get; set; }
-    public bool? State { get; set; }
+    public int? StateId { get; set; }
+    public string State { get; set; }
+    public string StateName { get; set; }
     public bool? Status { get; set; }
-    public decimal? GreenWallet { get; set; }
-    public string GreenWalletImage { get; set; }
-    public decimal? RedWallet { get; set; }
-    public string RedWalletImage { get; set; }
+    public int? GreenWalletId { get; set; }
+    public string GreenWallet { get; set; }
+    public string GreenWalletName { get; set; }
+    public decimal? GreenWalletBalance { get; set; }
+    public int? RedWalletId { get; set; }
+    public string RedWallet { get; set; }
+    public string RedWalletName { get; set; }
+    public decimal? RedWalletBalance { get; set; }
 }

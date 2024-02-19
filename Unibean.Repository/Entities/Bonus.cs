@@ -15,15 +15,15 @@ public class Bonus
 
     public Brand Brand { get; set; }
 
-    [Column("store_id", TypeName = "char(26)")]
-    public string StoreId { get; set; }
-
-    public Store Store { get; set; }
-
     [Column("student_id", TypeName = "char(26)")]
     public string StudentId { get; set; }
 
     public Student Student { get; set; }
+
+    [Column("store_id", TypeName = "char(26)")]
+    public string StoreId { get; set; }
+
+    public Store Store { get; set; }
 
     [Column("amount", TypeName = "decimal(38,2)")]
     public decimal? Amount { get; set; }

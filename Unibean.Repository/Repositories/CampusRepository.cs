@@ -144,6 +144,7 @@ public class CampusRepository : ICampusRepository
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.University)
             .Include(s => s.Area)
+            .Include(s => s.Students.Where(s => (bool)s.Status))
             .FirstOrDefault();
         }
         catch (Exception ex)

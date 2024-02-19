@@ -20,13 +20,10 @@ public class AdminService : IAdminService
 
     private readonly IFireBaseService fireBaseService;
 
-    private readonly IRoleService roleService;
-
     private readonly IAccountRepository accountRepository;
 
-    public AdminService(IAdminRepository adminRepository, 
+    public AdminService(IAdminRepository adminRepository,
         IFireBaseService fireBaseService,
-        IRoleService roleService,
         IAccountRepository accountRepository)
     {
         var config = new MapperConfiguration(cfg
@@ -52,6 +49,7 @@ public class AdminService : IAdminService
             cfg.CreateMap<Account, CreateAdminModel>()
             .ReverseMap()
             .ForMember(a => a.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
+            .ForMember(a => a.Role, opt => opt.MapFrom(src => Role.Admin))
             .ForMember(a => a.Password, opt => opt.MapFrom(src => BCryptNet.HashPassword(src.Password)))
             .ForMember(a => a.IsVerify, opt => opt.MapFrom(src => true))
             .ForMember(a => a.DateCreated, opt => opt.MapFrom(src => DateTime.Now))
@@ -69,14 +67,12 @@ public class AdminService : IAdminService
         mapper = new Mapper(config);
         this.adminRepository = adminRepository;
         this.fireBaseService = fireBaseService;
-        this.roleService = roleService;
         this.accountRepository = accountRepository;
     }
 
     public async Task<AdminModel> Add(CreateAdminModel creation)
     {
         Account account = mapper.Map<Account>(creation);
-        account.RoleId = roleService.GetRoleByName("Admin")?.Id;
 
         //Upload avatar
         if (creation.Avatar != null && creation.Avatar.Length > 0)
@@ -98,15 +94,22 @@ public class AdminService : IAdminService
         Admin entity = adminRepository.GetById(id);
         if (entity != null)
         {
-            // Avatar
-            if (entity.Account.Avatar != null && entity.Account.Avatar.Length > 0)
+            if (entity.Requests.Count.Equals(0))
             {
-                // Remove image
-                fireBaseService.RemoveFileAsync(entity.Account.FileName, ACCOUNT_FOLDER_NAME);
-            }
+                // Avatar
+                if (entity.Account.Avatar != null && entity.Account.Avatar.Length > 0)
+                {
+                    // Remove image
+                    fireBaseService.RemoveFileAsync(entity.Account.FileName, ACCOUNT_FOLDER_NAME);
+                }
 
-            adminRepository.Delete(id);
-            accountRepository.Delete(entity.Account.Id);
+                adminRepository.Delete(id);
+                accountRepository.Delete(entity.Account.Id);
+            }
+            else
+            {
+                throw new InvalidParameterException("Không thể xóa quản trị viên");
+            }
         }
         else
         {

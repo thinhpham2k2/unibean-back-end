@@ -15,24 +15,21 @@ public class BrandRepository : IBrandRepository
             using var db = new UnibeanDBContext();
             creation = db.Brands.Add(creation).Entity;
 
-            if(creation != null)
+            if (creation != null)
             {
                 // Create wallet
-                foreach (var type in db.WalletTypes.Where(s => (bool)s.Status))
+                db.Wallets.Add(new Wallet
                 {
-                    db.Wallets.Add(new Wallet
-                    {
-                        Id = Ulid.NewUlid().ToString(),
-                        BrandId = creation.Id,
-                        TypeId = type.Id,
-                        Balance = 0,
-                        DateCreated = creation.DateCreated,
-                        DateUpdated = creation.DateUpdated,
-                        Description = type.Description,
-                        State = true,
-                        Status = true,
-                    });
-                }
+                    Id = Ulid.NewUlid().ToString(),
+                    BrandId = creation.Id,
+                    Type = WalletType.Green,
+                    Balance = 0,
+                    DateCreated = creation.DateCreated,
+                    DateUpdated = creation.DateUpdated,
+                    Description = WalletType.Green.GetEnumDescription(),
+                    State = true,
+                    Status = true,
+                });
             }
             db.SaveChanges();
         }
@@ -83,7 +80,6 @@ public class BrandRepository : IBrandRepository
                .Include(b => b.Account)
                .Include(s => s.Wishlists.Where(w => (bool)w.Status))
                .Include(s => s.Wallets.Where(w => (bool)w.Status))
-                   .ThenInclude(w => w.Type)
                .ToList();
 
             pagedResult = new PagedResultModel<Brand>
@@ -114,9 +110,10 @@ public class BrandRepository : IBrandRepository
             .Include(s => s.Account)
             .Include(s => s.Wishlists.Where(w => (bool)w.Status))
             .Include(s => s.Wallets.Where(w => (bool)w.Status))
-                .ThenInclude(w => w.Type)
             .Include(s => s.Campaigns.Where(c => (bool)c.Status))
                 .ThenInclude(c => c.Type)
+            .Include(s => s.Campaigns.Where(c => (bool)c.Status))
+                .ThenInclude(c => c.CampaignActivities.Where(c => (bool)c.Status))
             .Include(s => s.Stores.Where(s => (bool)s.Status))
                 .ThenInclude(s => s.Area)
             .Include(s => s.Vouchers.Where(s => (bool)s.Status))

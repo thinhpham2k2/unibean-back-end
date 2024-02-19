@@ -10,8 +10,8 @@ public interface IStudentChallengeRepository
     void Delete(string id);
 
     PagedResultModel<StudentChallenge> GetAll
-        (List<string> studentIds, List<string> challengeIds, bool? state,
-        string propertySort, bool isAsc, string search, int page, int limit);
+        (List<string> studentIds, List<string> challengeIds, List<ChallengeType> typeIds, 
+        bool? state, string propertySort, bool isAsc, string search, int page, int limit);
 
     StudentChallenge GetById(string id);
 

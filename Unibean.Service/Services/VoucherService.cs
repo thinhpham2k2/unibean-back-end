@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Enable.EnumDisplayName;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
@@ -29,20 +30,28 @@ public class VoucherService : IVoucherService
             cfg.CreateMap<Voucher, VoucherModel>()
             .ForMember(v => v.BrandName, opt => opt.MapFrom(src => src.Brand.BrandName))
             .ForMember(v => v.TypeName, opt => opt.MapFrom(src => src.Type.TypeName))
-            .ForMember(v => v.NumberOfItem, opt => opt.MapFrom(src => src.VoucherItems.Count))
+            .ForMember(v => v.NumberOfItems, opt => opt.MapFrom(src => src.VoucherItems.Count))
             .ReverseMap();
             cfg.CreateMap<PagedResultModel<Voucher>, PagedResultModel<VoucherModel>>()
             .ReverseMap();
             cfg.CreateMap<Voucher, VoucherExtraModel>()
             .ForMember(v => v.BrandName, opt => opt.MapFrom(src => src.Brand.BrandName))
+            .ForMember(v => v.BrandImage, opt => opt.MapFrom(src => src.Brand.Account.Avatar))
             .ForMember(v => v.TypeName, opt => opt.MapFrom(src => src.Type.TypeName))
-            .ForMember(v => v.NumberOfItem, opt => opt.MapFrom(src => src.VoucherItems.Count))
-            .ForMember(v => v.Campaigns, opt => opt.MapFrom(src => src.VoucherItems.Select(v => v.Campaign).Distinct()))
+            .ForMember(v => v.NumberOfItems, opt => opt.MapFrom(src => src.VoucherItems.Count))
+            .ForMember(v => v.Campaigns, opt => opt.MapFrom(
+                src => src.VoucherItems.Select(v => v.CampaignDetail.Campaign).Distinct()))
             .ReverseMap();
             cfg.CreateMap<Campaign, CampaignModel>()
             .ForMember(c => c.BrandName, opt => opt.MapFrom(src => src.Brand.BrandName))
             .ForMember(c => c.BrandAcronym, opt => opt.MapFrom(src => src.Brand.Acronym))
             .ForMember(c => c.TypeName, opt => opt.MapFrom(src => src.Type.TypeName))
+            .ForMember(c => c.CurrentStateId, opt => opt.MapFrom(
+                src => (int)src.CampaignActivities.LastOrDefault().State))
+            .ForMember(c => c.CurrentState, opt => opt.MapFrom(
+                src => src.CampaignActivities.LastOrDefault().State))
+            .ForMember(c => c.CurrentStateName, opt => opt.MapFrom(
+                src => src.CampaignActivities.LastOrDefault().State.GetDisplayName()))
             .ReverseMap();
             cfg.CreateMap<Voucher, UpdateVoucherModel>()
             .ReverseMap()
@@ -82,12 +91,19 @@ public class VoucherService : IVoucherService
         Voucher entity = voucherRepository.GetById(id);
         if (entity != null)
         {
-            if (entity.Image != null && entity.ImageName != null)
+            if (entity.VoucherItems.Count.Equals(0))
             {
-                //Remove image
-                fireBaseService.RemoveFileAsync(entity.ImageName, FOLDER_NAME);
+                if (entity.Image != null && entity.ImageName != null)
+                {
+                    //Remove image
+                    fireBaseService.RemoveFileAsync(entity.ImageName, FOLDER_NAME);
+                }
+                voucherRepository.Delete(id);
             }
-            voucherRepository.Delete(id);
+            else
+            {
+                throw new InvalidParameterException("Xóa thất bại do tồn tại mục thuộc khuyến mãi");
+            }
         }
         else
         {
@@ -102,24 +118,6 @@ public class VoucherService : IVoucherService
         return mapper.Map<PagedResultModel<VoucherModel>>
             (voucherRepository.GetAll(brandIds, typeIds, state, 
             propertySort, isAsc, search, page, limit));
-    }
-
-    public PagedResultModel<VoucherModel> GetAllByCampaign
-        (List<string> campaignIds, List<string> typeIds, bool? state,
-        string propertySort, bool isAsc, string search, int page, int limit)
-    {
-        return mapper.Map<PagedResultModel<VoucherModel>>
-            (voucherRepository.GetAllByCampaign(campaignIds, typeIds, state, 
-            propertySort, isAsc, search, page, limit));
-    }
-
-    public PagedResultModel<VoucherModel> GetAllByStore
-        (List<string> storeIds, List<string> campaignIds, List<string> typeIds,
-        bool? state, string propertySort, bool isAsc, string search, int page, int limit)
-    {
-        return mapper.Map<PagedResultModel<VoucherModel>>
-            (voucherRepository.GetAllByStore(storeIds, campaignIds, 
-            typeIds, state, propertySort, isAsc, search, page, limit));
     }
 
     public VoucherExtraModel GetById(string id)

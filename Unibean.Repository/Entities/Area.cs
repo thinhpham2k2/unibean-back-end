@@ -11,11 +11,6 @@ public class Area
     [Column("id", TypeName = "char(26)")]
     public string Id { get; set; }
 
-    [Column("district_id", TypeName = "char(26)")]
-    public string DistrictId { get; set; }
-
-    public District District { get; set; }
-
     [MaxLength(255)]
     [Column("area_name")]
     public string AreaName { get; set; }

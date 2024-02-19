@@ -94,8 +94,8 @@ public class AccountRepository : IAccountRepository
             using var db = new UnibeanDBContext();
             account = db.Accounts.Where(a => a.Email.Equals(email)
             && (bool)a.Status)
-                .Include(a => a.Role)
                 .Include(a => a.Admins)
+                .Include(a => a.Staffs)
                 .Include(a => a.Brands)
                 .Include(a => a.Stores)
                 .Include(a => a.Students)
@@ -116,8 +116,8 @@ public class AccountRepository : IAccountRepository
             using var db = new UnibeanDBContext();
             account = db.Accounts
             .Where(a => a.Id.Equals(id) && (bool)a.Status)
-            .Include(a => a.Role)
             .Include(a => a.Admins)
+            .Include(a => a.Staffs)
             .Include(a => a.Brands)
             .Include(a => a.Stores)
             .Include(a => a.Students)
@@ -139,8 +139,8 @@ public class AccountRepository : IAccountRepository
             {
                 account = db.Accounts.Where(a => a.UserName.Equals(userName)
                 && (bool)a.Status)
-                    .Include(a => a.Role)
                     .Include(a => a.Admins)
+                    .Include(a => a.Staffs)
                     .Include(a => a.Brands)
                     .Include(a => a.Stores)
                     .Include(a => a.Students)

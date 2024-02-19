@@ -40,7 +40,7 @@ public class StationRepository : IStationRepository
     }
 
     public PagedResultModel<Station> GetAll
-        (bool? state, string propertySort, bool isAsc, string search, int page, int limit)
+        (List<StationState> stateIds, string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<Station> pagedResult = new();
         try
@@ -52,7 +52,7 @@ public class StationRepository : IStationRepository
                 || EF.Functions.Like(t.Phone, "%" + search + "%")
                 || EF.Functions.Like(t.Email, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
-                && (state == null || state.Equals(t.State))
+                && (stateIds.Count == 0 || stateIds.Contains(t.State.Value))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 
@@ -86,9 +86,9 @@ public class StationRepository : IStationRepository
             using var db = new UnibeanDBContext();
             station = db.Stations
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
+            .Include(s => s.Staffs.Where(s => (bool)s.Status))
             .Include(s => s.Orders.Where(o => (bool)o.Status))
                 .ThenInclude(o => o.OrderStates.Where(o => (bool)o.Status))
-                    .ThenInclude(s => s.State)
             .FirstOrDefault();
         }
         catch (Exception ex)

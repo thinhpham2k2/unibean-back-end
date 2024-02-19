@@ -17,7 +17,7 @@ public class ValidationController : ControllerBase
     [AllowAnonymous]
     [HttpPost("code")]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult CodeValidation([FromBody] CodeModel code)
     {
@@ -32,7 +32,7 @@ public class ValidationController : ControllerBase
     [AllowAnonymous]
     [HttpPost("email")]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult EmailValidation([FromBody] EmailModel email)
     {
@@ -47,7 +47,7 @@ public class ValidationController : ControllerBase
     [AllowAnonymous]
     [HttpPost("invite-code")]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult InviteCodeValidation([FromBody] InviteCodeModel inviteCode)
     {
@@ -62,7 +62,7 @@ public class ValidationController : ControllerBase
     [AllowAnonymous]
     [HttpPost("phone")]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult PhoneValidation([FromBody] PhoneModel phone)
     {
@@ -77,7 +77,7 @@ public class ValidationController : ControllerBase
     [AllowAnonymous]
     [HttpPost("username")]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult UsernameValidation([FromBody] UserNameModel userName)
     {

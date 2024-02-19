@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.IdentityModel.Tokens;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
@@ -63,12 +64,19 @@ public class CampaignTypeService : ICampaignTypeService
         CampaignType entity = campaignTypeRepository.GetById(id);
         if (entity != null)
         {
-            if (entity.Image != null && entity.FileName != null)
+            if (entity.Campaigns.IsNullOrEmpty())
             {
-                //Remove image
-                fireBaseService.RemoveFileAsync(entity.FileName, FOLDER_NAME);
+                if (entity.Image != null && entity.FileName != null)
+                {
+                    //Remove image
+                    fireBaseService.RemoveFileAsync(entity.FileName, FOLDER_NAME);
+                }
+                campaignTypeRepository.Delete(id);
             }
-            campaignTypeRepository.Delete(id);
+            else
+            {
+                throw new InvalidParameterException("Không thể xóa vì tồn tại chiến dịch cùng thể loại");
+            }
         }
         else
         {

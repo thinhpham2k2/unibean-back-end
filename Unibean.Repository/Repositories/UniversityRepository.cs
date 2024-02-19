@@ -86,6 +86,8 @@ public class UniversityRepository : IUniversityRepository
             using var db = new UnibeanDBContext();
             university = db.Universities
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
+            .Include(s => s.Campuses.Where(c => (bool)c.Status))
+                .ThenInclude(c => c.Students.Where(s => (bool)s.Status))
             .FirstOrDefault();
         }
         catch (Exception ex)

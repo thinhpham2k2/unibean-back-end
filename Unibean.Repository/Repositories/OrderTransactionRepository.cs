@@ -40,14 +40,13 @@ public class OrderTransactionRepository : IOrderTransactionRepository
             using var db = new UnibeanDBContext();
             result = db.OrderTransactions
                 .Where(o => (EF.Functions.Like("Tạo đơn hàng (" + o.Amount + " đậu)", "%" + search + "%")
-                || EF.Functions.Like(o.Wallet.Type.TypeName, "%" + search + "%")
+                || EF.Functions.Like((string)(object)o.Wallet.Type, "%" + search + "%")
                 || EF.Functions.Like("Đổi quà", "%" + search + "%")
                 || EF.Functions.Like(o.Description, "%" + search + "%"))
                 && (walletIds.Count == 0 || walletIds.Contains(o.WalletId))
                 && (orderIds.Count == 0 || orderIds.Contains(o.OrderId))
                 && (bool)o.Status)
                 .Include(s => s.Wallet)
-                    .ThenInclude(w => w.Type)
                 .Include(s => s.Order).ToList();
         }
         catch (Exception ex)
@@ -66,7 +65,6 @@ public class OrderTransactionRepository : IOrderTransactionRepository
             orderTransaction = db.OrderTransactions
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.Wallet)
-                .ThenInclude(w => w.Type)
             .Include(s => s.Order)
             .FirstOrDefault();
         }

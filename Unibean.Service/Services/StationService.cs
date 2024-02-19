@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
+using Enable.EnumDisplayName;
+using System.Linq;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Service.Models.Exceptions;
-using Unibean.Service.Models.Orders;
 using Unibean.Service.Models.Stations;
 using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Utilities.FireBase;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Unibean.Service.Services;
 
@@ -20,36 +22,43 @@ public class StationService : IStationService
 
     private readonly IFireBaseService fireBaseService;
 
-    private readonly IOrderService orderService;
-
     public StationService(
-        IStationRepository stationRepository, 
-        IFireBaseService fireBaseService,
-        IOrderService orderService)
+        IStationRepository stationRepository,
+        IFireBaseService fireBaseService)
     {
         var config = new MapperConfiguration(cfg
                 =>
         {
             cfg.CreateMap<Station, StationModel>()
+            .ForMember(s => s.StateId, opt => opt.MapFrom(src => (int)src.State))
+            .ForMember(s => s.State, opt => opt.MapFrom(src => src.State))
+            .ForMember(s => s.StateName, opt => opt.MapFrom(src => src.State.GetDisplayName()))
             .ReverseMap();
             cfg.CreateMap<PagedResultModel<Station>, PagedResultModel<StationModel>>()
             .ReverseMap();
             cfg.CreateMap<Station, StationExtraModel>()
-            .ForMember(t => t.NumberOfOrder, opt 
-                => opt.MapFrom(src => src.Orders.Where(o 
-                => o.OrderStates.DistinctBy(s => s.State).Count().Equals(1)).Count()))
-            .ForMember(t => t.NumberOfAccept, opt 
-                => opt.MapFrom(src => src.Orders.Where(o 
-                => o.OrderStates.DistinctBy(s => s.State).Count().Equals(2)).Count()))
-            .ForMember(t => t.NumberOfPrepare, opt 
-                => opt.MapFrom(src => src.Orders.Where(o 
-                => o.OrderStates.DistinctBy(s => s.State).Count().Equals(3)).Count()))
-            .ForMember(t => t.NumberOfDelivery, opt 
-                => opt.MapFrom(src => src.Orders.Where(o 
-                => o.OrderStates.DistinctBy(s => s.State).Count().Equals(4)).Count()))
-            .ForMember(t => t.NumberOfDone, opt 
-                => opt.MapFrom(src => src.Orders.Where(o 
-                => o.OrderStates.DistinctBy(s => s.State).Count().Equals(5)).Count()))
+            .ForMember(s => s.StateId, opt => opt.MapFrom(src => (int)src.State))
+            .ForMember(s => s.State, opt => opt.MapFrom(src => src.State))
+            .ForMember(s => s.StateName, opt => opt.MapFrom(src => src.State.GetDisplayName()))
+            .ForMember(t => t.NumberOfOrder, opt
+                => opt.MapFrom(src => src.Orders.Where(o
+                => o.OrderStates.LastOrDefault().State.Equals(State.Order)).Count()))
+            .ForMember(t => t.NumberOfAccept, opt
+                => opt.MapFrom(src => src.Orders.Where(o
+                => o.OrderStates.LastOrDefault().State.Equals(State.Confirmation)).Count()))
+            .ForMember(t => t.NumberOfPrepare, opt
+                => opt.MapFrom(src => src.Orders.Where(o
+                => o.OrderStates.LastOrDefault().State.Equals(State.Preparation)).Count()))
+            .ForMember(t => t.NumberOfDelivery, opt
+                => opt.MapFrom(src => src.Orders.Where(o
+                => o.OrderStates.LastOrDefault().State.Equals(State.Arrival)).Count()))
+            .ForMember(t => t.NumberOfDone, opt
+                => opt.MapFrom(src => src.Orders.Where(o
+                => o.OrderStates.LastOrDefault().State.Equals(State.Receipt)).Count()))
+            .ForMember(t => t.NumberOfAbort, opt
+                => opt.MapFrom(src => src.Orders.Where(o
+                => o.OrderStates.LastOrDefault().State.Equals(State.Abort)).Count()))
+            .ForMember(t => t.NumberOfStaffs, opt => opt.MapFrom(src => src.Staffs.Count))
             .ReverseMap();
             cfg.CreateMap<Station, UpdateStationModel>()
             .ReverseMap()
@@ -65,7 +74,6 @@ public class StationService : IStationService
         mapper = new Mapper(config);
         this.stationRepository = stationRepository;
         this.fireBaseService = fireBaseService;
-        this.orderService = orderService;
     }
 
     public async Task<StationExtraModel> Add(CreateStationModel creation)
@@ -87,9 +95,8 @@ public class StationService : IStationService
         Station entity = stationRepository.GetById(id);
         if (entity != null)
         {
-            entity.Orders = entity.Orders.Where(
-                o => o.OrderStates.DistinctBy(s => s.State).Count() < 5).ToList();
-            if (entity.Orders.Count.Equals(0))
+            if (entity.Orders.All(
+                o => new[] { State.Receipt, State.Abort }.Contains(o.OrderStates.LastOrDefault().State.Value)))
             {
                 if (entity.Image != null && entity.FileName != null)
                 {
@@ -100,7 +107,8 @@ public class StationService : IStationService
             }
             else
             {
-                throw new InvalidParameterException("Đang có đơn hàng ở trạm");
+                throw new InvalidParameterException
+                    ("Xóa thất bại do đang có đơn hàng ở trạm hoặc tồn tại nhân viên thuộc trạm");
             }
         }
         else
@@ -110,10 +118,10 @@ public class StationService : IStationService
     }
 
     public PagedResultModel<StationModel> GetAll
-        (bool? state, string propertySort, bool isAsc, string search, int page, int limit)
+        (List<StationState> stateIds, string propertySort, bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<StationModel>>(stationRepository.GetAll
-            (state, propertySort, isAsc, search, page, limit));
+            (stateIds, propertySort, isAsc, search, page, limit));
     }
 
     public StationExtraModel GetById(string id)
@@ -122,20 +130,6 @@ public class StationService : IStationService
         if (entity != null)
         {
             return mapper.Map<StationExtraModel>(entity);
-        }
-        throw new InvalidParameterException("Không tìm thấy trạm");
-    }
-
-    public PagedResultModel<OrderModel> GetOrderListByStudentId
-        (string id, List<string> studentIds, List<string> stateIds, bool? state, 
-        string propertySort, bool isAsc, string search, int page, int limit)
-    {
-        Station entity = stationRepository.GetById(id);
-        if (entity != null)
-        {
-            return orderService.GetAll
-                (new() { id }, studentIds, stateIds, state, 
-                propertySort, isAsc, search, page, limit);
         }
         throw new InvalidParameterException("Không tìm thấy trạm");
     }
@@ -157,6 +151,30 @@ public class StationService : IStationService
                 entity.FileName = f.FileName;
             }
             return mapper.Map<StationExtraModel>(stationRepository.Update(entity));
+        }
+        throw new InvalidParameterException("Không tìm thấy trạm");
+    }
+
+    public bool UpdateState(string id, StationState stateId)
+    {
+        Station entity = stationRepository.GetById(id);
+        if (entity != null)
+        {
+            if (!entity.State.Equals(stateId))
+            {
+                if (stateId.Equals(StationState.Closed) && !entity.Orders.All(
+                    o => new[] { State.Receipt, State.Abort }.Contains(o.OrderStates.LastOrDefault().State.Value)))
+                {
+                    throw new InvalidParameterException("Đóng trạm thất bại do đang có đơn hàng ở trạm");
+                }
+
+                entity.State = stateId;
+                return stationRepository.Update(entity) != null;
+            }
+            else
+            {
+                throw new InvalidParameterException("Trạm đang ở trạng thái '" + stateId.GetDisplayName() + "'");
+            }
         }
         throw new InvalidParameterException("Không tìm thấy trạm");
     }

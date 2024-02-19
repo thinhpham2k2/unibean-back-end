@@ -9,7 +9,7 @@ public class ValidTotalIncome : ValidationAttribute
 {
     private new const string ErrorMessage = "Chi phí không hợp lệ";
 
-    private const string ErrorMessage1 = "Số dư ví xanh và đỏ của thương hiệu là không đủ";
+    private const string ErrorMessage1 = "Số dư ví xanh của thương hiệu là không đủ";
 
     private readonly IBrandRepository brandRepo = new BrandRepository();
 
@@ -19,11 +19,11 @@ public class ValidTotalIncome : ValidationAttribute
     {
         if (validationContext.ObjectInstance is CreateCampaignModel create)
         {
-            if (create.Vouchers != null)
+            if (create.CampaignDetails != null)
             {
                 if (decimal.TryParse(value.ToString(), out decimal amount))
                 {
-                    if (amount.Equals(create.Vouchers.Select(v
+                    if (amount.Equals(create.CampaignDetails.Select(v
                         =>
                     {
                         var voucher = voucherRepo.GetById(v.VoucherId);

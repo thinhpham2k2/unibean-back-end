@@ -99,19 +99,26 @@ public class ProductService : IProductService
         Product entity = productRepository.GetById(id);
         if (entity != null)
         {
-            if (entity.Images != null)
+            if (entity.OrderDetails.Count.Equals(0))
             {
-                foreach (var image in entity.Images)
+                if (entity.Images != null)
                 {
-                    if (image.Url != null && image.FileName != null)
+                    foreach (var image in entity.Images)
                     {
-                        //Remove image
-                        fireBaseService.RemoveFileAsync(image.FileName, FOLDER_NAME + "/" + entity.Id);
+                        if (image.Url != null && image.FileName != null)
+                        {
+                            //Remove image
+                            fireBaseService.RemoveFileAsync(image.FileName, FOLDER_NAME + "/" + entity.Id);
+                        }
+                        imageRepository.Delete(image.Id);
                     }
-                    imageRepository.Delete(image.Id);
                 }
+                productRepository.Delete(id);
             }
-            productRepository.Delete(id);
+            else
+            {
+                throw new InvalidParameterException("Xóa thất bại do tồn tại đơn hàng chứa sản phẩm");
+            }
         }
         else
         {

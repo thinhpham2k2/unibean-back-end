@@ -16,5 +16,7 @@ public class OrderModel
     public string Description { get; set; }
     public bool? State { get; set; }
     public bool? Status { get; set; }
-    public string StateCurrent { get; set; }
+    public int? CurrentStateId { get; set; }
+    public string CurrentState { get; set; }
+    public string CurrentStateName { get; set; }
 }

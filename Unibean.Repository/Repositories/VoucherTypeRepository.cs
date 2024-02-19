@@ -83,6 +83,7 @@ public class VoucherTypeRepository : IVoucherTypeRepository
             using var db = new UnibeanDBContext();
             type = db.VoucherTypes
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
+            .Include(s => s.Vouchers.Where(v => (bool)v.Status))
             .FirstOrDefault();
         }
         catch (Exception ex)

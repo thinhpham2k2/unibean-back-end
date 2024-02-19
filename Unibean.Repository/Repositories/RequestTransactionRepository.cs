@@ -32,7 +32,7 @@ public class RequestTransactionRepository : IRequestTransactionRepository
     }
 
     public List<RequestTransaction> GetAll
-        (List<string> walletIds, List<string> requestIds, List<string> walletTypeIds, string search)
+        (List<string> walletIds, List<string> requestIds, List<WalletType> walletTypeIds, string search)
     {
         List<RequestTransaction> result;
         try
@@ -40,18 +40,16 @@ public class RequestTransactionRepository : IRequestTransactionRepository
             using var db = new UnibeanDBContext();
             result = db.RequestTransactions
                 .Where(t => (EF.Functions.Like(t.Request.Admin.FullName, "%" + search + "%")
-                || EF.Functions.Like(t.Wallet.Type.TypeName, "%" + search + "%")
+                || EF.Functions.Like((string)(object)t.Wallet.Type, "%" + search + "%")
                 || EF.Functions.Like(t.Wallet.Brand.BrandName, "%" + search + "%")
                 || EF.Functions.Like("Nạp đậu", "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
                 && (walletIds.Count == 0 || walletIds.Contains(t.WalletId))
                 && (requestIds.Count == 0 || requestIds.Contains(t.RequestId))
-                && (walletTypeIds.Count == 0 || walletTypeIds.Contains(t.Wallet.TypeId))
+                && (walletTypeIds.Count == 0 || walletTypeIds.Contains(t.Wallet.Type.Value))
                 && (bool)t.Status)
                 .Include(s => s.Request)
                     .ThenInclude(w => w.Admin)
-                .Include(s => s.Wallet)
-                    .ThenInclude(c => c.Type)
                 .Include(s => s.Wallet)
                     .ThenInclude(c => c.Brand).ToList();
         }
@@ -72,8 +70,6 @@ public class RequestTransactionRepository : IRequestTransactionRepository
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.Request)
                 .ThenInclude(w => w.Admin)
-            .Include(s => s.Wallet)
-                .ThenInclude(c => c.Type)
             .Include(s => s.Wallet)
                 .ThenInclude(c => c.Brand)
             .FirstOrDefault();

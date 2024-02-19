@@ -62,4 +62,6 @@ public class Voucher
     public bool? Status { get; set; }
 
     public virtual ICollection<VoucherItem> VoucherItems { get; set; }
+
+    public virtual ICollection<CampaignDetail> CampaignDetails { get; set; }
 }

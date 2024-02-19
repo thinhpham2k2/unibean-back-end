@@ -123,6 +123,8 @@ public class MajorRepository : IMajorRepository
             using var db = new UnibeanDBContext();
             major = db.Majors
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
+            .Include(m => m.Students.Where(s => (bool)s.Status))
+            .Include(m => m.CampaignMajors.Where(c => (bool)c.Status))
             .FirstOrDefault();
         }
         catch (Exception ex)

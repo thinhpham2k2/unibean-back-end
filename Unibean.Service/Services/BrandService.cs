@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Org.BouncyCastle.Asn1.Ocsp;
+using Enable.EnumDisplayName;
 using System.Linq.Dynamic.Core;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
@@ -29,8 +29,6 @@ public class BrandService : IBrandService
 
     private readonly IFireBaseService fireBaseService;
 
-    private readonly IRoleService roleService;
-
     private readonly IAccountRepository accountRepository;
 
     private readonly ICampaignService campaignService;
@@ -41,20 +39,22 @@ public class BrandService : IBrandService
 
     private readonly IBonusTransactionService bonusTransactionService;
 
-    private readonly IWalletTransactionService walletTransactionService;
+    private readonly ICampaignTransactionService walletTransactionService;
 
     private readonly IRequestTransactionService requestTransactionService;
 
+    private readonly IEmailService emailService;
+
     public BrandService(IBrandRepository brandRepository,
         IFireBaseService fireBaseService,
-        IRoleService roleService,
         IAccountRepository accountRepository,
         ICampaignService campaignService,
         IStoreService storeService,
         IVoucherService voucherService,
         IBonusTransactionService bonusTransactionService,
-        IWalletTransactionService walletTransactionService,
-        IRequestTransactionService requestTransactionService)
+        ICampaignTransactionService walletTransactionService,
+        IRequestTransactionService requestTransactionService,
+        IEmailService emailService)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -66,10 +66,10 @@ public class BrandService : IBrandService
             .ForMember(p => p.LogoFileName, opt => opt.MapFrom(src => src.Account.FileName))
             .ForMember(p => p.Email, opt => opt.MapFrom(src => src.Account.Email))
             .ForMember(p => p.Phone, opt => opt.MapFrom(src => src.Account.Phone))
-            .ForMember(p => p.GreenWallet, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Balance))
-            .ForMember(p => p.GreenWalletImage, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Type.Image))
-            .ForMember(p => p.RedWallet, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Balance))
-            .ForMember(p => p.RedWalletImage, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Type.Image))
+            .ForMember(p => p.GreenWalletId, opt => opt.MapFrom(src => (int)src.Wallets.Where(w => w.Type.Equals(WalletType.Green)).FirstOrDefault().Type))
+            .ForMember(p => p.GreenWallet, opt => opt.MapFrom(src => src.Wallets.Where(w => w.Type.Equals(WalletType.Green)).FirstOrDefault().Type))
+            .ForMember(p => p.GreenWalletName, opt => opt.MapFrom(src => src.Wallets.Where(w => w.Type.Equals(WalletType.Green)).FirstOrDefault().Type.GetDisplayName()))
+            .ForMember(p => p.GreenWalletBalance, opt => opt.MapFrom(src => src.Wallets.Where(w => w.Type.Equals(WalletType.Green)).FirstOrDefault().Balance))
             .ReverseMap();
             cfg.CreateMap<PagedResultModel<Brand>, PagedResultModel<BrandModel>>()
             .ForMember(p => p.Result, opt => opt.Ignore())
@@ -82,10 +82,10 @@ public class BrandService : IBrandService
             .ForMember(p => p.Email, opt => opt.MapFrom(src => src.Account.Email))
             .ForMember(p => p.Phone, opt => opt.MapFrom(src => src.Account.Phone))
             .ForMember(p => p.NumberOfFollowers, opt => opt.MapFrom(src => src.Wishlists.Count))
-            .ForMember(p => p.GreenWallet, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Balance))
-            .ForMember(p => p.GreenWalletImage, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Type.Image))
-            .ForMember(p => p.RedWallet, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Balance))
-            .ForMember(p => p.RedWalletImage, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Type.Image))
+            .ForMember(p => p.GreenWalletId, opt => opt.MapFrom(src => (int)src.Wallets.Where(w => w.Type.Equals(WalletType.Green)).FirstOrDefault().Type))
+            .ForMember(p => p.GreenWallet, opt => opt.MapFrom(src => src.Wallets.Where(w => w.Type.Equals(WalletType.Green)).FirstOrDefault().Type))
+            .ForMember(p => p.GreenWalletName, opt => opt.MapFrom(src => src.Wallets.Where(w => w.Type.Equals(WalletType.Green)).FirstOrDefault().Type.GetDisplayName()))
+            .ForMember(p => p.GreenWalletBalance, opt => opt.MapFrom(src => src.Wallets.Where(w => w.Type.Equals(WalletType.Green)).FirstOrDefault().Balance))
             .ReverseMap();
             // Map Create Brand Google Model
             cfg.CreateMap<Brand, CreateBrandGoogleModel>()
@@ -108,6 +108,7 @@ public class BrandService : IBrandService
             cfg.CreateMap<Account, CreateBrandModel>()
             .ReverseMap()
             .ForMember(p => p.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
+            .ForMember(p => p.Role, opt => opt.MapFrom(src => Role.Brand))
             .ForMember(p => p.Password, opt => opt.MapFrom(src => BCryptNet.HashPassword(src.Password)))
             .ForMember(p => p.IsVerify, opt => opt.MapFrom(src => true))
             .ForMember(p => p.DateCreated, opt => opt.MapFrom(src => DateTime.Now))
@@ -126,7 +127,6 @@ public class BrandService : IBrandService
         mapper = new Mapper(config);
         this.brandRepository = brandRepository;
         this.fireBaseService = fireBaseService;
-        this.roleService = roleService;
         this.accountRepository = accountRepository;
         this.campaignService = campaignService;
         this.storeService = storeService;
@@ -134,12 +134,12 @@ public class BrandService : IBrandService
         this.bonusTransactionService = bonusTransactionService;
         this.walletTransactionService = walletTransactionService;
         this.requestTransactionService = requestTransactionService;
+        this.emailService = emailService;
     }
 
     public async Task<BrandModel> Add(CreateBrandModel creation)
     {
         Account account = mapper.Map<Account>(creation);
-        account.RoleId = roleService.GetRoleByName("Brand")?.Id;
 
         //Upload logo
         if (creation.Logo != null && creation.Logo.Length > 0)
@@ -150,6 +150,7 @@ public class BrandService : IBrandService
         }
 
         account = accountRepository.Add(account);
+        emailService.SendEmailBrandRegister(account.Email);
         Brand brand = mapper.Map<Brand>(creation);
         brand.AccountId = account.Id;
 
@@ -174,22 +175,29 @@ public class BrandService : IBrandService
         Brand entity = brandRepository.GetById(id);
         if (entity != null)
         {
-            // Cover photo
-            if (entity.CoverPhoto != null && entity.CoverPhoto.Length > 0)
+            if (entity.Campaigns.All(c => c.CampaignActivities.LastOrDefault().State.Equals(CampaignState.Closed)))
             {
-                // Remove image
-                fireBaseService.RemoveFileAsync(entity.CoverFileName, FOLDER_NAME);
-            }
+                // Cover photo
+                if (entity.CoverPhoto != null && entity.CoverPhoto.Length > 0)
+                {
+                    // Remove image
+                    fireBaseService.RemoveFileAsync(entity.CoverFileName, FOLDER_NAME);
+                }
 
-            // Logo (Avatar)
-            if (entity.Account.Avatar != null && entity.Account.Avatar.Length > 0)
+                // Logo (Avatar)
+                if (entity.Account.Avatar != null && entity.Account.Avatar.Length > 0)
+                {
+                    // Remove image
+                    fireBaseService.RemoveFileAsync(entity.Account.FileName, ACCOUNT_FOLDER_NAME);
+                }
+
+                brandRepository.Delete(id);
+                accountRepository.Delete(entity.Account.Id);
+            }
+            else
             {
-                // Remove image
-                fireBaseService.RemoveFileAsync(entity.Account.FileName, ACCOUNT_FOLDER_NAME);
+                throw new InvalidParameterException("Không thể xóa thương hiệu đang chạy chiến dịch");
             }
-
-            brandRepository.Delete(id);
-            accountRepository.Delete(entity.Account.Id);
         }
         else
         {
@@ -198,7 +206,7 @@ public class BrandService : IBrandService
     }
 
     public PagedResultModel<BrandModel> GetAll
-        (bool? state, string propertySort, bool isAsc, string search, 
+        (bool? state, string propertySort, bool isAsc, string search,
         int page, int limit, JwtRequestModel request)
     {
         if (request.Role.Equals("Student"))
@@ -238,19 +246,19 @@ public class BrandService : IBrandService
 
     public PagedResultModel<CampaignModel> GetCampaignListByBrandId
         (string id, List<string> typeIds, List<string> storeIds, List<string> majorIds, List<string> campusIds,
-        bool? state, string propertySort, bool isAsc, string search, int page, int limit)
+        List<CampaignState> stateIds, string propertySort, bool isAsc, string search, int page, int limit)
     {
         Brand entity = brandRepository.GetById(id);
         if (entity != null)
         {
             return campaignService.GetAll(new() { id }, typeIds, storeIds, majorIds,
-                campusIds, state, propertySort, isAsc, search, page, limit);
+                campusIds, stateIds, propertySort, isAsc, search, page, limit);
         }
         throw new InvalidParameterException("Không tìm thấy thương hiệu");
     }
 
     public PagedResultModel<TransactionModel> GetHistoryTransactionListByStudentId
-        (string id, List<string> walletTypeIds, bool? state, string propertySort, 
+        (string id, List<WalletType> walletTypeIds, bool? state, string propertySort,
         bool isAsc, string search, int page, int limit)
     {
         Brand entity = brandRepository.GetById(id);
@@ -285,7 +293,7 @@ public class BrandService : IBrandService
     }
 
     public PagedResultModel<StoreModel> GetStoreListByBrandId
-        (string id, List<string> areaIds, bool? state, string propertySort, 
+        (string id, List<string> areaIds, bool? state, string propertySort,
         bool isAsc, string search, int page, int limit)
     {
         Brand entity = brandRepository.GetById(id);

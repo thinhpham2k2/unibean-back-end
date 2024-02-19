@@ -6,5 +6,6 @@ namespace Unibean.Service.Services.Interfaces;
 public interface IRequestTransactionService
 {
     List<TransactionModel> GetAll
-        (List<string> walletIds, List<string> requestIds, List<string> walletTypeIds, string search);
+        (List<string> walletIds, List<string> requestIds, 
+        List<WalletType> walletTypeIds, string search);
 }

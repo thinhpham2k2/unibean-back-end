@@ -25,16 +25,16 @@ public class BonusController : ControllerBase
     /// <summary>
     /// Get bonus list
     /// </summary>
-    /// <param name="brandIds">Filter by brand Id.</param>
-    /// <param name="storeIds">Filter by store Id.</param>
-    /// <param name="studentIds">Filter by student Id.</param>
+    /// <param name="brandIds">Filter by brand id.</param>
+    /// <param name="storeIds">Filter by store id.</param>
+    /// <param name="studentIds">Filter by student id.</param>
     /// <param name="state">Filter by bonus state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
     [Authorize(Roles = "Admin, Brand, Store")]
     [ProducesResponseType(typeof(PagedResultModel<BonusModel>),
         (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<BonusModel>> GetList(
         [FromQuery] List<string> brandIds,
@@ -64,7 +64,7 @@ public class BonusController : ControllerBase
     [HttpGet("{id}")]
     [Authorize(Roles = "Admin, Brand, Store")]
     [ProducesResponseType(typeof(BonusExtraModel), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult GetById(string id)
     {

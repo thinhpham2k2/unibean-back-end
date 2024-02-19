@@ -23,6 +23,50 @@ public class OrderStateRepository : IOrderStateRepository
         return creation;
     }
 
+    public OrderState AddAbort(OrderState creation)
+    {
+        try
+        {
+            using var db = new UnibeanDBContext();
+            creation = db.OrderStates.Add(creation).Entity;
+
+            if (creation != null)
+            {
+                var order = db.Orders
+                .Where(s => s.Id.Equals(creation.OrderId) && (bool)s.Status)
+                .Include(o => o.OrderTransactions.Where(s => (bool)s.Status).OrderBy(s => s.Id))
+                    .ThenInclude(t => t.Wallet)
+                .FirstOrDefault();
+
+                db.OrderTransactions.Add(
+                    new()
+                    {
+                        Id = Ulid.NewUlid().ToString(),
+                        OrderId = creation.OrderId,
+                        WalletId = order.OrderTransactions.FirstOrDefault().WalletId,
+                        Amount = order.Amount,
+                        Rate = 1,
+                        Description = creation.Description,
+                        State = true,
+                        Status = true
+                    });
+
+                var wallet = order.OrderTransactions.FirstOrDefault().Wallet;
+                wallet.Balance += order.Amount;
+                wallet.DateUpdated = DateTime.Now;
+
+                db.Wallets.Update(wallet);
+            }
+
+            db.SaveChanges();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return creation;
+    }
+
     public void Delete(string id)
     {
         try
@@ -40,7 +84,7 @@ public class OrderStateRepository : IOrderStateRepository
     }
 
     public PagedResultModel<OrderState> GetAll
-        (List<string> orderIds, List<string> stateIds, bool? state,
+        (List<string> orderIds, List<State> stateIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<OrderState> pagedResult = new();
@@ -48,10 +92,10 @@ public class OrderStateRepository : IOrderStateRepository
         {
             using var db = new UnibeanDBContext();
             var query = db.OrderStates
-                .Where(t => (EF.Functions.Like(t.State.StateName, "%" + search + "%")
+                .Where(t => (EF.Functions.Like((string)(object)t.State, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
                 && (orderIds.Count == 0 || orderIds.Contains(t.OrderId))
-                && (stateIds.Count == 0 || stateIds.Contains(t.StateId))
+                && (stateIds.Count == 0 || stateIds.Contains(t.State.Value))
                 && (state == null || state.Equals(t.State))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));

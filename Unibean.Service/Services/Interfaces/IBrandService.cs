@@ -1,4 +1,5 @@
-﻿using Unibean.Repository.Paging;
+﻿using Unibean.Repository.Entities;
+using Unibean.Repository.Paging;
 using Unibean.Service.Models.Authens;
 using Unibean.Service.Models.Brands;
 using Unibean.Service.Models.Campaigns;
@@ -24,10 +25,10 @@ public interface IBrandService
 
     PagedResultModel<CampaignModel> GetCampaignListByBrandId
         (string id, List<string> typeIds, List<string> storeIds, List<string> majorIds, List<string> campusIds,
-        bool? state, string propertySort, bool isAsc, string search, int page, int limit);
+        List<CampaignState> stateIds, string propertySort, bool isAsc, string search, int page, int limit);
 
     PagedResultModel<TransactionModel> GetHistoryTransactionListByStudentId
-        (string id, List<string> walletTypeIds, bool? state, string propertySort, 
+        (string id, List<WalletType> walletTypeIds, bool? state, string propertySort, 
         bool isAsc, string search, int page, int limit);
 
     PagedResultModel<StoreModel> GetStoreListByBrandId

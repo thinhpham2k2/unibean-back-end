@@ -1,13 +1,17 @@
 ﻿using Unibean.Repository.Paging;
+using Unibean.Service.Models.Activities;
+using Unibean.Service.Models.CampaignDetails;
 using Unibean.Service.Models.Stores;
 using Unibean.Service.Models.Transactions;
-using Unibean.Service.Models.Vouchers;
 
 namespace Unibean.Service.Services.Interfaces;
 
 public interface IStoreService
 {
     Task<StoreModel> Add(CreateStoreModel creation);
+
+    bool AddActivity
+        (string id, string voucherItemId, CreateUseActivityModel creation);
 
     void Delete(string id);
 
@@ -25,9 +29,11 @@ public interface IStoreService
         (string id, List<StoreTransactionType> typeIds, bool? state, string propertySort, 
         bool isAsc, string search, int page, int limit);
 
-    PagedResultModel<VoucherModel> GetVoucherListByStoreId
+    PagedResultModel<CampaignDetailModel> GetCampaignDetailByStoreId
         (string id, List<string> campaignIds, List<string> typeIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit);
 
     Task<StoreExtraModel> Update(string id, UpdateStoreModel update);
+
+    CampaignDetailExtraModel GetCampaignDetailById(string id, string detailId);
 }

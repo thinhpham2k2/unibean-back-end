@@ -25,17 +25,15 @@ public class AreaController : ControllerBase
     /// <summary>
     /// Get area list
     /// </summary>
-    /// <param name="districtIds">Filter by district Id.</param>
     /// <param name="state">Filter by area state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
     [AllowAnonymous]
     [ProducesResponseType(typeof(PagedResultModel<AreaModel>),
         (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<AreaModel>> GetList(
-        [FromQuery] List<string> districtIds,
         [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
@@ -47,7 +45,7 @@ public class AreaController : ControllerBase
         {
             PagedResultModel<AreaModel>
                 result = areaService.GetAll
-                (districtIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                (state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
                 paging.Search, paging.Page, paging.Limit);
             return StatusCode(StatusCodes.Status200OK, result);
         }
@@ -59,8 +57,8 @@ public class AreaController : ControllerBase
     /// </summary>
     [HttpGet("{id}")]
     [AllowAnonymous]
-    [ProducesResponseType(typeof(AreaModel), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(AreaExtraModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult GetById(string id)
     {
@@ -81,8 +79,8 @@ public class AreaController : ControllerBase
     /// </summary>
     [HttpPost]
     [Authorize(Roles = "Admin")]
-    [ProducesResponseType(typeof(AreaModel), (int)HttpStatusCode.Created)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(AreaExtraModel), (int)HttpStatusCode.Created)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> Create([FromForm] CreateAreaModel creation)
@@ -91,10 +89,10 @@ public class AreaController : ControllerBase
 
         try
         {
-            var type = await areaService.Add(creation);
-            if (type != null)
+            var area = await areaService.Add(creation);
+            if (area != null)
             {
-                return StatusCode(StatusCodes.Status201Created, type);
+                return StatusCode(StatusCodes.Status201Created, area);
             }
             return StatusCode(StatusCodes.Status404NotFound, "Tạo thất bại");
         }
@@ -109,8 +107,8 @@ public class AreaController : ControllerBase
     /// </summary>
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin")]
-    [ProducesResponseType(typeof(AreaModel), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(AreaExtraModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> Update(string id, [FromForm] UpdateAreaModel update)
@@ -119,10 +117,10 @@ public class AreaController : ControllerBase
 
         try
         {
-            var type = await areaService.Update(id, update);
-            if (type != null)
+            var area = await areaService.Update(id, update);
+            if (area != null)
             {
-                return StatusCode(StatusCodes.Status200OK, type);
+                return StatusCode(StatusCodes.Status200OK, area);
             }
             return StatusCode(StatusCodes.Status404NotFound, "Cập nhật thất bại");
         }
@@ -138,7 +136,7 @@ public class AreaController : ControllerBase
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin")]
     [ProducesResponseType((int)HttpStatusCode.NoContent)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult Delete(string id)
     {

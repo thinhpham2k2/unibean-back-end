@@ -4,13 +4,14 @@ using System.Net;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Service.Models.Activities;
+using Unibean.Service.Models.CampaignActivities;
+using Unibean.Service.Models.CampaignDetails;
 using Unibean.Service.Models.Campaigns;
 using Unibean.Service.Models.Campuses;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Majors;
 using Unibean.Service.Models.Parameters;
 using Unibean.Service.Models.Stores;
-using Unibean.Service.Models.Vouchers;
 using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Validations;
 
@@ -23,26 +24,31 @@ public class CampaignController : ControllerBase
 {
     private readonly ICampaignService campaignService;
 
-    public CampaignController(ICampaignService campaignService)
+    private readonly IJwtService jwtService;
+
+    public CampaignController(
+        ICampaignService campaignService,
+        IJwtService jwtService)
     {
         this.campaignService = campaignService;
+        this.jwtService = jwtService;
     }
 
     /// <summary>
     /// Get campaign list
     /// </summary>
-    /// <param name="brandIds">Filter by brand Id.</param>
-    /// <param name="typeIds">Filter by campaign type Id.</param>
-    /// <param name="storeIds">Filter by store Id.</param>
-    /// <param name="majorIds">Filter by major Id.</param>
-    /// <param name="campusIds">Filter by campus Id.</param>
-    /// <param name="state">Filter by campaign state.</param>
+    /// <param name="brandIds">Filter by brand id.</param>
+    /// <param name="typeIds">Filter by campaign type id.</param>
+    /// <param name="storeIds">Filter by store id.</param>
+    /// <param name="majorIds">Filter by major id.</param>
+    /// <param name="campusIds">Filter by campus id.</param>
+    /// <param name="stateIds">Filter by campaign state --- Pending = 1, Rejected = 2, Active = 3, Inactive = 4, Expired = 5, Closed = 6</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(PagedResultModel<CampaignModel>),
         (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<CampaignModel>> GetList(
         [FromQuery] List<string> brandIds,
@@ -50,7 +56,7 @@ public class CampaignController : ControllerBase
         [FromQuery] List<string> storeIds,
         [FromQuery] List<string> majorIds,
         [FromQuery] List<string> campusIds,
-        [FromQuery] bool? state,
+        [FromQuery] List<CampaignState> stateIds,
         [FromQuery] PagingModel paging)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -61,7 +67,7 @@ public class CampaignController : ControllerBase
         {
             PagedResultModel<CampaignModel>
                 result = campaignService.GetAll
-                (brandIds, typeIds, storeIds, majorIds, campusIds, state, propertySort,
+                (brandIds, typeIds, storeIds, majorIds, campusIds, stateIds, propertySort,
                 paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
             return StatusCode(StatusCodes.Status200OK, result);
         }
@@ -74,7 +80,7 @@ public class CampaignController : ControllerBase
     [HttpGet("{id}")]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(CampaignModel), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult GetById(string id)
     {
@@ -96,7 +102,7 @@ public class CampaignController : ControllerBase
     [HttpPost]
     [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType(typeof(CampaignModel), (int)HttpStatusCode.Created)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> Create([FromForm] CreateCampaignModel creation)
@@ -124,7 +130,7 @@ public class CampaignController : ControllerBase
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType(typeof(CampaignModel), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> Update(string id, [FromForm] UpdateCampaignModel update)
@@ -149,22 +155,31 @@ public class CampaignController : ControllerBase
     /// <summary>
     /// Update campaign state
     /// </summary>
-    [HttpPut("{id}/state")]
-    [Authorize(Roles = "Admin")]
-    [ProducesResponseType(typeof(CampaignExtraModel), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    /// <param name="id">Campaign id.</param>
+    /// <param name="stateId">Campaign state id --- Rejected = 2, Active = 3, Inactive = 4, Closed = 6</param>
+    [HttpPut("{id}/states/{stateId}")]
+    [Authorize(Roles = "Admin, Brand")]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public ActionResult UpdateState(string id)
+    public ActionResult UpdateState(
+        [ValidCampaign(new[] {
+            CampaignState.Pending,
+            CampaignState.Active,
+            CampaignState.Inactive })] string id,
+        CampaignState stateId)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
+        string jwtToken = HttpContext.Request.Headers["Authorization"];
+
         try
         {
-            var campaign = campaignService.UpdateState(id);
-            if (campaign != null)
+            if (campaignService.UpdateState
+                (id, stateId, jwtService.GetJwtRequest(jwtToken.Split(" ")[1])))
             {
-                return StatusCode(StatusCodes.Status200OK, campaign);
+                return StatusCode(StatusCodes.Status200OK, "Cập nhật trạng thái thành công");
             }
             return NotFound("Cập nhật trạng thái thất bại");
         }
@@ -180,7 +195,7 @@ public class CampaignController : ControllerBase
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType((int)HttpStatusCode.NoContent)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult Delete(string id)
     {
@@ -198,17 +213,54 @@ public class CampaignController : ControllerBase
     }
 
     /// <summary>
+    /// Get activity list by campaign id
+    /// </summary>
+    /// <param name="id">Campaign id.</param>
+    /// <param name="stateIds">Filter by campaign state --- Pending = 1, Rejected = 2, Active = 3, Inactive = 4, Expired = 5, Closed = 6</param>
+    /// <param name="paging">Paging parameter.</param>
+    [HttpGet("{id}/activities")]
+    [Authorize(Roles = "Admin, Brand, Store, Student")]
+    [ProducesResponseType(typeof(PagedResultModel<CampaignActivityModel>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public ActionResult<PagedResultModel<CampaignActivityModel>> GetActivityListByStoreId(string id,
+        [FromQuery] List<CampaignState> stateIds,
+        [FromQuery] PagingModel paging)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            string propertySort = paging.Sort.Split(",")[0];
+            var propertyInfo = typeof(CampaignActivity).GetProperty(propertySort);
+            if (propertySort != null && propertyInfo != null)
+            {
+                PagedResultModel<CampaignActivityModel>
+                result = campaignService.GetCampaignActivityListByCampaignId
+                    (id, stateIds, propertySort, paging.Sort.Split(",")[1].Equals("asc"),
+                    paging.Search, paging.Page, paging.Limit);
+                return StatusCode(StatusCodes.Status200OK, result);
+            }
+            return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của hoạt động chiến dịch");
+        }
+        catch (InvalidParameterException e)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+        }
+    }
+
+    /// <summary>
     /// Get campus list by campaign id
     /// </summary>
     /// <param name="id">Campaign id.</param>
-    /// <param name="universityIds">Filter by university Id.</param>
-    /// <param name="areaIds">Filter by area Id.</param>
+    /// <param name="universityIds">Filter by university id.</param>
+    /// <param name="areaIds">Filter by area id.</param>
     /// <param name="state">Filter by campus state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/campuses")]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(PagedResultModel<CampusModel>), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<CampusModel>> GetCampusListByStoreId(string id,
         [FromQuery] List<string> universityIds,
@@ -226,7 +278,7 @@ public class CampaignController : ControllerBase
             {
                 PagedResultModel<CampusModel>
                 result = campaignService.GetCampusListByCampaignId
-                    (id, universityIds, areaIds, state, propertySort, 
+                    (id, universityIds, areaIds, state, propertySort,
                     paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
                 return StatusCode(StatusCodes.Status200OK, result);
             }
@@ -247,7 +299,7 @@ public class CampaignController : ControllerBase
     [HttpGet("{id}/majors")]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(PagedResultModel<MajorModel>), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<MajorModel>> GetMajorListByStoreId(string id,
         [FromQuery] bool? state,
@@ -279,14 +331,14 @@ public class CampaignController : ControllerBase
     /// Get store list by campaign id
     /// </summary>
     /// <param name="id">Campaign id.</param>
-    /// <param name="brandIds">Filter by brand Id.</param>
-    /// <param name="areaIds">Filter by area Id.</param>
+    /// <param name="brandIds">Filter by brand id.</param>
+    /// <param name="areaIds">Filter by area id.</param>
     /// <param name="state">Filter by store state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/stores")]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
     [ProducesResponseType(typeof(PagedResultModel<StoreModel>), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<StoreModel>> GetStoreListByStoreId(string id,
         [FromQuery] List<string> brandIds,
@@ -317,18 +369,18 @@ public class CampaignController : ControllerBase
     }
 
     /// <summary>
-    /// Get voucher list by campaign id
+    /// Get campaign detail list by campaign id
     /// </summary>
     /// <param name="id">Campaign id.</param>
-    /// <param name="typeIds">Filter by voucher type Id.</param>
-    /// <param name="state">Filter by voucher state.</param>
+    /// <param name="typeIds">Filter by voucher type id.</param>
+    /// <param name="state">Filter by campaign detail state.</param>
     /// <param name="paging">Paging parameter.</param>
-    [HttpGet("{id}/vouchers")]
+    [HttpGet("{id}/details")]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
-    [ProducesResponseType(typeof(PagedResultModel<VoucherModel>), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(PagedResultModel<CampaignDetailModel>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public ActionResult<PagedResultModel<VoucherModel>> GetVoucherListByCampaignId(string id,
+    public ActionResult<PagedResultModel<CampaignDetailModel>> GetCampaignDetailListByCampaignId(string id,
         [FromQuery] List<string> typeIds,
         [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
@@ -341,13 +393,13 @@ public class CampaignController : ControllerBase
             var propertyInfo = typeof(Voucher).GetProperty(propertySort);
             if (propertySort != null && propertyInfo != null)
             {
-                PagedResultModel<VoucherModel>
-                result = campaignService.GetVoucherListByCampaignId
+                PagedResultModel<CampaignDetailModel>
+                result = campaignService.GetCampaignDetailListByCampaignId
                     (id, typeIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"),
                     paging.Search, paging.Page, paging.Limit);
                 return StatusCode(StatusCodes.Status200OK, result);
             }
-            return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của khuyến mãi");
+            return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của chi tiết chiến dịch");
         }
         catch (InvalidParameterException e)
         {
@@ -356,22 +408,22 @@ public class CampaignController : ControllerBase
     }
 
     /// <summary>
-    /// Get voucher by campaign id
+    /// Get campaign detail by campaign id
     /// </summary>
     /// <param name="id">Campaign id.</param>
-    /// <param name="voucherId">Voucher id.</param>
-    [HttpGet("{id}/vouchers/{voucherId}")]
+    /// <param name="detailId">Campaign detail id.</param>
+    [HttpGet("{id}/details/{detailId}")]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
-    [ProducesResponseType(typeof(VoucherModel), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(CampaignDetailExtraModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public ActionResult<VoucherModel> GetVoucherByCampaignId(string id, string voucherId)
+    public ActionResult<CampaignDetailExtraModel> GetCampaignDetailById(string id, string detailId)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         try
         {
-            return StatusCode(StatusCodes.Status200OK, campaignService.GetVoucherById(id, voucherId));
+            return StatusCode(StatusCodes.Status200OK, campaignService.GetCampaignDetailById(id, detailId));
         }
         catch (InvalidParameterException e)
         {
@@ -383,24 +435,24 @@ public class CampaignController : ControllerBase
     /// Redeem voucher
     /// </summary>
     /// <param name="id">Campaign id.</param>
-    /// <param name="voucherId">Voucher id.</param>
+    /// <param name="detailId">Campaign detail id.</param>
     /// <param name="creation">Buy activities model.</param>
-    [HttpPost("{id}/vouchers/{voucherId}")]
+    [HttpPost("{id}/details/{detailId}")]
     [Authorize(Roles = "Student")]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.Created)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public ActionResult<VoucherModel> BuyVoucher(
-        [ValidCampaign] string id, 
-        [ValidVoucher] string voucherId, 
+    public ActionResult<string> BuyVoucher(
+        [ValidCampaign(new[] { CampaignState.Active })] string id,
+        [ValidCampaignDetailId] string detailId,
         CreateBuyActivityModel creation)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         try
         {
-            return campaignService.AddActivity(id, voucherId, creation) ?
+            return campaignService.AddActivity(id, detailId, creation) ?
                 StatusCode(StatusCodes.Status201Created, "Thanh toán thành công") :
                 StatusCode(StatusCodes.Status404NotFound, "Thanh toán khuyến mãi thất bại");
         }

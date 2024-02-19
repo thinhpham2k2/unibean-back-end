@@ -85,109 +85,6 @@ public class VoucherRepository : IVoucherRepository
         return pagedResult;
     }
 
-    public PagedResultModel<Voucher> GetAllByCampaign
-        (List<string> campaignIds, List<string> typeIds, bool? state,
-        string propertySort, bool isAsc, string search, int page, int limit)
-    {
-        PagedResultModel<Voucher> pagedResult = new();
-        try
-        {
-            using var db = new UnibeanDBContext();
-            var query = db.Campaigns
-                .Where(c => (campaignIds.Count == 0 || campaignIds.Contains(c.Id))
-                && (bool)c.Status)
-                .SelectMany(c => c.VoucherItems.Where(c => (bool)c.Status).Select(v => v.Voucher)).Distinct()
-                .Where(t => (EF.Functions.Like(t.VoucherName, "%" + search + "%")
-                || EF.Functions.Like(t.Condition, "%" + search + "%")
-                || EF.Functions.Like(t.Description, "%" + search + "%"))
-                && (typeIds.Count == 0 || typeIds.Contains(t.TypeId))
-                && (state == null || state.Equals(t.State)))
-                .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
-
-            var result = query
-               .Skip((page - 1) * limit)
-               .Take(limit)
-               .Include(s => s.Brand)
-               .Include(s => s.Type)
-               .Include(s => s.VoucherItems.Where(
-                   v => (bool)v.Status))
-               .ToList()
-               .Select(r =>
-               {
-                   r.Price = r.VoucherItems.FirstOrDefault().Price;
-                   r.Rate = r.VoucherItems.FirstOrDefault().Rate;
-                   r.VoucherItems = r.VoucherItems.Where(
-                   v => (bool)v.Status && !(bool)v.IsBought && !(bool)v.IsUsed
-                   && v.CampaignId.Equals(campaignIds.FirstOrDefault())).ToList();
-                   return r;
-               }).ToList();
-
-            pagedResult = new PagedResultModel<Voucher>
-            {
-                CurrentPage = page,
-                PageSize = limit,
-                PageCount = (int)Math.Ceiling((double)query.Count() / limit),
-                Result = result,
-                RowCount = result.Count,
-                TotalCount = query.Count()
-            };
-        }
-        catch (Exception ex)
-        {
-            throw new Exception(ex.Message);
-        }
-        return pagedResult;
-    }
-
-    public PagedResultModel<Voucher> GetAllByStore
-        (List<string> storeIds, List<string> campaignIds, List<string> typeIds,
-        bool? state, string propertySort, bool isAsc, string search, int page, int limit)
-    {
-        PagedResultModel<Voucher> pagedResult = new();
-        try
-        {
-            using var db = new UnibeanDBContext();
-
-            var query = db.Stores
-                .Where(s => (storeIds.Count == 0 || storeIds.Contains(s.Id))
-                && (bool)s.Status)
-                .SelectMany(s => s.CampaignStores.Where(c => (bool)c.Status 
-                && (bool)c.Campaign.State
-                && EF.Functions.Like(c.Campaign.CampaignName, "%" + search + "%")
-                && (campaignIds.Count == 0 || campaignIds.Contains(c.CampaignId)))
-                .SelectMany(c => c.Campaign.VoucherItems.Select(v => v.Voucher))).Distinct()
-                .Where(t => (EF.Functions.Like(t.VoucherName, "%" + search + "%")
-                || EF.Functions.Like(t.Condition, "%" + search + "%")
-                || EF.Functions.Like(t.Description, "%" + search + "%"))
-                && (typeIds.Count == 0 || typeIds.Contains(t.TypeId))
-                && (state == null || state.Equals(t.State)))
-                .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
-
-            var result = query
-               .Skip((page - 1) * limit)
-               .Take(limit)
-               .Include(s => s.Brand)
-               .Include(s => s.Type)
-               .Include(s => s.VoucherItems.Where(v => (bool)v.Status))
-               .ToList();
-
-            pagedResult = new PagedResultModel<Voucher>
-            {
-                CurrentPage = page,
-                PageSize = limit,
-                PageCount = (int)Math.Ceiling((double)query.Count() / limit),
-                Result = result,
-                RowCount = result.Count,
-                TotalCount = query.Count()
-            };
-        }
-        catch (Exception ex)
-        {
-            throw new Exception(ex.Message);
-        }
-        return pagedResult;
-    }
-
     public Voucher GetById(string id)
     {
         Voucher voucher = new();
@@ -197,13 +94,12 @@ public class VoucherRepository : IVoucherRepository
             voucher = db.Vouchers
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.Brand)
+                .ThenInclude(b => b.Account)
             .Include(s => s.Type)
             .Include(s => s.VoucherItems.Where(v => (bool)v.Status))
-                .ThenInclude(v => v.Campaign)
-                    .ThenInclude(c => c.Brand)
-            .Include(s => s.VoucherItems.Where(v => (bool)v.Status))
-                .ThenInclude(v => v.Campaign)
-                    .ThenInclude(c => c.Type)
+                .ThenInclude(v => v.CampaignDetail)
+                    .ThenInclude(c => c.Campaign)
+                        .ThenInclude(c => c.Type)
             .FirstOrDefault();
         }
         catch (Exception ex)
@@ -221,19 +117,15 @@ public class VoucherRepository : IVoucherRepository
             using var db = new UnibeanDBContext();
             voucher = db.Vouchers
             .Where(s => s.Id.Equals(id) && (bool)s.Status
-            && s.VoucherItems.Any(v => v.CampaignId.Equals(campaignId)))
+            && s.VoucherItems.Any(v => v.CampaignDetail.CampaignId.Equals(campaignId)))
             .Include(s => s.Brand)
             .Include(s => s.Type)
             .Include(s => s.VoucherItems.Where(
                 v => (bool)v.Status && !(bool)v.IsBought && !(bool)v.IsUsed
-                && v.CampaignId.Equals(campaignId)))
-                .ThenInclude(v => v.Campaign)
-                    .ThenInclude(c => c.Brand)
-            .Include(s => s.VoucherItems.Where(
-                v => (bool)v.Status && !(bool)v.IsBought && !(bool)v.IsUsed
-                && v.CampaignId.Equals(campaignId)))
-                .ThenInclude(v => v.Campaign)
-                    .ThenInclude(c => c.Type)
+                && v.CampaignDetail.CampaignId.Equals(campaignId)))
+                .ThenInclude(v => v.CampaignDetail)
+                    .ThenInclude(c => c.Campaign)
+                        .ThenInclude(c => c.Type)
             .FirstOrDefault();
         }
         catch (Exception ex)

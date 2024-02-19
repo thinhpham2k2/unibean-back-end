@@ -9,19 +9,15 @@ namespace Unibean.Service.Services;
 
 public class OrderStateService : IOrderStateService
 {
-    private readonly IStateRepository stateRepository;
-
     private readonly IOrderRepository orderRepository;
 
     private readonly IOrderStateRepository orderStateRepository;
 
     public OrderStateService(IOrderRepository orderRepository,
-        IOrderStateRepository orderStateRepository,
-        IStateRepository stateRepository)
+        IOrderStateRepository orderStateRepository)
     {
         this.orderRepository = orderRepository;
         this.orderStateRepository = orderStateRepository;
-        this.stateRepository = stateRepository;
     }
 
     public string Add(string id, CreateOrderStateModel creation)
@@ -29,30 +25,45 @@ public class OrderStateService : IOrderStateService
         Order entity = orderRepository.GetById(id);
         if (entity != null)
         {
-            List<string> stateIds = entity.OrderStates.Select(s => s.StateId).ToList();
+            List<State> stateIds = entity.OrderStates.Select(s => (State)s.State).ToList();
             if (!stateIds.IsNullOrEmpty())
             {
-                if (string.Compare(stateIds.Max(), creation.StateId) < 0)
+                if ((creation.State > (int)stateIds.Max() || creation.State.Equals(6))
+                    && !stateIds.Max().Equals(State.Abort))
                 {
-                    stateIds = stateRepository.GetAll(true, "Id", true, "", 1, 100).Result.Select(s 
-                        => s.Id).Where(s => string.Compare(s, stateIds.Max()) > 0 
-                        && string.Compare(s, creation.StateId) <= 0).ToList();
-
-                    stateIds.ForEach(s =>
+                    if (creation.State.Equals(6))
                     {
-                        orderStateRepository.Add(new OrderState
+                        orderStateRepository.AddAbort(new OrderState
                         {
                             Id = Ulid.NewUlid().ToString(),
                             OrderId = id,
-                            StateId = s,
+                            State = State.Abort,
                             DateCreated = DateTime.Now,
                             Description = creation.Description,
-                            States = true,
                             Status = true,
                         });
-                    });
+                        return "Hủy đơn hàng thành công";
+                    }
+                    else
+                    {
+                        stateIds = Enum.GetValues(typeof(State)).Cast<State>().Where(
+                            s => s > stateIds.Max() && (int)s <= creation.State).ToList();
 
-                    return "Đã tạo thành công";
+                        stateIds.ForEach(s =>
+                        {
+                            orderStateRepository.Add(new OrderState
+                            {
+                                Id = Ulid.NewUlid().ToString(),
+                                OrderId = id,
+                                State = s,
+                                DateCreated = DateTime.Now,
+                                Description = creation.Description,
+                                Status = true,
+                            });
+                        });
+
+                        return "Đã tạo thành công";
+                    }
                 }
                 else
                 {
@@ -62,23 +73,29 @@ public class OrderStateService : IOrderStateService
             }
             else
             {
-                stateIds = stateRepository.GetAll(true, "Id", true, "", 1, 100).Result.Select(s
-                        => s.Id).Where(s => string.Compare(s, creation.StateId) <= 0).ToList();
-                stateIds.ForEach(s =>
+                if (creation.State.Equals(6))
                 {
-                    orderStateRepository.Add(new OrderState
+                    return "Hủy đơn hàng thành công";
+                }
+                else
+                {
+                    stateIds = Enum.GetValues(typeof(State)).Cast<State>().Where(
+                                s => (int)s <= creation.State).ToList();
+                    stateIds.ForEach(s =>
                     {
-                        Id = Ulid.NewUlid().ToString(),
-                        OrderId = id,
-                        StateId = s,
-                        DateCreated = DateTime.Now,
-                        Description = creation.Description,
-                        States = true,
-                        Status = true,
+                        orderStateRepository.Add(new OrderState
+                        {
+                            Id = Ulid.NewUlid().ToString(),
+                            OrderId = id,
+                            State = s,
+                            DateCreated = DateTime.Now,
+                            Description = creation.Description,
+                            Status = true,
+                        });
                     });
-                });
 
-                return "Đã tạo thành công";
+                    return "Đã tạo thành công";
+                }
             }
         }
         throw new InvalidParameterException("Đơn hàng không hợp lệ");

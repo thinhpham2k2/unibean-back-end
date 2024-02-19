@@ -5,7 +5,7 @@ namespace Unibean.Service.Services.Interfaces;
 
 public interface IMajorService
 {
-    Task<MajorModel> Add(CreateMajorModel creation);
+    Task<MajorExtraModel> Add(CreateMajorModel creation);
 
     void Delete(string id);
 
@@ -16,7 +16,7 @@ public interface IMajorService
         (List<string> campaignIds, bool? state, string propertySort,
         bool isAsc, string search, int page, int limit);
 
-    MajorModel GetById(string id);
+    MajorExtraModel GetById(string id);
 
-    Task<MajorModel> Update(string id, UpdateMajorModel update);
+    Task<MajorExtraModel> Update(string id, UpdateMajorModel update);
 }

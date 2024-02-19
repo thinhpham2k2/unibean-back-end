@@ -46,9 +46,12 @@ public class CreateStudentAccountModel
         ErrorMessage = "Độ dài mã sinh viên từ 3 đến 50 ký tự")]
     public string Code { get; set; }
 
+    /// <summary>
+    /// Nữ = 1, Nam = 2
+    /// </summary>
     [ValidGender]
     [Required(ErrorMessage = "Giới tính là bắt buộc")]
-    public int Gender { get; set; }
+    public int? Gender { get; set; }
 
     [ValidInviteCode]
     public string InviteCode { get; set; }

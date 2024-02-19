@@ -7,11 +7,16 @@ public interface ICampaignRepository
 {
     Campaign Add(Campaign creation);
 
+    bool AllToClosed(string id);
+
     void Delete(string id);
 
+    bool ExpiredToClosed(string id);
+
     PagedResultModel<Campaign> GetAll
-        (List<string> brandIds, List<string> typeIds, List<string> storeIds, List<string> majorIds, List<string> campusIds,
-        bool? state, string propertySort, bool isAsc, string search, int page, int limit);
+        (List<string> brandIds, List<string> typeIds, List<string> storeIds, 
+        List<string> majorIds, List<string> campusIds, List<CampaignState> stateIds, 
+        string propertySort, bool isAsc, string search, int page, int limit);
 
     Campaign GetById(string id);
 

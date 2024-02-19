@@ -1,7 +1,27 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Unibean.Repository.Entities;
+
+public enum ChallengeType
+{
+    [Display(Name = "Xác minh")]
+    [Description("Xác minh tài khoản sinh viên")]
+    Verify = 1,
+
+    [Display(Name = "Chào mừng")]
+    [Description("Chào mừng đến với ứng dụng")]
+    Welcome = 2,
+
+    [Display(Name = "Lan tỏa")]
+    [Description("Lan tỏa ứng dụng đến nhiều người")]
+    Spread = 3,
+
+    [Display(Name = "Tiêu thụ")]
+    [Description("Tiêu thụ đậu cho việc mua khuyến mãi")]
+    Consume = 4
+}
 
 [Table("tbl_challenge")]
 public class Challenge
@@ -10,10 +30,8 @@ public class Challenge
     [Column("id", TypeName = "char(26)")]
     public string Id { get; set; }
 
-    [Column("type_id", TypeName = "char(26)")]
-    public string TypeId { get; set; }
-
-    public ChallengeType Type { get; set; }
+    [Column("type", TypeName = "enum('Verify', 'Welcome', 'Spread', 'Consume')")]
+    public ChallengeType? Type { get; set; }
 
     [MaxLength(255)]
     [Column("challenge_name")]

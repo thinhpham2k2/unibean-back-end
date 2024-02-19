@@ -15,6 +15,9 @@ public class VoucherItemModel
     public string BrandId { get; set; }
     public string BrandName { get; set; }
     public string BrandImage { get; set; }
+    public string CampaignDetailId { get; set; }
+    public string CampaignId { get; set; }
+    public string CampaignName { get; set; }
     public decimal? Price { get; set; }
     public decimal? Rate { get; set; }
     public bool? IsBought { get; set; }

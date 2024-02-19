@@ -7,6 +7,7 @@ public class VoucherExtraModel
     public string Id { get; set; }
     public string BrandId { get; set; }
     public string BrandName { get; set; }
+    public string BrandImage { get; set; }
     public string TypeId { get; set; }
     public string TypeName { get; set; }
     public string VoucherName { get; set; }
@@ -22,6 +23,6 @@ public class VoucherExtraModel
     public string Description { get; set; }
     public bool? State { get; set; }
     public bool? Status { get; set; }
-    public int? NumberOfItem { get; set; }
+    public int? NumberOfItems { get; set; }
     public virtual ICollection<CampaignModel> Campaigns { get; set; }
 }

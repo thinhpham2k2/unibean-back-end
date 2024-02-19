@@ -1,15 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Unibean.Repository.Entities;
 using Unibean.Service.Validations;
 
 namespace Unibean.Service.Models.Invitations;
 
 public class CreateInvitationModel
 {
-    [ValidStudent]
+    [ValidStudent(new[] { StudentState.Active })]
     [Required(ErrorMessage = "Cần có người mời")]
     public string InviterId { get; set; }
 
-    [ValidStudent]
+    [ValidStudent(new[] { StudentState.Active })]
     [Required(ErrorMessage = "Cần có người được mời")]
     public string InviteeId { get; set; }
 

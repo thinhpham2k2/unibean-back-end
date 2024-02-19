@@ -14,6 +14,9 @@ using BCryptNet = BCrypt.Net.BCrypt;
 using System.Linq.Dynamic.Core;
 using Unibean.Service.Models.Orders;
 using Unibean.Service.Models.VoucherItems;
+using Enable.EnumDisplayName;
+using System.Linq;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace Unibean.Service.Services;
 
@@ -43,8 +46,6 @@ public class StudentService : IStudentService
 
     private readonly IStudentChallengeService studentChallengeService;
 
-    private readonly IRoleService roleService;
-
     private readonly IChallengeTransactionService challengeTransactionService;
 
     private readonly IOrderTransactionService orderTransactionService;
@@ -57,24 +58,28 @@ public class StudentService : IStudentService
 
     private readonly IVoucherItemService voucherItemService;
 
+    private readonly IEmailService emailService;
+
     public StudentService(IStudentRepository studentRepository,
         IFireBaseService fireBaseService,
         IAccountRepository accountRepository,
         IInvitationService invitationService,
         IStudentChallengeService studentChallengeService,
-        IRoleService roleService,
         IChallengeTransactionService challengeTransactionService,
         IOrderTransactionService orderTransactionService,
         IBonusTransactionService bonusTransactionService,
         IActivityTransactionService activityTransactionService,
         IOrderService orderService,
-        IVoucherItemService voucherItemService)
+        IVoucherItemService voucherItemService,
+        IEmailService emailService)
     {
         var config = new MapperConfiguration(cfg
                 =>
         {
             cfg.CreateMap<Student, StudentModel>()
             .ForMember(s => s.MajorName, opt => opt.MapFrom(src => src.Major.MajorName))
+            .ForMember(s => s.UniversityId, opt => opt.MapFrom(src => src.Campus.UniversityId))
+            .ForMember(s => s.UniversityName, opt => opt.MapFrom(src => src.Campus.University.UniversityName))
             .ForMember(s => s.CampusName, opt => opt.MapFrom(src => src.Campus.CampusName))
             .ForMember(s => s.InviteCode, opt => opt.MapFrom(src => src.Id))
             .ForMember(s => s.UserName, opt => opt.MapFrom(src => src.Account.UserName))
@@ -84,15 +89,32 @@ public class StudentService : IStudentService
             .ForMember(s => s.ImageName, opt => opt.MapFrom(src => src.Account.FileName))
             .ForMember(s => s.DateVerified, opt => opt.MapFrom(src => src.Account.DateVerified))
             .ForMember(s => s.IsVerify, opt => opt.MapFrom(src => src.Account.IsVerify))
-            .ForMember(s => s.GreenWallet, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Balance))
-            .ForMember(s => s.GreenWalletImage, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Type.Image))
-            .ForMember(s => s.RedWallet, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Balance))
-            .ForMember(s => s.RedWalletImage, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Type.Image))
+            .ForMember(s => s.StateId, opt => opt.MapFrom(src => (int)src.State))
+            .ForMember(s => s.StateName, opt => opt.MapFrom(src => src.State.GetDisplayName()))
+            .ForMember(s => s.GreenWalletId, opt => opt.MapFrom(src => (int)src.Wallets.Where(
+                w => w.Type.Equals(WalletType.Green)).FirstOrDefault().Type))
+            .ForMember(s => s.GreenWallet, opt => opt.MapFrom(src => src.Wallets.Where(
+                w => w.Type.Equals(WalletType.Green)).FirstOrDefault().Type))
+            .ForMember(s => s.GreenWalletName, opt => opt.MapFrom(src => src.Wallets.Where(
+                w => w.Type.Equals(WalletType.Green)).FirstOrDefault().Type.GetDisplayName()))
+            .ForMember(s => s.GreenWalletBalance, opt => opt.MapFrom(src => src.Wallets.Where(
+                w => w.Type.Equals(WalletType.Green)).FirstOrDefault().Balance))
+            .ForMember(s => s.RedWalletId, opt => opt.MapFrom(src => (int)src.Wallets.Where(
+                w => w.Type.Equals(WalletType.Red)).FirstOrDefault().Type))
+            .ForMember(s => s.RedWallet, opt => opt.MapFrom(src => src.Wallets.Where(
+                w => w.Type.Equals(WalletType.Red)).FirstOrDefault().Type))
+            .ForMember(s => s.RedWalletName, opt => opt.MapFrom(src => src.Wallets.Where(
+                w => w.Type.Equals(WalletType.Red)).FirstOrDefault().Type.GetDisplayName()))
+            .ForMember(s => s.RedWalletBalance, opt => opt.MapFrom(src => src.Wallets.Where(
+                w => w.Type.Equals(WalletType.Red)).FirstOrDefault().Balance))
             .ReverseMap();
             // Map Student Extra Model
             cfg.CreateMap<Student, StudentExtraModel>()
             .ForMember(s => s.MajorName, opt => opt.MapFrom(src => src.Major.MajorName))
             .ForMember(s => s.MajorImage, opt => opt.MapFrom(src => src.Major.Image))
+            .ForMember(s => s.UniversityId, opt => opt.MapFrom(src => src.Campus.UniversityId))
+            .ForMember(s => s.UniversityName, opt => opt.MapFrom(src => src.Campus.University.UniversityName))
+            .ForMember(s => s.UniversityImage, opt => opt.MapFrom(src => src.Campus.University.Image))
             .ForMember(s => s.CampusName, opt => opt.MapFrom(src => src.Campus.CampusName))
             .ForMember(s => s.CampusImage, opt => opt.MapFrom(src => src.Campus.Image))
             .ForMember(s => s.InviteCode, opt => opt.MapFrom(src => src.Id))
@@ -103,17 +125,33 @@ public class StudentService : IStudentService
             .ForMember(s => s.ImageName, opt => opt.MapFrom(src => src.Account.FileName))
             .ForMember(s => s.DateVerified, opt => opt.MapFrom(src => src.Account.DateVerified))
             .ForMember(s => s.IsVerify, opt => opt.MapFrom(src => src.Account.IsVerify))
-            .ForMember(s => s.GreenWallet, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Balance))
-            .ForMember(s => s.GreenWalletImage, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault().Type.Image))
-            .ForMember(s => s.RedWallet, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Balance))
-            .ForMember(s => s.RedWalletImage, opt => opt.MapFrom(src => src.Wallets.Skip(1).FirstOrDefault().Type.Image))
+            .ForMember(s => s.StateId, opt => opt.MapFrom(src => (int)src.State))
+            .ForMember(s => s.StateName, opt => opt.MapFrom(src => src.State.GetDisplayName()))
+            .ForMember(s => s.GreenWalletId, opt => opt.MapFrom(src => (int)src.Wallets.Where(
+                w => w.Type.Equals(WalletType.Green)).FirstOrDefault().Type))
+            .ForMember(s => s.GreenWallet, opt => opt.MapFrom(src => src.Wallets.Where(
+                w => w.Type.Equals(WalletType.Green)).FirstOrDefault().Type))
+            .ForMember(s => s.GreenWalletName, opt => opt.MapFrom(src => src.Wallets.Where(
+                w => w.Type.Equals(WalletType.Green)).FirstOrDefault().Type.GetDisplayName()))
+            .ForMember(s => s.GreenWalletBalance, opt => opt.MapFrom(src => src.Wallets.Where(
+                w => w.Type.Equals(WalletType.Green)).FirstOrDefault().Balance))
+            .ForMember(s => s.RedWalletId, opt => opt.MapFrom(src => (int)src.Wallets.Where(
+                w => w.Type.Equals(WalletType.Red)).FirstOrDefault().Type))
+            .ForMember(s => s.RedWallet, opt => opt.MapFrom(src => src.Wallets.Where(
+                w => w.Type.Equals(WalletType.Red)).FirstOrDefault().Type))
+            .ForMember(s => s.RedWalletName, opt => opt.MapFrom(src => src.Wallets.Where(
+                w => w.Type.Equals(WalletType.Red)).FirstOrDefault().Type.GetDisplayName()))
+            .ForMember(s => s.RedWalletBalance, opt => opt.MapFrom(src => src.Wallets.Where(
+                w => w.Type.Equals(WalletType.Red)).FirstOrDefault().Balance))
             .ForMember(s => s.Following, opt => opt.MapFrom(src => src.Wishlists.Count))
             .ForMember(s => s.Inviter, opt => opt.MapFrom(src => src.Invitees.FirstOrDefault().Inviter.FullName))
             .ForMember(s => s.Invitee, opt => opt.MapFrom(src => src.Inviters.Count))
             .ReverseMap();
             cfg.CreateMap<StudentChallenge, StudentChallengeModel>()
             .ForMember(c => c.StudentName, opt => opt.MapFrom(src => src.Student.FullName))
-            .ForMember(c => c.ChallengeType, opt => opt.MapFrom(src => src.Challenge.Type.TypeName))
+            .ForMember(c => c.ChallengeTypeId, opt => opt.MapFrom(src => (int)src.Challenge.Type))
+            .ForMember(c => c.ChallengeType, opt => opt.MapFrom(src => src.Challenge.Type))
+            .ForMember(c => c.ChallengeTypeName, opt => opt.MapFrom(src => src.Challenge.Type.GetDisplayName()))
             .ForMember(c => c.ChallengeName, opt => opt.MapFrom(src => src.Challenge.ChallengeName))
             .ForMember(c => c.ChallengeImage, opt => opt.MapFrom(src => src.Challenge.Image))
             .ForMember(c => c.IsClaimed, opt => opt.MapFrom(src => src.ChallengeTransactions.Any()))
@@ -128,6 +166,7 @@ public class StudentService : IStudentService
             .ForMember(s => s.TotalSpending, opt => opt.MapFrom(src => 0))
             .ForMember(s => s.DateCreated, opt => opt.MapFrom(src => DateTime.Now))
             .ForMember(s => s.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
+            .ForMember(s => s.State, opt => opt.MapFrom(src => StudentState.Pending))
             .ForMember(s => s.Status, opt => opt.MapFrom(src => true));
             cfg.CreateMap<Student, CreateStudentModel>()
             .ReverseMap()
@@ -140,13 +179,15 @@ public class StudentService : IStudentService
             cfg.CreateMap<Account, CreateStudentModel>()
             .ReverseMap()
             .ForMember(s => s.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
+            .ForMember(s => s.Role, opt => opt.MapFrom(src => Role.Student))
             .ForMember(s => s.Password, opt => opt.MapFrom(src => BCryptNet.HashPassword(src.Password)))
+            .ForMember(s => s.IsVerify, opt => opt.MapFrom(src => !src.State.Equals(1)))
             .ForMember(s => s.DateCreated, opt => opt.MapFrom(src => DateTime.Now))
             .ForMember(s => s.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
             .ForMember(s => s.Status, opt => opt.MapFrom(src => true))
             .AfterMap((src, dest) =>
             {
-                dest.DateVerified = (bool)src.IsVerify ? DateTime.Now : null;
+                dest.DateVerified = !src.State.Equals(1) ? DateTime.Now : null;
             });
             // Map Update Student Model
             cfg.CreateMap<Student, UpdateStudentModel>()
@@ -155,7 +196,7 @@ public class StudentService : IStudentService
             .ForMember(t => t.Campus, opt => opt.MapFrom(src => (string)null))
             .ForMember(s => s.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
             .ForPath(s => s.Account.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
-            .ForPath(s => s.Account.State, opt => opt.MapFrom(src => src.State));
+            .ForPath(s => s.Account.State, opt => opt.MapFrom(src => true));
         });
         mapper = new Mapper(config);
         this.studentRepository = studentRepository;
@@ -163,19 +204,18 @@ public class StudentService : IStudentService
         this.accountRepository = accountRepository;
         this.invitationService = invitationService;
         this.studentChallengeService = studentChallengeService;
-        this.roleService = roleService;
         this.challengeTransactionService = challengeTransactionService;
         this.orderTransactionService = orderTransactionService;
         this.bonusTransactionService = bonusTransactionService;
         this.activityTransactionService = activityTransactionService;
         this.orderService = orderService;
         this.voucherItemService = voucherItemService;
+        this.emailService = emailService;
     }
 
     public async Task<StudentModel> Add(CreateStudentModel creation)
     {
         Account account = mapper.Map<Account>(creation);
-        account.RoleId = roleService.GetRoleByName("Student")?.Id;
 
         //Upload avatar
         if (creation.Avatar != null && creation.Avatar.Length > 0)
@@ -185,7 +225,6 @@ public class StudentService : IStudentService
             account.FileName = f.FileName;
         }
 
-        account = accountRepository.Add(account);
         Student student = mapper.Map<Student>(creation);
         student.AccountId = account.Id;
 
@@ -205,6 +244,7 @@ public class StudentService : IStudentService
             student.FileNameBack = f.FileName;
         }
 
+        accountRepository.Add(account);
         student = studentRepository.Add(student);
 
         if (student != null)
@@ -225,22 +265,40 @@ public class StudentService : IStudentService
                     .GetById(student.Id).StudentChallenges
                     .Where(s => (bool)s.Status
                     && s.IsCompleted.Equals(false)
-                    && s.Challenge.Type.TypeName.Equals("Welcome")), 1);
+                    && s.Challenge.Type.Equals(ChallengeType.Welcome)), 1);
 
                 studentChallengeService.Update(studentRepository
                     .GetById(creation.InviteCode).StudentChallenges
                     .Where(s => (bool)s.Status
                     && s.IsCompleted.Equals(false)
-                    && s.Challenge.Type.TypeName.Equals("Spread")), 1);
+                    && s.Challenge.Type.Equals(ChallengeType.Spread)), 1);
             }
 
-            if ((bool)creation.IsVerify)
+            if (new[] { StudentState.Active, StudentState.Inactive }.Contains
+                (student.State.Value))
             {
                 studentChallengeService.Update(studentRepository
                 .GetById(student.Id).StudentChallenges
                 .Where(s => (bool)s.Status
                 && s.IsCompleted.Equals(false)
-                && s.Challenge.Type.TypeName.Equals("Verify")), 1);
+                && s.Challenge.Type.Equals(ChallengeType.Verify)), 1);
+            }
+
+            // Send mail
+            switch (student.State)
+            {
+                case StudentState.Pending:
+                    emailService.SendEmailStudentRegister(account.Email);
+                    break;
+                case StudentState.Active:
+                    emailService.SendEmailStudentRegisterApprove(account.Email);
+                    break;
+                case StudentState.Inactive:
+                    emailService.SendEmailStudentRegisterApprove(account.Email);
+                    break;
+                case StudentState.Rejected:
+                    emailService.SendEmailStudentRegisterReject(account.Email);
+                    break;
             }
         }
 
@@ -253,7 +311,9 @@ public class StudentService : IStudentService
 
         Account account = accountRepository.GetById(creation.AccountId);
 
-        if (!account.Email.Equals(creation.Email) || !account.Role.RoleName.Equals("Student"))
+        if (account.Email.IsNullOrEmpty()
+            || !account.Email.Equals(creation.Email)
+            || !account.Role.Equals(Role.Student))
         {
             throw new InvalidParameterException("Đăng nhập bằng tài khoản Google của bạn không hợp lệ");
         }
@@ -262,6 +322,7 @@ public class StudentService : IStudentService
         account.Email = creation.Email;
         account.State = true;
         accountRepository.Update(account);
+        emailService.SendEmailStudentRegister(account.Email);
 
         // Upload the student card front image
         if (creation.StudentCardFront != null && creation.StudentCardFront.Length > 0)
@@ -299,13 +360,13 @@ public class StudentService : IStudentService
                     .GetById(entity.Id).StudentChallenges
                     .Where(s => (bool)s.Status
                     && s.IsCompleted.Equals(false)
-                    && s.Challenge.Type.TypeName.Equals("Welcome")), 1);
+                    && s.Challenge.Type.Equals(ChallengeType.Welcome)), 1);
 
                 studentChallengeService.Update(studentRepository
                     .GetById(creation.InviteCode).StudentChallenges
                     .Where(s => (bool)s.Status
                     && s.IsCompleted.Equals(false)
-                    && s.Challenge.Type.TypeName.Equals("Spread")), 1);
+                    && s.Challenge.Type.Equals(ChallengeType.Spread)), 1);
             }
         }
 
@@ -317,29 +378,37 @@ public class StudentService : IStudentService
         Student entity = studentRepository.GetById(id);
         if (entity != null)
         {
-            // Student card front image
-            if (entity.StudentCardFront != null && entity.StudentCardFront.Length > 0)
+            if (entity.Orders.All(o => new[] { State.Abort, State.Receipt }.
+            Contains(o.OrderStates.LastOrDefault().State.Value)))
             {
-                // Remove image
-                fireBaseService.RemoveFileAsync(entity.FileNameFront, FOLDER_NAME);
-            }
+                // Student card front image
+                if (entity.StudentCardFront != null && entity.StudentCardFront.Length > 0)
+                {
+                    // Remove image
+                    fireBaseService.RemoveFileAsync(entity.FileNameFront, FOLDER_NAME);
+                }
 
-            // Student card back image
-            if (entity.StudentCardBack != null && entity.StudentCardBack.Length > 0)
+                // Student card back image
+                if (entity.StudentCardBack != null && entity.StudentCardBack.Length > 0)
+                {
+                    // Remove image
+                    fireBaseService.RemoveFileAsync(entity.FileNameBack, FOLDER_NAME);
+                }
+
+                // Avatar
+                if (entity.Account.Avatar != null && entity.Account.Avatar.Length > 0)
+                {
+                    // Remove image
+                    fireBaseService.RemoveFileAsync(entity.Account.FileName, ACCOUNT_FOLDER_NAME);
+                }
+
+                studentRepository.Delete(id);
+                accountRepository.Delete(entity.Account.Id);
+            }
+            else
             {
-                // Remove image
-                fireBaseService.RemoveFileAsync(entity.FileNameBack, FOLDER_NAME);
+                throw new InvalidParameterException("Xóa thất bại do tồn tại đơn hàng cần hoàn thành");
             }
-
-            // Avatar
-            if (entity.Account.Avatar != null && entity.Account.Avatar.Length > 0)
-            {
-                // Remove image
-                fireBaseService.RemoveFileAsync(entity.Account.FileName, ACCOUNT_FOLDER_NAME);
-            }
-
-            studentRepository.Delete(id);
-            accountRepository.Delete(entity.Account.Id);
         }
         else
         {
@@ -348,11 +417,11 @@ public class StudentService : IStudentService
     }
 
     public PagedResultModel<StudentModel> GetAll
-        (List<string> majorIds, List<string> campusIds, bool? state, bool? isVerify, 
-        string propertySort, bool isAsc, string search, int page, int limit)
+        (List<string> majorIds, List<string> campusIds, List<StudentState> stateIds,
+        bool? isVerify, string propertySort, bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<StudentModel>>
-            (studentRepository.GetAll(majorIds, campusIds, state, 
+            (studentRepository.GetAll(majorIds, campusIds, stateIds,
             isVerify, propertySort, isAsc, search, page, limit));
     }
 
@@ -367,14 +436,14 @@ public class StudentService : IStudentService
     }
 
     public PagedResultModel<StudentChallengeModel> GetChallengeListByStudentId
-        (string id, bool? isCompleted, bool? state, bool? isClaimed, 
-        string propertySort, bool isAsc, string search, int page, int limit)
+        (List<ChallengeType> typeIds, string id, bool? isCompleted, bool? state,
+        bool? isClaimed, string propertySort, bool isAsc, string search, int page, int limit)
     {
         Student entity = studentRepository.GetById(id);
         if (entity != null)
         {
             PagedResultModel<StudentChallengeModel> result = studentChallengeService.GetAll
-                (new() { id }, new(), state, propertySort, isAsc, search, page, limit);
+                (new() { id }, new(), typeIds, state, propertySort, isAsc, search, page, limit);
 
             result.Result = result.Result
                 .Where(c => (isCompleted == null || c.IsCompleted.Equals(isCompleted))
@@ -386,7 +455,7 @@ public class StudentService : IStudentService
     }
 
     public PagedResultModel<TransactionModel> GetHistoryTransactionListByStudentId
-        (string id, List<TransactionType> typeIds, bool? state, 
+        (string id, List<TransactionType> typeIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         Student entity = studentRepository.GetById(id);
@@ -433,7 +502,7 @@ public class StudentService : IStudentService
     public OrderExtraModel GetOrderByOrderId(string id, string orderId)
     {
         Student entity = studentRepository.GetById(id);
-        if(entity != null)
+        if (entity != null)
         {
             OrderExtraModel order = orderService.GetById(orderId);
             if (order != null && order.StudentId.Equals(id))
@@ -446,7 +515,7 @@ public class StudentService : IStudentService
     }
 
     public PagedResultModel<OrderModel> GetOrderListByStudentId
-        (List<string> stationIds, List<string> stateIds, string id, bool? state,
+        (List<string> stationIds, List<State> stateIds, string id, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         Student entity = studentRepository.GetById(id);
@@ -461,7 +530,7 @@ public class StudentService : IStudentService
     public VoucherItemExtraModel GetVoucherItemByVoucherId(string id, string voucherId)
     {
         Student entity = studentRepository.GetById(id);
-        if(entity != null)
+        if (entity != null)
         {
             VoucherItemExtraModel voucher = voucherItemService.GetById(voucherId);
             if (voucher != null && !voucher.StudentId.IsNullOrEmpty() && voucher.StudentId.Equals(id))
@@ -517,18 +586,52 @@ public class StudentService : IStudentService
         throw new InvalidParameterException("Không tìm thấy sinh viên");
     }
 
-    public StudentExtraModel UpdateVerification(string id)
+    public bool UpdateState(string id, StudentState stateId)
     {
-        Student entity = studentRepository.GetById(id);
-        if (entity != null)
+        if (!new[] { StudentState.Pending }.Contains(stateId))
         {
-            if (!(bool)entity.Account.IsVerify)
+            Student entity = studentRepository.GetById(id);
+            if (entity != null)
             {
-                entity.Account.IsVerify = true;
-                return mapper.Map<StudentExtraModel>(studentRepository.Update(entity));
+                switch (entity.State)
+                {
+                    case StudentState.Pending
+                        when new[] { StudentState.Inactive }.Contains(stateId):
+                        throw new InvalidParameterException("Trạng thái sinh viên không hợp lệ");
+                    case StudentState.Active
+                        when new[] { StudentState.Rejected, StudentState.Active }.Contains(stateId):
+                        throw new InvalidParameterException("Trạng thái sinh viên không hợp lệ");
+                    case StudentState.Inactive
+                        when new[] { StudentState.Rejected, StudentState.Inactive }.Contains(stateId):
+                        throw new InvalidParameterException("Trạng thái sinh viên không hợp lệ");
+                    case StudentState.Pending
+                        when new[] { StudentState.Rejected, StudentState.Active }.Contains(stateId):
+
+                        if (stateId.Equals(StudentState.Active))
+                        {
+                            // Take the challenge
+                            studentChallengeService.Update(
+                                entity.StudentChallenges
+                                .Where(s => (bool)s.Status
+                                && s.IsCompleted.Equals(false)
+                                && s.Challenge.Type.Equals(ChallengeType.Verify)), 1);
+
+                            emailService.SendEmailStudentRegisterApprove(entity.Account.Email);
+                        }
+                        else if (stateId.Equals(StudentState.Rejected))
+                        {
+                            emailService.SendEmailStudentRegisterReject(entity.Account.Email);
+                        }
+
+                        entity.Account.IsVerify = true;
+                        break;
+                }
+
+                entity.State = stateId;
+                return studentRepository.Update(entity) != null;
             }
-            throw new InvalidParameterException("Sinh viên này đã được phê duyệt");
+            throw new InvalidParameterException("Không tìm thấy sinh viên");
         }
-        throw new InvalidParameterException("Không tìm thấy sinh viên");
+        throw new InvalidParameterException("Trạng thái sinh viên không hợp lệ");
     }
 }

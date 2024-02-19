@@ -1,11 +1,22 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Unibean.Repository.Entities;
 
 public enum Type
 {
-    Buy = 1, Use = 2
+    [Display(Name = "Mua")]
+    [Description("Mua khuyến mãi")]
+    Buy = 1,
+
+    [Display(Name = "Sử dụng")]
+    [Description("Sử dụng khuyến mãi")]
+    Use = 2,
+
+    [Display(Name = "Hoàn trả")]
+    [Description("Hoàn trả khuyến mãi")]
+    Refund = 3
 }
 
 [Table("tbl_activity")]
@@ -30,17 +41,17 @@ public class Activity
 
     public VoucherItem VoucherItem { get; set; }
 
-    [Column("type", TypeName = "enum('Buy', 'Use')")]
+    [Column("type", TypeName = "enum('Buy', 'Use', 'Refund')")]
     public Type? Type { get; set; }
-
-    [Column("description", TypeName = "text")]
-    public string Description { get; set; }
 
     [Column("date_created")]
     public DateTime? DateCreated { get; set; }
 
     [Column("date_updated")]
     public DateTime? DateUpdated { get; set; }
+
+    [Column("description", TypeName = "text")]
+    public string Description { get; set; }
 
     [Column("state", TypeName = "bit(1)")]
     public bool? State { get; set; }

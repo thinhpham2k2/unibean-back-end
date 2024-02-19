@@ -40,14 +40,13 @@ public class ActivityTransactionRepository : IActivityTransactionRepository
             using var db = new UnibeanDBContext();
             result = db.ActivityTransactions
                 .Where(a => (EF.Functions.Like(a.Activity.VoucherItem.Voucher.VoucherName, "%" + search + "%")
-                || EF.Functions.Like(a.Wallet.Type.TypeName, "%" + search + "%")
+                || EF.Functions.Like((string)(object)a.Wallet.Type, "%" + search + "%")
                 || EF.Functions.Like((string)(object)a.Activity.Type, "%" + search + "%")
                 || EF.Functions.Like(a.Description, "%" + search + "%"))
                 && (walletIds.Count == 0 || walletIds.Contains(a.WalletId))
                 && (activityIds.Count == 0 || activityIds.Contains(a.ActivityId))
                 && (bool)a.Status)
                 .Include(s => s.Wallet)
-                    .ThenInclude(w => w.Type)
                 .Include(s => s.Activity)
                 .Include(s => s.Activity)
                     .ThenInclude(a => a.VoucherItem)
@@ -69,7 +68,6 @@ public class ActivityTransactionRepository : IActivityTransactionRepository
             activityTransaction = db.ActivityTransactions
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.Wallet)
-                .ThenInclude(w => w.Type)
             .Include(s => s.Activity)
             .Include(s => s.Activity)
                 .ThenInclude(a => a.VoucherItem)

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Enable.EnumDisplayName;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
@@ -34,8 +35,9 @@ public class RequestService : IRequestService
             .ForMember(r => r.AdminAvatar, opt => opt.MapFrom(src => src.Admin.Account.Avatar))
             .ReverseMap();
             cfg.CreateMap<RequestTransaction, RequestTransactionModel>()
-            .ForMember(r => r.WalletType, opt => opt.MapFrom(src => src.Wallet.Type.TypeName))
-            .ForMember(r => r.WalletImage, opt => opt.MapFrom(src => src.Wallet.Type.Image))
+            .ForMember(r => r.WalletTypeId, opt => opt.MapFrom(src => (int)src.Wallet.Type))
+            .ForMember(r => r.WalletType, opt => opt.MapFrom(src => src.Wallet.Type))
+            .ForMember(r => r.WalletTypeName, opt => opt.MapFrom(src => src.Wallet.Type.GetDisplayName()))
             .ReverseMap();
             cfg.CreateMap<Request, CreateRequestModel>()
             .ReverseMap()

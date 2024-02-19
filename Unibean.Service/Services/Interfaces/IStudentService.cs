@@ -1,4 +1,5 @@
-﻿using Unibean.Repository.Paging;
+﻿using Unibean.Repository.Entities;
+using Unibean.Repository.Paging;
 using Unibean.Service.Models.Orders;
 using Unibean.Service.Models.StudentChallenges;
 using Unibean.Service.Models.Students;
@@ -16,7 +17,7 @@ public interface IStudentService
     void Delete(string id);
 
     PagedResultModel<StudentModel> GetAll
-        (List<string> majorIds, List<string> campusIds, bool? state, bool? isVerify, 
+        (List<string> majorIds, List<string> campusIds, List<StudentState> stateIds, bool? isVerify, 
         string propertySort, bool isAsc, string search, int page, int limit);
 
     StudentExtraModel GetById(string id);
@@ -24,7 +25,7 @@ public interface IStudentService
     OrderExtraModel GetOrderByOrderId(string id, string orderId);
 
     PagedResultModel<StudentChallengeModel> GetChallengeListByStudentId
-        (string id, bool? isCompleted, bool? state, bool? isClaimed, string propertySort, 
+        (List<ChallengeType> typeIds, string id, bool? isCompleted, bool? state, bool? isClaimed, string propertySort, 
         bool isAsc, string search, int page, int limit);
 
     PagedResultModel<TransactionModel> GetHistoryTransactionListByStudentId
@@ -32,7 +33,7 @@ public interface IStudentService
         bool isAsc, string search, int page, int limit);
 
     PagedResultModel<OrderModel> GetOrderListByStudentId
-        (List<string> stationIds, List<string> stateIds, string id, bool? state,
+        (List<string> stationIds, List<State> stateIds, string id, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit);
 
     VoucherItemExtraModel GetVoucherItemByVoucherId(string id, string voucherId);
@@ -45,5 +46,5 @@ public interface IStudentService
 
     Task<StudentExtraModel> Update(string id, UpdateStudentModel update);
 
-    StudentExtraModel UpdateVerification(string id);
+    bool UpdateState(string id, StudentState stateId);
 }

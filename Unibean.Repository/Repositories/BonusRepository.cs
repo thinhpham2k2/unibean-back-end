@@ -18,13 +18,13 @@ public class BonusRepository : IBonusRepository
             var student = db.Students
                     .Where(s => s.Id.Equals(creation.StudentId) && (bool)s.Status)
                     .Include(b => b.Wallets).FirstOrDefault();
-            var studentWallet = student.Wallets.FirstOrDefault();
+            var studentWallet = student.Wallets.Where(w => w.Type.Equals(WalletType.Green)).FirstOrDefault();
 
             // Get green bean wallet brand
             var brand = db.Brands
                     .Where(s => s.Id.Equals(creation.BrandId) && (bool)s.Status)
                     .Include(b => b.Wallets).FirstOrDefault();
-            var brandWallet = brand.Wallets.FirstOrDefault();
+            var brandWallet = brand.Wallets.Where(w => w.Type.Equals(WalletType.Green)).FirstOrDefault();
 
             creation.BonusTransactions = new List<BonusTransaction>() {
                 new BonusTransaction
@@ -120,7 +120,6 @@ public class BonusRepository : IBonusRepository
                .Take(limit)
                .Include(s => s.BonusTransactions.Where(b => (bool)b.Status))
                     .ThenInclude(a => a.Wallet)
-                        .ThenInclude(w => w.Type)
                .Include(s => s.Brand)
                .Include(s => s.Store)
                .Include(s => s.Student)
@@ -153,7 +152,6 @@ public class BonusRepository : IBonusRepository
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.BonusTransactions.Where(b => (bool)b.Status))
                 .ThenInclude(a => a.Wallet)
-                    .ThenInclude(w => w.Type)
             .Include(s => s.Brand)
                 .ThenInclude(b => b.Account)
             .Include(s => s.Store)
@@ -188,7 +186,6 @@ public class BonusRepository : IBonusRepository
                 && (bool)t.Status)
                .Include(s => s.BonusTransactions.Where(b => (bool)b.Status && b.Amount > 0))
                     .ThenInclude(a => a.Wallet)
-                        .ThenInclude(w => w.Type)
                .Include(s => s.Brand)
                .Include(s => s.Store)
                .Include(s => s.Student).ToList();

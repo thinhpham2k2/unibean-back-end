@@ -25,8 +25,13 @@ public class MajorService : IMajorService
         var config = new MapperConfiguration(cfg
                 =>
         {
-            cfg.CreateMap<Major, MajorModel>().ReverseMap();
+            cfg.CreateMap<Major, MajorModel>()
+            .ReverseMap();
             cfg.CreateMap<PagedResultModel<Major>, PagedResultModel<MajorModel>>()
+            .ReverseMap();
+            cfg.CreateMap<Major, MajorExtraModel>()
+            .ForMember(c => c.NumberOfStudents, opt => opt.MapFrom(src => src.Students.Count))
+            .ForMember(c => c.NumberOfCampaigns, opt => opt.MapFrom(src => src.CampaignMajors.Count))
             .ReverseMap();
             cfg.CreateMap<Major, UpdateMajorModel>()
             .ReverseMap()
@@ -44,7 +49,7 @@ public class MajorService : IMajorService
         this.fireBaseService = fireBaseService;
     }
 
-    public async Task<MajorModel> Add(CreateMajorModel creation)
+    public async Task<MajorExtraModel> Add(CreateMajorModel creation)
     {
         Major entity = mapper.Map<Major>(creation);
 
@@ -55,7 +60,7 @@ public class MajorService : IMajorService
             entity.Image = f.URL;
             entity.FileName = f.FileName;
         }
-        return mapper.Map<MajorModel>(majorRepository.Add(entity));
+        return mapper.Map<MajorExtraModel>(majorRepository.Add(entity));
     }
 
     public void Delete(string id)
@@ -63,12 +68,19 @@ public class MajorService : IMajorService
         Major entity = majorRepository.GetById(id);
         if (entity != null)
         {
-            if (entity.Image != null && entity.FileName != null)
+            if(entity.Students.Count.Equals(0) && entity.CampaignMajors.Count.Equals(0))
             {
-                //Remove image
-                fireBaseService.RemoveFileAsync(entity.FileName, FOLDER_NAME);
+                if (entity.Image != null && entity.FileName != null)
+                {
+                    //Remove image
+                    fireBaseService.RemoveFileAsync(entity.FileName, FOLDER_NAME);
+                }
+                majorRepository.Delete(id);
             }
-            majorRepository.Delete(id);
+            else
+            {
+                throw new InvalidParameterException("Xóa thất bại do tồn tại sinh viên hoặc chiến dịch thuộc chuyên ngành");
+            }
         }
         else
         {
@@ -92,17 +104,17 @@ public class MajorService : IMajorService
             propertySort, isAsc, search, page, limit));
     }
 
-    public MajorModel GetById(string id)
+    public MajorExtraModel GetById(string id)
     {
         Major entity = majorRepository.GetById(id);
         if (entity != null)
         {
-            return mapper.Map<MajorModel>(entity);
+            return mapper.Map<MajorExtraModel>(entity);
         }
         throw new InvalidParameterException("Không tìm thấy chuyên ngành");
     }
 
-    public async Task<MajorModel> Update(string id, UpdateMajorModel update)
+    public async Task<MajorExtraModel> Update(string id, UpdateMajorModel update)
     {
         Major entity = majorRepository.GetById(id);
         if (entity != null)
@@ -118,7 +130,7 @@ public class MajorService : IMajorService
                 entity.Image = f.URL;
                 entity.FileName = f.FileName;
             }
-            return mapper.Map<MajorModel>(majorRepository.Update(entity));
+            return mapper.Map<MajorExtraModel>(majorRepository.Update(entity));
         }
         throw new InvalidParameterException("Không tìm thấy chuyên ngành");
     }

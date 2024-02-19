@@ -3,6 +3,7 @@ using System.Linq.Dynamic.Core;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
+using Type = Unibean.Repository.Entities.Type;
 
 namespace Unibean.Repository.Repositories;
 
@@ -13,6 +14,18 @@ public class CampaignRepository : ICampaignRepository
         try
         {
             using var db = new UnibeanDBContext();
+
+            // Create campaign activity
+            creation.CampaignActivities = new List<CampaignActivity> {
+                new() {
+                    Id = Ulid.NewUlid().ToString(),
+                    CampaignId = creation.Id,
+                    State = CampaignState.Pending,
+                    DateCreated = creation.DateCreated,
+                    Description = CampaignState.Pending.GetEnumDescription(),
+                    Status = true,
+                }
+            };
 
             // Create campaign stores
             creation.CampaignStores = creation.CampaignStores.Select(c =>
@@ -36,17 +49,15 @@ public class CampaignRepository : ICampaignRepository
             }).ToList();
 
             // Create campaign wallet
-            var walletType = db.WalletTypes.Where(s => (bool)s.Status).Skip(1).FirstOrDefault();
             creation.Wallets = new List<Wallet>() {
-                new Wallet
-            {
+                new() {
                     Id = Ulid.NewUlid().ToString(),
                     CampaignId = creation.Id,
-                    TypeId = walletType.Id,
+                    Type = WalletType.Green,
                     Balance = creation.TotalIncome,
                     DateCreated = creation.DateCreated,
                     DateUpdated = creation.DateUpdated,
-                    Description = walletType.Description,
+                    Description = WalletType.Green.GetEnumDescription(),
                     State = true,
                     Status = true,
             }};
@@ -56,73 +67,43 @@ public class CampaignRepository : ICampaignRepository
                     .Where(s => s.Id.Equals(creation.BrandId) && (bool)s.Status)
                     .Include(b => b.Account)
                     .Include(b => b.Wallets).FirstOrDefault();
-            var brandGreenWallet = brand.Wallets.FirstOrDefault();
-            var brandRedWallet = brand.Wallets.Skip(1).FirstOrDefault();
+            var brandGreenWallet = brand.Wallets.Where(w => w.Type.Equals(WalletType.Green)).FirstOrDefault();
 
-            var amount = brandRedWallet.Balance - creation.TotalIncome;
-
-            // Cretae wallet transactions
-            creation.WalletTransactions = new List<WalletTransaction>() {
-                new WalletTransaction
-            {
-                // Transaction for campaign's red bean
+            // Cretae campaign transactions
+            creation.CampaignTransactions = new List<CampaignTransaction>() {
+                new() {
+                // Transaction for campaign's green bean
                 Id = Ulid.NewUlid().ToString(),
                 CampaignId = creation.Id,
-                WalletId = creation.Wallets.FirstOrDefault().Id,
+                WalletId = creation.Wallets.Where(w => w.Type.Equals(WalletType.Green)).FirstOrDefault().Id,
                 Amount = creation.TotalIncome,
                 Rate = 1,
                 DateCreated = creation.DateCreated,
-                State = creation.State,
+                State = true,
                 Status = creation.Status,
             },
-                // Transaction for brand's red bean
-                new WalletTransaction
-            {
+                // Transaction for brand's green bean wallet
+                new() {
                 Id = Ulid.NewUlid().ToString(),
                 CampaignId = creation.Id,
-                WalletId = brandRedWallet.Id,
-                Amount = amount > 0 ? -creation.TotalIncome : -brandRedWallet.Balance,
+                WalletId = brandGreenWallet.Id,
+                Amount = -creation.TotalIncome,
                 Rate = 1,
                 DateCreated = creation.DateCreated,
-                State = creation.State,
+                State = true,
                 Status = creation.Status,
             }};
-
-            if (amount < 0)
-            {
-                // Transaction for brand's green bean
-                creation.WalletTransactions.Add(new WalletTransaction
-                {
-                    Id = Ulid.NewUlid().ToString(),
-                    CampaignId = creation.Id,
-                    WalletId = brandGreenWallet.Id,
-                    Amount = amount,
-                    Rate = 1,
-                    DateCreated = creation.DateCreated,
-                    State = creation.State,
-                    Status = creation.Status,
-                });
-            }
 
             creation = db.Campaigns.Add(creation).Entity;
             creation.Brand = brand;
 
             if (creation != null)
             {
-                // Update brand red wallet balance
-                brandRedWallet.Balance -= amount > 0 ? creation.TotalIncome : brandRedWallet.Balance;
-                brandRedWallet.DateUpdated = DateTime.Now;
-                db.Wallets.Update(brandRedWallet);
-
-                if (amount < 0)
-                {
-                    // Update brand green wallet balance
-                    brand.TotalSpending += -amount;
-                    brandGreenWallet.Balance -= -amount;
-                    brandGreenWallet.DateUpdated = DateTime.Now;
-                    db.Wallets.Update(brandGreenWallet);
-                }
-
+                // Update brand green wallet balance
+                brand.TotalSpending += creation.TotalIncome;
+                brandGreenWallet.Balance -= creation.TotalIncome;
+                brandGreenWallet.DateUpdated = DateTime.Now;
+                db.Wallets.Update(brandGreenWallet);
                 db.Brands.Update(brand);
             }
 
@@ -133,6 +114,139 @@ public class CampaignRepository : ICampaignRepository
             throw new Exception(ex.Message);
         }
         return creation;
+    }
+
+    public bool AllToClosed(string id)
+    {
+        try
+        {
+            using var db = new UnibeanDBContext();
+
+            // Get campaign wallet
+            var campaign = db.Campaigns
+            .Where(s => s.Id.Equals(id) && (bool)s.Status)
+            .Include(c => c.Wallets.Where(w => (bool)w.Status))
+            .Include(c => c.CampaignDetails.Where(d => (bool)d.Status))
+                .ThenInclude(d => d.VoucherItems.Where(i => (bool)i.Status))
+                    .ThenInclude(i => i.Activities.Where(a => (bool)a.Status))
+                        .ThenInclude(a => a.Student)
+                            .ThenInclude(s => s.Wallets.Where(w => (bool)w.Status))
+            .Include(c => c.CampaignActivities.Where(d => (bool)d.Status))
+            .FirstOrDefault();
+            var campaignWallet = campaign.Wallets.FirstOrDefault();
+
+            // Get campaign wallet
+            var brand = db.Brands
+            .Where(s => s.Id.Equals(campaign.BrandId) && (bool)s.Status)
+            .Include(c => c.Wallets.Where(w => (bool)w.Status))
+            .FirstOrDefault();
+            var brandWallet = brand.Wallets.FirstOrDefault();
+
+            // Refund For Brand
+            // Cretae campaign transactions
+            db.CampaignTransactions.AddRange(new List<CampaignTransaction>() {
+                new() {
+                // Transaction for campaign's green bean
+                Id = Ulid.NewUlid().ToString(),
+                CampaignId = campaign.Id,
+                WalletId = campaignWallet.Id,
+                Amount = -campaignWallet.Balance,
+                Rate = 1,
+                DateCreated = DateTime.Now,
+                State = true,
+                Status = true,
+            },
+                // Transaction for brand's green bean wallet
+                new() {
+                Id = Ulid.NewUlid().ToString(),
+                CampaignId = campaign.Id,
+                WalletId = brandWallet.Id,
+                Amount = campaignWallet.Balance,
+                Rate = 1,
+                DateCreated = DateTime.Now,
+                State = true,
+                Status = true,
+            }});
+
+            // Update brand green wallet balance
+            brandWallet.Balance += campaignWallet.Balance;
+            brandWallet.DateUpdated = DateTime.Now;
+
+            // Update campaign green wallet balance
+            campaignWallet.Balance = 0;
+            campaignWallet.DateUpdated = DateTime.Now;
+
+            List<Wallet> walletList = new() { campaignWallet, brandWallet };
+
+            // Refund For Student
+            var itemList = campaign.CampaignDetails.SelectMany(d => d.VoucherItems.Where(
+                i => (bool)i.State && (bool)i.Status
+                && (bool)i.IsLocked && (bool)i.IsBought
+                && !(bool)i.IsUsed && i.CampaignDetailId != null))
+                .ToList();
+
+            List<Activity> activityList = new();
+
+            // Refund voucher item
+            foreach (var item in itemList)
+            {
+                item.State = false;
+                var activityId = Ulid.NewUlid().ToString();
+                var wallet = item.Activities.Where(
+                    a => a.Type.Equals(Type.Buy)).FirstOrDefault().Student.Wallets.Where(
+                    w => w.Type.Equals(WalletType.Green)).FirstOrDefault();
+
+                activityList.Add(new()
+                {
+                    Id = activityId,
+                    StudentId = item.Activities.Where(
+                        a => a.Type.Equals(Type.Buy)).First().StudentId,
+                    VoucherItemId = item.Id,
+                    Type = Type.Refund,
+                    DateCreated = DateTime.Now,
+                    DateUpdated = DateTime.Now,
+                    Description = Type.Refund.GetEnumDescription(),
+                    State = true,
+                    Status = true,
+                    ActivityTransactions = new List<ActivityTransaction>()
+                    {
+                        new()
+                        {
+                            Id = Ulid.NewUlid().ToString(),
+                            ActivityId = activityId,
+                            WalletId = wallet.Id,
+                            Amount = item.CampaignDetail.Price,
+                            Rate = 1,
+                            Description = Type.Refund.GetEnumDescription(),
+                            State = true,
+                            Status = true,
+                        }
+                    }
+                });
+
+                var w = walletList.Find(w => w.Id.Equals(wallet.Id));
+                if (w != null)
+                {
+                    w.Balance += item.CampaignDetail.Price;
+                }
+                else
+                {
+                    wallet.Balance += item.CampaignDetail.Price;
+                    walletList.Add(wallet);
+                }
+            }
+
+            db.Activities.AddRange(activityList);
+            db.VoucherItems.UpdateRange(itemList);
+            db.Wallets.UpdateRange(walletList);
+
+            db.SaveChanges();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return true;
     }
 
     public void Delete(string id)
@@ -151,9 +265,75 @@ public class CampaignRepository : ICampaignRepository
         }
     }
 
+    public bool ExpiredToClosed(string id)
+    {
+        try
+        {
+            using var db = new UnibeanDBContext();
+
+            // Get campaign wallet
+            var campaign = db.Campaigns
+            .Where(s => s.Id.Equals(id) && (bool)s.Status)
+            .Include(c => c.Wallets.Where(w => (bool)w.Status))
+            .FirstOrDefault();
+            var campaignWallet = campaign.Wallets.FirstOrDefault();
+
+            // Get campaign wallet
+            var brand = db.Brands
+            .Where(s => s.Id.Equals(campaign.BrandId) && (bool)s.Status)
+            .Include(c => c.Wallets.Where(w => (bool)w.Status))
+            .FirstOrDefault();
+            var brandWallet = brand.Wallets.FirstOrDefault();
+
+            // Refund For Brand
+            // Cretae campaign transactions
+            db.CampaignTransactions.AddRange(new List<CampaignTransaction>() {
+                new() {
+                // Transaction for campaign's green bean
+                Id = Ulid.NewUlid().ToString(),
+                CampaignId = campaign.Id,
+                WalletId = campaignWallet.Id,
+                Amount = -campaignWallet.Balance,
+                Rate = 1,
+                DateCreated = DateTime.Now,
+                State = true,
+                Status = true,
+            },
+                // Transaction for brand's green bean wallet
+                new() {
+                Id = Ulid.NewUlid().ToString(),
+                CampaignId = campaign.Id,
+                WalletId = brandWallet.Id,
+                Amount = campaignWallet.Balance,
+                Rate = 1,
+                DateCreated = DateTime.Now,
+                State = true,
+                Status = true,
+            }});
+
+            // Update brand green wallet balance
+            brandWallet.Balance += campaignWallet.Balance;
+            brandWallet.DateUpdated = DateTime.Now;
+
+            // Update campaign green wallet balance
+            campaignWallet.Balance = 0;
+            campaignWallet.DateUpdated = DateTime.Now;
+
+            db.Wallets.UpdateRange(campaignWallet, brandWallet);
+
+            db.SaveChanges();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return true;
+    }
+
     public PagedResultModel<Campaign> GetAll
-        (List<string> brandIds, List<string> typeIds, List<string> storeIds, List<string> majorIds, 
-        List<string> campusIds, bool? state, string propertySort, bool isAsc, string search, int page, int limit)
+        (List<string> brandIds, List<string> typeIds, List<string> storeIds,
+        List<string> majorIds, List<string> campusIds, List<CampaignState> stateIds,
+        string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<Campaign> pagedResult = new();
         try
@@ -171,7 +351,7 @@ public class CampaignRepository : ICampaignRepository
                 && (storeIds.Count == 0 || t.CampaignStores.Select(c => c.StoreId).Any(s => storeIds.Contains(s)))
                 && (majorIds.Count == 0 || t.CampaignMajors.Select(c => c.MajorId).Any(s => majorIds.Contains(s)))
                 && (campusIds.Count == 0 || t.CampaignCampuses.Select(c => c.CampusId).Any(s => campusIds.Contains(s)))
-                && (state == null || state.Equals(t.State))
+                && (stateIds.Count == 0 || stateIds.Contains(t.CampaignActivities.OrderBy(a => a.Id).LastOrDefault().State.Value))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 
@@ -181,7 +361,7 @@ public class CampaignRepository : ICampaignRepository
                .Include(s => s.Brand)
                .Include(s => s.Type)
                .Include(s => s.Wallets.Where(w => (bool)w.Status))
-                    .ThenInclude(s => s.Type)
+               .Include(s => s.CampaignActivities.Where(a => (bool)a.Status).OrderBy(a => a.Id))
                .ToList();
 
             pagedResult = new PagedResultModel<Campaign>
@@ -219,12 +399,12 @@ public class CampaignRepository : ICampaignRepository
             .Include(s => s.CampaignCampuses.Where(s => (bool)s.Status))
                 .ThenInclude(s => s.Campus)
             .Include(s => s.Wallets.Where(w => (bool)w.Status))
-                .ThenInclude(s => s.Type)
-            .Include(s => s.WalletTransactions.Where(w => (bool)w.Status))
+            .Include(s => s.CampaignTransactions.Where(w => (bool)w.Status))
                 .ThenInclude(s => s.Wallet)
-                    .ThenInclude(w => w.Type)
-            .Include(s => s.VoucherItems.Where(w => (bool)w.Status))
-                .ThenInclude(s => s.Activities)
+            .Include(s => s.CampaignDetails.Where(w => (bool)w.Status))
+                .ThenInclude(s => s.VoucherItems)
+                    .ThenInclude(v => v.Activities)
+            .Include(s => s.CampaignActivities)
             .FirstOrDefault();
         }
         catch (Exception ex)
@@ -239,6 +419,18 @@ public class CampaignRepository : ICampaignRepository
         try
         {
             using var db = new UnibeanDBContext();
+            if (!update.CampaignActivities.LastOrDefault().State.Equals(CampaignState.Pending))
+            {
+                db.CampaignActivities.Add(new CampaignActivity
+                {
+                    Id = Ulid.NewUlid().ToString(),
+                    CampaignId = update.Id,
+                    State = CampaignState.Pending,
+                    DateCreated = DateTime.Now,
+                    Description = CampaignState.Pending.GetEnumDescription(),
+                    Status = true,
+                });
+            }
             update = db.Campaigns.Update(update).Entity;
             db.SaveChanges();
         }

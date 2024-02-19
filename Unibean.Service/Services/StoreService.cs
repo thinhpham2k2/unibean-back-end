@@ -3,10 +3,11 @@ using System.Linq.Dynamic.Core;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
+using Unibean.Service.Models.Activities;
+using Unibean.Service.Models.CampaignDetails;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Stores;
 using Unibean.Service.Models.Transactions;
-using Unibean.Service.Models.Vouchers;
 using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Utilities.FireBase;
 using BCryptNet = BCrypt.Net.BCrypt;
@@ -29,23 +30,26 @@ public class StoreService : IStoreService
 
     private readonly IFireBaseService fireBaseService;
 
-    private readonly IRoleService roleService;
-
     private readonly IAccountRepository accountRepository;
 
-    private readonly IVoucherService voucherService;
+    private readonly ICampaignDetailService campaignDetailService;
 
     private readonly IActivityService activityService;
 
     private readonly IBonusService bonusService;
 
+    private readonly IVoucherItemRepository voucherItemRepository;
+
+    private readonly IStudentRepository studentRepository;
+
     public StoreService(IStoreRepository storeRepository,
         IFireBaseService fireBaseService,
-        IRoleService roleService,
         IAccountRepository accountRepository,
-        IVoucherService voucherService,
+        ICampaignDetailService campaignDetailService,
         IActivityService activityService,
-        IBonusService bonusService)
+        IBonusService bonusService,
+        IVoucherItemRepository voucherItemRepository,
+        IStudentRepository studentRepository)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -87,6 +91,7 @@ public class StoreService : IStoreService
             cfg.CreateMap<Account, CreateStoreModel>()
             .ReverseMap()
             .ForMember(s => s.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
+            .ForMember(s => s.Role, opt => opt.MapFrom(src => Role.Store))
             .ForMember(s => s.Password, opt => opt.MapFrom(src => BCryptNet.HashPassword(src.Password)))
             .ForMember(s => s.IsVerify, opt => opt.MapFrom(src => true))
             .ForMember(s => s.DateCreated, opt => opt.MapFrom(src => DateTime.Now))
@@ -99,21 +104,24 @@ public class StoreService : IStoreService
             .ForPath(s => s.Account.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
             .ForPath(s => s.Account.Description, opt => opt.MapFrom(src => src.Description))
             .ForPath(s => s.Account.State, opt => opt.MapFrom(src => src.State));
+            // Map Create Activity
+            cfg.CreateMap<CreateActivityModel, CreateUseActivityModel>()
+            .ReverseMap();
         });
         mapper = new Mapper(config);
         this.storeRepository = storeRepository;
         this.fireBaseService = fireBaseService;
-        this.roleService = roleService;
         this.accountRepository = accountRepository;
-        this.voucherService = voucherService;
+        this.campaignDetailService = campaignDetailService;
         this.activityService = activityService;
         this.bonusService = bonusService;
+        this.voucherItemRepository = voucherItemRepository;
+        this.studentRepository = studentRepository;
     }
 
     public async Task<StoreModel> Add(CreateStoreModel creation)
     {
         Account account = mapper.Map<Account>(creation);
-        account.RoleId = roleService.GetRoleByName("Store")?.Id;
 
         //Upload avatar
         if (creation.Avatar != null && creation.Avatar.Length > 0)
@@ -130,20 +138,67 @@ public class StoreService : IStoreService
         return mapper.Map<StoreModel>(storeRepository.Add(store));
     }
 
+    public bool AddActivity
+        (string id, string voucherItemId, CreateUseActivityModel creation)
+    {
+        var item = voucherItemRepository.GetById(voucherItemId);
+        if (new[] { CampaignState.Active, CampaignState.Inactive }.Contains
+            (item.CampaignDetail.Campaign.CampaignActivities.LastOrDefault().State.Value))
+        {
+            if (item.CampaignDetail.Campaign.CampaignStores.Any(c => c.StoreId.Equals(id)))
+            {
+                if ((bool)item.IsBought && item.Activities.FirstOrDefault() != null)
+                {
+                    if (!(bool)item.IsUsed)
+                    {
+                        var stu = studentRepository.GetById
+                            (item.Activities.FirstOrDefault().StudentId);
+                        if (stu != null && stu.State.Equals(StudentState.Active))
+                        {
+                            CreateActivityModel create = mapper.Map<CreateActivityModel>(creation);
+                            create.StudentId = item.Activities.FirstOrDefault().StudentId;
+                            create.VoucherItemId = voucherItemId;
+                            create.StoreId = id;
+                            return activityService.Add(create) != null;
+                        }
+                        throw new InvalidParameterException
+                            ("Sinh viên không hợp lệ");
+                    }
+                    throw new InvalidParameterException
+                        ("Mã khuyến mãi đã được sử dụng");
+                }
+                throw new InvalidParameterException
+                    ("Mã khuyến mãi chưa được thanh toán");
+            }
+            throw new InvalidParameterException
+                ("Mã khuyến mãi không được áp dụng cho cửa hàng này");
+        }
+        throw new InvalidParameterException
+            ("Chiến dịch không hợp lệ");
+    }
+
     public void Delete(string id)
     {
         Store entity = storeRepository.GetById(id);
         if (entity != null)
         {
-            // Avatar
-            if (entity.Account.Avatar != null && entity.Account.Avatar.Length > 0)
+            if (entity.CampaignStores.All(
+                s => s.Campaign.CampaignActivities.LastOrDefault().State.Equals(CampaignState.Closed)))
             {
-                // Remove image
-                fireBaseService.RemoveFileAsync(entity.Account.FileName, ACCOUNT_FOLDER_NAME);
-            }
+                // Avatar
+                if (entity.Account.Avatar != null && entity.Account.Avatar.Length > 0)
+                {
+                    // Remove image
+                    fireBaseService.RemoveFileAsync(entity.Account.FileName, ACCOUNT_FOLDER_NAME);
+                }
 
-            storeRepository.Delete(id);
-            accountRepository.Delete(entity.Account.Id);
+                storeRepository.Delete(id);
+                accountRepository.Delete(entity.Account.Id);
+            }
+            else
+            {
+                throw new InvalidParameterException("Xóa thất bại do tồn tại chiến dịch hoạt động ở cửa hàng");
+            }
         }
         else
         {
@@ -213,15 +268,15 @@ public class StoreService : IStoreService
         throw new InvalidParameterException("Không tìm thấy cửa hàng");
     }
 
-    public PagedResultModel<VoucherModel> GetVoucherListByStoreId
+    public PagedResultModel<CampaignDetailModel> GetCampaignDetailByStoreId
         (string id, List<string> campaignIds, List<string> typeIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         Store entity = storeRepository.GetById(id);
         if (entity != null)
         {
-            return voucherService.GetAllByStore
-                (new() { id }, campaignIds, typeIds, state, propertySort, isAsc, search, page, limit);
+            return campaignDetailService.GetAllByStore
+                (id, campaignIds, typeIds, state, propertySort, isAsc, search, page, limit);
         }
         throw new InvalidParameterException("Không tìm thấy cửa hàng");
     }
@@ -246,6 +301,16 @@ public class StoreService : IStoreService
             }
 
             return mapper.Map<StoreExtraModel>(storeRepository.Update(entity));
+        }
+        throw new InvalidParameterException("Không tìm thấy cửa hàng");
+    }
+
+    public CampaignDetailExtraModel GetCampaignDetailById(string id, string detailId)
+    {
+        Store entity = storeRepository.GetById(id);
+        if (entity != null)
+        {
+            return campaignDetailService.GetById(detailId);
         }
         throw new InvalidParameterException("Không tìm thấy cửa hàng");
     }
