@@ -58,7 +58,7 @@ public class VoucherItemRepository : IVoucherItemRepository
                 || EF.Functions.Like(t.CampaignDetail.Description, "%" + search + "%"))
                 && (campaignIds.Count == 0 || campaignIds.Contains(t.CampaignDetail.CampaignId))
                 && (voucherIds.Count == 0 || voucherIds.Contains(t.VoucherId))
-                && (brandIds.Count == 0 || brandIds.Contains(t.Voucher.BrandId))
+                && (brandIds.Count == 0 || brandIds.Contains(t.CampaignDetail.Campaign.BrandId))
                 && (typeIds.Count == 0 || typeIds.Contains(t.Voucher.TypeId))
                 && (studentIds.Count == 0 || studentIds.Contains(t.Activities.FirstOrDefault(a
                     => (bool)a.Status).StudentId))

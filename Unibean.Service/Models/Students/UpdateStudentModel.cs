@@ -29,11 +29,4 @@ public class UpdateStudentModel
     public IFormFile Avatar { get; set; }
 
     public string Address { get; set; }
-
-    /// <summary>
-    /// Pending = 1, Active = 2, Inactive = 3, Rejected = 4
-    /// </summary>
-    [ValidStudentState]
-    [Required(ErrorMessage = "Trạng thái là bắt buộc")]
-    public int? State { get; set; }
 }

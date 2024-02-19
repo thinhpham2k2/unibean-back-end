@@ -47,7 +47,6 @@ public class ActivityTransactionRepository : IActivityTransactionRepository
                 && (activityIds.Count == 0 || activityIds.Contains(a.ActivityId))
                 && (bool)a.Status)
                 .Include(s => s.Wallet)
-                    .ThenInclude(w => w.Type)
                 .Include(s => s.Activity)
                 .Include(s => s.Activity)
                     .ThenInclude(a => a.VoucherItem)
@@ -69,7 +68,6 @@ public class ActivityTransactionRepository : IActivityTransactionRepository
             activityTransaction = db.ActivityTransactions
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.Wallet)
-                .ThenInclude(w => w.Type)
             .Include(s => s.Activity)
             .Include(s => s.Activity)
                 .ThenInclude(a => a.VoucherItem)

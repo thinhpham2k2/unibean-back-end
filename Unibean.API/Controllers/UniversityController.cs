@@ -57,7 +57,7 @@ public class UniversityController : ControllerBase
     /// </summary>
     [HttpGet("{id}")]
     [AllowAnonymous]
-    [ProducesResponseType(typeof(UniversityModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(UniversityExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult GetById(string id)
@@ -79,7 +79,7 @@ public class UniversityController : ControllerBase
     /// </summary>
     [HttpPost]
     [Authorize(Roles = "Admin")]
-    [ProducesResponseType(typeof(UniversityModel), (int)HttpStatusCode.Created)]
+    [ProducesResponseType(typeof(UniversityExtraModel), (int)HttpStatusCode.Created)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
@@ -89,10 +89,10 @@ public class UniversityController : ControllerBase
 
         try
         {
-            var type = await universityService.Add(creation);
-            if (type != null)
+            var university = await universityService.Add(creation);
+            if (university != null)
             {
-                return StatusCode(StatusCodes.Status201Created, type);
+                return StatusCode(StatusCodes.Status201Created, university);
             }
             return StatusCode(StatusCodes.Status404NotFound, "Tạo thất bại");
         }
@@ -107,7 +107,7 @@ public class UniversityController : ControllerBase
     /// </summary>
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin")]
-    [ProducesResponseType(typeof(UniversityModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(UniversityExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
@@ -117,10 +117,10 @@ public class UniversityController : ControllerBase
 
         try
         {
-            var type = await universityService.Update(id, update);
-            if (type != null)
+            var university = await universityService.Update(id, update);
+            if (university != null)
             {
-                return StatusCode(StatusCodes.Status200OK, type);
+                return StatusCode(StatusCodes.Status200OK, university);
             }
             return StatusCode(StatusCodes.Status404NotFound, "Cập nhật thất bại");
         }

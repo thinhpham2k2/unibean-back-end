@@ -63,7 +63,6 @@ public class StudentChallengeRepository : IStudentChallengeRepository
                .Take(limit)
                .Include(s => s.Student)
                .Include(s => s.Challenge)
-                   .ThenInclude(c => c.Type)
                .Include(s => s.ChallengeTransactions.Where(c => (bool)c.Status))
                .ToList();
 
@@ -94,7 +93,6 @@ public class StudentChallengeRepository : IStudentChallengeRepository
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.Student)
             .Include(s => s.Challenge)
-                .ThenInclude(c => c.Type)
             .Include(s => s.ChallengeTransactions.Where(c => (bool)c.Status))
             .FirstOrDefault();
         }

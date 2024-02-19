@@ -36,6 +36,7 @@ public class VoucherService : IVoucherService
             .ReverseMap();
             cfg.CreateMap<Voucher, VoucherExtraModel>()
             .ForMember(v => v.BrandName, opt => opt.MapFrom(src => src.Brand.BrandName))
+            .ForMember(v => v.BrandImage, opt => opt.MapFrom(src => src.Brand.Account.Avatar))
             .ForMember(v => v.TypeName, opt => opt.MapFrom(src => src.Type.TypeName))
             .ForMember(v => v.NumberOfItems, opt => opt.MapFrom(src => src.VoucherItems.Count))
             .ForMember(v => v.Campaigns, opt => opt.MapFrom(
@@ -90,12 +91,19 @@ public class VoucherService : IVoucherService
         Voucher entity = voucherRepository.GetById(id);
         if (entity != null)
         {
-            if (entity.Image != null && entity.ImageName != null)
+            if (entity.VoucherItems.Count.Equals(0))
             {
-                //Remove image
-                fireBaseService.RemoveFileAsync(entity.ImageName, FOLDER_NAME);
+                if (entity.Image != null && entity.ImageName != null)
+                {
+                    //Remove image
+                    fireBaseService.RemoveFileAsync(entity.ImageName, FOLDER_NAME);
+                }
+                voucherRepository.Delete(id);
             }
-            voucherRepository.Delete(id);
+            else
+            {
+                throw new InvalidParameterException("Xóa thất bại do tồn tại mục thuộc khuyến mãi");
+            }
         }
         else
         {

@@ -27,7 +27,7 @@ public class EmailService : IEmailService
             smtp.Connect(EmailConfig.EmailHost, 587, SecureSocketOptions.StartTls);
             smtp.Authenticate(EmailConfig.EmailUsername, EmailConfig.EmailPassword);
             smtp.Send(email);
-            smtp.Disconnect(true);
+            smtp.DisconnectAsync(true);
 
             return true;
         }
@@ -53,7 +53,7 @@ public class EmailService : IEmailService
             smtp.Connect(EmailConfig.EmailHost, 587, SecureSocketOptions.StartTls);
             smtp.Authenticate(EmailConfig.EmailUsername, EmailConfig.EmailPassword);
             smtp.Send(email);
-            smtp.Disconnect(true);
+            smtp.DisconnectAsync(true);
 
             return true;
         }
@@ -79,7 +79,7 @@ public class EmailService : IEmailService
             smtp.Connect(EmailConfig.EmailHost, 587, SecureSocketOptions.StartTls);
             smtp.Authenticate(EmailConfig.EmailUsername, EmailConfig.EmailPassword);
             smtp.Send(email);
-            smtp.Disconnect(true);
+            smtp.DisconnectAsync(true);
 
             return true;
         }
@@ -105,7 +105,7 @@ public class EmailService : IEmailService
             smtp.Connect(EmailConfig.EmailHost, 587, SecureSocketOptions.StartTls);
             smtp.Authenticate(EmailConfig.EmailUsername, EmailConfig.EmailPassword);
             smtp.Send(email);
-            smtp.Disconnect(true);
+            smtp.DisconnectAsync(true);
 
             return true;
         }
@@ -136,7 +136,7 @@ public class EmailService : IEmailService
             smtp.Connect(EmailConfig.EmailHost, 587, SecureSocketOptions.StartTls);
             smtp.Authenticate(EmailConfig.EmailUsername, EmailConfig.EmailPassword);
             smtp.Send(email);
-            smtp.Disconnect(true);
+            smtp.DisconnectAsync(true);
 
             return BCryptNet.HashPassword(randomNumber);
         }

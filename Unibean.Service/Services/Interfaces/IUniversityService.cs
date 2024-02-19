@@ -5,14 +5,14 @@ namespace Unibean.Service.Services.Interfaces;
 
 public interface IUniversityService
 {
-    Task<UniversityModel> Add(CreateUniversityModel creation);
+    Task<UniversityExtraModel> Add(CreateUniversityModel creation);
 
     void Delete(string id);
 
     PagedResultModel<UniversityModel> GetAll
         (bool? state, string propertySort, bool isAsc, string search, int page, int limit);
 
-    UniversityModel GetById(string id);
+    UniversityExtraModel GetById(string id);
 
-    Task<UniversityModel> Update(string id, UpdateUniversityModel update);
+    Task<UniversityExtraModel> Update(string id, UpdateUniversityModel update);
 }

@@ -48,7 +48,6 @@ public class ChallengeTransactionRepository : IChallengeTransactionRepository
                 && (challengeIds.Count == 0 || challengeIds.Contains(t.ChallengeId))
                 && (bool)t.Status)
                 .Include(s => s.Wallet)
-                    .ThenInclude(w => w.Type)
                 .Include(s => s.Challenge)
                     .ThenInclude(c => c.Challenge).ToList();
         }
@@ -68,7 +67,6 @@ public class ChallengeTransactionRepository : IChallengeTransactionRepository
             challengeTransaction = db.ChallengeTransactions
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.Wallet)
-                .ThenInclude(w => w.Type)
             .Include(s => s.Challenge)
                 .ThenInclude(c => c.Challenge)
             .FirstOrDefault();

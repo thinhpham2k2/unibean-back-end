@@ -20,8 +20,7 @@ public class StudentRepository : IStudentRepository
             {
                 // Create wallet
                 db.Wallets.AddRange(new List<Wallet>() {
-                    new Wallet
-                    {
+                    new() {
                     Id = Ulid.NewUlid().ToString(),
                     StudentId = creation.Id,
                     Type = WalletType.Green,
@@ -32,8 +31,7 @@ public class StudentRepository : IStudentRepository
                     State = true,
                     Status = true,
                     },
-                    new Wallet
-                    {
+                    new() {
                     Id = Ulid.NewUlid().ToString(),
                     StudentId = creation.Id,
                     Type = WalletType.Red,
@@ -155,7 +153,6 @@ public class StudentRepository : IStudentRepository
                    .ThenInclude(c => c.University)
                .Include(b => b.Account)
                .Include(s => s.Wallets.Where(w => (bool)w.Status))
-                   .ThenInclude(w => w.Type)
                .ToList();
 
             pagedResult = new PagedResultModel<Student>
@@ -195,6 +192,8 @@ public class StudentRepository : IStudentRepository
                 .ThenInclude(i => i.Inviter)
             .Include(s => s.StudentChallenges.Where(s => (bool)s.Status))
                 .ThenInclude(s => s.Challenge)
+            .Include(s => s.Orders.Where(s => (bool)s.Status))
+                .ThenInclude(s => s.OrderStates.Where(s => (bool)s.Status))
             .FirstOrDefault();
         }
         catch (Exception ex)

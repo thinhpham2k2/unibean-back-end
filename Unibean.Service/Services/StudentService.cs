@@ -15,6 +15,8 @@ using System.Linq.Dynamic.Core;
 using Unibean.Service.Models.Orders;
 using Unibean.Service.Models.VoucherItems;
 using Enable.EnumDisplayName;
+using System.Linq;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace Unibean.Service.Services;
 
@@ -179,12 +181,13 @@ public class StudentService : IStudentService
             .ForMember(s => s.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
             .ForMember(s => s.Role, opt => opt.MapFrom(src => Role.Student))
             .ForMember(s => s.Password, opt => opt.MapFrom(src => BCryptNet.HashPassword(src.Password)))
+            .ForMember(s => s.IsVerify, opt => opt.MapFrom(src => !src.State.Equals(1)))
             .ForMember(s => s.DateCreated, opt => opt.MapFrom(src => DateTime.Now))
             .ForMember(s => s.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
             .ForMember(s => s.Status, opt => opt.MapFrom(src => true))
             .AfterMap((src, dest) =>
             {
-                dest.DateVerified = (bool)src.IsVerify ? DateTime.Now : null;
+                dest.DateVerified = !src.State.Equals(1) ? DateTime.Now : null;
             });
             // Map Update Student Model
             cfg.CreateMap<Student, UpdateStudentModel>()
@@ -222,7 +225,6 @@ public class StudentService : IStudentService
             account.FileName = f.FileName;
         }
 
-        account = accountRepository.Add(account);
         Student student = mapper.Map<Student>(creation);
         student.AccountId = account.Id;
 
@@ -242,6 +244,7 @@ public class StudentService : IStudentService
             student.FileNameBack = f.FileName;
         }
 
+        accountRepository.Add(account);
         student = studentRepository.Add(student);
 
         if (student != null)
@@ -271,13 +274,31 @@ public class StudentService : IStudentService
                     && s.Challenge.Type.Equals(ChallengeType.Spread)), 1);
             }
 
-            if ((bool)creation.IsVerify)
+            if (new[] { StudentState.Active, StudentState.Inactive }.Contains
+                (student.State.Value))
             {
                 studentChallengeService.Update(studentRepository
                 .GetById(student.Id).StudentChallenges
                 .Where(s => (bool)s.Status
                 && s.IsCompleted.Equals(false)
                 && s.Challenge.Type.Equals(ChallengeType.Verify)), 1);
+            }
+
+            // Send mail
+            switch (student.State)
+            {
+                case StudentState.Pending:
+                    emailService.SendEmailStudentRegister(account.Email);
+                    break;
+                case StudentState.Active:
+                    emailService.SendEmailStudentRegisterApprove(account.Email);
+                    break;
+                case StudentState.Inactive:
+                    emailService.SendEmailStudentRegisterApprove(account.Email);
+                    break;
+                case StudentState.Rejected:
+                    emailService.SendEmailStudentRegisterReject(account.Email);
+                    break;
             }
         }
 
@@ -290,8 +311,8 @@ public class StudentService : IStudentService
 
         Account account = accountRepository.GetById(creation.AccountId);
 
-        if (account.Email.IsNullOrEmpty() 
-            || !account.Email.Equals(creation.Email) 
+        if (account.Email.IsNullOrEmpty()
+            || !account.Email.Equals(creation.Email)
             || !account.Role.Equals(Role.Student))
         {
             throw new InvalidParameterException("Đăng nhập bằng tài khoản Google của bạn không hợp lệ");
@@ -357,29 +378,37 @@ public class StudentService : IStudentService
         Student entity = studentRepository.GetById(id);
         if (entity != null)
         {
-            // Student card front image
-            if (entity.StudentCardFront != null && entity.StudentCardFront.Length > 0)
+            if (entity.Orders.All(o => new[] { State.Abort, State.Receipt }.
+            Contains(o.OrderStates.LastOrDefault().State.Value)))
             {
-                // Remove image
-                fireBaseService.RemoveFileAsync(entity.FileNameFront, FOLDER_NAME);
-            }
+                // Student card front image
+                if (entity.StudentCardFront != null && entity.StudentCardFront.Length > 0)
+                {
+                    // Remove image
+                    fireBaseService.RemoveFileAsync(entity.FileNameFront, FOLDER_NAME);
+                }
 
-            // Student card back image
-            if (entity.StudentCardBack != null && entity.StudentCardBack.Length > 0)
+                // Student card back image
+                if (entity.StudentCardBack != null && entity.StudentCardBack.Length > 0)
+                {
+                    // Remove image
+                    fireBaseService.RemoveFileAsync(entity.FileNameBack, FOLDER_NAME);
+                }
+
+                // Avatar
+                if (entity.Account.Avatar != null && entity.Account.Avatar.Length > 0)
+                {
+                    // Remove image
+                    fireBaseService.RemoveFileAsync(entity.Account.FileName, ACCOUNT_FOLDER_NAME);
+                }
+
+                studentRepository.Delete(id);
+                accountRepository.Delete(entity.Account.Id);
+            }
+            else
             {
-                // Remove image
-                fireBaseService.RemoveFileAsync(entity.FileNameBack, FOLDER_NAME);
+                throw new InvalidParameterException("Xóa thất bại do tồn tại đơn hàng cần hoàn thành");
             }
-
-            // Avatar
-            if (entity.Account.Avatar != null && entity.Account.Avatar.Length > 0)
-            {
-                // Remove image
-                fireBaseService.RemoveFileAsync(entity.Account.FileName, ACCOUNT_FOLDER_NAME);
-            }
-
-            studentRepository.Delete(id);
-            accountRepository.Delete(entity.Account.Id);
         }
         else
         {
@@ -392,7 +421,7 @@ public class StudentService : IStudentService
         bool? isVerify, string propertySort, bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<StudentModel>>
-            (studentRepository.GetAll(majorIds, campusIds, stateIds, 
+            (studentRepository.GetAll(majorIds, campusIds, stateIds,
             isVerify, propertySort, isAsc, search, page, limit));
     }
 
@@ -407,7 +436,7 @@ public class StudentService : IStudentService
     }
 
     public PagedResultModel<StudentChallengeModel> GetChallengeListByStudentId
-        (List<ChallengeType> typeIds, string id, bool? isCompleted, bool? state, 
+        (List<ChallengeType> typeIds, string id, bool? isCompleted, bool? state,
         bool? isClaimed, string propertySort, bool isAsc, string search, int page, int limit)
     {
         Student entity = studentRepository.GetById(id);
@@ -426,7 +455,7 @@ public class StudentService : IStudentService
     }
 
     public PagedResultModel<TransactionModel> GetHistoryTransactionListByStudentId
-        (string id, List<TransactionType> typeIds, bool? state, 
+        (string id, List<TransactionType> typeIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         Student entity = studentRepository.GetById(id);
@@ -473,7 +502,7 @@ public class StudentService : IStudentService
     public OrderExtraModel GetOrderByOrderId(string id, string orderId)
     {
         Student entity = studentRepository.GetById(id);
-        if(entity != null)
+        if (entity != null)
         {
             OrderExtraModel order = orderService.GetById(orderId);
             if (order != null && order.StudentId.Equals(id))
@@ -501,7 +530,7 @@ public class StudentService : IStudentService
     public VoucherItemExtraModel GetVoucherItemByVoucherId(string id, string voucherId)
     {
         Student entity = studentRepository.GetById(id);
-        if(entity != null)
+        if (entity != null)
         {
             VoucherItemExtraModel voucher = voucherItemService.GetById(voucherId);
             if (voucher != null && !voucher.StudentId.IsNullOrEmpty() && voucher.StudentId.Equals(id))
@@ -557,18 +586,52 @@ public class StudentService : IStudentService
         throw new InvalidParameterException("Không tìm thấy sinh viên");
     }
 
-    public StudentExtraModel UpdateVerification(string id)
+    public bool UpdateState(string id, StudentState stateId)
     {
-        Student entity = studentRepository.GetById(id);
-        if (entity != null)
+        if (!new[] { StudentState.Pending }.Contains(stateId))
         {
-            if (!(bool)entity.Account.IsVerify)
+            Student entity = studentRepository.GetById(id);
+            if (entity != null)
             {
-                entity.Account.IsVerify = true;
-                return mapper.Map<StudentExtraModel>(studentRepository.Update(entity));
+                switch (entity.State)
+                {
+                    case StudentState.Pending
+                        when new[] { StudentState.Inactive }.Contains(stateId):
+                        throw new InvalidParameterException("Trạng thái sinh viên không hợp lệ");
+                    case StudentState.Active
+                        when new[] { StudentState.Rejected, StudentState.Active }.Contains(stateId):
+                        throw new InvalidParameterException("Trạng thái sinh viên không hợp lệ");
+                    case StudentState.Inactive
+                        when new[] { StudentState.Rejected, StudentState.Inactive }.Contains(stateId):
+                        throw new InvalidParameterException("Trạng thái sinh viên không hợp lệ");
+                    case StudentState.Pending
+                        when new[] { StudentState.Rejected, StudentState.Active }.Contains(stateId):
+
+                        if (stateId.Equals(StudentState.Active))
+                        {
+                            // Take the challenge
+                            studentChallengeService.Update(
+                                entity.StudentChallenges
+                                .Where(s => (bool)s.Status
+                                && s.IsCompleted.Equals(false)
+                                && s.Challenge.Type.Equals(ChallengeType.Verify)), 1);
+
+                            emailService.SendEmailStudentRegisterApprove(entity.Account.Email);
+                        }
+                        else if (stateId.Equals(StudentState.Rejected))
+                        {
+                            emailService.SendEmailStudentRegisterReject(entity.Account.Email);
+                        }
+
+                        entity.Account.IsVerify = true;
+                        break;
+                }
+
+                entity.State = stateId;
+                return studentRepository.Update(entity) != null;
             }
-            throw new InvalidParameterException("Sinh viên này đã được phê duyệt");
+            throw new InvalidParameterException("Không tìm thấy sinh viên");
         }
-        throw new InvalidParameterException("Không tìm thấy sinh viên");
+        throw new InvalidParameterException("Trạng thái sinh viên không hợp lệ");
     }
 }

@@ -7,6 +7,7 @@ public class VoucherExtraModel
     public string Id { get; set; }
     public string BrandId { get; set; }
     public string BrandName { get; set; }
+    public string BrandImage { get; set; }
     public string TypeId { get; set; }
     public string TypeName { get; set; }
     public string VoucherName { get; set; }

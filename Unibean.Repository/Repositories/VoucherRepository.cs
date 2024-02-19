@@ -94,6 +94,7 @@ public class VoucherRepository : IVoucherRepository
             voucher = db.Vouchers
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.Brand)
+                .ThenInclude(b => b.Account)
             .Include(s => s.Type)
             .Include(s => s.VoucherItems.Where(v => (bool)v.Status))
                 .ThenInclude(v => v.CampaignDetail)

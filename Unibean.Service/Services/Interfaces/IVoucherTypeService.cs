@@ -5,14 +5,14 @@ namespace Unibean.Service.Services.Interfaces;
 
 public interface IVoucherTypeService
 {
-    Task<VoucherTypeModel> Add(CreateVoucherTypeModel creation);
+    Task<VoucherTypeExtraModel> Add(CreateVoucherTypeModel creation);
 
     void Delete(string id);
 
     PagedResultModel<VoucherTypeModel> GetAll
         (bool? state, string propertySort, bool isAsc, string search, int page, int limit);
 
-    VoucherTypeModel GetById(string id);
+    VoucherTypeExtraModel GetById(string id);
 
-    Task<VoucherTypeModel> Update(string id, UpdateVoucherTypeModel update);
+    Task<VoucherTypeExtraModel> Update(string id, UpdateVoucherTypeModel update);
 }

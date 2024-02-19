@@ -25,8 +25,12 @@ public class VoucherTypeService : IVoucherTypeService
         var config = new MapperConfiguration(cfg
                 =>
         {
-            cfg.CreateMap<VoucherType, VoucherTypeModel>().ReverseMap();
+            cfg.CreateMap<VoucherType, VoucherTypeModel>()
+            .ReverseMap();
             cfg.CreateMap<PagedResultModel<VoucherType>, PagedResultModel<VoucherTypeModel>>()
+            .ReverseMap();
+            cfg.CreateMap<VoucherType, VoucherTypeExtraModel>()
+            .ForMember(t => t.NumberOfVouchers, opt => opt.MapFrom(src => src.Vouchers.Count))
             .ReverseMap();
             cfg.CreateMap<VoucherType, UpdateVoucherTypeModel>()
             .ReverseMap()
@@ -44,7 +48,7 @@ public class VoucherTypeService : IVoucherTypeService
         this.fireBaseService = fireBaseService;
     }
 
-    public async Task<VoucherTypeModel> Add(CreateVoucherTypeModel creation)
+    public async Task<VoucherTypeExtraModel> Add(CreateVoucherTypeModel creation)
     {
         VoucherType entity = mapper.Map<VoucherType>(creation);
 
@@ -55,7 +59,7 @@ public class VoucherTypeService : IVoucherTypeService
             entity.Image = f.URL;
             entity.FileName = f.FileName;
         }
-        return mapper.Map<VoucherTypeModel>(voucherTypeRepository.Add(entity));
+        return mapper.Map<VoucherTypeExtraModel>(voucherTypeRepository.Add(entity));
     }
 
     public void Delete(string id)
@@ -63,12 +67,19 @@ public class VoucherTypeService : IVoucherTypeService
         VoucherType entity = voucherTypeRepository.GetById(id);
         if (entity != null)
         {
-            if (entity.Image != null && entity.FileName != null)
+            if (entity.Vouchers.Count.Equals(0))
             {
-                //Remove image
-                fireBaseService.RemoveFileAsync(entity.FileName, FOLDER_NAME);
+                if (entity.Image != null && entity.FileName != null)
+                {
+                    //Remove image
+                    fireBaseService.RemoveFileAsync(entity.FileName, FOLDER_NAME);
+                }
+                voucherTypeRepository.Delete(id);
             }
-            voucherTypeRepository.Delete(id);
+            else
+            {
+                throw new InvalidParameterException("Xóa thất bại do tồn tại khuyến mãi thuộc loại");
+            }
         }
         else
         {
@@ -83,17 +94,17 @@ public class VoucherTypeService : IVoucherTypeService
             (voucherTypeRepository.GetAll(state, propertySort, isAsc, search, page, limit));
     }
 
-    public VoucherTypeModel GetById(string id)
+    public VoucherTypeExtraModel GetById(string id)
     {
         VoucherType entity = voucherTypeRepository.GetById(id);
         if (entity != null)
         {
-            return mapper.Map<VoucherTypeModel>(entity);
+            return mapper.Map<VoucherTypeExtraModel>(entity);
         }
         throw new InvalidParameterException("Không tìm thấy loại khuyến mãi");
     }
 
-    public async Task<VoucherTypeModel> Update(string id, UpdateVoucherTypeModel update)
+    public async Task<VoucherTypeExtraModel> Update(string id, UpdateVoucherTypeModel update)
     {
         VoucherType entity = voucherTypeRepository.GetById(id);
         if (entity != null)
@@ -109,7 +120,7 @@ public class VoucherTypeService : IVoucherTypeService
                 entity.Image = f.URL;
                 entity.FileName = f.FileName;
             }
-            return mapper.Map<VoucherTypeModel>(voucherTypeRepository.Update(entity));
+            return mapper.Map<VoucherTypeExtraModel>(voucherTypeRepository.Update(entity));
         }
         throw new InvalidParameterException("Không tìm thấy loại khuyến mãi");
     }

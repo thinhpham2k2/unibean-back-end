@@ -47,7 +47,6 @@ public class OrderTransactionRepository : IOrderTransactionRepository
                 && (orderIds.Count == 0 || orderIds.Contains(o.OrderId))
                 && (bool)o.Status)
                 .Include(s => s.Wallet)
-                    .ThenInclude(w => w.Type)
                 .Include(s => s.Order).ToList();
         }
         catch (Exception ex)
@@ -66,7 +65,6 @@ public class OrderTransactionRepository : IOrderTransactionRepository
             orderTransaction = db.OrderTransactions
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.Wallet)
-                .ThenInclude(w => w.Type)
             .Include(s => s.Order)
             .FirstOrDefault();
         }

@@ -147,26 +147,32 @@ public class StudentController : ControllerBase
     }
 
     /// <summary>
-    /// Update student verification
+    /// Update student state
     /// </summary>
-    [HttpPut("{id}/verification")]
+    /// <param name="id">Student id.</param>
+    /// <param name="stateId">Student state id --- Active = 2, Inactive = 3, Rejected = 4</param>
+    [HttpPut("{id}/states/{stateId}")]
     [Authorize(Roles = "Admin")]
-    [ProducesResponseType(typeof(StudentExtraModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public ActionResult UpdateState(string id)
+    public ActionResult UpdateState(
+        [ValidStudent(new[] {
+            StudentState.Pending,
+            StudentState.Active,
+            StudentState.Inactive })] string id,
+        StudentState stateId)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         try
         {
-            var student = studentService.UpdateVerification(id);
-            if (student != null)
+            if (studentService.UpdateState(id, stateId))
             {
-                return StatusCode(StatusCodes.Status200OK, student);
+                return StatusCode(StatusCodes.Status200OK, "Cập nhật trạng thái sinh viên thành công");
             }
-            return NotFound("Xác minh tài khoản sinh viên thất bại");
+            return NotFound("Cập nhật trạng thái sinh viên thất bại");
         }
         catch (InvalidParameterException e)
         {

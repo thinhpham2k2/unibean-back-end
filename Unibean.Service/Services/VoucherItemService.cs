@@ -31,6 +31,11 @@ public class VoucherItemService : IVoucherItemService
             .ForMember(s => s.BrandId, opt => opt.MapFrom(src => src.Voucher.Brand.Id))
             .ForMember(s => s.BrandName, opt => opt.MapFrom(src => src.Voucher.Brand.BrandName))
             .ForMember(s => s.BrandImage, opt => opt.MapFrom(src => src.Voucher.Brand.Account.Avatar))
+            .ForMember(s => s.CampaignDetailId, opt => opt.MapFrom(src => src.CampaignDetailId))
+            .ForMember(s => s.CampaignId, opt => opt.MapFrom(src => src.CampaignDetail.CampaignId))
+            .ForMember(s => s.CampaignName, opt => opt.MapFrom(src => src.CampaignDetail.Campaign.CampaignName))
+            .ForMember(s => s.Price, opt => opt.MapFrom(src => src.CampaignDetail.Price))
+            .ForMember(s => s.Rate, opt => opt.MapFrom(src => src.CampaignDetail.Rate))
             .ForMember(s => s.DateBought, opt => opt.MapFrom(src => src.Activities.Where(a
                 => a.Type.Equals(Type.Buy)).FirstOrDefault().DateCreated))
             .ForMember(s => s.DateUsed, opt => opt.MapFrom(src => src.Activities.Where(a 
@@ -49,6 +54,12 @@ public class VoucherItemService : IVoucherItemService
             .ForMember(s => s.BrandId, opt => opt.MapFrom(src => src.Voucher.Brand.Id))
             .ForMember(s => s.BrandName, opt => opt.MapFrom(src => src.Voucher.Brand.BrandName))
             .ForMember(s => s.BrandImage, opt => opt.MapFrom(src => src.Voucher.Brand.Account.Avatar))
+            .ForMember(s => s.CampaignDetailId, opt => opt.MapFrom(src => src.CampaignDetailId))
+            .ForMember(s => s.CampaignId, opt => opt.MapFrom(src => src.CampaignDetail.CampaignId))
+            .ForMember(s => s.CampaignName, opt => opt.MapFrom(src => src.CampaignDetail.Campaign.CampaignName))
+            .ForMember(s => s.CampaignImage, opt => opt.MapFrom(src => src.CampaignDetail.Campaign.Image))
+            .ForMember(s => s.Price, opt => opt.MapFrom(src => src.CampaignDetail.Price))
+            .ForMember(s => s.Rate, opt => opt.MapFrom(src => src.CampaignDetail.Rate))
             .ForMember(s => s.CampaignName, opt => opt.MapFrom(src => src.CampaignDetail.Campaign.CampaignName))
             .ForMember(s => s.CampaignImage, opt => opt.MapFrom(src => src.CampaignDetail.Campaign.Image))
             .ForMember(s => s.UsedAt, opt => opt.MapFrom(src => src.Activities.Where(a

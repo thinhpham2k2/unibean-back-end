@@ -21,7 +21,9 @@ public class WishlistService : IWishlistService
         {
             cfg.CreateMap<Wishlist, WishlistModel>()
             .ForMember(c => c.StudentName, opt => opt.MapFrom(src => src.Student.FullName))
+            .ForMember(c => c.StudentImage, opt => opt.MapFrom(src => src.Student.Account.Avatar))
             .ForMember(c => c.BrandName, opt => opt.MapFrom(src => src.Brand.BrandName))
+            .ForMember(c => c.BrandImage, opt => opt.MapFrom(src => src.Brand.Account.Avatar))
             .ReverseMap();
             cfg.CreateMap<PagedResultModel<Wishlist>, PagedResultModel<WishlistModel>>()
             .ReverseMap();

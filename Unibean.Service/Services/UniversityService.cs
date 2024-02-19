@@ -25,8 +25,13 @@ public class UniversityService : IUniversityService
         var config = new MapperConfiguration(cfg
                 =>
         {
-            cfg.CreateMap<University, UniversityModel>().ReverseMap();
+            cfg.CreateMap<University, UniversityModel>()
+            .ReverseMap();
             cfg.CreateMap<PagedResultModel<University>, PagedResultModel<UniversityModel>>()
+            .ReverseMap();
+            cfg.CreateMap<University, UniversityExtraModel>()
+            .ForMember(u => u.NumberOfCampuses, opt => opt.MapFrom(src => src.Campuses.Count))
+            .ForMember(u => u.NumberOfStudents, opt => opt.MapFrom(src => src.Campuses.Select(c => c.Students.Count).Sum()))
             .ReverseMap();
             cfg.CreateMap<University, UpdateUniversityModel>()
             .ReverseMap()
@@ -44,7 +49,7 @@ public class UniversityService : IUniversityService
         this.fireBaseService = fireBaseService;
     }
 
-    public async Task<UniversityModel> Add(CreateUniversityModel creation)
+    public async Task<UniversityExtraModel> Add(CreateUniversityModel creation)
     {
         University entity = mapper.Map<University>(creation);
 
@@ -55,7 +60,7 @@ public class UniversityService : IUniversityService
             entity.Image = f.URL;
             entity.FileName = f.FileName;
         }
-        return mapper.Map<UniversityModel>(universityRepository.Add(entity));
+        return mapper.Map<UniversityExtraModel>(universityRepository.Add(entity));
     }
 
     public void Delete(string id)
@@ -63,12 +68,19 @@ public class UniversityService : IUniversityService
         University entity = universityRepository.GetById(id);
         if (entity != null)
         {
-            if (entity.Image != null && entity.FileName != null)
+            if (entity.Campuses.Count.Equals(0))
             {
-                //Remove image
-                fireBaseService.RemoveFileAsync(entity.FileName, FOLDER_NAME);
+                if (entity.Image != null && entity.FileName != null)
+                {
+                    //Remove image
+                    fireBaseService.RemoveFileAsync(entity.FileName, FOLDER_NAME);
+                }
+                universityRepository.Delete(id);
             }
-            universityRepository.Delete(id);
+            else
+            {
+                throw new InvalidParameterException("Xóa thất bại do tồn tại cơ sở thuộc trường đại học");
+            }
         }
         else
         {
@@ -83,17 +95,17 @@ public class UniversityService : IUniversityService
             (universityRepository.GetAll(state, propertySort, isAsc, search, page, limit));
     }
 
-    public UniversityModel GetById(string id)
+    public UniversityExtraModel GetById(string id)
     {
         University entity = universityRepository.GetById(id);
         if (entity != null)
         {
-            return mapper.Map<UniversityModel>(entity);
+            return mapper.Map<UniversityExtraModel>(entity);
         }
         throw new InvalidParameterException("Không tìm thấy trường đại học");
     }
 
-    public async Task<UniversityModel> Update(string id, UpdateUniversityModel update)
+    public async Task<UniversityExtraModel> Update(string id, UpdateUniversityModel update)
     {
         University entity = universityRepository.GetById(id);
         if (entity != null)
@@ -109,7 +121,7 @@ public class UniversityService : IUniversityService
                 entity.Image = f.URL;
                 entity.FileName = f.FileName;
             }
-            return mapper.Map<UniversityModel>(universityRepository.Update(entity));
+            return mapper.Map<UniversityExtraModel>(universityRepository.Update(entity));
         }
         throw new InvalidParameterException("Không tìm thấy trường đại học");
     }

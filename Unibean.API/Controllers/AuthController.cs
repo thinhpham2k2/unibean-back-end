@@ -121,8 +121,8 @@ public class AuthController : ControllerBase
                     new(JwtRegisteredClaimNames.Sub, (user.GetType().GetProperty("UserName").GetValue(user) ?? string.Empty).ToString()),
                     new(JwtRegisteredClaimNames.Email, (user.GetType().GetProperty("Email").GetValue(user) ?? string.Empty).ToString()),
                     new(JwtRegisteredClaimNames.Name, (user.GetType().GetProperty("Name").GetValue(user) ?? string.Empty).ToString()),
-                    new Claim("userid", (user.GetType().GetProperty("UserId").GetValue(user) ?? string.Empty).ToString()),
-                    new Claim(ClaimTypes.Role, role)
+                    new("userid", (user.GetType().GetProperty("UserId").GetValue(user) ?? string.Empty).ToString()),
+                    new(ClaimTypes.Role, role)
                 };
 
                 response.User = user;

@@ -1,6 +1,5 @@
 ﻿using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
-using Unibean.Service.Models.Accounts;
 using Unibean.Service.Models.Orders;
 using Unibean.Service.Models.StudentChallenges;
 using Unibean.Service.Models.Students;
@@ -47,5 +46,5 @@ public interface IStudentService
 
     Task<StudentExtraModel> Update(string id, UpdateStudentModel update);
 
-    StudentExtraModel UpdateVerification(string id);
+    bool UpdateState(string id, StudentState stateId);
 }
