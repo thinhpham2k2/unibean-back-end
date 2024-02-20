@@ -11,7 +11,7 @@ public interface IStoreService
     Task<StoreModel> Add(CreateStoreModel creation);
 
     bool AddActivity
-        (string id, string voucherItemId, CreateUseActivityModel creation);
+        (string id, string code, CreateUseActivityModel creation);
 
     void Delete(string id);
 

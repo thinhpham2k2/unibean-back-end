@@ -301,27 +301,27 @@ public class StoreController : ControllerBase
     }
 
     /// <summary>
-    /// Scan voucher
+    /// Scan voucher item by voucher code
     /// </summary>
     /// <param name="id">Store id.</param>
-    /// <param name="voucherId">Voucher id.</param>
+    /// <param name="code">Voucher code.</param>
     /// <param name="creation">Buy activities model.</param>
-    [HttpPost("{id}/campaign-details/{voucherId}")]
+    [HttpPost("{id}/campaign-details/{code}")]
     [Authorize(Roles = "Store")]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.Created)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public ActionResult<string> BuyVoucher(
+    public ActionResult<string> ScanVoucher(
         [ValidStore] string id,
-        [ValidItem] string voucherId,
+        [ValidItem] string code,
         CreateUseActivityModel creation)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         try
         {
-            return storeService.AddActivity(id, voucherId, creation) ?
+            return storeService.AddActivity(id, code, creation) ?
                 StatusCode(StatusCodes.Status201Created, "Quét khuyến mãi thành công") :
                 StatusCode(StatusCodes.Status404NotFound, "Quét khuyến mãi thất bại");
         }
