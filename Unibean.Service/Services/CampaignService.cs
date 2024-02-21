@@ -3,6 +3,7 @@ using Enable.EnumDisplayName;
 using FirebaseAdmin.Messaging;
 using Microsoft.IdentityModel.Tokens;
 using MoreLinq;
+using System.Linq;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
@@ -324,7 +325,8 @@ public class CampaignService : ICampaignService
         Campaign entity = campaignRepository.GetById(id);
         if (entity != null)
         {
-            if (entity.CampaignActivities.LastOrDefault().State.Equals(CampaignState.Closed))
+            if (new[] { CampaignState.Closed, CampaignState.Cancelled }.Contains
+                (entity.CampaignActivities.LastOrDefault().State.Value))
             {
                 if (entity.Image != null && entity.ImageName != null)
                 {
@@ -478,7 +480,7 @@ public class CampaignService : ICampaignService
 
     public bool UpdateState(string id, CampaignState stateId, JwtRequestModel request)
     {
-        if (!new[] { CampaignState.Pending, CampaignState.Expired }.Contains(stateId))
+        if (!new[] { CampaignState.Pending, CampaignState.Finished }.Contains(stateId))
         {
             Campaign entity = campaignRepository.GetById(id);
             if (entity != null)
@@ -490,11 +492,20 @@ public class CampaignService : ICampaignService
                         case CampaignState.Pending
                         when request.Role.Equals("Brand") || new[] { CampaignState.Inactive, CampaignState.Closed }.Contains(stateId):
                             throw new InvalidParameterException("Trạng thái không hợp lệ cho chiến dịch");
+                        case CampaignState.Rejected
+                        when !new[] { CampaignState.Cancelled }.Contains(stateId):
+                            throw new InvalidParameterException("Trạng thái không hợp lệ cho chiến dịch");
                         case CampaignState.Active
                         when new[] { CampaignState.Rejected, CampaignState.Active }.Contains(stateId):
                             throw new InvalidParameterException("Trạng thái không hợp lệ cho chiến dịch");
+                        case CampaignState.Active
+                        when new[] { CampaignState.Cancelled }.Contains(stateId) && entity.StartOn <= DateOnly.FromDateTime(DateTime.Now):
+                            throw new InvalidParameterException("Trạng thái không hợp lệ cho chiến dịch");
                         case CampaignState.Inactive
                         when new[] { CampaignState.Rejected, CampaignState.Inactive }.Contains(stateId):
+                            throw new InvalidParameterException("Trạng thái không hợp lệ cho chiến dịch");
+                        case CampaignState.Inactive
+                        when new[] { CampaignState.Cancelled }.Contains(stateId) && entity.StartOn <= DateOnly.FromDateTime(DateTime.Now):
                             throw new InvalidParameterException("Trạng thái không hợp lệ cho chiến dịch");
                     }
 
@@ -520,6 +531,11 @@ public class CampaignService : ICampaignService
                     {
                         // Handle refund
                         campaignRepository.AllToClosed(entity.Id);
+                    }
+                    else if (stateId.Equals(CampaignState.Cancelled))
+                    {
+                        // Handle refund
+                        campaignRepository.ExpiredToClosed(entity.Id);
                     }
 
                     return campaignActivityRepository.Add(new CampaignActivity

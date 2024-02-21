@@ -25,6 +25,8 @@ public interface IVoucherItemRepository
 
     VoucherItem GetById(string id);
 
+    VoucherItem GetByVoucherCode(string code);
+
     ItemIndex GetIndex
         (string voucherId, int quantity);
 

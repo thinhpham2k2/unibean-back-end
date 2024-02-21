@@ -727,7 +727,7 @@ namespace Unibean.Repository.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     campaign_id = table.Column<string>(type: "char(26)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    state = table.Column<string>(type: "enum('Pending', 'Rejected', 'Active', 'Inactive', 'Expired', 'Closed')", nullable: true)
+                    state = table.Column<string>(type: "enum('Pending', 'Rejected', 'Active', 'Inactive', 'Finished', 'Closed', 'Cancelled')", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     date_created = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     description = table.Column<string>(type: "text", nullable: true)

@@ -42,7 +42,7 @@ public class CampaignController : ControllerBase
     /// <param name="storeIds">Filter by store id.</param>
     /// <param name="majorIds">Filter by major id.</param>
     /// <param name="campusIds">Filter by campus id.</param>
-    /// <param name="stateIds">Filter by campaign state --- Pending = 1, Rejected = 2, Active = 3, Inactive = 4, Expired = 5, Closed = 6</param>
+    /// <param name="stateIds">Filter by campaign state --- Pending = 1, Rejected = 2, Active = 3, Inactive = 4, Finished = 5, Closed = 6, Cancelled = 7</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
@@ -156,7 +156,7 @@ public class CampaignController : ControllerBase
     /// Update campaign state
     /// </summary>
     /// <param name="id">Campaign id.</param>
-    /// <param name="stateId">Campaign state id --- Rejected = 2, Active = 3, Inactive = 4, Closed = 6</param>
+    /// <param name="stateId">Campaign state id --- Rejected = 2, Active = 3, Inactive = 4, Closed = 6, Cancelled = 7</param>
     [HttpPut("{id}/states/{stateId}")]
     [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
@@ -166,6 +166,7 @@ public class CampaignController : ControllerBase
     public ActionResult UpdateState(
         [ValidCampaign(new[] {
             CampaignState.Pending,
+            CampaignState.Rejected,
             CampaignState.Active,
             CampaignState.Inactive })] string id,
         CampaignState stateId)
@@ -216,7 +217,7 @@ public class CampaignController : ControllerBase
     /// Get activity list by campaign id
     /// </summary>
     /// <param name="id">Campaign id.</param>
-    /// <param name="stateIds">Filter by campaign state --- Pending = 1, Rejected = 2, Active = 3, Inactive = 4, Expired = 5, Closed = 6</param>
+    /// <param name="stateIds">Filter by campaign state --- Pending = 1, Rejected = 2, Active = 3, Inactive = 4, Finished = 5, Closed = 6, Cancelled = 7</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/activities")]
     [Authorize(Roles = "Admin, Brand, Store, Student")]

@@ -162,6 +162,43 @@ public class VoucherItemRepository : IVoucherItemRepository
         return voucher;
     }
 
+    public VoucherItem GetByVoucherCode(string code)
+    {
+        VoucherItem voucher = new();
+        try
+        {
+            using var db = new UnibeanDBContext();
+            voucher = db.VoucherItems
+            .Where(s => s.VoucherCode.Equals(code) && (bool)s.Status)
+            .Include(s => s.CampaignDetail)
+                .ThenInclude(c => c.Campaign)
+                    .ThenInclude(v => v.Type)
+            .Include(s => s.CampaignDetail.Campaign)
+                .ThenInclude(c => c.CampaignStores.Where(a => (bool)a.Status))
+            .Include(s => s.CampaignDetail.Campaign)
+                .ThenInclude(c => c.CampaignMajors.Where(a => (bool)a.Status))
+            .Include(s => s.CampaignDetail.Campaign)
+                .ThenInclude(c => c.CampaignCampuses.Where(a => (bool)a.Status))
+            .Include(s => s.CampaignDetail.Campaign)
+                .ThenInclude(c => c.CampaignActivities.Where(a => (bool)a.Status))
+            .Include(s => s.Voucher)
+                .ThenInclude(v => v.Type)
+            .Include(s => s.Voucher)
+                .ThenInclude(v => v.Brand)
+                    .ThenInclude(b => b.Account)
+            .Include(s => s.Activities.Where(a => (bool)a.Status))
+                .ThenInclude(a => a.Student)
+            .Include(s => s.Activities.Where(a => (bool)a.Status))
+                .ThenInclude(a => a.Store)
+            .FirstOrDefault();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return voucher;
+    }
+
     public ItemIndex GetIndex
         (string voucherId, int quantity)
     {

@@ -139,9 +139,9 @@ public class StoreService : IStoreService
     }
 
     public bool AddActivity
-        (string id, string voucherItemId, CreateUseActivityModel creation)
+        (string id, string code, CreateUseActivityModel creation)
     {
-        var item = voucherItemRepository.GetById(voucherItemId);
+        var item = voucherItemRepository.GetByVoucherCode(code);
         if (new[] { CampaignState.Active, CampaignState.Inactive }.Contains
             (item.CampaignDetail.Campaign.CampaignActivities.LastOrDefault().State.Value))
         {
@@ -157,7 +157,7 @@ public class StoreService : IStoreService
                         {
                             CreateActivityModel create = mapper.Map<CreateActivityModel>(creation);
                             create.StudentId = item.Activities.FirstOrDefault().StudentId;
-                            create.VoucherItemId = voucherItemId;
+                            create.VoucherItemId = item.Id;
                             create.StoreId = id;
                             return activityService.Add(create) != null;
                         }
