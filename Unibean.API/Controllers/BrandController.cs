@@ -173,7 +173,7 @@ public class BrandController : ControllerBase
     /// <param name="storeIds">Filter by store id.</param>
     /// <param name="majorIds">Filter by major id.</param>
     /// <param name="campusIds">Filter by campus id.</param>
-    /// <param name="stateIds">Filter by campaign state --- Pending = 1, Rejected = 2, Active = 3, Inactive = 4, Expired = 5, Closed = 6</param>
+    /// <param name="stateIds">Filter by campaign state --- Pending = 1, Rejected = 2, Active = 3, Inactive = 4, Finished = 5, Closed = 6, Cancelled = 7</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/campaigns")]
     [Authorize(Roles = "Admin, Brand")]

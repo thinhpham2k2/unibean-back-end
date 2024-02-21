@@ -11,7 +11,7 @@ using Unibean.Repository.Entities;
 namespace Unibean.Repository.Migrations
 {
     [DbContext(typeof(UnibeanDBContext))]
-    [Migration("20240216082002_Unibean")]
+    [Migration("20240221102116_Unibean")]
     partial class Unibean
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -555,7 +555,7 @@ namespace Unibean.Repository.Migrations
                         .HasColumnName("description");
 
                     b.Property<string>("State")
-                        .HasColumnType("enum('Pending', 'Rejected', 'Active', 'Inactive', 'Expired', 'Closed')")
+                        .HasColumnType("enum('Pending', 'Rejected', 'Active', 'Inactive', 'Finished', 'Closed', 'Cancelled')")
                         .HasColumnName("state");
 
                     b.Property<ulong?>("Status")
