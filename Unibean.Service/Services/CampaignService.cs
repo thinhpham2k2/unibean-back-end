@@ -3,7 +3,6 @@ using Enable.EnumDisplayName;
 using FirebaseAdmin.Messaging;
 using Microsoft.IdentityModel.Tokens;
 using MoreLinq;
-using System.Linq;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
@@ -509,23 +508,27 @@ public class CampaignService : ICampaignService
                             throw new InvalidParameterException("Trạng thái không hợp lệ cho chiến dịch");
                     }
 
-                    // Push notification to mobile app
-                    fireBaseService.PushNotificationToStudent(new Message
+                    if (entity.CampaignActivities.LastOrDefault().State.Equals(CampaignState.Pending) 
+                        && stateId.Equals(CampaignState.Active))
                     {
-                        Data = new Dictionary<string, string>()
+                        // Push notification to mobile app
+                        fireBaseService.PushNotificationToStudent(new Message
+                        {
+                            Data = new Dictionary<string, string>()
                                     {
                                         { "brandId", entity.BrandId },
                                         { "campaignId", entity.Id },
                                     },
-                        //Token = registrationToken,
-                        Topic = entity.BrandId,
-                        Notification = new Notification()
-                        {
-                            Title = entity.Brand.BrandName + " tạo chiến dịch mới!",
-                            Body = "Chiến dịch " + entity.CampaignName,
-                            ImageUrl = entity.Image
-                        }
-                    });
+                            //Token = registrationToken,
+                            Topic = entity.BrandId,
+                            Notification = new Notification()
+                            {
+                                Title = entity.Brand.BrandName + " tạo chiến dịch mới!",
+                                Body = "Chiến dịch " + entity.CampaignName,
+                                ImageUrl = entity.Image
+                            }
+                        });
+                    }
 
                     if (stateId.Equals(CampaignState.Closed))
                     {
