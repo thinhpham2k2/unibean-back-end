@@ -1,16 +1,20 @@
-﻿using Unibean.Repository.Entities;
+﻿using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Cryptography;
+using Unibean.Repository.Entities;
 using Unibean.Service.Models.Accounts;
 using Unibean.Service.Models.Authens;
 using Unibean.Service.Models.Brands;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Services.Interfaces;
-using static Google.Apis.Auth.GoogleJsonWebSignature;
 
 namespace Unibean.Service.Services;
 
 public class GoogleService : IGoogleService
 {
     private const string CLIENT_ID = "783137803189-gqg1hfpemgl7cq9qi8jplrlbaemcanld.apps.googleusercontent.com";
+
+    private const string CLIENT_ID_1 = "804634450758-77ftvtrh77qkstdu1dpqmnspdjvvjp45.apps.googleusercontent.com";
 
     private readonly IAccountService accountService;
 
@@ -28,60 +32,98 @@ public class GoogleService : IGoogleService
         this.emailService = emailService;
     }
 
-    public async Task<AccountModel> LoginWithGoogle(GoogleTokenModel token, string role)
+    public Task<AccountModel> LoginWithGoogle(GoogleTokenModel token, string role)
     {
         try
         {
-            Payload payload = await ValidateAsync(token.IdToken);
-
-            if (payload != null)
+            var validationParameters = new TokenValidationParameters()
             {
-                if (payload.AudienceAsList.Contains(CLIENT_ID) && payload.EmailVerified)
+                IssuerSigningKey = new RsaSecurityKey(RSA.Create()),
+                ValidAudiences = new[] { CLIENT_ID, CLIENT_ID_1 },
+                ValidIssuers = new List<string> { "https://accounts.google.com", "accounts.google.com" },
+                ValidateLifetime = true,
+                ValidateAudience = true,
+                ValidateIssuer = true,
+                ValidateIssuerSigningKey = false,
+            };
+
+            JwtPayload payload = new();
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtSecurityToken = tokenHandler.ReadJwtToken(token.IdToken);
+
+            SecurityToken validatedToken = null;
+            try
+            {
+                tokenHandler.ValidateToken(token.IdToken, validationParameters, out validatedToken);
+                payload = tokenHandler.ReadJwtToken(token.IdToken).Payload;
+            }
+            catch (SecurityTokenSignatureKeyNotFoundException)
+            {
+                //Ignore SecurityTokenSignatureKeyNotFoundException
+                payload = tokenHandler.ReadJwtToken(token.IdToken).Payload;
+            }
+            catch (SecurityTokenException e)
+            {
+                throw new InvalidParameterException(e.Message.ToString());
+            }
+
+            bool emailVerify = false;
+            string emailVerifyString = payload.Claims.FirstOrDefault(c => c.Type.Equals("email_verified")).Value;
+
+            if (!string.IsNullOrEmpty(emailVerifyString))
+            {
+                _ = bool.TryParse(emailVerifyString, out emailVerify);
+                if (emailVerify)
                 {
-                    var account = accountService.GetByEmail(payload.Email);
-                    if(account != null)
+                    if (payload != null)
                     {
-                        return account;
-                    }
+                        var email = payload.Claims.FirstOrDefault(c => c.Type.Equals("email")).Value;
+                        var account = accountService.GetByEmail(email);
+                        if (account != null)
+                        {
+                            return Task.FromResult(account);
+                        }
 
-                    switch (role)
-                    {
-                        case "Brand":
-                            account = accountService.AddGoogle(new CreateGoogleAccountModel
-                            {
-                                Email = payload.Email,
-                                IsVerify = true,
-                                Role = (int)Role.Brand,
-                                Description = "Create by logging in with Google",
-                                State = true,
-                            });
-                            emailService.SendEmailBrandRegister(account.Email);
+                        switch (role)
+                        {
+                            case "Brand":
+                                account = accountService.AddGoogle(new CreateGoogleAccountModel
+                                {
+                                    Email = email,
+                                    IsVerify = true,
+                                    Role = (int)Role.Brand,
+                                    Description = "Create by logging in with Google",
+                                    State = true,
+                                });
+                                emailService.SendEmailBrandRegister(account.Email);
 
-                            var brand = brandService.AddGoogle(new CreateBrandGoogleModel
-                            {
-                                AccountId = account.Id,
-                                BrandName = payload.Email,
-                                Email = payload.Email,
-                                Description = null,
-                                State = true,
-                            });
-                            account.UserId = brand.Id;
-                            account.Name = brand.BrandName;
-                            return account;
-                        case "Student":
-                            account = accountService.AddGoogle(new CreateGoogleAccountModel
-                            {
-                                Email = payload.Email,
-                                IsVerify = false,
-                                Role = (int)Role.Student,
-                                Description = "Create by logging in with Google",
-                                State = true,
-                            });
-                            return account;
+                                var brand = brandService.AddGoogle(new CreateBrandGoogleModel
+                                {
+                                    AccountId = account.Id,
+                                    BrandName = email,
+                                    Email = email,
+                                    Description = null,
+                                    State = true,
+                                });
+                                account.UserId = brand.Id;
+                                account.Name = brand.BrandName;
+                                return Task.FromResult(account);
+                            case "Student":
+                                account = accountService.AddGoogle(new CreateGoogleAccountModel
+                                {
+                                    Email = email,
+                                    IsVerify = false,
+                                    Role = (int)Role.Student,
+                                    Description = "Create by logging in with Google",
+                                    State = true,
+                                });
+                                return Task.FromResult(account);
+                        }
                     }
+                    throw new InvalidParameterException("Mã thông báo không hợp lệ");
                 }
             }
-            throw new InvalidParameterException("Mã thông báo không hợp lệ");
+            throw new InvalidParameterException("Địa chỉ email chưa được xác thực");
         }
         catch (Exception e)
         {
