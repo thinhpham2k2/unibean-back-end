@@ -5,4 +5,6 @@ namespace Unibean.Service.Services.Interfaces;
 public interface IInvitationService
 {
     InvitationModel Add(CreateInvitationModel creation);
+
+    bool ExistInvitation(string invitee);
 }
