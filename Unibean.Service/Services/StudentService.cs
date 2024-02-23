@@ -15,6 +15,7 @@ using System.Linq.Dynamic.Core;
 using Unibean.Service.Models.Orders;
 using Unibean.Service.Models.VoucherItems;
 using Enable.EnumDisplayName;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Unibean.Service.Services;
 
@@ -588,6 +589,44 @@ public class StudentService : IStudentService
             }
 
             return mapper.Map<StudentExtraModel>(studentRepository.Update(entity));
+        }
+        throw new InvalidParameterException("Không tìm thấy sinh viên");
+    }
+
+    public bool UpdateInviteCode(string id, string code)
+    {
+        Student entity = studentRepository.GetById(id);
+        if (entity != null)
+        {
+            if (!invitationService.ExistInvitation(entity.Id))
+            {
+                // Set invitation
+                if (!code.IsNullOrEmpty())
+                {
+                    // Take the challenge
+                    studentChallengeService.Update(studentRepository
+                        .GetById(entity.Id).StudentChallenges
+                        .Where(s => (bool)s.Status
+                        && s.IsCompleted.Equals(false)
+                        && s.Challenge.Type.Equals(ChallengeType.Welcome)), 1);
+
+                    studentChallengeService.Update(studentRepository
+                        .GetById(code).StudentChallenges
+                        .Where(s => (bool)s.Status
+                        && s.IsCompleted.Equals(false)
+                        && s.Challenge.Type.Equals(ChallengeType.Spread)), 1);
+
+                    return invitationService.Add(new CreateInvitationModel
+                    {
+                        InviterId = code,
+                        InviteeId = entity.Id,
+                        Description = null,
+                        State = true
+                    }) != null;
+                }
+                throw new InvalidParameterException("Mã mời không hợp lệ");
+            }
+            throw new InvalidParameterException("Sinh viên đã nhập mã mời");
         }
         throw new InvalidParameterException("Không tìm thấy sinh viên");
     }

@@ -13,6 +13,7 @@ using Unibean.Service.Models.VoucherItems;
 using Unibean.Service.Services;
 using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Validations;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Unibean.API.Controllers;
 
@@ -147,7 +148,36 @@ public class StudentController : ControllerBase
     }
 
     /// <summary>
-    /// Update student
+    /// Update student invite code
+    /// </summary>
+    [HttpPut("{id}/invitation/{code}")]
+    [Authorize(Roles = "Admin, Student")]
+    [ProducesResponseType(typeof(StudentExtraModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public IActionResult UpdateInviteCode(
+        [ValidStudent(new[] { StudentState.Active })] string id,
+        [ValidInviteCode] string code)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            if (studentService.UpdateInviteCode(id, code))
+            {
+                return StatusCode(StatusCodes.Status200OK, "Cập nhật mã mời thành công");
+            }
+            return StatusCode(StatusCodes.Status404NotFound, "Cập nhật mã mời thất bại");
+        }
+        catch (InvalidParameterException e)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Update student verificaion
     /// </summary>
     [HttpPut("{id}/verification")]
     [Authorize(Roles = "Admin, Student")]

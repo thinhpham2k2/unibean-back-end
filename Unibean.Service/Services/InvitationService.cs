@@ -36,4 +36,9 @@ public class InvitationService : IInvitationService
         return mapper.Map<InvitationModel>
             (invitationRepository.Add(mapper.Map<Invitation>(creation)));
     }
+
+    public bool ExistInvitation(string invitee)
+    {
+        return invitationRepository.ExistInvitation(invitee);
+    }
 }
