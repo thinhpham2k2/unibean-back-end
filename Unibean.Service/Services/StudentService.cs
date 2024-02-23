@@ -15,8 +15,6 @@ using System.Linq.Dynamic.Core;
 using Unibean.Service.Models.Orders;
 using Unibean.Service.Models.VoucherItems;
 using Enable.EnumDisplayName;
-using System.Linq;
-using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace Unibean.Service.Services;
 
@@ -194,6 +192,14 @@ public class StudentService : IStudentService
             .ReverseMap()
             .ForMember(t => t.Major, opt => opt.MapFrom(src => (string)null))
             .ForMember(t => t.Campus, opt => opt.MapFrom(src => (string)null))
+            .ForMember(s => s.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
+            .ForPath(s => s.Account.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
+            .ForPath(s => s.Account.State, opt => opt.MapFrom(src => true));
+            // Map Update Student Verificaion Model
+            cfg.CreateMap<Student, UpdateStudentVerifyModel>()
+            .ReverseMap()
+            .ForMember(s => s.FileNameFront, opt => opt.Ignore())
+            .ForMember(s => s.FileNameBack, opt => opt.Ignore())
             .ForMember(s => s.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
             .ForPath(s => s.Account.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
             .ForPath(s => s.Account.State, opt => opt.MapFrom(src => true));
@@ -633,5 +639,49 @@ public class StudentService : IStudentService
             throw new InvalidParameterException("Không tìm thấy sinh viên");
         }
         throw new InvalidParameterException("Trạng thái sinh viên không hợp lệ");
+    }
+
+    public async Task<StudentExtraModel> UpdateVerification(string id, UpdateStudentVerifyModel update)
+    {
+        Student entity = studentRepository.GetById(id);
+        if (entity != null)
+        {
+            if (!entity.Code.Equals(update.Code))
+            {
+                if (!studentRepository.CheckCodeDuplicate(update.Code))
+                {
+                    throw new InvalidParameterException("Mã sinh viên đã được sử dụng");
+                }
+            }
+            entity = mapper.Map(update, entity);
+
+            // Upload the student card front image
+            if (update.StudentCardFront != null && update.StudentCardFront.Length > 0)
+            {
+                // Remove image
+                await fireBaseService.RemoveFileAsync(entity.FileNameFront, FOLDER_NAME);
+
+                //Upload new image update
+                FireBaseFile f = await fireBaseService.UploadFileAsync(update.StudentCardFront, FOLDER_NAME);
+                entity.StudentCardFront = f.URL;
+                entity.FileNameFront = f.FileName;
+            }
+
+            // Upload the student card back image
+            if (update.StudentCardBack != null && update.StudentCardBack.Length > 0)
+            {
+                // Remove image
+                await fireBaseService.RemoveFileAsync(entity.FileNameBack, FOLDER_NAME);
+
+                //Upload new image update
+                FireBaseFile f = await fireBaseService.UploadFileAsync(update.StudentCardBack, FOLDER_NAME);
+                entity.StudentCardBack = f.URL;
+                entity.FileNameBack = f.FileName;
+            }
+
+            entity.State = StudentState.Pending;
+            return mapper.Map<StudentExtraModel>(studentRepository.Update(entity));
+        }
+        throw new InvalidParameterException("Không tìm thấy sinh viên");
     }
 }
