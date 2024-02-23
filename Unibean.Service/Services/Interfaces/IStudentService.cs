@@ -47,4 +47,6 @@ public interface IStudentService
     Task<StudentExtraModel> Update(string id, UpdateStudentModel update);
 
     bool UpdateState(string id, StudentState stateId);
+
+    Task<StudentExtraModel> UpdateVerification(string id, UpdateStudentVerifyModel update);
 }

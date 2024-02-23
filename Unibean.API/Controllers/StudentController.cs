@@ -122,7 +122,7 @@ public class StudentController : ControllerBase
     /// Update student
     /// </summary>
     [HttpPut("{id}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, Student")]
     [ProducesResponseType(typeof(StudentExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
@@ -134,6 +134,36 @@ public class StudentController : ControllerBase
         try
         {
             var student = await studentService.Update(id, update);
+            if (student != null)
+            {
+                return StatusCode(StatusCodes.Status200OK, student);
+            }
+            return StatusCode(StatusCodes.Status404NotFound, "Cập nhật thất bại");
+        }
+        catch (InvalidParameterException e)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Update student
+    /// </summary>
+    [HttpPut("{id}/verification")]
+    [Authorize(Roles = "Admin, Student")]
+    [ProducesResponseType(typeof(StudentExtraModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public async Task<ActionResult> UpdateVerification(
+        [ValidStudent(new[] { StudentState.Rejected })] string id,
+        [FromForm] UpdateStudentVerifyModel update)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            var student = await studentService.UpdateVerification(id, update);
             if (student != null)
             {
                 return StatusCode(StatusCodes.Status200OK, student);

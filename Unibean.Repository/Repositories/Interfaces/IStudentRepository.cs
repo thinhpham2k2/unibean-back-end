@@ -7,9 +7,9 @@ public interface IStudentRepository
 {
     Student Add(Student creation);
 
-    bool CheckInviteCode(string inviteCode);
-
     bool CheckCodeDuplicate(string code);
+
+    bool CheckInviteCode(string inviteCode);
 
     void Delete(string id);
 
