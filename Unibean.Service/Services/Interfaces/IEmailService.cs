@@ -4,6 +4,8 @@ public interface IEmailService
 {
     bool SendEmailBrandRegister(string receiver);
 
+    bool SendEmailCamapaignClose(List<string> receivers, string campaignName);
+
     bool SendEmailStudentRegister(string receiver);
 
     bool SendEmailStudentRegisterApprove(string receiver);

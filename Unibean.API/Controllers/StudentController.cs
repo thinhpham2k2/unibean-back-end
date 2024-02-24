@@ -177,7 +177,7 @@ public class StudentController : ControllerBase
     }
 
     /// <summary>
-    /// Update student verificaion
+    /// Update student verification
     /// </summary>
     [HttpPut("{id}/verification")]
     [Authorize(Roles = "Admin, Student")]

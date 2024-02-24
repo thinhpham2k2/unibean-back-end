@@ -58,6 +58,8 @@ public class CampaignService : ICampaignService
 
     private readonly IStudentChallengeService studentChallengeService;
 
+    private readonly IEmailService emailService;
+
     public CampaignService(ICampaignRepository campaignRepository,
         IVoucherRepository voucherRepository,
         IFireBaseService fireBaseService,
@@ -71,7 +73,8 @@ public class CampaignService : ICampaignService
         ICampaignDetailService campaignDetailService,
         ICampaignActivityService campaignActivityService,
         ICampaignActivityRepository campaignActivityRepository,
-        IStudentChallengeService studentChallengeService)
+        IStudentChallengeService studentChallengeService,
+        IEmailService emailService)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -176,6 +179,7 @@ public class CampaignService : ICampaignService
         this.campaignActivityService = campaignActivityService;
         this.campaignActivityRepository = campaignActivityRepository;
         this.studentChallengeService = studentChallengeService;
+        this.emailService = emailService;
     }
 
     public async Task<CampaignExtraModel> Add(CreateCampaignModel creation)
@@ -533,7 +537,7 @@ public class CampaignService : ICampaignService
                     if (stateId.Equals(CampaignState.Closed))
                     {
                         // Handle refund
-                        campaignRepository.AllToClosed(entity.Id);
+                        emailService.SendEmailCamapaignClose(campaignRepository.AllToClosed(entity.Id), entity.CampaignName);
                     }
                     else if (stateId.Equals(CampaignState.Cancelled))
                     {

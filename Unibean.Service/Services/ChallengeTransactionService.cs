@@ -2,7 +2,6 @@
 using Enable.EnumDisplayName;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Repositories.Interfaces;
-using Unibean.Service.Models.Campuses;
 using Unibean.Service.Models.ChallengeTransactions;
 using Unibean.Service.Models.Transactions;
 using Unibean.Service.Services.Interfaces;
