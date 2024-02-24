@@ -15,7 +15,7 @@ using System.Linq.Dynamic.Core;
 using Unibean.Service.Models.Orders;
 using Unibean.Service.Models.VoucherItems;
 using Enable.EnumDisplayName;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Unibean.Service.Models.ChallengeTransactions;
 
 namespace Unibean.Service.Services;
 
@@ -378,6 +378,37 @@ public class StudentService : IStudentService
         }
 
         return mapper.Map<StudentModel>(entity);
+    }
+
+    public ChallengeTransactionModel ClaimChallenge(string id, string challengeId)
+    {
+        Student entity = studentRepository.GetById(id);
+        if (entity != null)
+        {
+            StudentChallengeModel studentChallengeModel = studentChallengeService.GetById(challengeId);
+            if (studentChallengeModel != null && studentChallengeModel.StudentId.Equals(id))
+            {
+                if ((bool)studentChallengeModel.IsCompleted && studentChallengeModel.Current >= studentChallengeModel.Condition)
+                {
+                    if (!(bool)studentChallengeModel.IsClaimed)
+                    {
+                        return challengeTransactionService.Add(
+                            new()
+                            {
+                                WalletId = entity.Wallets.Where(w => w.Type.Equals(WalletType.Green)).FirstOrDefault().Id,
+                                ChallengeId = challengeId,
+                                Amount = studentChallengeModel.Amount,
+                                Rate = 1,
+                                State = true,
+                            });
+                    }
+                    throw new InvalidParameterException("Đã nhận thưởng từ thử thách");
+                }
+                throw new InvalidParameterException("Chưa hoàn thành thử thách");
+            }
+            throw new InvalidParameterException("Không tìm thấy thử thách");
+        }
+        throw new InvalidParameterException("Không tìm thấy sinh viên");
     }
 
     public void Delete(string id)
