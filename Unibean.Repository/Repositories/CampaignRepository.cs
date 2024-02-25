@@ -116,8 +116,9 @@ public class CampaignRepository : ICampaignRepository
         return creation;
     }
 
-    public bool AllToClosed(string id)
+    public List<string> AllToClosed(string id)
     {
+        List<string> emails = new();
         try
         {
             using var db = new UnibeanDBContext();
@@ -131,6 +132,11 @@ public class CampaignRepository : ICampaignRepository
                     .ThenInclude(i => i.Activities.Where(a => (bool)a.Status))
                         .ThenInclude(a => a.Student)
                             .ThenInclude(s => s.Wallets.Where(w => (bool)w.Status))
+            .Include(c => c.CampaignDetails.Where(d => (bool)d.Status))
+                .ThenInclude(d => d.VoucherItems.Where(i => (bool)i.Status))
+                    .ThenInclude(i => i.Activities.Where(a => (bool)a.Status))
+                        .ThenInclude(a => a.Student)
+                            .ThenInclude(s => s.Account)
             .Include(c => c.CampaignActivities.Where(d => (bool)d.Status))
             .FirstOrDefault();
             var campaignWallet = campaign.Wallets.FirstOrDefault();
@@ -184,6 +190,8 @@ public class CampaignRepository : ICampaignRepository
                 && (bool)i.IsLocked && (bool)i.IsBought
                 && !(bool)i.IsUsed && i.CampaignDetailId != null))
                 .ToList();
+
+            emails = itemList.Select(i => i.Activities.Where(a => a.Type.Equals(Type.Buy)).FirstOrDefault().Student.Account.Email).ToList();
 
             List<Activity> activityList = new();
 
@@ -246,7 +254,7 @@ public class CampaignRepository : ICampaignRepository
         {
             throw new Exception(ex.Message);
         }
-        return true;
+        return emails;
     }
 
     public void Delete(string id)

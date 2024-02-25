@@ -7,7 +7,7 @@ public interface ICampaignRepository
 {
     Campaign Add(Campaign creation);
 
-    bool AllToClosed(string id);
+    List<string> AllToClosed(string id);
 
     void Delete(string id);
 

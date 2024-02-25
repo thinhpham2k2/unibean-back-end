@@ -1,5 +1,6 @@
 ﻿using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
+using Unibean.Service.Models.ChallengeTransactions;
 using Unibean.Service.Models.Orders;
 using Unibean.Service.Models.StudentChallenges;
 using Unibean.Service.Models.Students;
@@ -13,6 +14,8 @@ public interface IStudentService
     Task<StudentModel> Add(CreateStudentModel creation);
 
     Task<StudentModel> AddGoogle(CreateStudentGoogleModel creation);
+
+    ChallengeTransactionModel ClaimChallenge(string id, string challengeId);
 
     void Delete(string id);
 

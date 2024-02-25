@@ -39,6 +39,17 @@ public class AdminService : IAdminService
             .ReverseMap();
             cfg.CreateMap<PagedResultModel<Admin>, PagedResultModel<AdminModel>>()
             .ReverseMap();
+            cfg.CreateMap<Admin, AdminExtraModel>()
+            .ForMember(a => a.UserName, opt => opt.MapFrom(src => src.Account.UserName))
+            .ForMember(a => a.Phone, opt => opt.MapFrom(src => src.Account.Phone))
+            .ForMember(a => a.Email, opt => opt.MapFrom(src => src.Account.Email))
+            .ForMember(a => a.Avatar, opt => opt.MapFrom(src => src.Account.Avatar))
+            .ForMember(a => a.FileName, opt => opt.MapFrom(src => src.Account.FileName))
+            .ForMember(a => a.Description, opt => opt.MapFrom(src => src.Account.Description))
+            .ForMember(a => a.NumberOfRequests, opt => opt.MapFrom(src => src.Requests.Count))
+            .ForMember(a => a.AmountOfRequests, opt => opt.MapFrom(
+                src => src.Requests.SelectMany(r => r.RequestTransactions.Select(t => t.Amount)).Sum()))
+            .ReverseMap();
             // Map Create Admin Model
             cfg.CreateMap<Admin, CreateAdminModel>()
             .ReverseMap()
@@ -70,7 +81,7 @@ public class AdminService : IAdminService
         this.accountRepository = accountRepository;
     }
 
-    public async Task<AdminModel> Add(CreateAdminModel creation)
+    public async Task<AdminExtraModel> Add(CreateAdminModel creation)
     {
         Account account = mapper.Map<Account>(creation);
 
@@ -86,7 +97,7 @@ public class AdminService : IAdminService
         Admin admin = mapper.Map<Admin>(creation);
         admin.AccountId = account.Id;
 
-        return mapper.Map<AdminModel>(adminRepository.Add(admin));
+        return mapper.Map<AdminExtraModel>(adminRepository.Add(admin));
     }
 
     public void Delete(string id)
@@ -124,17 +135,17 @@ public class AdminService : IAdminService
             (adminRepository.GetAll(state, propertySort, isAsc, search, page, limit));
     }
 
-    public AdminModel GetById(string id)
+    public AdminExtraModel GetById(string id)
     {
         Admin entity = adminRepository.GetById(id);
         if (entity != null)
         {
-            return mapper.Map<AdminModel>(entity);
+            return mapper.Map<AdminExtraModel>(entity);
         }
         throw new InvalidParameterException("Không tìm thấy quản trị viên");
     }
 
-    public async Task<AdminModel> Update(string id, UpdateAdminModel update)
+    public async Task<AdminExtraModel> Update(string id, UpdateAdminModel update)
     {
         Admin entity = adminRepository.GetById(id);
         if (entity != null)
@@ -153,7 +164,7 @@ public class AdminService : IAdminService
                 entity.Account.FileName = f.FileName;
             }
 
-            return mapper.Map<AdminModel>(adminRepository.Update(entity));
+            return mapper.Map<AdminExtraModel>(adminRepository.Update(entity));
         }
         throw new InvalidParameterException("Không tìm thấy quản trị viên");
     }

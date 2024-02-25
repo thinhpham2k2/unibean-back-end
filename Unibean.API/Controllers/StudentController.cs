@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
+using Unibean.Service.Models.ChallengeTransactions;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Orders;
 using Unibean.Service.Models.Parameters;
@@ -13,7 +14,6 @@ using Unibean.Service.Models.VoucherItems;
 using Unibean.Service.Services;
 using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Validations;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Unibean.API.Controllers;
 
@@ -177,7 +177,7 @@ public class StudentController : ControllerBase
     }
 
     /// <summary>
-    /// Update student verificaion
+    /// Update student verification
     /// </summary>
     [HttpPut("{id}/verification")]
     [Authorize(Roles = "Admin, Student")]
@@ -299,6 +299,36 @@ public class StudentController : ControllerBase
                 return StatusCode(StatusCodes.Status200OK, result);
             }
             return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính của thách thức không hợp lệ");
+        }
+        catch (InvalidParameterException e)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Claim challenge for student
+    /// </summary>
+    [HttpPost("{id}/challenges/{challengeId}")]
+    [Authorize(Roles = "Admin, Student")]
+    [ProducesResponseType(typeof(ChallengeTransactionModel), (int)HttpStatusCode.Created)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public IActionResult ClaimChallenge(
+        [ValidStudent(new[] { StudentState.Active })] string id, 
+        [ValidStudentChallenge] string challengeId)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            var chall = studentService.ClaimChallenge(id, challengeId);
+            if (chall != null)
+            {
+                return StatusCode(StatusCodes.Status201Created, chall);
+            }
+            return StatusCode(StatusCodes.Status404NotFound, "Nhận thưởng thất bại");
         }
         catch (InvalidParameterException e)
         {
