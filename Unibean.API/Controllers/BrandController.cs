@@ -56,7 +56,7 @@ public class BrandController : ControllerBase
             PagedResultModel<BrandModel>
                 result = brandService.GetAll
                 (state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, 
-                paging.Page, paging.Limit, jwtService.GetJwtRequest(jwtToken.Split(" ")[1]));
+                paging.Page, paging.Limit, jwtService.GetJwtRequest(jwtToken?.Split(" ")[1]));
             return StatusCode(StatusCodes.Status200OK, result);
         }
         return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của thương hiệu");
