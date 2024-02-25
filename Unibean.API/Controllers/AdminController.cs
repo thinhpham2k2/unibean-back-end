@@ -67,7 +67,7 @@ public class AdminController : ControllerBase
     /// </summary>
     [HttpGet("{id}")]
     [Authorize(Roles = "Admin")]
-    [ProducesResponseType(typeof(AdminModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(AdminExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult GetById(string id)
@@ -89,7 +89,7 @@ public class AdminController : ControllerBase
     /// </summary>
     [HttpPost]
     [Authorize(Roles = "Admin")]
-    [ProducesResponseType(typeof(AdminModel), (int)HttpStatusCode.Created)]
+    [ProducesResponseType(typeof(AdminExtraModel), (int)HttpStatusCode.Created)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
@@ -117,7 +117,7 @@ public class AdminController : ControllerBase
     /// </summary>
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin")]
-    [ProducesResponseType(typeof(AdminModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(AdminExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
