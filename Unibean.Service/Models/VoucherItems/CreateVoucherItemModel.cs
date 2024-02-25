@@ -16,6 +16,5 @@ public class CreateVoucherItemModel
     [Range(minimum: 1, maximum: int.MaxValue, ErrorMessage = "Số lượng phải lớn hơn 0")]
     public int? Quantity { get; set; }
 
-    [Required(ErrorMessage = "Trạng thái là bắt buộc")]
-    public bool? State { get; set; }
+    public string Description { get; set; }
 }

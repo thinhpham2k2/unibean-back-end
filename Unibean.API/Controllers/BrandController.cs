@@ -36,7 +36,7 @@ public class BrandController : ControllerBase
     /// <param name="state">Filter by brand state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
-    [Authorize(Roles = "Admin, Brand, Store, Student")]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(PagedResultModel<BrandModel>),
         (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]

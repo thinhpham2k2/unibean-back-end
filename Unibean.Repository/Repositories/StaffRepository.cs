@@ -54,6 +54,7 @@ public class StaffRepository : IStaffRepository
                 || EF.Functions.Like(p.Account.Email, "%" + search + "%")
                 || EF.Functions.Like(p.Account.Description, "%" + search + "%"))
                 && (state == null || state.Equals(p.State))
+                && (stationIds.Count == 0 || stationIds.Contains(p.StationId))
                 && (bool)p.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 
