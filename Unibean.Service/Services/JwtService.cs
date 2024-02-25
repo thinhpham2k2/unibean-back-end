@@ -16,9 +16,9 @@ public class JwtService : IJwtService
                 =>
         {
             cfg.CreateMap<IEnumerable<Claim>, JwtRequestModel>()
-            .ForMember(a => a.AccountId, opt 
+            .ForMember(a => a.AccountId, opt
             => opt.MapFrom(src => src.Where(c => c.Type.Equals("sid")).FirstOrDefault().Value))
-            .ForMember(a => a.UserId, opt 
+            .ForMember(a => a.UserId, opt
             => opt.MapFrom(src => src.Where(c => c.Type.Equals("userid")).FirstOrDefault().Value))
             .ForMember(a => a.Role, opt
             => opt.MapFrom(src => src.Where(c => c.Type.Equals("role")).FirstOrDefault().Value))
@@ -29,9 +29,19 @@ public class JwtService : IJwtService
 
     public JwtRequestModel GetJwtRequest(string jwtToken)
     {
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var decodedToken = tokenHandler.ReadJwtToken(jwtToken);
+        try
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var decodedToken = tokenHandler.ReadJwtToken(jwtToken);
 
-        return mapper.Map<JwtRequestModel>(decodedToken.Claims);
+            return mapper.Map<JwtRequestModel>(decodedToken.Claims);
+        }
+        catch
+        {
+            return new()
+            {
+                Role = "User"
+            };
+        }
     }
 }
