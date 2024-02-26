@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using ClosedXML.Excel;
-using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
@@ -16,9 +15,13 @@ public class VoucherItemService : IVoucherItemService
 {
     private readonly Mapper mapper;
 
+    private readonly IVoucherRepository voucherRepository;
+
     private readonly IVoucherItemRepository voucherItemRepository;
 
-    public VoucherItemService(IVoucherItemRepository voucherItemRepository)
+    public VoucherItemService(
+        IVoucherRepository voucherRepository, 
+        IVoucherItemRepository voucherItemRepository)
     {
         var config = new MapperConfiguration(cfg
                =>
@@ -93,6 +96,7 @@ public class VoucherItemService : IVoucherItemService
             .ConvertUsing<VoucherItemListConverter>();
         });
         mapper = new Mapper(config);
+        this.voucherRepository = voucherRepository;
         this.voucherItemRepository = voucherItemRepository;
     }
 
@@ -101,10 +105,28 @@ public class VoucherItemService : IVoucherItemService
         creation.Index = voucherItemRepository.GetMaxIndex(creation.VoucherId);
         var list = mapper.Map<IEnumerable<VoucherItem>>(creation).ToList();
         voucherItemRepository.AddList(list);
+
         using XLWorkbook wb = new();
-        wb.AddWorksheet(GetEmpdata(list), "Voucher Item Record");
+        var sheet = wb.AddWorksheet
+            (GetEmpdata(list, voucherRepository.GetById(creation.VoucherId).VoucherName), 
+            "Voucher Item Record");
+
+        // Set style for first row
+        sheet.Row(1).Style.Font.Bold = true;
+        sheet.Row(1).Style.Font.FontSize = 20;
+
+        // Set style for column A,B,C,D
+        sheet.Column("A").Width = 20;
+        sheet.Columns("B:C").Width = 60;
+        sheet.Column("D").Width = 20;
+        sheet.Column("E").Width = 60;
+        sheet.Columns("A:E").Style.Font.FontSize = 15;
+        sheet.Columns("A:E").Style.Alignment.WrapText = true;
+        sheet.Columns("A:E").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
         using MemoryStream ms = new();
         wb.SaveAs(ms);
+
         return ms;
     }
 
@@ -128,18 +150,19 @@ public class VoucherItemService : IVoucherItemService
         throw new InvalidParameterException("Không tìm thấy khuyến mãi");
     }
 
-    private static DataTable GetEmpdata(List<VoucherItem> items)
+    private static DataTable GetEmpdata(List<VoucherItem> items, string voucherName)
     {
         var dt = new DataTable();
-        dt.Columns.Add("STT", typeof(string));
+        dt.Columns.Add("Stt", typeof(string));
         dt.Columns.Add("Id", typeof(string));
-        dt.Columns.Add("Voucher code", typeof(string));
+        dt.Columns.Add("Code", typeof(string));
         dt.Columns.Add("Index", typeof(string));
+        dt.Columns.Add("Name", typeof(string));
         if (items.Count > 0)
         {
             for (int i = 1; i <= items.Count; i++)
             {
-                dt.Rows.Add(i, items[i - 1].Id, items[i - 1].VoucherCode, items[i - 1].Index);
+                dt.Rows.Add(i, items[i - 1].Id, items[i - 1].VoucherCode, items[i - 1].Index, voucherName);
             }
         }
         return dt;

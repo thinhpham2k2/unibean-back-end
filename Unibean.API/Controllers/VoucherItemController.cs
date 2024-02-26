@@ -1,9 +1,6 @@
-﻿using ClosedXML.Excel;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Data;
 using System.Net;
-using Unibean.Repository.Entities;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.VoucherItems;
 using Unibean.Service.Services.Interfaces;
@@ -26,7 +23,7 @@ public class VoucherItemController : ControllerBase
     /// Create voucher item
     /// </summary>
     [HttpPost]
-    [AllowAnonymous]
+    [Authorize(Roles = "Brand")]
     [ProducesResponseType(typeof(FileContentResult), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
