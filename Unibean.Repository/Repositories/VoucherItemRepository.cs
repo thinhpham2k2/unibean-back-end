@@ -23,6 +23,20 @@ public class VoucherItemRepository : IVoucherItemRepository
         return creation;
     }
 
+    public void AddList(IEnumerable<VoucherItem> creations)
+    {
+        try
+        {
+            using var db = new UnibeanDBContext();
+            db.VoucherItems.AddRange(creations);
+            db.SaveChanges();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+
     public void Delete(string id)
     {
         try
@@ -102,7 +116,7 @@ public class VoucherItemRepository : IVoucherItemRepository
 
     public List<VoucherItem> GetAllByCampaign
         (List<string> campaignIds, List<string> voucherIds, int limit)
-     {
+    {
         try
         {
             using var db = new UnibeanDBContext();
@@ -225,6 +239,23 @@ public class VoucherItemRepository : IVoucherItemRepository
         }
     }
 
+    public int GetMaxIndex(string voucherId)
+    {
+        int index;
+        try
+        {
+            using var db = new UnibeanDBContext();
+            index = db.VoucherItems
+            .Where(s => s.VoucherId.Equals(voucherId) && (bool)s.Status)
+            .Max(s => s.Index).Value;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return index;
+    }
+
     public VoucherItem Update(VoucherItem update)
     {
         try
@@ -241,7 +272,7 @@ public class VoucherItemRepository : IVoucherItemRepository
     }
 
     public void UpdateList
-        (string voucherId, string campaignDetailId, 
+        (string voucherId, string campaignDetailId,
         int quantity, DateOnly StartOn, DateOnly EndOn, ItemIndex index)
     {
         try
@@ -249,9 +280,9 @@ public class VoucherItemRepository : IVoucherItemRepository
             using var db = new UnibeanDBContext();
 
             var list = db.VoucherItems.Where(
-                i => i.VoucherId.Equals(voucherId) 
-                && (bool)i.State && (bool)i.Status && i.Index >= index.FromIndex 
-                && i.Index <= index.ToIndex && !(bool)i.IsLocked && !(bool)i.IsBought 
+                i => i.VoucherId.Equals(voucherId)
+                && (bool)i.State && (bool)i.Status && i.Index >= index.FromIndex
+                && i.Index <= index.ToIndex && !(bool)i.IsLocked && !(bool)i.IsBought
                 && !(bool)i.IsUsed && i.CampaignDetail.Equals(null)).Take(quantity).ToList()
                 .Select(i =>
                 {

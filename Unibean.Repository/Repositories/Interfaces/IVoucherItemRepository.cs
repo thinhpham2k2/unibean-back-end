@@ -13,6 +13,8 @@ public interface IVoucherItemRepository
 {
     VoucherItem Add(VoucherItem creation);
 
+    void AddList(IEnumerable<VoucherItem> creations);
+
     void Delete(string id);
 
     PagedResultModel<VoucherItem> GetAll
@@ -29,6 +31,8 @@ public interface IVoucherItemRepository
 
     ItemIndex GetIndex
         (string voucherId, int quantity);
+
+    int GetMaxIndex(string voucherId);
 
     VoucherItem Update(VoucherItem update);
 
