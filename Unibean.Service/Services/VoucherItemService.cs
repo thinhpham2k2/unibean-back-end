@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using ClosedXML.Excel;
+using Enable.EnumDisplayName;
 using System.Data;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
+using Unibean.Repository.Repositories;
 using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.VoucherItems;
@@ -20,7 +22,7 @@ public class VoucherItemService : IVoucherItemService
     private readonly IVoucherItemRepository voucherItemRepository;
 
     public VoucherItemService(
-        IVoucherRepository voucherRepository, 
+        IVoucherRepository voucherRepository,
         IVoucherItemRepository voucherItemRepository)
     {
         var config = new MapperConfiguration(cfg
@@ -42,6 +44,7 @@ public class VoucherItemService : IVoucherItemService
             .ForMember(s => s.CampaignName, opt => opt.MapFrom(src => src.CampaignDetail.Campaign.CampaignName))
             .ForMember(s => s.Price, opt => opt.MapFrom(src => src.CampaignDetail.Price))
             .ForMember(s => s.Rate, opt => opt.MapFrom(src => src.CampaignDetail.Rate))
+            .ForMember(s => s.DateLocked, opt => opt.MapFrom(src => src.DateIssued))
             .ForMember(s => s.DateBought, opt => opt.MapFrom(src => src.Activities.Where(a
                 => a.Type.Equals(Type.Buy)).FirstOrDefault().DateCreated))
             .ForMember(s => s.DateUsed, opt => opt.MapFrom(src => src.Activities.Where(a
@@ -64,12 +67,19 @@ public class VoucherItemService : IVoucherItemService
             .ForMember(s => s.CampaignId, opt => opt.MapFrom(src => src.CampaignDetail.CampaignId))
             .ForMember(s => s.CampaignName, opt => opt.MapFrom(src => src.CampaignDetail.Campaign.CampaignName))
             .ForMember(s => s.CampaignImage, opt => opt.MapFrom(src => src.CampaignDetail.Campaign.Image))
+            .ForMember(s => s.CampaignStateId, opt => opt.MapFrom(
+                src => src.CampaignDetail.Campaign.CampaignActivities.LastOrDefault().State))
+            .ForMember(s => s.CampaignState, opt => opt.MapFrom(
+                src => src.CampaignDetail.Campaign.CampaignActivities.LastOrDefault().State))
+            .ForMember(s => s.CampaignStateName, opt => opt.MapFrom(
+                src => src.CampaignDetail.Campaign.CampaignActivities.LastOrDefault().State.GetDisplayName()))
             .ForMember(s => s.Price, opt => opt.MapFrom(src => src.CampaignDetail.Price))
             .ForMember(s => s.Rate, opt => opt.MapFrom(src => src.CampaignDetail.Rate))
             .ForMember(s => s.CampaignName, opt => opt.MapFrom(src => src.CampaignDetail.Campaign.CampaignName))
             .ForMember(s => s.CampaignImage, opt => opt.MapFrom(src => src.CampaignDetail.Campaign.Image))
             .ForMember(s => s.UsedAt, opt => opt.MapFrom(src => src.Activities.Where(a
                 => a.Type.Equals(Type.Use)).FirstOrDefault().Store.StoreName))
+            .ForMember(s => s.DateLocked, opt => opt.MapFrom(src => src.DateIssued))
             .ForMember(s => s.DateBought, opt => opt.MapFrom(src => src.Activities.Where(a
                 => a.Type.Equals(Type.Buy)).FirstOrDefault().DateCreated))
             .ForMember(s => s.DateUsed, opt => opt.MapFrom(src => src.Activities.Where(a
@@ -108,7 +118,7 @@ public class VoucherItemService : IVoucherItemService
 
         using XLWorkbook wb = new();
         var sheet = wb.AddWorksheet
-            (GetEmpdata(list, voucherRepository.GetById(creation.VoucherId).VoucherName), 
+            (GetEmpdata(list, voucherRepository.GetById(creation.VoucherId).VoucherName),
             "Voucher Item Record");
 
         // Set style for first row
@@ -116,10 +126,10 @@ public class VoucherItemService : IVoucherItemService
         sheet.Row(1).Style.Font.FontSize = 20;
 
         // Set style for column A,B,C,D
-        sheet.Column("A").Width = 20;
-        sheet.Columns("B:C").Width = 60;
+        sheet.Column("A").Width = 10;
+        sheet.Columns("B:C").Width = 55;
         sheet.Column("D").Width = 20;
-        sheet.Column("E").Width = 60;
+        sheet.Column("E").Width = 55;
         sheet.Columns("A:E").Style.Font.FontSize = 15;
         sheet.Columns("A:E").Style.Alignment.WrapText = true;
         sheet.Columns("A:E").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
@@ -132,12 +142,12 @@ public class VoucherItemService : IVoucherItemService
 
     public PagedResultModel<VoucherItemModel> GetAll
         (List<string> campaignIds, List<string> voucherIds, List<string> brandIds,
-        List<string> typeIds, List<string> studentIds, bool? state,
+        List<string> typeIds, List<string> studentIds, bool? isLocked, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<VoucherItemModel>>(voucherItemRepository.GetAll
-            (campaignIds, voucherIds, brandIds, typeIds, studentIds, state, propertySort,
-            isAsc, search, page, limit));
+            (campaignIds, voucherIds, brandIds, typeIds, studentIds, isLocked, state,
+            propertySort, isAsc, search, page, limit));
     }
 
     public VoucherItemExtraModel GetById(string id)
@@ -166,6 +176,26 @@ public class VoucherItemService : IVoucherItemService
             }
         }
         return dt;
+    }
+
+    public void Delete(string id)
+    {
+        VoucherItem entity = voucherItemRepository.GetById(id);
+        if (entity != null)
+        {
+            if (!(bool)entity.IsLocked && !(bool)entity.IsBought && !(bool)entity.IsUsed)
+            {
+                voucherItemRepository.Delete(id);
+            }
+            else
+            {
+                throw new InvalidParameterException("Không thể xóa khuyến mãi do đã được sở hữu, sử dụng hoặc đã thuộc về chiến dịch");
+            }
+        }
+        else
+        {
+            throw new InvalidParameterException("Không tìm thấy khuyến mãi");
+        }
     }
 
     public class VoucherItemListConverter :

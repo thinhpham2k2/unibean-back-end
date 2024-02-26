@@ -19,7 +19,7 @@ public interface IVoucherItemRepository
 
     PagedResultModel<VoucherItem> GetAll
         (List<string> campaignIds, List<string> voucherIds, List<string> brandIds, 
-        List<string> typeIds, List<string> studentIds, bool? state,
+        List<string> typeIds, List<string> studentIds, bool? isLocked, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit);
 
     List<VoucherItem> GetAllByCampaign
@@ -30,7 +30,7 @@ public interface IVoucherItemRepository
     VoucherItem GetByVoucherCode(string code);
 
     ItemIndex GetIndex
-        (string voucherId, int quantity);
+        (string voucherId, int quantity, int fromIndex);
 
     int GetMaxIndex(string voucherId);
 

@@ -201,7 +201,7 @@ public class CampaignService : ICampaignService
             d.Price = v.Price;
             d.Rate = v.Rate;
             var i = voucherItemRepository.GetIndex
-                (d.VoucherId, (int)d.Quantity);
+                (d.VoucherId, (int)d.Quantity, (int)d.FromIndex);
             d.FromIndex = i.FromIndex;
             d.ToIndex = i.ToIndex;
             return d;

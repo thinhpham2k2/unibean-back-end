@@ -13,4 +13,6 @@ public interface IEmailService
     bool SendEmailStudentRegisterReject(string receiver);
 
     string SendEmailVerification(string receiver);
+
+    bool SendEmailAbortOrder(string receiver, string orderId);
 }

@@ -133,6 +133,7 @@ public class OrderRepository : IOrderRepository
             order = db.Orders
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(o => o.Student)
+                .ThenInclude(s => s.Account)
             .Include(o => o.Station)
             .Include(o => o.OrderDetails.Where(d => (bool)d.Status))
                 .ThenInclude(o => o.Product)
