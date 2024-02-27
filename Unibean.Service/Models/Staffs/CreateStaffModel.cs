@@ -19,6 +19,7 @@ public class CreateStaffModel
     public string Password { get; set; }
 
     [ValidStation(new[] { StationState.Active, StationState.Inactive })]
+    [Required(ErrorMessage = "Trạm là bắt buộc")]
     public string StationId { get; set; }
 
     [Required(ErrorMessage = "Tên đầy đủ là bắt buộc")]
