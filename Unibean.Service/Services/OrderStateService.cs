@@ -9,13 +9,17 @@ namespace Unibean.Service.Services;
 
 public class OrderStateService : IOrderStateService
 {
+    private readonly IEmailService emailService;
+
     private readonly IOrderRepository orderRepository;
 
     private readonly IOrderStateRepository orderStateRepository;
 
-    public OrderStateService(IOrderRepository orderRepository,
+    public OrderStateService(IEmailService emailService, 
+        IOrderRepository orderRepository,
         IOrderStateRepository orderStateRepository)
     {
+        this.emailService = emailService;
         this.orderRepository = orderRepository;
         this.orderStateRepository = orderStateRepository;
     }
@@ -42,6 +46,8 @@ public class OrderStateService : IOrderStateService
                             Description = creation.Description,
                             Status = true,
                         });
+
+                        emailService.SendEmailAbortOrder(entity.Student.Account.Email, id);
                         return "Hủy đơn hàng thành công";
                     }
                     else

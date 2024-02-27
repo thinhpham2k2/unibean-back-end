@@ -23,6 +23,20 @@ public class VoucherItemRepository : IVoucherItemRepository
         return creation;
     }
 
+    public void AddList(IEnumerable<VoucherItem> creations)
+    {
+        try
+        {
+            using var db = new UnibeanDBContext();
+            db.VoucherItems.AddRange(creations);
+            db.SaveChanges();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+
     public void Delete(string id)
     {
         try
@@ -41,7 +55,7 @@ public class VoucherItemRepository : IVoucherItemRepository
 
     public PagedResultModel<VoucherItem> GetAll
         (List<string> campaignIds, List<string> voucherIds, List<string> brandIds,
-        List<string> typeIds, List<string> studentIds, bool? state,
+        List<string> typeIds, List<string> studentIds, bool? isLocked, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<VoucherItem> pagedResult = new();
@@ -62,6 +76,7 @@ public class VoucherItemRepository : IVoucherItemRepository
                 && (typeIds.Count == 0 || typeIds.Contains(t.Voucher.TypeId))
                 && (studentIds.Count == 0 || studentIds.Contains(t.Activities.FirstOrDefault(a
                     => (bool)a.Status).StudentId))
+                && (isLocked == null || isLocked.Equals(t.IsLocked))
                 && (state == null || state.Equals(t.State))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
@@ -102,7 +117,7 @@ public class VoucherItemRepository : IVoucherItemRepository
 
     public List<VoucherItem> GetAllByCampaign
         (List<string> campaignIds, List<string> voucherIds, int limit)
-     {
+    {
         try
         {
             using var db = new UnibeanDBContext();
@@ -200,7 +215,7 @@ public class VoucherItemRepository : IVoucherItemRepository
     }
 
     public ItemIndex GetIndex
-        (string voucherId, int quantity)
+        (string voucherId, int quantity, int fromIndex)
     {
 
         try
@@ -211,6 +226,7 @@ public class VoucherItemRepository : IVoucherItemRepository
                 i => i.VoucherId.Equals(voucherId)
                 && (bool)i.State && (bool)i.Status
                 && !(bool)i.IsLocked && !(bool)i.IsBought && !(bool)i.IsUsed
+                && (fromIndex.Equals(0) || i.Index >= fromIndex)
                 && i.CampaignDetail.Equals(null)).Take(quantity).ToList();
 
             return new ItemIndex
@@ -223,6 +239,23 @@ public class VoucherItemRepository : IVoucherItemRepository
         {
             throw new Exception(ex.Message);
         }
+    }
+
+    public int GetMaxIndex(string voucherId)
+    {
+        int index;
+        try
+        {
+            using var db = new UnibeanDBContext();
+            index = db.VoucherItems
+            .Where(s => s.VoucherId.Equals(voucherId) && (bool)s.Status)
+            .Max(s => s.Index) ?? 0;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return index;
     }
 
     public VoucherItem Update(VoucherItem update)
@@ -241,7 +274,7 @@ public class VoucherItemRepository : IVoucherItemRepository
     }
 
     public void UpdateList
-        (string voucherId, string campaignDetailId, 
+        (string voucherId, string campaignDetailId,
         int quantity, DateOnly StartOn, DateOnly EndOn, ItemIndex index)
     {
         try
@@ -249,9 +282,9 @@ public class VoucherItemRepository : IVoucherItemRepository
             using var db = new UnibeanDBContext();
 
             var list = db.VoucherItems.Where(
-                i => i.VoucherId.Equals(voucherId) 
-                && (bool)i.State && (bool)i.Status && i.Index >= index.FromIndex 
-                && i.Index <= index.ToIndex && !(bool)i.IsLocked && !(bool)i.IsBought 
+                i => i.VoucherId.Equals(voucherId)
+                && (bool)i.State && (bool)i.Status && i.Index >= index.FromIndex
+                && i.Index <= index.ToIndex && !(bool)i.IsLocked && !(bool)i.IsBought
                 && !(bool)i.IsUsed && i.CampaignDetail.Equals(null)).Take(quantity).ToList()
                 .Select(i =>
                 {

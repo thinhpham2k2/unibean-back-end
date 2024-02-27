@@ -589,7 +589,7 @@ public class StudentService : IStudentService
         {
             return voucherItemService.GetAll
                 (campaignIds, voucherIds, brandIds, typeIds, new() { id },
-                state, propertySort, isAsc, search, page, limit);
+                true, state, propertySort, isAsc, search, page, limit);
         }
         throw new InvalidParameterException("Không tìm thấy sinh viên");
     }
