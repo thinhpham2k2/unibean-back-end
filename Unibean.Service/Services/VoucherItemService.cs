@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Enable.EnumDisplayName;
 using System.Data;
 using Unibean.Repository.Entities;
@@ -119,6 +120,7 @@ public class VoucherItemService : IVoucherItemService
         var sheet = wb.AddWorksheet
             (GetEmpdata(list, voucherRepository.GetById(creation.VoucherId).VoucherName),
             "Voucher Item Record");
+        sheet.Protect();
 
         // Set style for first row
         sheet.Row(1).Style.Font.Bold = true;
@@ -195,6 +197,48 @@ public class VoucherItemService : IVoucherItemService
         {
             throw new InvalidParameterException("Không tìm thấy khuyến mãi");
         }
+    }
+
+    public MemoryStream GetTemplateVoucherItem()
+    {
+        var dt = new DataTable();
+        dt.Columns.Add("Stt", typeof(string)).ReadOnly = true;
+        dt.Columns.Add("Code", typeof(string));
+        dt.Columns.Add("Quantity", typeof(string));
+        dt.Rows.Add("0", "Ví dụ: '01HQJE9MKJ8SNT5XH2Q3YCGCY4' *Độ dài phải từ 3 kí tự trở lên - Bỏ qua dòng này*");
+
+        using XLWorkbook wb = new();
+        var sheet = wb.AddWorksheet(dt, "Voucher Item Template");
+        sheet.Protect("unibean");
+
+        // Set style for cell
+        sheet.Cells("B2").Style.Font.Italic = true;
+        sheet.Cell("B3").GetDataValidation().InputMessage = "Nhập mã khuyến mãi từ dòng này";
+        sheet.Cells("C2").FormulaA1 = "\"Số lượng khuyến mãi: \" & COUNTIF(B:B,\"<>\") - 2";
+        sheet.Cells("C2").Style.Font.FontColor = XLColor.Red;
+        sheet.Cells("C2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+        // Set style for first row
+        sheet.Row(1).Style.Font.Bold = true;
+        sheet.Row(1).Style.Font.FontSize = 20;
+        sheet.Row(1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+        // Set style for column A,B,C,D
+        sheet.Column("A").Width = 10;
+        sheet.Columns("B").Width = 120;
+        sheet.Columns("C").Width = 50;
+        sheet.Columns("B").Style.Protection.Locked = false;
+        sheet.Columns("A:C").Style.Font.FontSize = 15;
+        sheet.Columns("A:C").Style.Alignment.WrapText = true;
+        sheet.Columns("A:C").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+        // Set style for range
+        sheet.Range("B1:B2").Style.Protection.Locked = true;
+
+        using MemoryStream ms = new();
+        wb.SaveAs(ms);
+
+        return ms;
     }
 
     public class VoucherItemListConverter :

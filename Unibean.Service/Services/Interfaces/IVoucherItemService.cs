@@ -14,5 +14,7 @@ public interface IVoucherItemService
         List<string> typeIds, List<string> studentIds, bool? isLocked, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit);
 
+    MemoryStream GetTemplateVoucherItem();
+
     VoucherItemExtraModel GetById(string id);
 }
