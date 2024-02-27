@@ -2,6 +2,7 @@
 using ClosedXML.Excel;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Enable.EnumDisplayName;
+using MoreLinq;
 using System.Data;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
@@ -207,6 +208,11 @@ public class VoucherItemService : IVoucherItemService
         dt.Columns.Add("Quantity", typeof(string));
         dt.Rows.Add("0", "Ví dụ: '01HQJE9MKJ8SNT5XH2Q3YCGCY4' *Độ dài phải từ 3 kí tự trở lên - Bỏ qua dòng này*");
 
+        for(int i = 1; i <= 1000; i++)
+        {
+            dt.Rows.Add(i);
+        }
+
         using XLWorkbook wb = new();
         var sheet = wb.AddWorksheet(dt, "Voucher Item Template");
         sheet.Protect("unibean");
@@ -214,7 +220,7 @@ public class VoucherItemService : IVoucherItemService
         // Set style for cell
         sheet.Cells("B2").Style.Font.Italic = true;
         sheet.Cell("B3").GetDataValidation().InputMessage = "Nhập mã khuyến mãi từ dòng này";
-        sheet.Cells("C2").FormulaA1 = "\"Số lượng khuyến mãi: \" & COUNTIF(B:B,\"<>\") - 2";
+        sheet.Cells("C2").FormulaA1 = "\"Số lượng khuyến mãi: \" & COUNTIF(B:B,\"<>\") - COUNTIF(B:B,\"* *\") - 1";
         sheet.Cells("C2").Style.Font.FontColor = XLColor.Red;
         sheet.Cells("C2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
@@ -227,13 +233,12 @@ public class VoucherItemService : IVoucherItemService
         sheet.Column("A").Width = 10;
         sheet.Columns("B").Width = 120;
         sheet.Columns("C").Width = 50;
-        sheet.Columns("B").Style.Protection.Locked = false;
         sheet.Columns("A:C").Style.Font.FontSize = 15;
         sheet.Columns("A:C").Style.Alignment.WrapText = true;
         sheet.Columns("A:C").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
 
         // Set style for range
-        sheet.Range("B1:B2").Style.Protection.Locked = true;
+        sheet.Range("B3:B1002").Style.Protection.Locked = false;
 
         using MemoryStream ms = new();
         wb.SaveAs(ms);

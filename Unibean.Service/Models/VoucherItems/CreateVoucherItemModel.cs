@@ -11,7 +11,7 @@ public class CreateVoucherItemModel
     public string VoucherId { get; set; }
 
     [Required(ErrorMessage = "Số lượng là bắt buộc")]
-    [Range(minimum: 1, maximum: int.MaxValue, ErrorMessage = "Số lượng phải lớn hơn 0")]
+    [Range(minimum: 1, 1000, ErrorMessage = "Số lượng phải lớn hơn 0 và không quá 1000")]
     public int? Quantity { get; set; }
 
     [JsonIgnore]
