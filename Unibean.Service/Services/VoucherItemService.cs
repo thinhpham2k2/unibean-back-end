@@ -206,20 +206,19 @@ public class VoucherItemService : IVoucherItemService
         dt.Columns.Add("Stt", typeof(string)).ReadOnly = true;
         dt.Columns.Add("Code", typeof(string));
         dt.Columns.Add("Quantity", typeof(string));
-        dt.Rows.Add("0", "Ví dụ: '01HQJE9MKJ8SNT5XH2Q3YCGCY4' *Độ dài phải từ 3 kí tự trở lên - Bỏ qua dòng này*");
+        dt.Rows.Add("0", "Ví dụ: '01HQJE9MKJ8SNT5XH2Q3YCGCY4' *Độ dài phải có độ dài từ 3 - 26 kí tự và không chứa khoảng trắng");
 
-        for(int i = 1; i <= 1000; i++)
+        for (int i = 1; i <= 1000; i++)
         {
             dt.Rows.Add(i);
         }
 
         using XLWorkbook wb = new();
         var sheet = wb.AddWorksheet(dt, "Voucher Item Template");
-        sheet.Protect("unibean");
+        //sheet.Protect("unibean");
 
         // Set style for cell
         sheet.Cells("B2").Style.Font.Italic = true;
-        sheet.Cell("B3").GetDataValidation().InputMessage = "Nhập mã khuyến mãi từ dòng này";
         sheet.Cells("C2").FormulaA1 = "\"Số lượng khuyến mãi: \" & COUNTIF(B:B,\"<>\") - COUNTIF(B:B,\"* *\") - 1";
         sheet.Cells("C2").Style.Font.FontColor = XLColor.Red;
         sheet.Cells("C2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
@@ -231,7 +230,7 @@ public class VoucherItemService : IVoucherItemService
 
         // Set style for column A,B,C,D
         sheet.Column("A").Width = 10;
-        sheet.Columns("B").Width = 120;
+        sheet.Columns("B").Width = 135;
         sheet.Columns("C").Width = 50;
         sheet.Columns("A:C").Style.Font.FontSize = 15;
         sheet.Columns("A:C").Style.Alignment.WrapText = true;
@@ -239,6 +238,13 @@ public class VoucherItemService : IVoucherItemService
 
         // Set style for range
         sheet.Range("B3:B1002").Style.Protection.Locked = false;
+        sheet.Range("B3:B1002").CreateDataValidation();
+        sheet.Range("B3:B1002").GetDataValidation().AllowedValues = XLAllowedValues.Custom;
+        //sheet.Range("B3:B1002").GetDataValidation().Value = $"^[^\\s]{3,26}$";
+        sheet.Range("B3:B1002").GetDataValidation().InputMessage = "Nhập mã khuyến mãi";
+        sheet.Range("B3:B1002").GetDataValidation().ErrorStyle = XLErrorStyle.Information;
+        sheet.Range("B3:B1002").GetDataValidation().ErrorTitle = "Mã khuyến mãi không hợp lệ";
+        sheet.Range("B3:B1002").GetDataValidation().ErrorMessage = "Mã khuyến mãi phải có độ dài từ 3 - 26 kí tự và không chứ khoảng trắng";
 
         using MemoryStream ms = new();
         wb.SaveAs(ms);

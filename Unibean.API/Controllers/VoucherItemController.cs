@@ -138,7 +138,7 @@ public class VoucherItemController : ControllerBase
     /// Get insert voucher item template
     /// </summary>
     [HttpGet("template")]
-    [AllowAnonymous]
+    [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType(typeof(FileContentResult), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
