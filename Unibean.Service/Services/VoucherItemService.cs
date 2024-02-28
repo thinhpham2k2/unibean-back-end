@@ -118,14 +118,18 @@ public class VoucherItemService : IVoucherItemService
         voucherItemRepository.AddList(list);
 
         using XLWorkbook wb = new();
-        var sheet = wb.AddWorksheet
-            (GetEmpdata(list, voucherRepository.GetById(creation.VoucherId).VoucherName),
-            "Voucher Item Record");
-        sheet.Protect();
+        var sheet = wb.AddWorksheet("Voucher Item Record");
+        sheet.Cell("A2").InsertTable(GetEmpdata(list, voucherRepository.GetById(creation.VoucherId).VoucherName))
+            .Theme = XLTableTheme.TableStyleMedium4;
+        sheet.Protect("unibean");
 
-        // Set style for first row
-        sheet.Row(1).Style.Font.Bold = true;
-        sheet.Row(1).Style.Font.FontSize = 20;
+        // Set for cell
+        sheet.Cell("A1").Value = "          *Lưu ý\r\n     - Stt: Số thứ tự của khuyến mãi.\r\n     - Id: Định danh của khuyến mãi.\r\n     - Code: Mã quét của khuyến mãi.\r\n     - Index: Chỉ mục của khuyến mãi (nâng cao).\r\n     - Name: Tên của khuyến mãi.";
+        
+        // Set style for second row
+        sheet.Row(1).Height = 130;
+        sheet.Row(2).Style.Font.Bold = true;
+        sheet.Row(2).Style.Font.FontSize = 20;
 
         // Set style for column A,B,C,D
         sheet.Column("A").Width = 10;
@@ -135,6 +139,13 @@ public class VoucherItemService : IVoucherItemService
         sheet.Columns("A:E").Style.Font.FontSize = 15;
         sheet.Columns("A:E").Style.Alignment.WrapText = true;
         sheet.Columns("A:E").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+        sheet.Columns("F:XFD").Hide();
+
+        // Set style for range
+        sheet.Range("A1:E1").Merge();
+        sheet.Range("A1:E1").Style.Font.Bold = true;
+        sheet.Range("A1:E1").Style.Font.Italic = true;
+        sheet.Range("A1:E1").Style.Font.FontColor = XLColor.DavysGrey;
 
         using MemoryStream ms = new();
         wb.SaveAs(ms);
@@ -203,7 +214,7 @@ public class VoucherItemService : IVoucherItemService
     public MemoryStream GetTemplateVoucherItem()
     {
         var dt = new DataTable();
-        dt.Columns.Add("Stt", typeof(string)).ReadOnly = true;
+        dt.Columns.Add("Stt", typeof(string));
         dt.Columns.Add("Code", typeof(string));
         dt.Columns.Add("Quantity", typeof(string));
         dt.Rows.Add("0", "Ví dụ: '01HQJE9MKJ8SNT5XH2Q3YCGCY4' *Độ dài phải có độ dài từ 3 - 26 kí tự và không chứa khoảng trắng");
@@ -214,19 +225,22 @@ public class VoucherItemService : IVoucherItemService
         }
 
         using XLWorkbook wb = new();
-        var sheet = wb.AddWorksheet(dt, "Voucher Item Template");
-        //sheet.Protect("unibean");
+        var sheet = wb.AddWorksheet("Voucher Item Template");
+        sheet.Cell("A2").InsertTable(dt).Theme = XLTableTheme.TableStyleMedium4;
+        sheet.Protect("unibean");
 
         // Set style for cell
-        sheet.Cells("B2").Style.Font.Italic = true;
-        sheet.Cells("C2").FormulaA1 = "\"Số lượng khuyến mãi: \" & COUNTIF(B:B,\"<>\") - COUNTIF(B:B,\"* *\") - 1";
-        sheet.Cells("C2").Style.Font.FontColor = XLColor.Red;
-        sheet.Cells("C2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+        sheet.Cells("B3").Style.Font.Italic = true;
+        sheet.Cells("C3").FormulaA1 = "\"Số lượng khuyến mãi: \" & COUNTIF(B:B,\"<>\") - COUNTIF(B:B,\"* *\") - 1";
+        sheet.Cells("C3").Style.Font.FontColor = XLColor.Red;
+        sheet.Cells("C3").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+        sheet.Cell("A1").Value = "          *Lưu ý\r\n     - Stt: Số thứ tự của khuyến mãi.\r\n     - Code: Mã quét của khuyến mãi.\r\n     - Quantity: Số lượng của khuyến mãi.";
 
         // Set style for first row
-        sheet.Row(1).Style.Font.Bold = true;
-        sheet.Row(1).Style.Font.FontSize = 20;
-        sheet.Row(1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+        sheet.Row(1).Height = 90;
+        sheet.Row(2).Style.Font.Bold = true;
+        sheet.Row(2).Style.Font.FontSize = 20;
+        sheet.Row(2).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
         // Set style for column A,B,C,D
         sheet.Column("A").Width = 10;
@@ -235,16 +249,22 @@ public class VoucherItemService : IVoucherItemService
         sheet.Columns("A:C").Style.Font.FontSize = 15;
         sheet.Columns("A:C").Style.Alignment.WrapText = true;
         sheet.Columns("A:C").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+        sheet.Columns("D:XFD").Hide();
 
         // Set style for range
-        sheet.Range("B3:B1002").Style.Protection.Locked = false;
-        sheet.Range("B3:B1002").CreateDataValidation();
-        sheet.Range("B3:B1002").GetDataValidation().AllowedValues = XLAllowedValues.Custom;
-        //sheet.Range("B3:B1002").GetDataValidation().Value = $"^[^\\s]{3,26}$";
-        sheet.Range("B3:B1002").GetDataValidation().InputMessage = "Nhập mã khuyến mãi";
-        sheet.Range("B3:B1002").GetDataValidation().ErrorStyle = XLErrorStyle.Information;
-        sheet.Range("B3:B1002").GetDataValidation().ErrorTitle = "Mã khuyến mãi không hợp lệ";
-        sheet.Range("B3:B1002").GetDataValidation().ErrorMessage = "Mã khuyến mãi phải có độ dài từ 3 - 26 kí tự và không chứ khoảng trắng";
+        sheet.Range("B4:B1003").Style.Protection.Locked = false;
+        sheet.Range("B4:B1003").CreateDataValidation();
+        sheet.Range("B4:B1003").GetDataValidation().AllowedValues = XLAllowedValues.TextLength;
+        sheet.Range("B4:B1003").GetDataValidation().MinValue = "3";
+        sheet.Range("B4:B1003").GetDataValidation().MaxValue = "26";
+        sheet.Range("B4:B1003").GetDataValidation().InputMessage = "Nhập mã khuyến mãi";
+        sheet.Range("B4:B1003").GetDataValidation().ErrorStyle = XLErrorStyle.Information;
+        sheet.Range("B4:B1003").GetDataValidation().ErrorTitle = "Mã khuyến mãi không hợp lệ";
+        sheet.Range("B4:B1003").GetDataValidation().ErrorMessage = "Mã khuyến mãi phải có độ dài từ 3 - 26 kí tự và không chứa khoảng trắng";
+        sheet.Range("A1:C1").Merge();
+        sheet.Range("A1:C1").Style.Font.Bold = true;
+        sheet.Range("A1:C1").Style.Font.Italic = true;
+        sheet.Range("A1:C1").Style.Font.FontColor = XLColor.DavysGrey;
 
         using MemoryStream ms = new();
         wb.SaveAs(ms);
