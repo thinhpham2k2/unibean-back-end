@@ -95,7 +95,7 @@ public class VoucherItemController : ControllerBase
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public ActionResult Create([FromBody] CreateVoucherItemModel creation)
+    public IActionResult Create([FromBody] CreateVoucherItemModel creation)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
@@ -127,6 +127,31 @@ public class VoucherItemController : ControllerBase
         {
             voucherItemService.Delete(id);
             return StatusCode(StatusCodes.Status204NoContent);
+        }
+        catch (InvalidParameterException e)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Get insert voucher item template
+    /// </summary>
+    [HttpGet("template")]
+    [Authorize(Roles = "Admin, Brand")]
+    [ProducesResponseType(typeof(FileContentResult), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public IActionResult GetTemplate()
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            return File(voucherItemService.GetTemplateVoucherItem().ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "Template_Unibean.xlsx");
         }
         catch (InvalidParameterException e)
         {
