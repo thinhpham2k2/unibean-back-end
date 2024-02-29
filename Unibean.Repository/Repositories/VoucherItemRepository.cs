@@ -37,6 +37,23 @@ public class VoucherItemRepository : IVoucherItemRepository
         }
     }
 
+    public bool CheckVoucherCode(string code)
+    {
+        VoucherItem voucher = new();
+        try
+        {
+            using var db = new UnibeanDBContext();
+            voucher = db.VoucherItems
+            .Where(s => s.VoucherCode.Equals(code))
+            .FirstOrDefault();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return voucher != null;
+    }
+
     public void Delete(string id)
     {
         try

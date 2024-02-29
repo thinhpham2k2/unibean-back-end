@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Unibean.Repository.Paging;
+﻿using Unibean.Repository.Paging;
 using Unibean.Service.Models.VoucherItems;
 
 namespace Unibean.Service.Services.Interfaces;
@@ -8,7 +7,7 @@ public interface IVoucherItemService
 {
     MemoryStream Add(CreateVoucherItemModel creation);
 
-    MemoryStream AddTemplate(InsertVoucherItemModel insert);
+    Task<MemoryStream> AddTemplate(InsertVoucherItemModel insert);
 
     void Delete(string id);
 

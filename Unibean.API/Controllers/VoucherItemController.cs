@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
 using System.Net;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
@@ -169,15 +168,15 @@ public class VoucherItemController : ControllerBase
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public IActionResult ImportTemplate([FromForm] InsertVoucherItemModel insert)
+    public async Task<ActionResult> ImportTemplate([FromForm] InsertVoucherItemModel insert)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         try
         {
-            return File(voucherItemService.AddTemplate(insert).ToArray(),
+            return File((await voucherItemService.AddTemplate(insert)).ToArray(),
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                "Template_Unibean.xlsx");
+                "Result(" + DateTime.UtcNow.ToString("R") + ").xlsx");
         }
         catch (InvalidParameterException e)
         {
