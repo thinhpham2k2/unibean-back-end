@@ -1,7 +1,4 @@
-﻿using Unibean.Service.Models.OrderDetails;
-using Unibean.Service.Models.OrderStates;
-
-namespace Unibean.Service.Models.Orders;
+﻿namespace Unibean.Service.Models.Orders;
 
 public class OrderModel
 {

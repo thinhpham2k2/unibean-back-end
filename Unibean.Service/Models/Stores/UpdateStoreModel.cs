@@ -20,6 +20,7 @@ public class UpdateStoreModel
             ErrorMessage = "Độ dài của địa chỉ từ 3 đến 255 ký tự")]
     public string Address { get; set; }
 
+    [ValidExtension(new[] { ".apng", ".avif", ".gif", ".jpg", ".jpeg", ".jfif", ".pjpeg", ".pjp", ".png", ".svg", ".webp" })]
     public IFormFile Avatar { get; set; }
 
     public TimeOnly? OpeningHours { get; set; }

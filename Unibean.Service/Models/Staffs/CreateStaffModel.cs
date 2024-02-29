@@ -37,6 +37,7 @@ public class CreateStaffModel
     [Required(ErrorMessage = "Email là bắt buộc")]
     public string Email { get; set; }
 
+    [ValidExtension(new[] { ".apng", ".avif", ".gif", ".jpg", ".jpeg", ".jfif", ".pjpeg", ".pjp", ".png", ".svg", ".webp" })]
     public IFormFile Avatar { get; set; }
 
     public string Description { get; set; }

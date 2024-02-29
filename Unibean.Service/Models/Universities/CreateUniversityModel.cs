@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
+using Unibean.Service.Validations;
 
 namespace Unibean.Service.Models.Universities;
 
@@ -18,6 +19,7 @@ public class CreateUniversityModel
 
     public string Link { get; set; }
 
+    [ValidExtension(new[] { ".apng", ".avif", ".gif", ".jpg", ".jpeg", ".jfif", ".pjpeg", ".pjp", ".png", ".svg", ".webp" })]
     public IFormFile Image { get; set; }
 
     public string Description { get; set; }

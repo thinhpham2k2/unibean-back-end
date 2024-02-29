@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Spreadsheet;
 using Enable.EnumDisplayName;
+using Microsoft.AspNetCore.Http;
 using MoreLinq;
 using System.Data;
 using Unibean.Repository.Entities;
@@ -125,7 +125,7 @@ public class VoucherItemService : IVoucherItemService
 
         // Set for cell
         sheet.Cell("A1").Value = "          *Lưu ý\r\n     - Stt: Số thứ tự của khuyến mãi.\r\n     - Id: Định danh của khuyến mãi.\r\n     - Code: Mã quét của khuyến mãi.\r\n     - Index: Chỉ mục của khuyến mãi (nâng cao).\r\n     - Name: Tên của khuyến mãi.";
-        
+
         // Set style for second row
         sheet.Row(1).Height = 130;
         sheet.Row(2).Style.Font.Bold = true;
@@ -270,6 +270,11 @@ public class VoucherItemService : IVoucherItemService
         wb.SaveAs(ms);
 
         return ms;
+    }
+
+    public MemoryStream AddTemplate(InsertVoucherItemModel insert)
+    {
+        throw new NotImplementedException();
     }
 
     public class VoucherItemListConverter :

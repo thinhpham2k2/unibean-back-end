@@ -15,6 +15,7 @@ public class UpdateCampaignModel
             ErrorMessage = "Độ dài tên chiến dịch từ 3 đến 255 ký tự")]
     public string CampaignName { get; set; }
 
+    [ValidExtension(new[] { ".apng", ".avif", ".gif", ".jpg", ".jpeg", ".jfif", ".pjpeg", ".pjp", ".png", ".svg", ".webp" })]
     public IFormFile Image { get; set; }
 
     [Required(ErrorMessage = "Điều kiện là bắt buộc")]

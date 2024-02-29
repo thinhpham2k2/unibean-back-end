@@ -47,8 +47,10 @@ public class CreateBrandAccountModel
 
     public string Address { get; set; }
 
+    [ValidExtension(new[] { ".apng", ".avif", ".gif", ".jpg", ".jpeg", ".jfif", ".pjpeg", ".pjp", ".png", ".svg", ".webp" })]
     public IFormFile Logo { get; set; }
 
+    [ValidExtension(new[] { ".apng", ".avif", ".gif", ".jpg", ".jpeg", ".jfif", ".pjpeg", ".pjp", ".png", ".svg", ".webp" })]
     public IFormFile CoverPhoto { get; set; }
 
     public string Link { get; set; }

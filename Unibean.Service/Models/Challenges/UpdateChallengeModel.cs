@@ -11,6 +11,7 @@ public class UpdateChallengeModel
             ErrorMessage = "Độ dài tên thử thách từ 3 đến 255 ký tự")]
     public string ChallengeName { get; set; }
 
+    [ValidExtension(new[] { ".apng", ".avif", ".gif", ".jpg", ".jpeg", ".jfif", ".pjpeg", ".pjp", ".png", ".svg", ".webp" })]
     public IFormFile Image { get; set; }
 
     public string Description { get; set; }

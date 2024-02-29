@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
@@ -150,6 +151,31 @@ public class VoucherItemController : ControllerBase
         try
         {
             return File(voucherItemService.GetTemplateVoucherItem().ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "Template_Unibean.xlsx");
+        }
+        catch (InvalidParameterException e)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Import voucher item template
+    /// </summary>
+    [HttpPost("template")]
+    [Authorize(Roles = "Admin, Brand")]
+    [ProducesResponseType(typeof(FileContentResult), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public IActionResult ImportTemplate([FromForm] InsertVoucherItemModel insert)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            return File(voucherItemService.AddTemplate(insert).ToArray(),
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 "Template_Unibean.xlsx");
         }

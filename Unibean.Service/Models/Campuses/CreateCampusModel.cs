@@ -33,6 +33,7 @@ public class CreateCampusModel
 
     public string Link { get; set; }
 
+    [ValidExtension(new[] { ".apng", ".avif", ".gif", ".jpg", ".jpeg", ".jfif", ".pjpeg", ".pjp", ".png", ".svg", ".webp" })]
     public IFormFile Image { get; set; }
 
     public string Description { get; set; }
