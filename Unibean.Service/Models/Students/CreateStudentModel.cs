@@ -30,12 +30,15 @@ public class CreateStudentModel
             ErrorMessage = "Độ dài của họ tên từ 3 đến 255 ký tự")]
     public string FullName { get; set; }
 
+    [ValidExtension(new[] { ".apng", ".avif", ".gif", ".jpg", ".jpeg", ".jfif", ".pjpeg", ".pjp", ".png", ".svg", ".webp" })]
     public IFormFile Avatar { get; set; }
 
     [Required(ErrorMessage = "Cần có ảnh mặt trước thẻ sinh viên")]
+    [ValidExtension(new[] { ".apng", ".avif", ".gif", ".jpg", ".jpeg", ".jfif", ".pjpeg", ".pjp", ".png", ".svg", ".webp" })]
     public IFormFile StudentCardFront { get; set; }
 
     [Required(ErrorMessage = "Cần có ảnh mặt sau thẻ sinh viên")]
+    [ValidExtension(new[] { ".apng", ".avif", ".gif", ".jpg", ".jpeg", ".jfif", ".pjpeg", ".pjp", ".png", ".svg", ".webp" })]
     public IFormFile StudentCardBack { get; set; }
 
     [ValidCode]

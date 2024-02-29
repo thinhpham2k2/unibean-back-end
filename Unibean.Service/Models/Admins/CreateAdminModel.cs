@@ -22,6 +22,7 @@ public class CreateAdminModel
             ErrorMessage = "Độ dài của họ tên từ 3 đến 255 ký tự")]
     public string FullName { get; set; }
 
+    [ValidExtension(new[] { ".apng", ".avif", ".gif", ".jpg", ".jpeg", ".jfif", ".pjpeg", ".pjp", ".png", ".svg", ".webp" })]
     public IFormFile Avatar { get; set; }
 
     [ValidEmail]

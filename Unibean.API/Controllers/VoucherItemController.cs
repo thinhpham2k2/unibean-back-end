@@ -158,4 +158,29 @@ public class VoucherItemController : ControllerBase
             return StatusCode(StatusCodes.Status400BadRequest, e.Message);
         }
     }
+
+    /// <summary>
+    /// Import voucher item template
+    /// </summary>
+    [HttpPost("template")]
+    [Authorize(Roles = "Admin, Brand")]
+    [ProducesResponseType(typeof(FileContentResult), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public async Task<ActionResult> ImportTemplate([FromForm] InsertVoucherItemModel insert)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            return File((await voucherItemService.AddTemplate(insert)).ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "Result(" + DateTime.UtcNow.ToString("R") + ").xlsx");
+        }
+        catch (InvalidParameterException e)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+        }
+    }
 }

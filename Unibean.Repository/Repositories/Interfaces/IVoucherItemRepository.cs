@@ -15,6 +15,8 @@ public interface IVoucherItemRepository
 
     void AddList(IEnumerable<VoucherItem> creations);
 
+    bool CheckVoucherCode(string code);
+
     void Delete(string id);
 
     PagedResultModel<VoucherItem> GetAll

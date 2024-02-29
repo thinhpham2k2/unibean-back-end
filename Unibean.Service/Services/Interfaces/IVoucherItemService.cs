@@ -7,6 +7,8 @@ public interface IVoucherItemService
 {
     MemoryStream Add(CreateVoucherItemModel creation);
 
+    Task<MemoryStream> AddTemplate(InsertVoucherItemModel insert);
+
     void Delete(string id);
 
     PagedResultModel<VoucherItemModel> GetAll

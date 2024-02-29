@@ -26,6 +26,7 @@ public class UpdateStudentModel
     [Required(ErrorMessage = "Giới tính là bắt buộc")]
     public int? Gender { get; set; }
 
+    [ValidExtension(new[] { ".apng", ".avif", ".gif", ".jpg", ".jpeg", ".jfif", ".pjpeg", ".pjp", ".png", ".svg", ".webp" })]
     public IFormFile Avatar { get; set; }
 
     public string Address { get; set; }

@@ -32,6 +32,7 @@ public class CreateVoucherModel
             ErrorMessage = "Độ dài của điều kiện phải từ 3 ký tự trở lên")]
     public string Condition { get; set; }
 
+    [ValidExtension(new[] { ".apng", ".avif", ".gif", ".jpg", ".jpeg", ".jfif", ".pjpeg", ".pjp", ".png", ".svg", ".webp" })]
     public IFormFile Image { get; set; }
 
     [Required(ErrorMessage = "Mô tả là bắt buộc")]

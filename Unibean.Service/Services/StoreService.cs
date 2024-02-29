@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Vml.Office;
 using System.Linq.Dynamic.Core;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
@@ -142,40 +143,40 @@ public class StoreService : IStoreService
     public bool AddActivity
         (string id, string code, CreateUseActivityModel creation)
     {
+        DateOnly today = DateOnly.FromDateTime(DateTime.Now);
         var item = voucherItemRepository.GetByVoucherCode(code);
         if (new[] { CampaignState.Active, CampaignState.Inactive }.Contains
             (item.CampaignDetail.Campaign.CampaignActivities.LastOrDefault().State.Value))
         {
-            if (item.CampaignDetail.Campaign.CampaignStores.Any(c => c.StoreId.Equals(id)))
+            if (item.CampaignDetail.Campaign.StartOn <= today && today <= item.CampaignDetail.Campaign.EndOn)
             {
-                if ((bool)item.IsBought && item.Activities.FirstOrDefault() != null)
+                if (item.CampaignDetail.Campaign.CampaignStores.Any(c => c.StoreId.Equals(id)))
                 {
-                    if (!(bool)item.IsUsed)
+                    if ((bool)item.IsBought && item.Activities.FirstOrDefault() != null)
                     {
-                        var stu = studentRepository.GetById
-                            (item.Activities.FirstOrDefault().StudentId);
-                        if (stu != null && stu.State.Equals(StudentState.Active))
+                        if (!(bool)item.IsUsed)
                         {
-                            CreateActivityModel create = mapper.Map<CreateActivityModel>(creation);
-                            create.StudentId = item.Activities.FirstOrDefault().StudentId;
-                            create.VoucherItemId = item.Id;
-                            create.StoreId = id;
-                            return activityService.Add(create) != null;
+                            var stu = studentRepository.GetById
+                                (item.Activities.FirstOrDefault().StudentId);
+                            if (stu != null && stu.State.Equals(StudentState.Active))
+                            {
+                                CreateActivityModel create = mapper.Map<CreateActivityModel>(creation);
+                                create.StudentId = item.Activities.FirstOrDefault().StudentId;
+                                create.VoucherItemId = item.Id;
+                                create.StoreId = id;
+                                return activityService.Add(create) != null;
+                            }
+                            throw new InvalidParameterException("Sinh viên không hợp lệ");
                         }
-                        throw new InvalidParameterException
-                            ("Sinh viên không hợp lệ");
+                        throw new InvalidParameterException("Mã khuyến mãi đã được sử dụng");
                     }
-                    throw new InvalidParameterException
-                        ("Mã khuyến mãi đã được sử dụng");
+                    throw new InvalidParameterException("Mã khuyến mãi chưa được thanh toán");
                 }
-                throw new InvalidParameterException
-                    ("Mã khuyến mãi chưa được thanh toán");
+                throw new InvalidParameterException("Mã khuyến mãi không được áp dụng cho cửa hàng này");
             }
-            throw new InvalidParameterException
-                ("Mã khuyến mãi không được áp dụng cho cửa hàng này");
+            throw new InvalidParameterException("Chiến dịch chưa khởi chạy");
         }
-        throw new InvalidParameterException
-            ("Chiến dịch không hợp lệ");
+        throw new InvalidParameterException("Chiến dịch không hợp lệ");
     }
 
     public void Delete(string id)

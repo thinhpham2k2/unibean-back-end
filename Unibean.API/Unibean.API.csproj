@@ -19,4 +19,8 @@
 		<ProjectReference Include="..\Unibean.Service\Unibean.Service.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="wwwroot\upload\" />
+	</ItemGroup>
+
 </Project>

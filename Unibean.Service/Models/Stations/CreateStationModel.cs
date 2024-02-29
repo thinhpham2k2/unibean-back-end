@@ -14,6 +14,7 @@ public class CreateStationModel
     [Required(ErrorMessage = "Địa chỉ là bắt buộc")]
     public string Address { get; set; }
 
+    [ValidExtension(new[] { ".apng", ".avif", ".gif", ".jpg", ".jpeg", ".jfif", ".pjpeg", ".pjp", ".png", ".svg", ".webp" })]
     public IFormFile Image { get; set; }
 
     public TimeOnly? OpeningHours { get; set; }

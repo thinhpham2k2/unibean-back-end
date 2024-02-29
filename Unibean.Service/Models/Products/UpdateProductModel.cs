@@ -15,6 +15,7 @@ public class UpdateProductModel
             ErrorMessage = "Độ dài tên sản phẩm từ 3 đến 255 ký tự")]
     public string ProductName { get; set; }
 
+    [ValidMultiExtension(new[] { ".apng", ".avif", ".gif", ".jpg", ".jpeg", ".jfif", ".pjpeg", ".pjp", ".png", ".svg", ".webp" })]
     public List<IFormFile> ProductImages { get; set; }
 
     [Required(ErrorMessage = "Giá cả là bắt buộc")]

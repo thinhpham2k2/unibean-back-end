@@ -26,6 +26,7 @@ public class CreateChallengeModel
     [Range(0, (double)decimal.MaxValue, ErrorMessage = "Điều kiện phải dương")]
     public decimal? Condition { get; set; }
 
+    [ValidExtension(new[] { ".apng", ".avif", ".gif", ".jpg", ".jpeg", ".jfif", ".pjpeg", ".pjp", ".png", ".svg", ".webp" })]
     public IFormFile Image { get; set; }
 
     public string Description { get; set; }

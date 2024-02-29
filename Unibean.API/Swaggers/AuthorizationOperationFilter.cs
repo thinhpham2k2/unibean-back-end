@@ -13,7 +13,7 @@ public class AuthorizationOperationFilter : IOperationFilter
                                 .Union(context.MethodInfo.GetCustomAttributes(true))
                                 .OfType<AuthorizeAttribute>();
 
-        if (attributes != null && attributes.Count() > 0)
+        if (attributes != null && attributes.Any())
         {
             var attr = attributes.ToList()[0];
 
@@ -22,14 +22,16 @@ public class AuthorizationOperationFilter : IOperationFilter
             operation.Responses.Add("403", new OpenApiResponse { Description = "Forbidden" });
 
             // Add what should be show inside the security section
-            IList<string> securityInfos = new List<string>();
-            securityInfos.Add($"{nameof(AuthorizeAttribute.Policy)}:{attr.Policy}");
-            securityInfos.Add($"{nameof(AuthorizeAttribute.Roles)}:{attr.Roles}");
-            securityInfos.Add($"{nameof(AuthorizeAttribute.AuthenticationSchemes)}:{attr.AuthenticationSchemes}");
+            IList<string> securityInfos = new List<string>
+            {
+                $"{nameof(AuthorizeAttribute.Policy)}:{attr.Policy}",
+                $"{nameof(AuthorizeAttribute.Roles)}:{attr.Roles}",
+                $"{nameof(AuthorizeAttribute.AuthenticationSchemes)}:{attr.AuthenticationSchemes}"
+            };
 
             operation.Security = new List<OpenApiSecurityRequirement>()
                 {
-                    new OpenApiSecurityRequirement()
+                    new()
                     {
                         {
                             new OpenApiSecurityScheme
