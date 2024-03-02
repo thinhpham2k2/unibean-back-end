@@ -412,7 +412,7 @@ public class CampaignRepository : ICampaignRepository
             .Include(s => s.CampaignDetails.Where(w => (bool)w.Status))
                 .ThenInclude(s => s.VoucherItems)
                     .ThenInclude(v => v.Activities)
-            .Include(s => s.CampaignActivities)
+            .Include(s => s.CampaignActivities.Where(a => (bool)a.Status).OrderBy(a => a.Id))
             .FirstOrDefault();
         }
         catch (Exception ex)

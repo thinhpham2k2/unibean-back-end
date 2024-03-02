@@ -13,6 +13,7 @@ using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Unibean.API.Swaggers;
 using MoreLinq;
+using Unibean.API.Background;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,6 +53,9 @@ builder.Services.AddControllers(options =>
 {
     options.Filters.Add<ExceptionFilter>();
 });
+
+// Configure Background Service
+builder.Services.AddHostedService<BackgroundWorkerService>();
 
 // Configure Date/Datetime/Timeonly parameter
 builder.Services.AddDateOnlyTimeOnlyStringConverters();
