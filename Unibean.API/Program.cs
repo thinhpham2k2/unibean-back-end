@@ -55,7 +55,7 @@ builder.Services.AddControllers(options =>
 });
 
 // Configure Background Service
-builder.Services.AddHostedService<BackgroundWorkerService>();
+//builder.Services.AddHostedService<BackgroundWorkerService>();
 
 // Configure Date/Datetime/Timeonly parameter
 builder.Services.AddDateOnlyTimeOnlyStringConverters();
