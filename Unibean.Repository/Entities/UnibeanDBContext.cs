@@ -62,5 +62,282 @@ public class UnibeanDBContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        List<Challenge> challenges = new()
+        {
+            new Challenge
+            {
+                Id = Ulid.NewUlid().ToString(),
+                Type = ChallengeType.Verify,
+                ChallengeName = "Xác nhận tài khoản sinh viên",
+                Amount = 100000,
+                Condition = 1,
+                Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HKYHZ6MVH2JKG32NX15K3CDG?alt=media&token=17dfbee0-8324-4dcd-9f73-320436766c5",
+                FileName = "01HKYHZ6MVH2JKG32NX15K3CDG",
+                DateCreated = DateTime.Now,
+                DateUpdated = DateTime.Now,
+                Description = "Tài khoản sinh viên đã được xác thực sẽ hoàn thành thử thách",
+                State = true,
+                Status = true,
+
+            }
+        };
+
+        Thread.Sleep(1);
+        challenges.Add(new Challenge
+        {
+            Id = Ulid.NewUlid().ToString(),
+            Type = ChallengeType.Welcome,
+            ChallengeName = "Đồng cam cộng hưởng",
+            Amount = 50000,
+            Condition = 1,
+            Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HKYJ4PDDV2QZJCFZDDEVQ0PJ?alt=media&token=7397417a-2a73-47af-968a-9197cceaf43c",
+            FileName = "01HKYJ4PDDV2QZJCFZDDEVQ0PJ",
+            DateCreated = DateTime.Now,
+            DateUpdated = DateTime.Now,
+            Description = "Nhập mã giới thiệu của bạn bè để hoàn thành thử thách",
+            State = true,
+            Status = true,
+        });
+
+        Thread.Sleep(1);
+        challenges.Add(new Challenge
+        {
+            Id = Ulid.NewUlid().ToString(),
+            Type = ChallengeType.Spread,
+            ChallengeName = "Mời bạn cùng vui 1",
+            Amount = 10000,
+            Condition = 1,
+            Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HKYJFX60DHMR6FRY4532VSX7?alt=media&token=d86a619f-01ac-4a0a-941d-95f7bd64fa40",
+            FileName = "01HKYJFX60DHMR6FRY4532VSX7",
+            DateCreated = DateTime.Now,
+            DateUpdated = DateTime.Now,
+            Description = "Được 1 tài khoản nhập mã giới thiệu để hoàn thành thử thách",
+            State = true,
+            Status = true,
+        });
+
+        Thread.Sleep(1);
+        challenges.Add(new Challenge
+        {
+            Id = Ulid.NewUlid().ToString(),
+            Type = ChallengeType.Spread,
+            ChallengeName = "Mời bạn cùng vui 10",
+            Amount = 100000,
+            Condition = 10,
+            Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HKYJFX60DHMR6FRY4532VSX7?alt=media&token=d86a619f-01ac-4a0a-941d-95f7bd64fa40",
+            FileName = "01HKYJFX60DHMR6FRY4532VSX7",
+            DateCreated = DateTime.Now,
+            DateUpdated = DateTime.Now,
+            Description = "Được 10 tài khoản nhập mã giới thiệu để hoàn thành thử thách",
+            State = true,
+            Status = true,
+        });
+
+        Thread.Sleep(1);
+        challenges.Add(new Challenge
+        {
+            Id = Ulid.NewUlid().ToString(),
+            Type = ChallengeType.Spread,
+            ChallengeName = "Mời bạn cùng vui 30",
+            Amount = 300000,
+            Condition = 30,
+            Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HKYJFX60DHMR6FRY4532VSX7?alt=media&token=d86a619f-01ac-4a0a-941d-95f7bd64fa40",
+            FileName = "01HKYJFX60DHMR6FRY4532VSX7",
+            DateCreated = DateTime.Now,
+            DateUpdated = DateTime.Now,
+            Description = "Được 30 tài khoản nhập mã giới thiệu để hoàn thành thử thách",
+            State = true,
+            Status = true,
+        });
+
+        Thread.Sleep(1);
+        challenges.Add(new Challenge
+        {
+            Id = Ulid.NewUlid().ToString(),
+            Type = ChallengeType.Spread,
+            ChallengeName = "Mời bạn cùng vui 50",
+            Amount = 500000,
+            Condition = 50,
+            Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HKYJFX60DHMR6FRY4532VSX7?alt=media&token=d86a619f-01ac-4a0a-941d-95f7bd64fa40",
+            FileName = "01HKYJFX60DHMR6FRY4532VSX7",
+            DateCreated = DateTime.Now,
+            DateUpdated = DateTime.Now,
+            Description = "Được 50 tài khoản nhập mã giới thiệu để hoàn thành thử thách",
+            State = true,
+            Status = true,
+        });
+
+        Thread.Sleep(1);
+        challenges.Add(new Challenge
+        {
+            Id = Ulid.NewUlid().ToString(),
+            Type = ChallengeType.Spread,
+            ChallengeName = "Mời bạn cùng vui 100",
+            Amount = 1000000,
+            Condition = 100,
+            Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HKYJFX60DHMR6FRY4532VSX7?alt=media&token=d86a619f-01ac-4a0a-941d-95f7bd64fa40",
+            FileName = "01HKYJFX60DHMR6FRY4532VSX7",
+            DateCreated = DateTime.Now,
+            DateUpdated = DateTime.Now,
+            Description = "Được 100 tài khoản nhập mã giới thiệu để hoàn thành thử thách",
+            State = true,
+            Status = true,
+        });
+
+        Thread.Sleep(1);
+        challenges.Add(new Challenge
+        {
+            Id = Ulid.NewUlid().ToString(),
+            Type = ChallengeType.Spread,
+            ChallengeName = "Mời bạn cùng vui 1000",
+            Amount = 10000000,
+            Condition = 1000,
+            Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HKYJFX60DHMR6FRY4532VSX7?alt=media&token=d86a619f-01ac-4a0a-941d-95f7bd64fa40",
+            FileName = "01HKYJFX60DHMR6FRY4532VSX7",
+            DateCreated = DateTime.Now,
+            DateUpdated = DateTime.Now,
+            Description = "Được 1000 tài khoản nhập mã giới thiệu để hoàn thành thử thách",
+            State = true,
+            Status = true,
+        });
+
+        Thread.Sleep(1);
+        challenges.Add(new Challenge
+        {
+            Id = Ulid.NewUlid().ToString(),
+            Type = ChallengeType.Spread,
+            ChallengeName = "Mời bạn cùng vui 10000",
+            Amount = 100000000,
+            Condition = 10000,
+            Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HKYJFX60DHMR6FRY4532VSX7?alt=media&token=d86a619f-01ac-4a0a-941d-95f7bd64fa40",
+            FileName = "01HKYJFX60DHMR6FRY4532VSX7",
+            DateCreated = DateTime.Now,
+            DateUpdated = DateTime.Now,
+            Description = "Được 10000 tài khoản nhập mã giới thiệu để hoàn thành thử thách",
+            State = true,
+            Status = true,
+        });
+
+        Thread.Sleep(1);
+        challenges.Add(new Challenge
+        {
+            Id = Ulid.NewUlid().ToString(),
+            Type = ChallengeType.Consume,
+            ChallengeName = "Tiền tiêu như nước 1",
+            Amount = 1000,
+            Condition = 10000,
+            Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HNM20GGS9Q5QPJQF4N29Y10F.png?alt=media&token=62c5862e-5ee5-4747-b431-f15a3f3ee93c",
+            FileName = "01HNM20GGS9Q5QPJQF4N29Y10F.png",
+            DateCreated = DateTime.Now,
+            DateUpdated = DateTime.Now,
+            Description = "Tích trữ tiêu thụ 10000 đậu xanh từ việc mua khuyến mãi để hoàn thành thử thách",
+            State = true,
+            Status = true,
+        });
+
+        Thread.Sleep(1);
+        challenges.Add(new Challenge
+        {
+            Id = Ulid.NewUlid().ToString(),
+            Type = ChallengeType.Consume,
+            ChallengeName = "Tiền tiêu như nước 2",
+            Amount = 10000,
+            Condition = 100000,
+            Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HNM20GGS9Q5QPJQF4N29Y10F.png?alt=media&token=62c5862e-5ee5-4747-b431-f15a3f3ee93c",
+            FileName = "01HNM20GGS9Q5QPJQF4N29Y10F.png",
+            DateCreated = DateTime.Now,
+            DateUpdated = DateTime.Now,
+            Description = "Tích trữ tiêu thụ 100000 đậu xanh từ việc mua khuyến mãi để hoàn thành thử thách",
+            State = true,
+            Status = true,
+        });
+
+        Thread.Sleep(1);
+        challenges.Add(new Challenge
+        {
+            Id = Ulid.NewUlid().ToString(),
+            Type = ChallengeType.Consume,
+            ChallengeName = "Tiền tiêu như nước 3",
+            Amount = 50000,
+            Condition = 500000,
+            Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HNM20GGS9Q5QPJQF4N29Y10F.png?alt=media&token=62c5862e-5ee5-4747-b431-f15a3f3ee93c",
+            FileName = "01HNM20GGS9Q5QPJQF4N29Y10F.png",
+            DateCreated = DateTime.Now,
+            DateUpdated = DateTime.Now,
+            Description = "Tích trữ tiêu thụ 500000 đậu xanh từ việc mua khuyến mãi để hoàn thành thử thách",
+            State = true,
+            Status = true,
+        });
+
+        Thread.Sleep(1);
+        challenges.Add(new Challenge
+        {
+            Id = Ulid.NewUlid().ToString(),
+            Type = ChallengeType.Consume,
+            ChallengeName = "Tiền tiêu như nước 4",
+            Amount = 100000,
+            Condition = 1000000,
+            Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HNM20GGS9Q5QPJQF4N29Y10F.png?alt=media&token=62c5862e-5ee5-4747-b431-f15a3f3ee93c",
+            FileName = "01HNM20GGS9Q5QPJQF4N29Y10F.png",
+            DateCreated = DateTime.Now,
+            DateUpdated = DateTime.Now,
+            Description = "Tích trữ tiêu thụ 1000000 đậu xanh từ việc mua khuyến mãi để hoàn thành thử thách",
+            State = true,
+            Status = true,
+        });
+
+        Thread.Sleep(1);
+        challenges.Add(new Challenge
+        {
+            Id = Ulid.NewUlid().ToString(),
+            Type = ChallengeType.Consume,
+            ChallengeName = "Tiền tiêu như nước 5",
+            Amount = 1000000,
+            Condition = 10000000,
+            Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HNM20GGS9Q5QPJQF4N29Y10F.png?alt=media&token=62c5862e-5ee5-4747-b431-f15a3f3ee93c",
+            FileName = "01HNM20GGS9Q5QPJQF4N29Y10F.png",
+            DateCreated = DateTime.Now,
+            DateUpdated = DateTime.Now,
+            Description = "Tích trữ tiêu thụ 10000000 đậu xanh từ việc mua khuyến mãi để hoàn thành thử thách",
+            State = true,
+            Status = true,
+        });
+
+        Thread.Sleep(1);
+        challenges.Add(new Challenge
+        {
+            Id = Ulid.NewUlid().ToString(),
+            Type = ChallengeType.Consume,
+            ChallengeName = "Tiền tiêu như nước 6",
+            Amount = 5000000,
+            Condition = 50000000,
+            Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HNM20GGS9Q5QPJQF4N29Y10F.png?alt=media&token=62c5862e-5ee5-4747-b431-f15a3f3ee93c",
+            FileName = "01HNM20GGS9Q5QPJQF4N29Y10F.png",
+            DateCreated = DateTime.Now,
+            DateUpdated = DateTime.Now,
+            Description = "Tích trữ tiêu thụ 50000000 đậu xanh từ việc mua khuyến mãi để hoàn thành thử thách",
+            State = true,
+            Status = true,
+        });
+
+        Thread.Sleep(1);
+        challenges.Add(new Challenge
+        {
+            Id = Ulid.NewUlid().ToString(),
+            Type = ChallengeType.Consume,
+            ChallengeName = "Tiền tiêu như nước 7",
+            Amount = 10000000,
+            Condition = 100000000,
+            Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HNM20GGS9Q5QPJQF4N29Y10F.png?alt=media&token=62c5862e-5ee5-4747-b431-f15a3f3ee93c",
+            FileName = "01HNM20GGS9Q5QPJQF4N29Y10F.png",
+            DateCreated = DateTime.Now,
+            DateUpdated = DateTime.Now,
+            Description = "Tích trữ tiêu thụ 100000000 đậu xanh từ việc mua khuyến mãi để hoàn thành thử thách",
+            State = true,
+            Status = true,
+        });
+
+        modelBuilder.Entity<Challenge>().HasData(challenges);
     }
 }

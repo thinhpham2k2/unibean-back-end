@@ -1005,6 +1005,248 @@ namespace Unibean.Repository.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("tbl_challenge");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "01HR1V4KY2PSZ2970BGMZ00YA1",
+                            Amount = 100000m,
+                            ChallengeName = "Xác nhận tài khoản sinh viên",
+                            Condition = 1m,
+                            DateCreated = new DateTime(2024, 3, 3, 16, 43, 21, 282, DateTimeKind.Local).AddTicks(7422),
+                            DateUpdated = new DateTime(2024, 3, 3, 16, 43, 21, 282, DateTimeKind.Local).AddTicks(7443),
+                            Description = "Tài khoản sinh viên đã được xác thực sẽ hoàn thành thử thách",
+                            FileName = "01HKYHZ6MVH2JKG32NX15K3CDG",
+                            Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HKYHZ6MVH2JKG32NX15K3CDG?alt=media&token=17dfbee0-8324-4dcd-9f73-320436766c5",
+                            State = 1ul,
+                            Status = 1ul,
+                            Type = "Verify"
+                        },
+                        new
+                        {
+                            Id = "01HR1V4KYBWFPAV12XS8GJ2T9Y",
+                            Amount = 50000m,
+                            ChallengeName = "Đồng cam cộng hưởng",
+                            Condition = 1m,
+                            DateCreated = new DateTime(2024, 3, 3, 16, 43, 21, 291, DateTimeKind.Local).AddTicks(2428),
+                            DateUpdated = new DateTime(2024, 3, 3, 16, 43, 21, 291, DateTimeKind.Local).AddTicks(2451),
+                            Description = "Nhập mã giới thiệu của bạn bè để hoàn thành thử thách",
+                            FileName = "01HKYJ4PDDV2QZJCFZDDEVQ0PJ",
+                            Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HKYJ4PDDV2QZJCFZDDEVQ0PJ?alt=media&token=7397417a-2a73-47af-968a-9197cceaf43c",
+                            State = 1ul,
+                            Status = 1ul,
+                            Type = "Welcome"
+                        },
+                        new
+                        {
+                            Id = "01HR1V4KYVRJEQPVMVZWZ0X83M",
+                            Amount = 10000m,
+                            ChallengeName = "Mời bạn cùng vui 1",
+                            Condition = 1m,
+                            DateCreated = new DateTime(2024, 3, 3, 16, 43, 21, 307, DateTimeKind.Local).AddTicks(2541),
+                            DateUpdated = new DateTime(2024, 3, 3, 16, 43, 21, 307, DateTimeKind.Local).AddTicks(2548),
+                            Description = "Được 1 tài khoản nhập mã giới thiệu để hoàn thành thử thách",
+                            FileName = "01HKYJFX60DHMR6FRY4532VSX7",
+                            Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HKYJFX60DHMR6FRY4532VSX7?alt=media&token=d86a619f-01ac-4a0a-941d-95f7bd64fa40",
+                            State = 1ul,
+                            Status = 1ul,
+                            Type = "Spread"
+                        },
+                        new
+                        {
+                            Id = "01HR1V4KZAT92G99VKS09JRAVY",
+                            Amount = 100000m,
+                            ChallengeName = "Mời bạn cùng vui 10",
+                            Condition = 10m,
+                            DateCreated = new DateTime(2024, 3, 3, 16, 43, 21, 322, DateTimeKind.Local).AddTicks(7863),
+                            DateUpdated = new DateTime(2024, 3, 3, 16, 43, 21, 322, DateTimeKind.Local).AddTicks(7875),
+                            Description = "Được 10 tài khoản nhập mã giới thiệu để hoàn thành thử thách",
+                            FileName = "01HKYJFX60DHMR6FRY4532VSX7",
+                            Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HKYJFX60DHMR6FRY4532VSX7?alt=media&token=d86a619f-01ac-4a0a-941d-95f7bd64fa40",
+                            State = 1ul,
+                            Status = 1ul,
+                            Type = "Spread"
+                        },
+                        new
+                        {
+                            Id = "01HR1V4KZT2VTJJVSHTS2B78NF",
+                            Amount = 300000m,
+                            ChallengeName = "Mời bạn cùng vui 30",
+                            Condition = 30m,
+                            DateCreated = new DateTime(2024, 3, 3, 16, 43, 21, 338, DateTimeKind.Local).AddTicks(6650),
+                            DateUpdated = new DateTime(2024, 3, 3, 16, 43, 21, 339, DateTimeKind.Local).AddTicks(6810),
+                            Description = "Được 30 tài khoản nhập mã giới thiệu để hoàn thành thử thách",
+                            FileName = "01HKYJFX60DHMR6FRY4532VSX7",
+                            Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HKYJFX60DHMR6FRY4532VSX7?alt=media&token=d86a619f-01ac-4a0a-941d-95f7bd64fa40",
+                            State = 1ul,
+                            Status = 1ul,
+                            Type = "Spread"
+                        },
+                        new
+                        {
+                            Id = "01HR1V4M0ATJW3T329DGA4DZ0W",
+                            Amount = 500000m,
+                            ChallengeName = "Mời bạn cùng vui 50",
+                            Condition = 50m,
+                            DateCreated = new DateTime(2024, 3, 3, 16, 43, 21, 354, DateTimeKind.Local).AddTicks(6390),
+                            DateUpdated = new DateTime(2024, 3, 3, 16, 43, 21, 354, DateTimeKind.Local).AddTicks(6397),
+                            Description = "Được 50 tài khoản nhập mã giới thiệu để hoàn thành thử thách",
+                            FileName = "01HKYJFX60DHMR6FRY4532VSX7",
+                            Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HKYJFX60DHMR6FRY4532VSX7?alt=media&token=d86a619f-01ac-4a0a-941d-95f7bd64fa40",
+                            State = 1ul,
+                            Status = 1ul,
+                            Type = "Spread"
+                        },
+                        new
+                        {
+                            Id = "01HR1V4M0T6HTW7HR7F1C1XX8N",
+                            Amount = 1000000m,
+                            ChallengeName = "Mời bạn cùng vui 100",
+                            Condition = 100m,
+                            DateCreated = new DateTime(2024, 3, 3, 16, 43, 21, 370, DateTimeKind.Local).AddTicks(6481),
+                            DateUpdated = new DateTime(2024, 3, 3, 16, 43, 21, 370, DateTimeKind.Local).AddTicks(6487),
+                            Description = "Được 100 tài khoản nhập mã giới thiệu để hoàn thành thử thách",
+                            FileName = "01HKYJFX60DHMR6FRY4532VSX7",
+                            Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HKYJFX60DHMR6FRY4532VSX7?alt=media&token=d86a619f-01ac-4a0a-941d-95f7bd64fa40",
+                            State = 1ul,
+                            Status = 1ul,
+                            Type = "Spread"
+                        },
+                        new
+                        {
+                            Id = "01HR1V4M1AA3AAWSF1970X9ZK9",
+                            Amount = 10000000m,
+                            ChallengeName = "Mời bạn cùng vui 1000",
+                            Condition = 1000m,
+                            DateCreated = new DateTime(2024, 3, 3, 16, 43, 21, 386, DateTimeKind.Local).AddTicks(6448),
+                            DateUpdated = new DateTime(2024, 3, 3, 16, 43, 21, 386, DateTimeKind.Local).AddTicks(6460),
+                            Description = "Được 1000 tài khoản nhập mã giới thiệu để hoàn thành thử thách",
+                            FileName = "01HKYJFX60DHMR6FRY4532VSX7",
+                            Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HKYJFX60DHMR6FRY4532VSX7?alt=media&token=d86a619f-01ac-4a0a-941d-95f7bd64fa40",
+                            State = 1ul,
+                            Status = 1ul,
+                            Type = "Spread"
+                        },
+                        new
+                        {
+                            Id = "01HR1V4M1TEWDTF894P6572Q7S",
+                            Amount = 100000000m,
+                            ChallengeName = "Mời bạn cùng vui 10000",
+                            Condition = 10000m,
+                            DateCreated = new DateTime(2024, 3, 3, 16, 43, 21, 402, DateTimeKind.Local).AddTicks(6483),
+                            DateUpdated = new DateTime(2024, 3, 3, 16, 43, 21, 402, DateTimeKind.Local).AddTicks(6488),
+                            Description = "Được 10000 tài khoản nhập mã giới thiệu để hoàn thành thử thách",
+                            FileName = "01HKYJFX60DHMR6FRY4532VSX7",
+                            Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HKYJFX60DHMR6FRY4532VSX7?alt=media&token=d86a619f-01ac-4a0a-941d-95f7bd64fa40",
+                            State = 1ul,
+                            Status = 1ul,
+                            Type = "Spread"
+                        },
+                        new
+                        {
+                            Id = "01HR1V4M2A3V4FV1SX5T629D7G",
+                            Amount = 1000m,
+                            ChallengeName = "Tiền tiêu như nước 1",
+                            Condition = 10000m,
+                            DateCreated = new DateTime(2024, 3, 3, 16, 43, 21, 418, DateTimeKind.Local).AddTicks(6405),
+                            DateUpdated = new DateTime(2024, 3, 3, 16, 43, 21, 418, DateTimeKind.Local).AddTicks(6417),
+                            Description = "Tích trữ tiêu thụ 10000 đậu xanh từ việc mua khuyến mãi để hoàn thành thử thách",
+                            FileName = "01HNM20GGS9Q5QPJQF4N29Y10F.png",
+                            Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HNM20GGS9Q5QPJQF4N29Y10F.png?alt=media&token=62c5862e-5ee5-4747-b431-f15a3f3ee93c",
+                            State = 1ul,
+                            Status = 1ul,
+                            Type = "Consume"
+                        },
+                        new
+                        {
+                            Id = "01HR1V4M2T84354502GHK520PK",
+                            Amount = 10000m,
+                            ChallengeName = "Tiền tiêu như nước 2",
+                            Condition = 100000m,
+                            DateCreated = new DateTime(2024, 3, 3, 16, 43, 21, 434, DateTimeKind.Local).AddTicks(6587),
+                            DateUpdated = new DateTime(2024, 3, 3, 16, 43, 21, 434, DateTimeKind.Local).AddTicks(6599),
+                            Description = "Tích trữ tiêu thụ 100000 đậu xanh từ việc mua khuyến mãi để hoàn thành thử thách",
+                            FileName = "01HNM20GGS9Q5QPJQF4N29Y10F.png",
+                            Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HNM20GGS9Q5QPJQF4N29Y10F.png?alt=media&token=62c5862e-5ee5-4747-b431-f15a3f3ee93c",
+                            State = 1ul,
+                            Status = 1ul,
+                            Type = "Consume"
+                        },
+                        new
+                        {
+                            Id = "01HR1V4M3A9JWM650FZPRA3MAK",
+                            Amount = 50000m,
+                            ChallengeName = "Tiền tiêu như nước 3",
+                            Condition = 500000m,
+                            DateCreated = new DateTime(2024, 3, 3, 16, 43, 21, 450, DateTimeKind.Local).AddTicks(7009),
+                            DateUpdated = new DateTime(2024, 3, 3, 16, 43, 21, 450, DateTimeKind.Local).AddTicks(7017),
+                            Description = "Tích trữ tiêu thụ 500000 đậu xanh từ việc mua khuyến mãi để hoàn thành thử thách",
+                            FileName = "01HNM20GGS9Q5QPJQF4N29Y10F.png",
+                            Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HNM20GGS9Q5QPJQF4N29Y10F.png?alt=media&token=62c5862e-5ee5-4747-b431-f15a3f3ee93c",
+                            State = 1ul,
+                            Status = 1ul,
+                            Type = "Consume"
+                        },
+                        new
+                        {
+                            Id = "01HR1V4M3TB5VK86N3BWED0AGN",
+                            Amount = 100000m,
+                            ChallengeName = "Tiền tiêu như nước 4",
+                            Condition = 1000000m,
+                            DateCreated = new DateTime(2024, 3, 3, 16, 43, 21, 466, DateTimeKind.Local).AddTicks(7011),
+                            DateUpdated = new DateTime(2024, 3, 3, 16, 43, 21, 466, DateTimeKind.Local).AddTicks(7033),
+                            Description = "Tích trữ tiêu thụ 1000000 đậu xanh từ việc mua khuyến mãi để hoàn thành thử thách",
+                            FileName = "01HNM20GGS9Q5QPJQF4N29Y10F.png",
+                            Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HNM20GGS9Q5QPJQF4N29Y10F.png?alt=media&token=62c5862e-5ee5-4747-b431-f15a3f3ee93c",
+                            State = 1ul,
+                            Status = 1ul,
+                            Type = "Consume"
+                        },
+                        new
+                        {
+                            Id = "01HR1V4M4A6GBQ4F6KX2ZYYFC1",
+                            Amount = 1000000m,
+                            ChallengeName = "Tiền tiêu như nước 5",
+                            Condition = 10000000m,
+                            DateCreated = new DateTime(2024, 3, 3, 16, 43, 21, 482, DateTimeKind.Local).AddTicks(6605),
+                            DateUpdated = new DateTime(2024, 3, 3, 16, 43, 21, 482, DateTimeKind.Local).AddTicks(6623),
+                            Description = "Tích trữ tiêu thụ 10000000 đậu xanh từ việc mua khuyến mãi để hoàn thành thử thách",
+                            FileName = "01HNM20GGS9Q5QPJQF4N29Y10F.png",
+                            Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HNM20GGS9Q5QPJQF4N29Y10F.png?alt=media&token=62c5862e-5ee5-4747-b431-f15a3f3ee93c",
+                            State = 1ul,
+                            Status = 1ul,
+                            Type = "Consume"
+                        },
+                        new
+                        {
+                            Id = "01HR1V4M4TY2HXTXDDM8ZYPMFX",
+                            Amount = 5000000m,
+                            ChallengeName = "Tiền tiêu như nước 6",
+                            Condition = 50000000m,
+                            DateCreated = new DateTime(2024, 3, 3, 16, 43, 21, 498, DateTimeKind.Local).AddTicks(4337),
+                            DateUpdated = new DateTime(2024, 3, 3, 16, 43, 21, 498, DateTimeKind.Local).AddTicks(4353),
+                            Description = "Tích trữ tiêu thụ 50000000 đậu xanh từ việc mua khuyến mãi để hoàn thành thử thách",
+                            FileName = "01HNM20GGS9Q5QPJQF4N29Y10F.png",
+                            Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HNM20GGS9Q5QPJQF4N29Y10F.png?alt=media&token=62c5862e-5ee5-4747-b431-f15a3f3ee93c",
+                            State = 1ul,
+                            Status = 1ul,
+                            Type = "Consume"
+                        },
+                        new
+                        {
+                            Id = "01HR1V4M5AJ287R2HZFXST554J",
+                            Amount = 10000000m,
+                            ChallengeName = "Tiền tiêu như nước 7",
+                            Condition = 100000000m,
+                            DateCreated = new DateTime(2024, 3, 3, 16, 43, 21, 514, DateTimeKind.Local).AddTicks(4560),
+                            DateUpdated = new DateTime(2024, 3, 3, 16, 43, 21, 514, DateTimeKind.Local).AddTicks(4587),
+                            Description = "Tích trữ tiêu thụ 100000000 đậu xanh từ việc mua khuyến mãi để hoàn thành thử thách",
+                            FileName = "01HNM20GGS9Q5QPJQF4N29Y10F.png",
+                            Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HNM20GGS9Q5QPJQF4N29Y10F.png?alt=media&token=62c5862e-5ee5-4747-b431-f15a3f3ee93c",
+                            State = 1ul,
+                            Status = 1ul,
+                            Type = "Consume"
+                        });
                 });
 
             modelBuilder.Entity("Unibean.Repository.Entities.ChallengeTransaction", b =>
