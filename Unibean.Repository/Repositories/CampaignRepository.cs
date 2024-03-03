@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq.Dynamic.Core;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
@@ -387,6 +388,34 @@ public class CampaignRepository : ICampaignRepository
             throw new Exception(ex.Message);
         }
         return pagedResult;
+    }
+
+    public List<Campaign> GetAllExpired
+        (List<CampaignState> stateIds, DateOnly date)
+    {
+        List<Campaign> result = new();
+
+        try
+        {
+            using var db = new UnibeanDBContext();
+            var query = db.Campaigns
+                .Where(t =>
+                stateIds.Contains(t.CampaignActivities.OrderBy(a => a.Id).LastOrDefault().State.Value)
+                && t.EndOn < date
+                && (bool)t.Status);
+
+            result = query
+               .Include(s => s.Brand)
+               .Include(s => s.Type)
+               .Include(s => s.Wallets.Where(w => (bool)w.Status))
+               .Include(s => s.CampaignActivities.Where(a => (bool)a.Status).OrderBy(a => a.Id))
+               .ToList();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return result;
     }
 
     public Campaign GetById(string id)
