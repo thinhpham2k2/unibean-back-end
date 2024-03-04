@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
+using Unibean.Service.Models.Charts;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Parameters;
 using Unibean.Service.Models.Staffs;
@@ -15,10 +16,15 @@ namespace Unibean.API.Controllers;
 [Route("api/v1/staffs")]
 public class StaffController : ControllerBase
 {
+    private readonly IChartService chartService;
+
     private readonly IStaffService staffService;
 
-    public StaffController(IStaffService staffService)
+    public StaffController(
+        IChartService chartService,
+        IStaffService staffService)
     {
+        this.chartService = chartService;
         this.staffService = staffService;
     }
 
@@ -148,6 +154,50 @@ public class StaffController : ControllerBase
         {
             staffService.Delete(id);
             return StatusCode(StatusCodes.Status204NoContent);
+        }
+        catch (InvalidParameterException e)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Get line chart by staff id
+    /// </summary>
+    [HttpGet("{id}/line-chart")]
+    [Authorize(Roles = "Admin, Staff")]
+    [ProducesResponseType(typeof(List<LineChartModel>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public IActionResult GetLineChartByStaffId(string id)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            return StatusCode(StatusCodes.Status200OK, chartService.GetLineChart(id, Role.Staff));
+        }
+        catch (InvalidParameterException e)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Get title by staff id
+    /// </summary>
+    [HttpGet("{id}/title")]
+    [Authorize(Roles = "Admin, Staff")]
+    [ProducesResponseType(typeof(TitleStaffModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public IActionResult GetTitleByAdminId(string id)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            return StatusCode(StatusCodes.Status200OK, chartService.GetTitleStaff(id));
         }
         catch (InvalidParameterException e)
         {

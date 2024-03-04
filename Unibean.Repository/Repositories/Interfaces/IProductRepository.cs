@@ -7,6 +7,8 @@ public interface IProductRepository
 {
     Product Add(Product creation);
 
+    long CountProduct();
+
     void Delete(string id);
 
     PagedResultModel<Product> GetAll

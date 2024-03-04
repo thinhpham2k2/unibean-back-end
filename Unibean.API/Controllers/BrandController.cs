@@ -5,6 +5,7 @@ using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Service.Models.Brands;
 using Unibean.Service.Models.Campaigns;
+using Unibean.Service.Models.Charts;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Parameters;
 using Unibean.Service.Models.Stores;
@@ -23,11 +24,16 @@ public class BrandController : ControllerBase
 
     private readonly IJwtService jwtService;
 
-    public BrandController(IBrandService brandService, 
-        IJwtService jwtService)
+    private readonly IChartService chartService;
+
+    public BrandController(
+        IBrandService brandService,
+        IJwtService jwtService,
+        IChartService chartService)
     {
         this.brandService = brandService;
         this.jwtService = jwtService;
+        this.chartService = chartService;
     }
 
     /// <summary>
@@ -55,7 +61,7 @@ public class BrandController : ControllerBase
         {
             PagedResultModel<BrandModel>
                 result = brandService.GetAll
-                (state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, 
+                (state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search,
                 paging.Page, paging.Limit, jwtService.GetJwtRequest(jwtToken?.Split(" ")[1]));
             return StatusCode(StatusCodes.Status200OK, result);
         }
@@ -237,11 +243,33 @@ public class BrandController : ControllerBase
             {
                 PagedResultModel<TransactionModel>
                 result = brandService.GetHistoryTransactionListByStudentId
-                    (id, walletTypeIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                    (id, walletTypeIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"),
                     paging.Search, paging.Page, paging.Limit);
                 return StatusCode(StatusCodes.Status200OK, result);
             }
             return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của lịch sử giao dịch");
+        }
+        catch (InvalidParameterException e)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Get line chart by brand id
+    /// </summary>
+    [HttpGet("{id}/line-chart")]
+    [Authorize(Roles = "Admin, Brand")]
+    [ProducesResponseType(typeof(List<LineChartModel>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public IActionResult GetLineChartByBrandId(string id)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            return StatusCode(StatusCodes.Status200OK, chartService.GetLineChart(id, Role.Brand));
         }
         catch (InvalidParameterException e)
         {
@@ -276,11 +304,33 @@ public class BrandController : ControllerBase
             {
                 PagedResultModel<StoreModel>
                 result = brandService.GetStoreListByBrandId
-                    (id, areaIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                    (id, areaIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"),
                     paging.Search, paging.Page, paging.Limit);
                 return StatusCode(StatusCodes.Status200OK, result);
             }
             return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của cửa hàng");
+        }
+        catch (InvalidParameterException e)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Get title by brand id
+    /// </summary>
+    [HttpGet("{id}/title")]
+    [Authorize(Roles = "Admin, Brand")]
+    [ProducesResponseType(typeof(TitleBrandModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public IActionResult GetTitleByBrandId(string id)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            return StatusCode(StatusCodes.Status200OK, chartService.GetTitleBrand(id));
         }
         catch (InvalidParameterException e)
         {
@@ -315,7 +365,7 @@ public class BrandController : ControllerBase
             {
                 PagedResultModel<VoucherModel>
                 result = brandService.GetVoucherListByBrandId
-                    (id, typeIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                    (id, typeIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"),
                     paging.Search, paging.Page, paging.Limit);
                 return StatusCode(StatusCodes.Status200OK, result);
             }

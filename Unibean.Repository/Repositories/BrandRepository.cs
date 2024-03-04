@@ -40,6 +40,21 @@ public class BrandRepository : IBrandRepository
         return creation;
     }
 
+    public long CountBrand()
+    {
+        long count = 0;
+        try
+        {
+            using var db = new UnibeanDBContext();
+            count = db.Brands.Where(c => (bool)c.Status).Count();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return count;
+    }
+
     public void Delete(string id)
     {
         try
@@ -118,6 +133,8 @@ public class BrandRepository : IBrandRepository
                 .ThenInclude(s => s.Area)
             .Include(s => s.Vouchers.Where(s => (bool)s.Status))
                 .ThenInclude(s => s.Type)
+            .Include(s => s.Vouchers.Where(s => (bool)s.Status))
+                .ThenInclude(s => s.VoucherItems.Where(i => (bool)i.Status))
             .FirstOrDefault();
         }
         catch (Exception ex)

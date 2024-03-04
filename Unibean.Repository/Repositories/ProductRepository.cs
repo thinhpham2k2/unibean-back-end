@@ -23,6 +23,21 @@ public class ProductRepository : IProductRepository
         return creation;
     }
 
+    public long CountProduct()
+    {
+        long count = 0;
+        try
+        {
+            using var db = new UnibeanDBContext();
+            count = db.Products.Where(c => (bool)c.Status).Count();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return count;
+    }
+
     public void Delete(string id)
     {
         try

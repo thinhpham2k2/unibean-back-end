@@ -6,6 +6,7 @@ using Unibean.Repository.Paging;
 using Unibean.Service.Models.Activities;
 using Unibean.Service.Models.Bonuses;
 using Unibean.Service.Models.CampaignDetails;
+using Unibean.Service.Models.Charts;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Parameters;
 using Unibean.Service.Models.Stores;
@@ -25,11 +26,16 @@ public class StoreController : ControllerBase
 
     private readonly IBonusService bonusService;
 
-    public StoreController(IStoreService storeService, 
-        IBonusService bonusService)
+    private readonly IChartService chartService;
+
+    public StoreController(
+        IStoreService storeService,
+        IBonusService bonusService,
+        IChartService chartService)
     {
         this.storeService = storeService;
         this.bonusService = bonusService;
+        this.chartService = chartService;
     }
 
     /// <summary>
@@ -59,7 +65,7 @@ public class StoreController : ControllerBase
         {
             PagedResultModel<StoreModel>
                 result = storeService.GetAll
-                (brandIds, areaIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                (brandIds, areaIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"),
                 paging.Search, paging.Page, paging.Limit);
             return StatusCode(StatusCodes.Status200OK, result);
         }
@@ -196,45 +202,6 @@ public class StoreController : ControllerBase
     }
 
     /// <summary>
-    /// Get history transaction by store id
-    /// </summary>
-    /// <param name="id">Store id.</param>
-    /// <param name="typeIds">Filter by transaction type id --- ActivityTransaction = 1, BonusTransaction = 2</param>
-    /// <param name="state">Filter by history transaction state.</param>
-    /// <param name="paging">Paging parameter.</param>
-    [HttpGet("{id}/histories")]
-    [Authorize(Roles = "Admin, Brand, Store")]
-    [ProducesResponseType(typeof(PagedResultModel<StoreTransactionModel>), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public ActionResult<PagedResultModel<StoreTransactionModel>> GetHistoryTransactionByStoreId(string id,
-        [FromQuery] List<StoreTransactionType> typeIds,
-        [FromQuery] bool? state,
-        [FromQuery] PagingModel paging)
-    {
-        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
-
-        try
-        {
-            string propertySort = paging.Sort.Split(",")[0];
-            var propertyInfo = typeof(StoreTransactionModel).GetProperty(propertySort);
-            if (propertySort != null && propertyInfo != null)
-            {
-                PagedResultModel<StoreTransactionModel>
-                result = storeService.GetHistoryTransactionListByStoreId
-                    (id, typeIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
-                    paging.Search, paging.Page, paging.Limit);
-                return StatusCode(StatusCodes.Status200OK, result);
-            }
-            return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của lịch sử giao dịch");
-        }
-        catch (InvalidParameterException e)
-        {
-            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
-        }
-    }
-
-    /// <summary>
     /// Get campaign detail list by store id
     /// </summary>
     /// <param name="id">Store id.</param>
@@ -263,8 +230,8 @@ public class StoreController : ControllerBase
             {
                 PagedResultModel<CampaignDetailModel>
                 result = storeService.GetCampaignDetailByStoreId
-                    (id, campaignIds, typeIds, state, propertySort, 
-                    paging.Sort.Split(",")[1].Equals("asc"), 
+                    (id, campaignIds, typeIds, state, propertySort,
+                    paging.Sort.Split(",")[1].Equals("asc"),
                     paging.Search, paging.Page, paging.Limit);
                 return StatusCode(StatusCodes.Status200OK, result);
             }
@@ -324,6 +291,89 @@ public class StoreController : ControllerBase
             return storeService.AddActivity(id, code, creation) ?
                 StatusCode(StatusCodes.Status201Created, "Quét khuyến mãi thành công") :
                 StatusCode(StatusCodes.Status404NotFound, "Quét khuyến mãi thất bại");
+        }
+        catch (InvalidParameterException e)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Get history transaction by store id
+    /// </summary>
+    /// <param name="id">Store id.</param>
+    /// <param name="typeIds">Filter by transaction type id --- ActivityTransaction = 1, BonusTransaction = 2</param>
+    /// <param name="state">Filter by history transaction state.</param>
+    /// <param name="paging">Paging parameter.</param>
+    [HttpGet("{id}/histories")]
+    [Authorize(Roles = "Admin, Brand, Store")]
+    [ProducesResponseType(typeof(PagedResultModel<StoreTransactionModel>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public ActionResult<PagedResultModel<StoreTransactionModel>> GetHistoryTransactionByStoreId(string id,
+        [FromQuery] List<StoreTransactionType> typeIds,
+        [FromQuery] bool? state,
+        [FromQuery] PagingModel paging)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            string propertySort = paging.Sort.Split(",")[0];
+            var propertyInfo = typeof(StoreTransactionModel).GetProperty(propertySort);
+            if (propertySort != null && propertyInfo != null)
+            {
+                PagedResultModel<StoreTransactionModel>
+                result = storeService.GetHistoryTransactionListByStoreId
+                    (id, typeIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"),
+                    paging.Search, paging.Page, paging.Limit);
+                return StatusCode(StatusCodes.Status200OK, result);
+            }
+            return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của lịch sử giao dịch");
+        }
+        catch (InvalidParameterException e)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Get line chart by store id
+    /// </summary>
+    [HttpGet("{id}/line-chart")]
+    [Authorize(Roles = "Admin, Brand, Store")]
+    [ProducesResponseType(typeof(List<LineChartModel>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public IActionResult GetLineChartByStoreId(string id)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            return StatusCode(StatusCodes.Status200OK, chartService.GetLineChart(id, Role.Store));
+        }
+        catch (InvalidParameterException e)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Get title by store id
+    /// </summary>
+    [HttpGet("{id}/title")]
+    [Authorize(Roles = "Admin, Brand, Store")]
+    [ProducesResponseType(typeof(TitleStoreModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public IActionResult GetTitleByAdminId(string id)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            return StatusCode(StatusCodes.Status200OK, chartService.GetTitleStore(id));
         }
         catch (InvalidParameterException e)
         {

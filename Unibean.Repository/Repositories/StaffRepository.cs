@@ -93,6 +93,8 @@ public class StaffRepository : IStaffRepository
             .Include(b => b.Account)
             .Include(s => s.Station)
                 .ThenInclude(s => s.Staffs.Where(s => (bool)s.Status))
+            .Include(s => s.Station)
+                .ThenInclude(s => s.Orders.Where(s => (bool)s.Status))
             .FirstOrDefault();
         }
         catch (Exception ex)

@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using System.Linq.Dynamic.Core;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
@@ -256,6 +255,21 @@ public class CampaignRepository : ICampaignRepository
             throw new Exception(ex.Message);
         }
         return emails;
+    }
+
+    public long CountCampaign()
+    {
+        long count = 0;
+        try
+        {
+            using var db = new UnibeanDBContext();
+            count = db.Campaigns.Where(c => (bool)c.Status).Count();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return count;
     }
 
     public void Delete(string id)

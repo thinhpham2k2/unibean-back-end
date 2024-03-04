@@ -106,6 +106,21 @@ public class StudentRepository : IStudentRepository
         return student != null;
     }
 
+    public long CountStudent()
+    {
+        long count = 0;
+        try
+        {
+            using var db = new UnibeanDBContext();
+            count = db.Students.Where(c => (bool)c.Status).Count();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return count;
+    }
+
     public void Delete(string id)
     {
         try
