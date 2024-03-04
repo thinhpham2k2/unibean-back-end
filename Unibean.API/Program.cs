@@ -191,6 +191,9 @@ builder.Services.AddSingleton<IJwtService, JwtService>();
 // Discord
 builder.Services.AddSingleton<IDiscordService, DiscordService>();
 
+// Chart
+builder.Services.AddSingleton<IChartService, ChartService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

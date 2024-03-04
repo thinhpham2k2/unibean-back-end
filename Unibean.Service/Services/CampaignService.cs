@@ -493,26 +493,33 @@ public class CampaignService : ICampaignService
                     switch (entity.CampaignActivities.LastOrDefault().State)
                     {
                         case CampaignState.Pending
-                        when request.Role.Equals("Brand") || new[] { CampaignState.Inactive, CampaignState.Closed }.Contains(stateId):
-                            throw new InvalidParameterException("Trạng thái không hợp lệ cho chiến dịch");
+                        when (request.Role.Equals("Brand") && !new[] { CampaignState.Cancelled }.Contains(stateId)) 
+                        || new[] { CampaignState.Inactive, CampaignState.Closed }.Contains(stateId):
+                            throw new InvalidParameterException("Trạng thái không hợp lệ cho chiến dịch đang chờ duyệt");
                         case CampaignState.Rejected
                         when !new[] { CampaignState.Cancelled }.Contains(stateId):
-                            throw new InvalidParameterException("Trạng thái không hợp lệ cho chiến dịch");
+                            throw new InvalidParameterException("Trạng thái không hợp lệ cho chiến dịch đã bị từ chối");
                         case CampaignState.Active
                         when new[] { CampaignState.Rejected, CampaignState.Active }.Contains(stateId):
-                            throw new InvalidParameterException("Trạng thái không hợp lệ cho chiến dịch");
+                            throw new InvalidParameterException("Trạng thái không hợp lệ cho chiến dịch đang hoạt động");
+                        case CampaignState.Active
+                        when new[] { CampaignState.Closed }.Contains(stateId) && entity.StartOn > DateOnly.FromDateTime(DateTime.Now):
+                            throw new InvalidParameterException("Trạng thái không hợp lệ cho chiến dịch đang hoạt động");
                         case CampaignState.Active
                         when new[] { CampaignState.Cancelled }.Contains(stateId) && entity.StartOn <= DateOnly.FromDateTime(DateTime.Now):
-                            throw new InvalidParameterException("Trạng thái không hợp lệ cho chiến dịch");
+                            throw new InvalidParameterException("Trạng thái không hợp lệ cho chiến dịch đang hoạt động");
                         case CampaignState.Inactive
                         when new[] { CampaignState.Rejected, CampaignState.Inactive }.Contains(stateId):
-                            throw new InvalidParameterException("Trạng thái không hợp lệ cho chiến dịch");
+                            throw new InvalidParameterException("Trạng thái không hợp lệ cho chiến dịch đang không hoạt động");
+                        case CampaignState.Inactive
+                        when new[] { CampaignState.Closed }.Contains(stateId) && entity.StartOn > DateOnly.FromDateTime(DateTime.Now):
+                            throw new InvalidParameterException("Trạng thái không hợp lệ cho chiến dịch đang không hoạt động");
                         case CampaignState.Inactive
                         when new[] { CampaignState.Cancelled }.Contains(stateId) && entity.StartOn <= DateOnly.FromDateTime(DateTime.Now):
-                            throw new InvalidParameterException("Trạng thái không hợp lệ cho chiến dịch");
+                            throw new InvalidParameterException("Trạng thái không hợp lệ cho chiến dịch đang không hoạt động");
                     }
 
-                    if (entity.CampaignActivities.LastOrDefault().State.Equals(CampaignState.Pending) 
+                    if (entity.CampaignActivities.LastOrDefault().State.Equals(CampaignState.Pending)
                         && stateId.Equals(CampaignState.Active))
                     {
                         // Push notification to mobile app
