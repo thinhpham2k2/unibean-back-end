@@ -10,4 +10,6 @@ public interface IActivityTransactionRepository
         (List<string> walletIds, List<string> activityIds, string search);
 
     ActivityTransaction GetById(string id);
+
+    decimal IncomeOfGreenBean(DateOnly date);
 }

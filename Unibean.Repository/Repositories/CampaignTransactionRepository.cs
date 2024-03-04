@@ -80,4 +80,42 @@ public class CampaignTransactionRepository : ICampaignTransactionRepository
         }
         return walletTransaction;
     }
+
+    public decimal IncomeOfGreenBean(string brandId, DateOnly date)
+    {
+        decimal result = 0;
+        try
+        {
+            using var db = new UnibeanDBContext();
+            result = db.CampaignTransactions
+                .Where(o => o.Wallet.Type.Equals(WalletType.Green)
+                && o.Wallet.BrandId.Equals(brandId)  && o.Amount > 0
+                && DateOnly.FromDateTime(o.DateCreated.Value).Equals(date)
+                && (bool)o.Status).Select(o => o.Amount.Value).Sum();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return result;
+    }
+
+    public decimal OutcomeOfGreenBean(string brandId, DateOnly date)
+    {
+        decimal result = 0;
+        try
+        {
+            using var db = new UnibeanDBContext();
+            result = -db.CampaignTransactions
+                .Where(o => o.Wallet.Type.Equals(WalletType.Green)
+                && o.Wallet.BrandId.Equals(brandId) && o.Amount < 0
+                && DateOnly.FromDateTime(o.DateCreated.Value).Equals(date)
+                && (bool)o.Status).Select(o => o.Amount.Value).Sum();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return result;
+    }
 }

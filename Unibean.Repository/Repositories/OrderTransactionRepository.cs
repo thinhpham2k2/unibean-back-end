@@ -74,4 +74,64 @@ public class OrderTransactionRepository : IOrderTransactionRepository
         }
         return orderTransaction;
     }
+
+    public decimal IncomeOfRedBean(DateOnly date)
+    {
+        decimal result = 0;
+        try
+        {
+            using var db = new UnibeanDBContext();
+            result = -db.OrderTransactions
+                .Where(o => o.Wallet.Type.Equals(WalletType.Red)
+                && o.Amount < 0
+                && DateOnly.FromDateTime(o.Order.DateCreated.Value).Equals(date)
+                && (bool)o.Status).Select(o => o.Amount.Value).Sum();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return result;
+    }
+
+    public decimal IncomeOfRedBean(string stationId, DateOnly date)
+    {
+        decimal result = 0;
+        try
+        {
+            using var db = new UnibeanDBContext();
+            result = -db.OrderTransactions
+                .Where(o => o.Wallet.Type.Equals(WalletType.Red)
+                && o.Amount < 0 && o.Order.StationId.Equals(stationId)
+                && DateOnly.FromDateTime(o.Order.DateCreated.Value).Equals(date)
+                && (bool)o.Status).Select(o => o.Amount.Value).Sum();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return result;
+    }
+
+    public decimal OutcomeOfRedBean(string stationId, DateOnly date)
+    {
+        decimal result = 0;
+        try
+        {
+            using var db = new UnibeanDBContext();
+            result = db.OrderTransactions
+                .Where(o => o.Wallet.Type.Equals(WalletType.Red)
+                && o.Amount > 0 && o.Order.StationId.Equals(stationId)
+                && DateOnly.FromDateTime(o.Order.OrderStates.Where(
+                    o => (bool)o.Status 
+                    && o.State.Equals(State.Abort)).OrderBy(o => o.Id)
+                    .LastOrDefault().DateCreated.Value).Equals(date)
+                && (bool)o.Status).Select(o => o.Amount.Value).Sum();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return result;
+    }
 }

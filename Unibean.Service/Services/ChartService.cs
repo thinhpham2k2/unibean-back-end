@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using Enable.EnumDisplayName;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Repositories.Interfaces;
@@ -26,6 +27,14 @@ public class ChartService : IChartService
 
     private readonly IStudentRepository studentRepository;
 
+    private readonly IOrderTransactionRepository orderTransactionRepository;
+
+    private readonly IActivityTransactionRepository activityTransactionRepository;
+
+    private readonly IRequestTransactionRepository requestTransactionRepository;
+
+    private readonly ICampaignTransactionRepository campaignTransactionRepository;
+
     public ChartService(
         IAdminRepository adminRepository,
         IBrandRepository brandRepository,
@@ -33,7 +42,11 @@ public class ChartService : IChartService
         IProductRepository productRepository,
         IStaffRepository staffRepository,
         IStoreRepository storeRepository,
-        IStudentRepository studentRepository)
+        IStudentRepository studentRepository,
+        IOrderTransactionRepository orderTransactionRepository,
+        IActivityTransactionRepository activityTransactionRepository,
+        IRequestTransactionRepository requestTransactionRepository,
+        ICampaignTransactionRepository campaignTransactionRepository)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -71,6 +84,10 @@ public class ChartService : IChartService
         this.staffRepository = staffRepository;
         this.storeRepository = storeRepository;
         this.studentRepository = studentRepository;
+        this.orderTransactionRepository = orderTransactionRepository;
+        this.activityTransactionRepository = activityTransactionRepository;
+        this.requestTransactionRepository = requestTransactionRepository;
+        this.campaignTransactionRepository = campaignTransactionRepository;
     }
 
     public List<LineChartModel> GetLineChart(string id, Role role)
@@ -87,8 +104,8 @@ public class ChartService : IChartService
                     {
                         result.Add(new()
                         {
-                            Green = (int)role,
-                            Red = (int)role,
+                            Green = activityTransactionRepository.IncomeOfGreenBean(d),
+                            Red = orderTransactionRepository.IncomeOfRedBean(d),
                             Date = d,
                         });
                     }
@@ -103,8 +120,8 @@ public class ChartService : IChartService
                     {
                         result.Add(new()
                         {
-                            Green = (int)role,
-                            Red = (int)role,
+                            Green = requestTransactionRepository.IncomeOfGreenBean(id, d) + campaignTransactionRepository.IncomeOfGreenBean(id, d),
+                            Red = campaignTransactionRepository.OutcomeOfGreenBean(id, d),
                             Date = d,
                         });
                     }
@@ -119,8 +136,8 @@ public class ChartService : IChartService
                     {
                         result.Add(new()
                         {
-                            Green = (int)role,
-                            Red = (int)role,
+                            Green = orderTransactionRepository.IncomeOfRedBean(staff.StationId, d),
+                            Red = orderTransactionRepository.OutcomeOfRedBean(staff.StationId, d),
                             Date = d,
                         });
                     }

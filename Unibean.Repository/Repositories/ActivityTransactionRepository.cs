@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Repositories.Interfaces;
+using Type = Unibean.Repository.Entities.Type;
 
 namespace Unibean.Repository.Repositories;
 
@@ -79,5 +80,24 @@ public class ActivityTransactionRepository : IActivityTransactionRepository
             throw new Exception(ex.Message);
         }
         return activityTransaction;
+    }
+
+    public decimal IncomeOfGreenBean(DateOnly date)
+    {
+        decimal result = 0;
+        try
+        {
+            using var db = new UnibeanDBContext();
+            result = -db.ActivityTransactions
+                .Where(o => o.Wallet.Type.Equals(WalletType.Green)
+                && o.Activity.Type.Equals(Type.Buy)
+                && DateOnly.FromDateTime(o.Activity.DateCreated.Value).Equals(date)
+                && (bool)o.Status).Select(o => o.Amount.Value).Sum();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return result;
     }
 }
