@@ -4,6 +4,7 @@ using System.Net;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Service.Models.Admins;
+using Unibean.Service.Models.Charts;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Parameters;
 using Unibean.Service.Models.Requests;
@@ -19,15 +20,19 @@ public class AdminController : ControllerBase
 {
     private readonly IAdminService adminService;
 
+    private readonly IChartService chartService;
+
     private readonly IRequestService requestService;
 
     private readonly IFireBaseService fireBaseService;
 
     public AdminController(IAdminService adminService,
+        IChartService chartService,
         IRequestService requestService,
         IFireBaseService fireBaseService)
     {
         this.adminService = adminService;
+        this.chartService = chartService;
         this.requestService = requestService;
         this.fireBaseService = fireBaseService;
     }
@@ -55,7 +60,7 @@ public class AdminController : ControllerBase
         {
             PagedResultModel<AdminModel>
                 result = adminService.GetAll
-                (state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                (state, propertySort, paging.Sort.Split(",")[1].Equals("asc"),
                 paging.Search, paging.Page, paging.Limit);
             return StatusCode(StatusCodes.Status200OK, result);
         }
@@ -192,6 +197,28 @@ public class AdminController : ControllerBase
     }
 
     /// <summary>
+    /// Get title by admin id
+    /// </summary>
+    [HttpGet("{id}/title")]
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType(typeof(TitleAdminModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public IActionResult GetTitleByAdminId(string id)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            return StatusCode(StatusCodes.Status200OK, chartService.GetTitleAdmin(id));
+        }
+        catch (InvalidParameterException e)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+        }
+    }
+
+    /// <summary>
     /// Push noification to topic
     /// </summary>
     [HttpPost("notification")]
@@ -204,7 +231,7 @@ public class AdminController : ControllerBase
 
         try
         {
-            return StatusCode(StatusCodes.Status201Created, 
+            return StatusCode(StatusCodes.Status201Created,
                 fireBaseService.PushNotificationToTopic(topic));
         }
         catch (InvalidParameterException e)

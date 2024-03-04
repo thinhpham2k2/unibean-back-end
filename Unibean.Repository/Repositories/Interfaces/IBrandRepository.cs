@@ -7,6 +7,8 @@ public interface IBrandRepository
 {
     Brand Add(Brand creation);
 
+    long CountBrand();
+
     void Delete(string id);
 
     PagedResultModel<Brand> GetAll

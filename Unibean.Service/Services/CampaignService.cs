@@ -504,19 +504,19 @@ public class CampaignService : ICampaignService
                             throw new InvalidParameterException("Trạng thái không hợp lệ cho chiến dịch đang hoạt động");
                         case CampaignState.Active
                         when new[] { CampaignState.Closed }.Contains(stateId) && entity.StartOn > DateOnly.FromDateTime(DateTime.Now):
-                            throw new InvalidParameterException("Trạng thái không hợp lệ cho chiến dịch đang hoạt động");
+                            throw new InvalidParameterException("Trạng thái không hợp lệ do chiến dịch chưa bắt đầu");
                         case CampaignState.Active
                         when new[] { CampaignState.Cancelled }.Contains(stateId) && entity.StartOn <= DateOnly.FromDateTime(DateTime.Now):
-                            throw new InvalidParameterException("Trạng thái không hợp lệ cho chiến dịch đang hoạt động");
+                            throw new InvalidParameterException("Trạng thái không hợp lệ do chiến dịch đã bắt đầu");
                         case CampaignState.Inactive
                         when new[] { CampaignState.Rejected, CampaignState.Inactive }.Contains(stateId):
                             throw new InvalidParameterException("Trạng thái không hợp lệ cho chiến dịch đang không hoạt động");
                         case CampaignState.Inactive
                         when new[] { CampaignState.Closed }.Contains(stateId) && entity.StartOn > DateOnly.FromDateTime(DateTime.Now):
-                            throw new InvalidParameterException("Trạng thái không hợp lệ cho chiến dịch đang không hoạt động");
+                            throw new InvalidParameterException("Trạng thái không hợp lệ do chiến dịch chưa bắt đầu");
                         case CampaignState.Inactive
                         when new[] { CampaignState.Cancelled }.Contains(stateId) && entity.StartOn <= DateOnly.FromDateTime(DateTime.Now):
-                            throw new InvalidParameterException("Trạng thái không hợp lệ cho chiến dịch đang không hoạt động");
+                            throw new InvalidParameterException("Trạng thái không hợp lệ do chiến dịch đã bắt đầu");
                     }
 
                     if (entity.CampaignActivities.LastOrDefault().State.Equals(CampaignState.Pending)

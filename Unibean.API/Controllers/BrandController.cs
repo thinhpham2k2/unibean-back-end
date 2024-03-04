@@ -5,6 +5,7 @@ using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Service.Models.Brands;
 using Unibean.Service.Models.Campaigns;
+using Unibean.Service.Models.Charts;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Parameters;
 using Unibean.Service.Models.Stores;
@@ -23,11 +24,16 @@ public class BrandController : ControllerBase
 
     private readonly IJwtService jwtService;
 
-    public BrandController(IBrandService brandService, 
-        IJwtService jwtService)
+    private readonly IChartService chartService;
+
+    public BrandController(
+        IBrandService brandService, 
+        IJwtService jwtService,
+        IChartService chartService)
     {
         this.brandService = brandService;
         this.jwtService = jwtService;
+        this.chartService = chartService;
     }
 
     /// <summary>
@@ -281,6 +287,28 @@ public class BrandController : ControllerBase
                 return StatusCode(StatusCodes.Status200OK, result);
             }
             return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của cửa hàng");
+        }
+        catch (InvalidParameterException e)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Get title by brand id
+    /// </summary>
+    [HttpGet("{id}/title")]
+    [Authorize(Roles = "Admin, Brand")]
+    [ProducesResponseType(typeof(TitleBrandModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public IActionResult GetTitleByBrandId(string id)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            return StatusCode(StatusCodes.Status200OK, chartService.GetTitleBrand(id));
         }
         catch (InvalidParameterException e)
         {

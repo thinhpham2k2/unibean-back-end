@@ -9,6 +9,8 @@ public interface ICampaignRepository
 
     List<string> AllToClosed(string id);
 
+    long CountCampaign();
+
     void Delete(string id);
 
     bool ExpiredToClosed(string id);
