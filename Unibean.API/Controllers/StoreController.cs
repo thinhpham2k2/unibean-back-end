@@ -29,7 +29,7 @@ public class StoreController : ControllerBase
     private readonly IChartService chartService;
 
     public StoreController(
-        IStoreService storeService, 
+        IStoreService storeService,
         IBonusService bonusService,
         IChartService chartService)
     {
@@ -65,7 +65,7 @@ public class StoreController : ControllerBase
         {
             PagedResultModel<StoreModel>
                 result = storeService.GetAll
-                (brandIds, areaIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                (brandIds, areaIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"),
                 paging.Search, paging.Page, paging.Limit);
             return StatusCode(StatusCodes.Status200OK, result);
         }
@@ -230,8 +230,8 @@ public class StoreController : ControllerBase
             {
                 PagedResultModel<CampaignDetailModel>
                 result = storeService.GetCampaignDetailByStoreId
-                    (id, campaignIds, typeIds, state, propertySort, 
-                    paging.Sort.Split(",")[1].Equals("asc"), 
+                    (id, campaignIds, typeIds, state, propertySort,
+                    paging.Sort.Split(",")[1].Equals("asc"),
                     paging.Search, paging.Page, paging.Limit);
                 return StatusCode(StatusCodes.Status200OK, result);
             }
@@ -330,6 +330,28 @@ public class StoreController : ControllerBase
                 return StatusCode(StatusCodes.Status200OK, result);
             }
             return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của lịch sử giao dịch");
+        }
+        catch (InvalidParameterException e)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Get line chart by store id
+    /// </summary>
+    [HttpGet("{id}/line-chart")]
+    [Authorize(Roles = "Admin, Brand, Store")]
+    [ProducesResponseType(typeof(List<LineChartModel>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public IActionResult GetLineChartByStoreId(string id)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            return StatusCode(StatusCodes.Status200OK, chartService.GetLineChart(id, Role.Store));
         }
         catch (InvalidParameterException e)
         {

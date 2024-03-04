@@ -73,6 +73,81 @@ public class ChartService : IChartService
         this.studentRepository = studentRepository;
     }
 
+    public List<LineChartModel> GetLineChart(string id, Role role)
+    {
+        List<LineChartModel> result = new();
+        DateOnly date = DateOnly.FromDateTime(DateTime.Now);
+        switch (role)
+        {
+            case Role.Admin:
+                Admin admin = adminRepository.GetById(id);
+                if (admin != null)
+                {
+                    for (DateOnly d = date.AddDays(-6); d <= date; d = d.AddDays(1))
+                    {
+                        result.Add(new()
+                        {
+                            Green = (int)role,
+                            Red = (int)role,
+                            Date = d,
+                        });
+                    }
+                    return result;
+                }
+                throw new InvalidParameterException("Không tìm thấy quản trị viên");
+            case Role.Brand:
+                Brand brand = brandRepository.GetById(id);
+                if (brand != null)
+                {
+                    for (DateOnly d = date.AddDays(-6); d <= date; d = d.AddDays(1))
+                    {
+                        result.Add(new()
+                        {
+                            Green = (int)role,
+                            Red = (int)role,
+                            Date = d,
+                        });
+                    }
+                    return result;
+                }
+                throw new InvalidParameterException("Không tìm thấy thương hiệu");
+            case Role.Staff:
+                Staff staff = staffRepository.GetById(id);
+                if (staff != null)
+                {
+                    for (DateOnly d = date.AddDays(-6); d <= date; d = d.AddDays(1))
+                    {
+                        result.Add(new()
+                        {
+                            Green = (int)role,
+                            Red = (int)role,
+                            Date = d,
+                        });
+                    }
+                    return result;
+                }
+                throw new InvalidParameterException("Không tìm thấy nhân viên");
+            case Role.Store:
+                Store store = storeRepository.GetById(id);
+                if (store != null)
+                {
+                    for (DateOnly d = date.AddDays(-6); d <= date; d = d.AddDays(1))
+                    {
+                        result.Add(new()
+                        {
+                            Green = (int)role,
+                            Red = (int)role,
+                            Date = d,
+                        });
+                    }
+                    return result;
+                }
+                throw new InvalidParameterException("Không tìm thấy cửa hàng");
+            default:
+                throw new InvalidParameterException("Xác thực không hợp lệ");
+        }
+    }
+
     public TitleAdminModel GetTitleAdmin(string adminId)
     {
         Admin entity = adminRepository.GetById(adminId);
