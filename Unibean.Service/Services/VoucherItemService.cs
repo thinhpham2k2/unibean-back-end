@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Vml.Office;
 using Enable.EnumDisplayName;
 using MoreLinq;
 using System.Data;
@@ -374,6 +375,21 @@ public class VoucherItemService : IVoucherItemService
             return CreateResult(GetEmpdata(list, voucherRepository.GetById(insert.VoucherId).VoucherName));
         }
         throw new InvalidParameterException("Tệp không hợp lệ");
+    }
+
+    public VoucherItemExtraModel GetByCode(string code)
+    {
+        VoucherItem entity = voucherItemRepository.GetByVoucherCode(code);
+        if (entity != null)
+        {
+            return mapper.Map<VoucherItemExtraModel>(entity);
+        }
+        throw new InvalidParameterException("Không tìm thấy khuyến mãi");
+    }
+
+    public VoucherItemExtraModel EntityToExtra(VoucherItem item)
+    {
+        return mapper.Map<VoucherItemExtraModel>(item);
     }
 
     public class VoucherItemListConverter :

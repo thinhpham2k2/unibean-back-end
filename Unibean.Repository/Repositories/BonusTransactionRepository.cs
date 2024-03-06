@@ -36,4 +36,9 @@ public class BonusTransactionRepository : IBonusTransactionRepository
         }
         return result;
     }
+
+    public decimal IncomeOfGreenBean(string storeId, DateOnly date)
+    {
+        throw new NotImplementedException();
+    }
 }

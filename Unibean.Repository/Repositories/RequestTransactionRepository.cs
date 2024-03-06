@@ -80,4 +80,23 @@ public class RequestTransactionRepository : IRequestTransactionRepository
         }
         return requestTransaction;
     }
+
+    public decimal IncomeOfGreenBean(string brandId, DateOnly date)
+    {
+        decimal result = 0;
+        try
+        {
+            using var db = new UnibeanDBContext();
+            result = db.RequestTransactions
+                .Where(o => o.Wallet.Type.Equals(WalletType.Green)
+                && o.Request.BrandId.Equals(brandId)
+                && DateOnly.FromDateTime(o.Request.DateCreated.Value).Equals(date)
+                && (bool)o.Status).Select(o => o.Amount.Value).Sum();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return result;
+    }
 }

@@ -3,6 +3,7 @@ using Unibean.Service.Models.Activities;
 using Unibean.Service.Models.CampaignDetails;
 using Unibean.Service.Models.Stores;
 using Unibean.Service.Models.Transactions;
+using Unibean.Service.Models.VoucherItems;
 
 namespace Unibean.Service.Services.Interfaces;
 
@@ -36,4 +37,6 @@ public interface IStoreService
     Task<StoreExtraModel> Update(string id, UpdateStoreModel update);
 
     CampaignDetailExtraModel GetCampaignDetailById(string id, string detailId);
+
+    VoucherItemExtraModel GetVoucherItemByCode(string id, string code);
 }

@@ -11,6 +11,7 @@ using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Parameters;
 using Unibean.Service.Models.Stores;
 using Unibean.Service.Models.Transactions;
+using Unibean.Service.Models.VoucherItems;
 using Unibean.Service.Services;
 using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Validations;
@@ -291,6 +292,33 @@ public class StoreController : ControllerBase
             return storeService.AddActivity(id, code, creation) ?
                 StatusCode(StatusCodes.Status201Created, "Quét khuyến mãi thành công") :
                 StatusCode(StatusCodes.Status404NotFound, "Quét khuyến mãi thất bại");
+        }
+        catch (InvalidParameterException e)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Get voucher item detail by voucher code
+    /// </summary>
+    /// <param name="id">Store id.</param>
+    /// <param name="code">Voucher code.</param>
+    [HttpGet("{id}/campaign-details/{code}/information")]
+    [Authorize(Roles = "Store")]
+    [ProducesResponseType(typeof(VoucherItemExtraModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public ActionResult<string> GetVoucherInformation(
+        [ValidStore] string id,
+        [ValidItem] string code)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            return StatusCode(StatusCodes.Status200OK, storeService.GetVoucherItemByCode(id, code));
         }
         catch (InvalidParameterException e)
         {

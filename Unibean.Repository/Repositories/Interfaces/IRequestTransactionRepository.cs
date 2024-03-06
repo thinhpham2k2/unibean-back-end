@@ -11,4 +11,6 @@ public interface IRequestTransactionRepository
         List<WalletType> walletTypeIds, string search);
 
     RequestTransaction GetById(string id);
+
+    decimal IncomeOfGreenBean(string brandId, DateOnly date);
 }
