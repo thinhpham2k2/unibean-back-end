@@ -12,4 +12,6 @@ public interface IActivityTransactionRepository
     ActivityTransaction GetById(string id);
 
     decimal IncomeOfGreenBean(DateOnly date);
+
+    decimal OutcomeOfGreenBean(string storeId, DateOnly date);
 }

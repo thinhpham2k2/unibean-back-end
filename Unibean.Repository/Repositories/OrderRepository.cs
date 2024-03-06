@@ -60,6 +60,23 @@ public class OrderRepository : IOrderRepository
         return creation;
     }
 
+    public long CountOrderToday(string stationId, DateOnly date)
+    {
+        long count = 0;
+        try
+        {
+            using var db = new UnibeanDBContext();
+            count = db.Orders.Where(c => (bool)c.Status
+            && c.StationId.Equals(stationId)
+            && DateOnly.FromDateTime(c.DateCreated.Value).Equals(date)).Count();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return count;
+    }
+
     public void Delete(string id)
     {
         try
@@ -86,6 +103,7 @@ public class OrderRepository : IOrderRepository
             using var db = new UnibeanDBContext();
             var query = db.Orders
                 .Where(o => (EF.Functions.Like(o.Student.FullName, "%" + search + "%")
+                || EF.Functions.Like(o.Student.Code, "%" + search + "%")
                 || EF.Functions.Like(o.Station.StationName, "%" + search + "%")
                 || EF.Functions.Like(o.Description, "%" + search + "%"))
                 && (stationIds.Count == 0 || stationIds.Contains(o.StationId))

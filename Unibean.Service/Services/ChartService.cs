@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using DocumentFormat.OpenXml.Office2010.Excel;
 using Enable.EnumDisplayName;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Repositories.Interfaces;
@@ -25,7 +24,13 @@ public class ChartService : IChartService
 
     private readonly IStoreRepository storeRepository;
 
+    private readonly IOrderRepository orderRepository;
+
     private readonly IStudentRepository studentRepository;
+
+    private readonly IActivityRepository activityRepository;
+
+    private readonly IVoucherItemRepository voucherItemRepository;
 
     private readonly IOrderTransactionRepository orderTransactionRepository;
 
@@ -35,6 +40,8 @@ public class ChartService : IChartService
 
     private readonly ICampaignTransactionRepository campaignTransactionRepository;
 
+    private readonly IBonusTransactionRepository bonusTransactionRepository;
+
     public ChartService(
         IAdminRepository adminRepository,
         IBrandRepository brandRepository,
@@ -42,11 +49,15 @@ public class ChartService : IChartService
         IProductRepository productRepository,
         IStaffRepository staffRepository,
         IStoreRepository storeRepository,
+        IOrderRepository orderRepository,
         IStudentRepository studentRepository,
+        IActivityRepository activityRepository,
+        IVoucherItemRepository voucherItemRepository,
         IOrderTransactionRepository orderTransactionRepository,
         IActivityTransactionRepository activityTransactionRepository,
         IRequestTransactionRepository requestTransactionRepository,
-        ICampaignTransactionRepository campaignTransactionRepository)
+        ICampaignTransactionRepository campaignTransactionRepository,
+        IBonusTransactionRepository bonusTransactionRepository)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -83,11 +94,114 @@ public class ChartService : IChartService
         this.productRepository = productRepository;
         this.staffRepository = staffRepository;
         this.storeRepository = storeRepository;
+        this.orderRepository = orderRepository;
         this.studentRepository = studentRepository;
+        this.activityRepository = activityRepository;
+        this.voucherItemRepository = voucherItemRepository;
         this.orderTransactionRepository = orderTransactionRepository;
         this.activityTransactionRepository = activityTransactionRepository;
         this.requestTransactionRepository = requestTransactionRepository;
         this.campaignTransactionRepository = campaignTransactionRepository;
+        this.bonusTransactionRepository = bonusTransactionRepository;
+    }
+
+    public List<ColumnChartModel> GetColumnChart
+        (string id, DateOnly fromDate, DateOnly toDate, bool? isAsc, Role role)
+    {
+        if (toDate < fromDate)
+        {
+            throw new InvalidParameterException("Ngày không hợp lệ");
+        }
+        List<ColumnChartModel> result = new();
+        switch (role)
+        {
+            case Role.Admin:
+                Admin admin = adminRepository.GetById(id);
+                if (admin != null)
+                {
+                    while (toDate >= fromDate)
+                    {
+                        result.Add(new()
+                        {
+                            // Tổng tài khoản sinh viên được đăng kí trong ngày
+                            Value = studentRepository.CountStudentToday(fromDate),
+
+                            // Ngày diễn ra
+                            Date = fromDate,
+                        });
+                        fromDate = fromDate.AddDays(1); // Tăng ngày hiện tại lên 1 ngày
+                    }
+                    return isAsc == null ?
+                        result : (bool)isAsc ?
+                        result.OrderBy(r => r.Value).ToList() : result.OrderByDescending(r => r.Value).ToList();
+                }
+                throw new InvalidParameterException("Không tìm thấy quản trị viên");
+            case Role.Brand:
+                Brand brand = brandRepository.GetById(id);
+                if (brand != null)
+                {
+                    while (toDate >= fromDate)
+                    {
+                        result.Add(new()
+                        {
+                            // Tổng số lượng khuyến mãi được sử dụng trong ngày
+                            Value = voucherItemRepository.CountVoucherItemToday(brand.Id, fromDate),
+
+                            // Ngày diễn ra
+                            Date = fromDate,
+                        });
+                        fromDate = fromDate.AddDays(1); // Tăng ngày hiện tại lên 1 ngày
+                    }
+                    return isAsc == null ?
+                        result : (bool)isAsc ?
+                        result.OrderBy(r => r.Value).ToList() : result.OrderByDescending(r => r.Value).ToList();
+                }
+                throw new InvalidParameterException("Không tìm thấy thương hiệu");
+            case Role.Staff:
+                Staff staff = staffRepository.GetById(id);
+                if (staff != null)
+                {
+                    while (toDate >= fromDate)
+                    {
+                        result.Add(new()
+                        {
+                            // Tổng số lượng đơn hàng được tạo trong ngày
+                            Value = orderRepository.CountOrderToday(staff.StationId, fromDate),
+
+                            // Ngày diễn ra
+                            Date = fromDate,
+                        });
+                        fromDate = fromDate.AddDays(1); // Tăng ngày hiện tại lên 1 ngày
+                    }
+                    return isAsc == null ?
+                        result : (bool)isAsc ?
+                        result.OrderBy(r => r.Value).ToList() : result.OrderByDescending(r => r.Value).ToList();
+                }
+                throw new InvalidParameterException("Không tìm thấy nhân viên");
+            case Role.Store:
+                Store store = storeRepository.GetById(id);
+                if (store != null)
+                {
+                    while (toDate >= fromDate)
+                    {
+                        result.Add(new()
+                        {
+                            // Tổng số lượng người tham gia trong ngày
+                            Value = activityRepository.CountParticipantToday(store.Id, fromDate),
+
+                            // Ngày diễn ra
+                            Date = fromDate,
+                        });
+                        fromDate = fromDate.AddDays(1); // Tăng ngày hiện tại lên 1 ngày
+                    }
+                    return isAsc == null ?
+                        result : (bool)isAsc ?
+                        result.OrderBy(r => r.Value).ToList() : result.OrderByDescending(r => r.Value).ToList();
+                }
+                throw new InvalidParameterException("Không tìm thấy cửa hàng");
+            default:
+                throw new InvalidParameterException("Xác thực không hợp lệ");
+        }
     }
 
     public List<LineChartModel> GetLineChart(string id, Role role)
@@ -104,8 +218,13 @@ public class ChartService : IChartService
                     {
                         result.Add(new()
                         {
+                            // Tổng đậu xanh thu được từ việc Student mua Voucher Item
                             Green = activityTransactionRepository.IncomeOfGreenBean(d),
+
+                            // Tổng đậu đỏ thu được từ việc Student đặt Order
                             Red = orderTransactionRepository.IncomeOfRedBean(d),
+
+                            // Ngày diễn ra
                             Date = d,
                         });
                     }
@@ -120,8 +239,13 @@ public class ChartService : IChartService
                     {
                         result.Add(new()
                         {
+                            // Tổng đậu xanh thu được từ Request (Admin tạo) và Campaign hoàn trả đậu khi kết thúc
                             Green = requestTransactionRepository.IncomeOfGreenBean(id, d) + campaignTransactionRepository.IncomeOfGreenBean(id, d),
+
+                            // Tổng đậu xanh chi ra cho việc tạo Campaign của Brand
                             Red = campaignTransactionRepository.OutcomeOfGreenBean(id, d),
+
+                            // Ngày diễn ra
                             Date = d,
                         });
                     }
@@ -136,8 +260,13 @@ public class ChartService : IChartService
                     {
                         result.Add(new()
                         {
+                            // Tổng đậu đỏ thu được từ việc Student đặt hàng cho Station
                             Green = orderTransactionRepository.IncomeOfRedBean(staff.StationId, d),
+
+                            // Tổng đậu đỏ chi ra cho việc hoàn trả đậu cho Student sau khi Staff thuộc Station hủy đơn
                             Red = orderTransactionRepository.OutcomeOfRedBean(staff.StationId, d),
+
+                            // Ngày diễn ra
                             Date = d,
                         });
                     }
@@ -152,8 +281,13 @@ public class ChartService : IChartService
                     {
                         result.Add(new()
                         {
-                            Green = (int)role,
-                            Red = (int)role,
+                            // Tổng đậu xanh chi cho việc tặng Bonus bởi Store cho Student
+                            Green = bonusTransactionRepository.OutcomeOfGreenBean(store.Id, d),
+
+                            // Tổng đậu xanh chi cho việc Student sử dụng Voucher Item tại Store
+                            Red = activityTransactionRepository.OutcomeOfGreenBean(store.Id, d),
+
+                            // Ngày diễn ra
                             Date = d,
                         });
                     }

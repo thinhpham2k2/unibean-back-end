@@ -9,6 +9,8 @@ public interface IStudentRepository
 
     long CountStudent();
 
+    long CountStudentToday(DateOnly date);
+
     bool CheckCodeDuplicate(string code);
 
     bool CheckInviteCode(string inviteCode);

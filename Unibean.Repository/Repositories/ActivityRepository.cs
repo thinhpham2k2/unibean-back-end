@@ -66,6 +66,7 @@ public class ActivityRepository : IActivityRepository
                         .Where(s => s.Id.Equals(creation.VoucherItem.CampaignDetail.CampaignId) && (bool)s.Status)
                         .Include(b => b.Wallets).FirstOrDefault();
                 var campaignWallet = campaign.Wallets.Where(w => w.Type.Equals(WalletType.Green)).FirstOrDefault();
+                var amount = creation.VoucherItem.CampaignDetail.Price * creation.VoucherItem.CampaignDetail.Rate;
 
                 // Create Activity Transaction List
                 creation.ActivityTransactions = new List<ActivityTransaction> {
@@ -73,7 +74,7 @@ public class ActivityRepository : IActivityRepository
                         Id = Ulid.NewUlid().ToString(),
                         ActivityId = creation.Id,
                         WalletId = campaignWallet.Id,
-                        Amount = -creation.VoucherItem.CampaignDetail.Price * creation.VoucherItem.CampaignDetail.Rate,
+                        Amount = -amount,
                         Rate = creation.VoucherItem.CampaignDetail.Rate,
                         Description = creation.Description,
                         State = creation.State,
@@ -83,14 +84,12 @@ public class ActivityRepository : IActivityRepository
                         Id = Ulid.NewUlid().ToString(),
                         ActivityId = creation.Id,
                         WalletId = studentWallet.Id,
-                        Amount = creation.VoucherItem.CampaignDetail.Price * creation.VoucherItem.CampaignDetail.Rate,
+                        Amount = amount,
                         Rate = creation.VoucherItem.CampaignDetail.Rate,
                         Description = creation.Description,
                         State = creation.State,
                         Status = creation.Status,
                     }};
-
-                var amount = creation.VoucherItem.CampaignDetail.Price * creation.VoucherItem.CampaignDetail.Rate;
                 creation.VoucherItem.Voucher = null;
                 creation.VoucherItem.CampaignDetail = null;
                 creation.VoucherItem.Activities = null;
@@ -123,6 +122,24 @@ public class ActivityRepository : IActivityRepository
             throw new Exception(ex.Message);
         }
         return creation;
+    }
+
+    public long CountParticipantToday(string storeId, DateOnly date)
+    {
+        long count = 0;
+        try
+        {
+            using var db = new UnibeanDBContext();
+            count = db.Activities.Where(c => (bool)c.Status
+            && c.StoreId.Equals(storeId)
+            && DateOnly.FromDateTime(c.DateCreated.Value).Equals(date)).Select(a => a.StudentId)
+            .Distinct().Count();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return count;
     }
 
     public void Delete(string id)

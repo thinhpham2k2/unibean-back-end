@@ -6,6 +6,7 @@ public class OrderModel
     public string OrderImage { get; set; }
     public string StudentId { get; set; }
     public string StudentName { get; set; }
+    public string StudentCode { get; set; }
     public string StationId { get; set; }
     public string StationName { get; set; }
     public decimal? Amount { get; set; }
