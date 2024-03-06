@@ -1,4 +1,6 @@
-﻿namespace Unibean.Service.Services.Interfaces;
+﻿using Unibean.Repository.Entities;
+
+namespace Unibean.Service.Services.Interfaces;
 
 public interface IEmailService
 {
@@ -15,4 +17,6 @@ public interface IEmailService
     string SendEmailVerification(string receiver);
 
     bool SendEmailAbortOrder(string receiver, string orderId);
+
+    bool SendEmailCreateOrder(string receiver, string studentCode, Order order);
 }

@@ -15,13 +15,17 @@ public class OrderService : IOrderService
 {
     private readonly Mapper mapper;
 
+    private readonly IEmailService emailService;
+
     private readonly IOrderRepository orderRepository;
 
     private readonly IStudentRepository studentRepository;
 
     private readonly IOrderTransactionRepository orderTransactionRepository;
 
-    public OrderService(IOrderRepository orderRepository,
+    public OrderService(
+        IEmailService emailService,
+        IOrderRepository orderRepository,
         IStudentRepository studentRepository,
         IOrderTransactionRepository orderTransactionRepository)
     {
@@ -33,6 +37,7 @@ public class OrderService : IOrderService
                 => src.OrderDetails.FirstOrDefault().Product.Images.Where(i
                 => (bool)i.IsCover).FirstOrDefault().Url))
             .ForMember(o => o.StudentName, opt => opt.MapFrom(src => src.Student.FullName))
+            .ForMember(o => o.StudentCode, opt => opt.MapFrom(src => src.Student.Code))
             .ForMember(o => o.StationName, opt => opt.MapFrom(src => src.Station.StationName))
             .ForMember(o => o.CurrentStateId, opt => opt.MapFrom(
                 src => (int)src.OrderStates.LastOrDefault().State))
@@ -45,7 +50,10 @@ public class OrderService : IOrderService
             .ReverseMap();
             cfg.CreateMap<Order, OrderExtraModel>()
             .ForMember(o => o.StudentName, opt => opt.MapFrom(src => src.Student.FullName))
+            .ForMember(o => o.StudentCode, opt => opt.MapFrom(src => src.Student.Code))
+            .ForMember(o => o.StudentImage, opt => opt.MapFrom(src => src.Student.Account.Avatar))
             .ForMember(o => o.StationName, opt => opt.MapFrom(src => src.Station.StationName))
+            .ForMember(o => o.StationImage, opt => opt.MapFrom(src => src.Station.Image))
             .ForMember(o => o.CurrentStateId, opt => opt.MapFrom(
                 src => (int)src.OrderStates.LastOrDefault().State))
             .ForMember(o => o.CurrentState, opt => opt.MapFrom(
@@ -77,6 +85,7 @@ public class OrderService : IOrderService
             .ForMember(o => o.Status, opt => opt.MapFrom(src => true));
         });
         mapper = new Mapper(config);
+        this.emailService = emailService;
         this.orderRepository = orderRepository;
         this.studentRepository = studentRepository;
         this.orderTransactionRepository = orderTransactionRepository;
@@ -108,6 +117,10 @@ public class OrderService : IOrderService
                             State = true,
                             Status = true
                         });
+
+                        // Send mail
+                        emailService.SendEmailCreateOrder(student.Account.Email, student.Code, orderRepository.GetById(order.Id));
+
                         return mapper.Map<OrderModel>(order);
                     }
                     throw new InvalidParameterException("Tạo thất bại");

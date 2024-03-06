@@ -103,6 +103,7 @@ public class OrderRepository : IOrderRepository
             using var db = new UnibeanDBContext();
             var query = db.Orders
                 .Where(o => (EF.Functions.Like(o.Student.FullName, "%" + search + "%")
+                || EF.Functions.Like(o.Student.Code, "%" + search + "%")
                 || EF.Functions.Like(o.Station.StationName, "%" + search + "%")
                 || EF.Functions.Like(o.Description, "%" + search + "%"))
                 && (stationIds.Count == 0 || stationIds.Contains(o.StationId))

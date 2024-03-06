@@ -177,9 +177,9 @@ public class AdminController : ControllerBase
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult GetColumnChartByAdminId(
-        string id, 
-        [FromQuery] DateOnly fromDate, 
-        [FromQuery] DateOnly toDate, 
+        string id,
+        [FromQuery] DateOnly fromDate,
+        [FromQuery] DateOnly toDate,
         [FromQuery] bool? isAsc)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);

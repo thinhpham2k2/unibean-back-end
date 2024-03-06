@@ -8,8 +8,11 @@ public class OrderExtraModel
     public string Id { get; set; }
     public string StudentId { get; set; }
     public string StudentName { get; set; }
+    public string StudentCode { get; set; }
+    public string StudentImage { get; set; }
     public string StationId { get; set; }
     public string StationName { get; set; }
+    public string StationImage { get; set; }
     public decimal? Amount { get; set; }
     public DateTime? DateCreated { get; set; }
     public string Description { get; set; }
