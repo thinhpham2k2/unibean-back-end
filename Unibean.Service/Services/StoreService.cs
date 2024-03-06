@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using DocumentFormat.OpenXml.Vml.Office;
 using System.Linq.Dynamic.Core;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
@@ -9,6 +8,7 @@ using Unibean.Service.Models.CampaignDetails;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Stores;
 using Unibean.Service.Models.Transactions;
+using Unibean.Service.Models.VoucherItems;
 using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Utilities.FireBase;
 using BCryptNet = BCrypt.Net.BCrypt;
@@ -43,6 +43,8 @@ public class StoreService : IStoreService
 
     private readonly IStudentRepository studentRepository;
 
+    private readonly IVoucherItemService voucherItemService;
+
     public StoreService(IStoreRepository storeRepository,
         IFireBaseService fireBaseService,
         IAccountRepository accountRepository,
@@ -50,7 +52,8 @@ public class StoreService : IStoreService
         IActivityService activityService,
         IBonusService bonusService,
         IVoucherItemRepository voucherItemRepository,
-        IStudentRepository studentRepository)
+        IStudentRepository studentRepository,
+        IVoucherItemService voucherItemService)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -119,6 +122,7 @@ public class StoreService : IStoreService
         this.bonusService = bonusService;
         this.voucherItemRepository = voucherItemRepository;
         this.studentRepository = studentRepository;
+        this.voucherItemService = voucherItemService;
     }
 
     public async Task<StoreModel> Add(CreateStoreModel creation)
@@ -315,5 +319,29 @@ public class StoreService : IStoreService
             return campaignDetailService.GetById(detailId);
         }
         throw new InvalidParameterException("Không tìm thấy cửa hàng");
+    }
+
+    public VoucherItemExtraModel GetVoucherItemByCode(string id, string code)
+    {
+        DateOnly today = DateOnly.FromDateTime(DateTime.Now);
+        var item = voucherItemRepository.GetByVoucherCode(code);
+        if (item.ValidOn <= today && today <= item.ExpireOn)
+        {
+            if (item.CampaignDetail.Campaign.CampaignStores.Any(c => c.StoreId.Equals(id)))
+            {
+
+                if ((bool)item.IsBought && item.Activities.FirstOrDefault() != null)
+                {
+                    if (!(bool)item.IsUsed)
+                    {
+                        return voucherItemService.EntityToExtra(item);
+                    }
+                    throw new InvalidParameterException("Mã khuyến mãi đã được sử dụng");
+                }
+                throw new InvalidParameterException("Mã khuyến mãi chưa được thanh toán");
+            }
+            throw new InvalidParameterException("Mã khuyến mãi không được áp dụng cho cửa hàng này");
+        }
+        throw new InvalidParameterException("Khuyến mãi đã quá hạn sử dụng");
     }
 }
