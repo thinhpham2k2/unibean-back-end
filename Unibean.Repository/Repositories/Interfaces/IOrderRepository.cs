@@ -7,6 +7,8 @@ public interface IOrderRepository
 {
     Order Add(Order creation);
 
+    long CountOrderToday(string stationId, DateOnly date);
+
     void Delete(string id);
 
     PagedResultModel<Order> GetAll

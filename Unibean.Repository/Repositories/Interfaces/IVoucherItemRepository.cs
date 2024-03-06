@@ -15,6 +15,8 @@ public interface IVoucherItemRepository
 
     void AddList(IEnumerable<VoucherItem> creations);
 
+    long CountVoucherItemToday(string brandId, DateOnly date);
+
     bool CheckVoucherCode(string code);
 
     void Delete(string id);

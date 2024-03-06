@@ -60,6 +60,23 @@ public class OrderRepository : IOrderRepository
         return creation;
     }
 
+    public long CountOrderToday(string stationId, DateOnly date)
+    {
+        long count = 0;
+        try
+        {
+            using var db = new UnibeanDBContext();
+            count = db.Orders.Where(c => (bool)c.Status
+            && c.StationId.Equals(stationId)
+            && DateOnly.FromDateTime(c.DateCreated.Value).Equals(date)).Count();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return count;
+    }
+
     public void Delete(string id)
     {
         try

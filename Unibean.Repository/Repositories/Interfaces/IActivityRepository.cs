@@ -7,6 +7,8 @@ public interface IActivityRepository
 {
     Activity Add(Activity creation);
 
+    long CountParticipantToday(string storeId, DateOnly date);
+
     void Delete(string id);
 
     PagedResultModel<Activity> GetAll

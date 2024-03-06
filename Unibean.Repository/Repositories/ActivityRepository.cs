@@ -124,6 +124,24 @@ public class ActivityRepository : IActivityRepository
         return creation;
     }
 
+    public long CountParticipantToday(string storeId, DateOnly date)
+    {
+        long count = 0;
+        try
+        {
+            using var db = new UnibeanDBContext();
+            count = db.Activities.Where(c => (bool)c.Status
+            && c.StoreId.Equals(storeId)
+            && DateOnly.FromDateTime(c.DateCreated.Value).Equals(date)).Select(a => a.StudentId)
+            .Distinct().Count();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return count;
+    }
+
     public void Delete(string id)
     {
         try

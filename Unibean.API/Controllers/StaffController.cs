@@ -162,6 +162,32 @@ public class StaffController : ControllerBase
     }
 
     /// <summary>
+    /// Get column chart by staff id
+    /// </summary>
+    [HttpGet("{id}/column-chart")]
+    [Authorize(Roles = "Admin, Staff")]
+    [ProducesResponseType(typeof(List<ColumnChartModel>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public IActionResult GetColumnChartByStaffId(
+        string id,
+        [FromQuery] DateOnly fromDate,
+        [FromQuery] DateOnly toDate,
+        [FromQuery] bool? isAsc)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            return StatusCode(StatusCodes.Status200OK, chartService.GetColumnChart(id, fromDate, toDate, isAsc, Role.Staff));
+        }
+        catch (InvalidParameterException e)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+        }
+    }
+
+    /// <summary>
     /// Get line chart by staff id
     /// </summary>
     [HttpGet("{id}/line-chart")]

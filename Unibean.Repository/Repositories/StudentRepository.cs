@@ -121,6 +121,22 @@ public class StudentRepository : IStudentRepository
         return count;
     }
 
+    public long CountStudentToday(DateOnly date)
+    {
+        long count = 0;
+        try
+        {
+            using var db = new UnibeanDBContext();
+            count = db.Students.Where(c => (bool)c.Status 
+            && DateOnly.FromDateTime(c.DateCreated.Value).Equals(date)).Count();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return count;
+    }
+
     public void Delete(string id)
     {
         try

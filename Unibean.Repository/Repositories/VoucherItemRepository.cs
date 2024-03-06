@@ -3,6 +3,7 @@ using System.Linq.Dynamic.Core;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
+using Type = Unibean.Repository.Entities.Type;
 
 namespace Unibean.Repository.Repositories;
 
@@ -52,6 +53,25 @@ public class VoucherItemRepository : IVoucherItemRepository
             throw new Exception(ex.Message);
         }
         return voucher != null;
+    }
+
+    public long CountVoucherItemToday(string brandId, DateOnly date)
+    {
+        long count = 0;
+        try
+        {
+            using var db = new UnibeanDBContext();
+            count = db.VoucherItems.Where(c => (bool)c.Status 
+            && (bool)c.IsLocked && (bool)c.IsBought && (bool)c.IsUsed
+            && c.Voucher.BrandId.Equals(brandId)
+            && DateOnly.FromDateTime(c.Activities.Where(a => a.Type.Equals(Type.Use))
+            .FirstOrDefault().DateCreated.Value).Equals(date)).Count();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return count;
     }
 
     public void Delete(string id)
