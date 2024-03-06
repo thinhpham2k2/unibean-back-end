@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using DocumentFormat.OpenXml.Office2010.Excel;
 using Enable.EnumDisplayName;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Repositories.Interfaces;
@@ -35,6 +34,8 @@ public class ChartService : IChartService
 
     private readonly ICampaignTransactionRepository campaignTransactionRepository;
 
+    private readonly IBonusTransactionRepository bonusTransactionRepository;
+
     public ChartService(
         IAdminRepository adminRepository,
         IBrandRepository brandRepository,
@@ -46,7 +47,8 @@ public class ChartService : IChartService
         IOrderTransactionRepository orderTransactionRepository,
         IActivityTransactionRepository activityTransactionRepository,
         IRequestTransactionRepository requestTransactionRepository,
-        ICampaignTransactionRepository campaignTransactionRepository)
+        ICampaignTransactionRepository campaignTransactionRepository,
+        IBonusTransactionRepository bonusTransactionRepository)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -88,6 +90,7 @@ public class ChartService : IChartService
         this.activityTransactionRepository = activityTransactionRepository;
         this.requestTransactionRepository = requestTransactionRepository;
         this.campaignTransactionRepository = campaignTransactionRepository;
+        this.bonusTransactionRepository = bonusTransactionRepository;
     }
 
     public List<LineChartModel> GetLineChart(string id, Role role)
@@ -104,8 +107,13 @@ public class ChartService : IChartService
                     {
                         result.Add(new()
                         {
+                            // Tổng đậu xanh thu được từ việc Student mua Voucher Item
                             Green = activityTransactionRepository.IncomeOfGreenBean(d),
+
+                            // Tổng đậu đỏ thu được từ việc Student đặt Order
                             Red = orderTransactionRepository.IncomeOfRedBean(d),
+
+                            // Ngày diễn ra
                             Date = d,
                         });
                     }
@@ -120,8 +128,13 @@ public class ChartService : IChartService
                     {
                         result.Add(new()
                         {
+                            // Tổng đậu xanh thu được từ Request (Admin tạo) và Campaign hoàn trả đậu khi kết thúc
                             Green = requestTransactionRepository.IncomeOfGreenBean(id, d) + campaignTransactionRepository.IncomeOfGreenBean(id, d),
+
+                            // Tổng đậu xanh chi ra cho việc tạo Campaign của Brand
                             Red = campaignTransactionRepository.OutcomeOfGreenBean(id, d),
+
+                            // Ngày diễn ra
                             Date = d,
                         });
                     }
@@ -136,8 +149,13 @@ public class ChartService : IChartService
                     {
                         result.Add(new()
                         {
+                            // Tổng đậu đỏ thu được từ việc Student đặt hàng cho Station
                             Green = orderTransactionRepository.IncomeOfRedBean(staff.StationId, d),
+
+                            // Tổng đậu đỏ chi ra cho việc hoàn trả đậu cho Student sau khi Staff thuộc Station hủy đơn
                             Red = orderTransactionRepository.OutcomeOfRedBean(staff.StationId, d),
+
+                            // Ngày diễn ra
                             Date = d,
                         });
                     }
@@ -152,8 +170,13 @@ public class ChartService : IChartService
                     {
                         result.Add(new()
                         {
-                            Green = (int)role,
-                            Red = (int)role,
+                            // Tổng đậu xanh chi cho việc tặng Bonus bởi Store cho Student
+                            Green = bonusTransactionRepository.OutcomeOfGreenBean(store.Id, d),
+
+                            // Tổng đậu xanh chi cho việc Student sử dụng Voucher Item tại Store
+                            Red = activityTransactionRepository.OutcomeOfGreenBean(store.Id, d),
+
+                            // Ngày diễn ra
                             Date = d,
                         });
                     }

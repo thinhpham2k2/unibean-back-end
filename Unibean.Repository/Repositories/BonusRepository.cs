@@ -27,8 +27,7 @@ public class BonusRepository : IBonusRepository
             var brandWallet = brand.Wallets.Where(w => w.Type.Equals(WalletType.Green)).FirstOrDefault();
 
             creation.BonusTransactions = new List<BonusTransaction>() {
-                new BonusTransaction
-            {
+                new() {
                 Id = Ulid.NewUlid().ToString(),
                 BonusId = creation.Id,
                 WalletId = studentWallet.Id,
@@ -38,8 +37,7 @@ public class BonusRepository : IBonusRepository
                 State = creation.State,
                 Status = creation.Status,
             },
-                new BonusTransaction
-            {
+                new() {
                 Id = Ulid.NewUlid().ToString(),
                 BonusId = creation.Id,
                 WalletId = brandWallet.Id,

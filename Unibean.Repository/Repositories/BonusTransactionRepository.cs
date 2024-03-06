@@ -37,8 +37,21 @@ public class BonusTransactionRepository : IBonusTransactionRepository
         return result;
     }
 
-    public decimal IncomeOfGreenBean(string storeId, DateOnly date)
+    public decimal OutcomeOfGreenBean(string storeId, DateOnly date)
     {
-        throw new NotImplementedException();
+        decimal result = 0;
+        try
+        {
+            using var db = new UnibeanDBContext();
+            result = db.Bonuses
+                .Where(o => o.StoreId.Equals(storeId)
+                && DateOnly.FromDateTime(o.DateCreated.Value).Equals(date)
+                && (bool)o.Status).Select(o => o.Amount.Value).Sum();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return result;
     }
 }

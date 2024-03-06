@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Repositories.Interfaces;
 using Type = Unibean.Repository.Entities.Type;
@@ -93,6 +94,25 @@ public class ActivityTransactionRepository : IActivityTransactionRepository
                 && o.Activity.Type.Equals(Type.Buy)
                 && DateOnly.FromDateTime(o.Activity.DateCreated.Value).Equals(date)
                 && (bool)o.Status).Select(o => o.Amount.Value).Sum();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return result;
+    }
+
+    public decimal OutcomeOfGreenBean(string storeId, DateOnly date)
+    {
+        decimal result = 0;
+        try
+        {
+            using var db = new UnibeanDBContext();
+            var store = db.Stores.Where(s => s.Id.Equals(storeId));
+            result = store.SelectMany(s => s.Activities
+            .Where(a => (bool)a.Status && DateOnly.FromDateTime(a.DateCreated.Value).Equals(date))
+            .SelectMany(a => a.ActivityTransactions.Where(t => t.Amount > 0 && (bool)t.Status)
+            .Select(t => t.Amount))).Sum().Value;
         }
         catch (Exception ex)
         {
