@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unibean.Service", "Unibean.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unibean.API", "Unibean.API\Unibean.API.csproj", "{62575BD0-DEA6-4745-8712-B4DF7C88751B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unibean.Test", "Unibean.Test\Unibean.Test.csproj", "{9AF9C697-0DC4-48EA-9DD5-924A4D4E541D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{62575BD0-DEA6-4745-8712-B4DF7C88751B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62575BD0-DEA6-4745-8712-B4DF7C88751B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{62575BD0-DEA6-4745-8712-B4DF7C88751B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9AF9C697-0DC4-48EA-9DD5-924A4D4E541D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9AF9C697-0DC4-48EA-9DD5-924A4D4E541D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9AF9C697-0DC4-48EA-9DD5-924A4D4E541D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9AF9C697-0DC4-48EA-9DD5-924A4D4E541D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
