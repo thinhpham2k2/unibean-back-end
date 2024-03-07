@@ -431,7 +431,8 @@ public class AdminControllerTest
         controller.ModelState.AddModelError("SessionName", "Required");
 
         // Assert
-        Assert.Throws<InvalidParameterException>(() => controller.CreateRequest(id, create));
+        Assert.Throws<InvalidParameterException>(
+            () => controller.CreateRequest(id, create));
     }
 
     [Fact]
