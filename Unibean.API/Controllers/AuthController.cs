@@ -48,6 +48,7 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     [HttpPost("website/login")]
     [ProducesResponseType(typeof(JwtResponseModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(AccountModel), (int)HttpStatusCode.SeeOther)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
