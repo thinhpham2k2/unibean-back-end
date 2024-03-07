@@ -20,10 +20,12 @@ public class CreateChallengeModel
 
     [Required(ErrorMessage = "Điểm thưởng là bắt buộc")]
     [Range(0, (double)decimal.MaxValue, ErrorMessage = "Điểm thưởng phải dương")]
+    [RegularExpression(@"^\d+(\.\d{1,2})?$", ErrorMessage = "Điểm thưởng phải là số thực sau dấu phẩy 2 chữ số")]
     public decimal? Amount { get; set; }
 
     [Required(ErrorMessage = "Điều kiện là bắt buộc")]
     [Range(0, (double)decimal.MaxValue, ErrorMessage = "Điều kiện phải dương")]
+    [RegularExpression(@"^\d+(\.\d{1,2})?$", ErrorMessage = "Điều kiện phải là số thực sau dấu phẩy 2 chữ số")]
     public decimal? Condition { get; set; }
 
     [ValidExtension(new[] { ".apng", ".avif", ".gif", ".jpg", ".jpeg", ".jfif", ".pjpeg", ".pjp", ".png", ".svg", ".webp" })]
