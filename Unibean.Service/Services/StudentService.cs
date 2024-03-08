@@ -327,6 +327,7 @@ public class StudentService : IStudentService
 
         account.Phone = creation.Phone;
         account.Email = creation.Email;
+        account.IsVerify = true;
         account.State = true;
         accountRepository.Update(account);
         emailService.SendEmailStudentRegister(account.Email);
@@ -376,7 +377,6 @@ public class StudentService : IStudentService
                     && s.Challenge.Type.Equals(ChallengeType.Spread)), 1);
             }
         }
-
         return mapper.Map<StudentModel>(entity);
     }
 

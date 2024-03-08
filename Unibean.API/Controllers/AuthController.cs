@@ -48,6 +48,7 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     [HttpPost("website/login")]
     [ProducesResponseType(typeof(JwtResponseModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(AccountModel), (int)HttpStatusCode.SeeOther)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
@@ -59,7 +60,7 @@ public class AuthController : ControllerBase
             var account = accountService.GetByUserNameAndPassword(requestLogin.UserName, requestLogin.Password);
             return AccountAuthentication(account != null
                 && (account.Role.Equals("Admin")
-                || account.Role.Equals("Brand")
+                || account.Role.Equals("Student")
                 || account.Role.Equals("Staff"))
                 ? account : null);
         }
@@ -105,12 +106,7 @@ public class AuthController : ControllerBase
         {
             bool isVerify = (bool)(user.GetType().GetProperty("IsVerify").GetValue(user) ?? false);
             string role = (user.GetType().GetProperty("Role").GetValue(user) ?? string.Empty).ToString();
-            string state = (user.GetType().GetProperty("State").GetValue(user) ?? string.Empty).ToString();
-            if (state.Equals("Inactive"))
-            {
-                return StatusCode(StatusCodes.Status400BadRequest, "Tài khoản của bạn đã bị vô hiệu");
-            }
-            else if (isVerify)
+            if (isVerify)
             {
                 JwtResponseModel response = new();
 
@@ -143,10 +139,6 @@ public class AuthController : ControllerBase
             }
             else
             {
-                if (state.Equals("Pending"))
-                {
-                    return StatusCode(StatusCodes.Status400BadRequest, "Tài khoản của bạn đang được xác minh. Vui lòng quay lại sau");
-                }
                 return StatusCode(StatusCodes.Status303SeeOther, user);
             }
         }
@@ -172,12 +164,17 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> GenerateWebsiteTokenByGoogle([FromBody] GoogleTokenModel token)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+        
         try
         {
             var account = await googleService.LoginWithGoogle(token, "Brand");
 
-            if (account.Role.Equals("Admin") 
-                || account.Role.Equals("Brand") 
+            if (account == null)
+            {
+                return StatusCode(StatusCodes.Status404NotFound, "Tài khoản google không hợp lệ");
+            }
+            else if (account.Role.Equals("Admin")
+                || account.Role.Equals("Brand")
                 || account.Role.Equals("Staff"))
             {
                 return AccountAuthentication(account);
@@ -209,8 +206,11 @@ public class AuthController : ControllerBase
         try
         {
             var account = await googleService.LoginWithGoogle(token, "Student");
-
-            if (account.Role.Equals("Store") || account.Role.Equals("Student"))
+            if(account == null)
+            {
+                return StatusCode(StatusCodes.Status404NotFound, "Tài khoản google không hợp lệ");
+            }
+            else if (account.Role.Equals("Store") || account.Role.Equals("Student"))
             {
                 return AccountAuthentication(account);
             }
