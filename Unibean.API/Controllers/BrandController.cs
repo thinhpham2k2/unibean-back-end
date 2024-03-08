@@ -256,7 +256,8 @@ public class BrandController : ControllerBase
     [ProducesResponseType(typeof(PagedResultModel<TransactionModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public ActionResult<PagedResultModel<TransactionModel>> GetHistoryTransactionByStudentId(string id,
+    public ActionResult<PagedResultModel<TransactionModel>> GetHistoryTransactionByBrandId(
+        string id,
         [FromQuery] List<WalletType> walletTypeIds,
         [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
@@ -270,7 +271,7 @@ public class BrandController : ControllerBase
             if (propertySort != null && propertyInfo != null)
             {
                 PagedResultModel<TransactionModel>
-                result = brandService.GetHistoryTransactionListByStudentId
+                result = brandService.GetHistoryTransactionListByBrandId
                     (id, walletTypeIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"),
                     paging.Search, paging.Page, paging.Limit);
                 return StatusCode(StatusCodes.Status200OK, result);

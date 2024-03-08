@@ -257,7 +257,7 @@ public class BrandService : IBrandService
         throw new InvalidParameterException("Không tìm thấy thương hiệu");
     }
 
-    public PagedResultModel<TransactionModel> GetHistoryTransactionListByStudentId
+    public PagedResultModel<TransactionModel> GetHistoryTransactionListByBrandId
         (string id, List<WalletType> walletTypeIds, bool? state, string propertySort,
         bool isAsc, string search, int page, int limit)
     {
