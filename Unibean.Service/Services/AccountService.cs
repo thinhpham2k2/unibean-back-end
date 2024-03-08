@@ -139,7 +139,7 @@ public class AccountService : IAccountService
            .ForMember(t => t.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
            .ForMember(t => t.Role, opt => opt.MapFrom(src => Role.Student))
            .ForMember(t => t.Password, opt => opt.MapFrom(src => BCryptNet.HashPassword(src.Password)))
-           .ForMember(t => t.IsVerify, opt => opt.MapFrom(src => false))
+           .ForMember(t => t.IsVerify, opt => opt.MapFrom(src => true))
            .ForMember(t => t.DateCreated, opt => opt.MapFrom(src => DateTime.Now))
            .ForMember(t => t.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
            .ForMember(t => t.Status, opt => opt.MapFrom(src => true));

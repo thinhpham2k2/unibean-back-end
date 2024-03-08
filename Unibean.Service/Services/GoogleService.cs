@@ -87,7 +87,7 @@ public class GoogleService : IGoogleService
                         switch (role)
                         {
                             case "Brand":
-                                account = accountService.AddGoogle(new CreateGoogleAccountModel
+                                account = accountService.AddGoogle(new()
                                 {
                                     Email = email,
                                     IsVerify = true,
@@ -97,7 +97,7 @@ public class GoogleService : IGoogleService
                                 });
                                 emailService.SendEmailBrandRegister(account.Email);
 
-                                var brand = brandService.AddGoogle(new CreateBrandGoogleModel
+                                var brand = brandService.AddGoogle(new()
                                 {
                                     AccountId = account.Id,
                                     BrandName = email,
@@ -109,7 +109,7 @@ public class GoogleService : IGoogleService
                                 account.Name = brand.BrandName;
                                 return Task.FromResult(account);
                             case "Student":
-                                account = accountService.AddGoogle(new CreateGoogleAccountModel
+                                account = accountService.AddGoogle(new()
                                 {
                                     Email = email,
                                     IsVerify = false,
