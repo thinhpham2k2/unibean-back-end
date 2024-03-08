@@ -224,7 +224,6 @@ public class AreaControllerTest
         A.CallTo(() => areaService.Update(id, update))
             .Throws(new InvalidParameterException());
         var controller = new AreaController(areaService);
-        controller.ModelState.AddModelError("SessionName", "Required");
 
         // Act
         var result = controller.Update(id, update);
@@ -232,8 +231,8 @@ public class AreaControllerTest
         // Assert
         result.Should().NotBeNull();
         result.Should().BeOfType(typeof(Task<ActionResult>));
-        Assert.Equal(typeof(InvalidParameterException).ToString(),
-            result.Exception?.InnerException?.GetType().ToString());
+        Assert.Equal(StatusCodes.Status400BadRequest,
+            result.Result.GetType().GetProperty("StatusCode")?.GetValue(result.Result));
     }
 
     [Fact]

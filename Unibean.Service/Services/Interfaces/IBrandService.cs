@@ -11,7 +11,7 @@ namespace Unibean.Service.Services.Interfaces;
 
 public interface IBrandService
 {
-    Task<BrandModel> Add(CreateBrandModel creation);
+    Task<BrandExtraModel> Add(CreateBrandModel creation);
 
     BrandModel AddGoogle(CreateBrandGoogleModel creation);
 

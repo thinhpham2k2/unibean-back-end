@@ -7,7 +7,6 @@ using Unibean.Repository.Paging;
 using Unibean.Service.Models.Bonuses;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Parameters;
-using Unibean.Service.Services;
 using Unibean.Service.Services.Interfaces;
 
 namespace Unibean.Test.Controllers;
@@ -22,7 +21,7 @@ public class BonusControllerTest
     }
 
     [Fact]
-    public void BonusController_GetList_OK()
+    public void BonusController_GetList_ReturnOK()
     {
         // Arrange
         List<string> brandIds = new();

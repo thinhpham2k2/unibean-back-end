@@ -84,7 +84,8 @@ public class BrandController : ControllerBase
 
         try
         {
-            return StatusCode(StatusCodes.Status200OK, brandService.GetById(id, jwtService.GetJwtRequest(jwtToken.Split(" ")[1])));
+            return StatusCode(StatusCodes.Status200OK, 
+                brandService.GetById(id, jwtService.GetJwtRequest(jwtToken.Split(" ")[1])));
         }
         catch (InvalidParameterException e)
         {
@@ -97,7 +98,7 @@ public class BrandController : ControllerBase
     /// </summary>
     [HttpPost]
     [Authorize(Roles = "Admin")]
-    [ProducesResponseType(typeof(BrandModel), (int)HttpStatusCode.Created)]
+    [ProducesResponseType(typeof(BrandExtraModel), (int)HttpStatusCode.Created)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
@@ -234,7 +235,8 @@ public class BrandController : ControllerBase
 
         try
         {
-            return StatusCode(StatusCodes.Status200OK, chartService.GetColumnChart(id, fromDate, toDate, isAsc, Role.Brand));
+            return StatusCode(StatusCodes.Status200OK, 
+                chartService.GetColumnChart(id, fromDate, toDate, isAsc, Role.Brand));
         }
         catch (InvalidParameterException e)
         {
