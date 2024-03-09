@@ -37,8 +37,7 @@ public class StaffControllerTest
             Page = 1,
             Limit = 10,
         };
-        var controller = new StaffController
-            (chartService, staffService);
+        var controller = new StaffController(chartService, staffService);
 
         // Act
         var result = controller.GetList(stationIds, state, paging);
@@ -63,8 +62,7 @@ public class StaffControllerTest
             Page = 1,
             Limit = 10,
         };
-        var controller = new StaffController
-            (chartService, staffService);
+        var controller = new StaffController(chartService, staffService);
 
         // Act
         var result = controller.GetList(stationIds, state, paging);
@@ -82,8 +80,7 @@ public class StaffControllerTest
         // Arrange
         string id = "";
         A.CallTo(() => staffService.GetById(id)).Returns(new());
-        var controller = new StaffController
-            (chartService, staffService);
+        var controller = new StaffController(chartService, staffService);
 
         // Act
         var result = controller.GetById(id);
@@ -101,8 +98,7 @@ public class StaffControllerTest
         // Arrange
         string id = "";
         A.CallTo(() => staffService.GetById(id)).Throws(new InvalidParameterException());
-        var controller = new StaffController
-            (chartService, staffService);
+        var controller = new StaffController(chartService, staffService);
 
         // Act
         var result = controller.GetById(id);
@@ -120,8 +116,7 @@ public class StaffControllerTest
         // Arrange
         CreateStaffModel create = new();
         A.CallTo(() => staffService.Add(create)).Returns<StaffExtraModel>(new());
-        var controller = new StaffController
-            (chartService, staffService);
+        var controller = new StaffController(chartService, staffService);
 
         // Act
         var result = controller.Create(create);
@@ -138,8 +133,7 @@ public class StaffControllerTest
     {
         // Arrange
         CreateStaffModel create = new();
-        var controller = new StaffController
-            (chartService, staffService);
+        var controller = new StaffController(chartService, staffService);
         controller.ModelState.AddModelError("SessionName", "Required");
 
         // Act
@@ -159,8 +153,7 @@ public class StaffControllerTest
         CreateStaffModel create = new();
         A.CallTo(() => staffService.Add(create))
             .Throws(new InvalidParameterException());
-        var controller = new StaffController
-            (chartService, staffService);
+        var controller = new StaffController(chartService, staffService);
 
         // Act
         var result = controller.Create(create);
@@ -178,8 +171,7 @@ public class StaffControllerTest
         // Arrange
         CreateStaffModel create = new();
         A.CallTo(() => staffService.Add(create)).Returns<StaffExtraModel>(null);
-        var controller = new StaffController
-            (chartService, staffService);
+        var controller = new StaffController(chartService, staffService);
 
         // Act
         var result = controller.Create(create);
@@ -198,8 +190,7 @@ public class StaffControllerTest
         string id = "";
         UpdateStaffModel update = new();
         A.CallTo(() => staffService.Update(id, update)).Returns<StaffExtraModel>(new());
-        var controller = new StaffController
-            (chartService, staffService);
+        var controller = new StaffController(chartService, staffService);
 
         // Act
         var result = controller.Update(id, update);
@@ -217,8 +208,7 @@ public class StaffControllerTest
         // Arrange
         string id = "";
         UpdateStaffModel update = new();
-        var controller = new StaffController
-            (chartService, staffService);
+        var controller = new StaffController(chartService, staffService);
         controller.ModelState.AddModelError("SessionName", "Required");
 
         // Act
@@ -239,8 +229,7 @@ public class StaffControllerTest
         UpdateStaffModel update = new();
         A.CallTo(() => staffService.Update(id, update))
             .Throws(new InvalidParameterException());
-        var controller = new StaffController
-            (chartService, staffService);
+        var controller = new StaffController(chartService, staffService);
 
         // Act
         var result = controller.Update(id, update);
@@ -259,8 +248,7 @@ public class StaffControllerTest
         string id = "";
         UpdateStaffModel update = new();
         A.CallTo(() => staffService.Update(id, update)).Returns<StaffExtraModel>(null);
-        var controller = new StaffController
-            (chartService, staffService);
+        var controller = new StaffController(chartService, staffService);
 
         // Act
         var result = controller.Update(id, update);
@@ -277,8 +265,7 @@ public class StaffControllerTest
     {
         // Arrange
         string id = "";
-        var controller = new StaffController
-            (chartService, staffService);
+        var controller = new StaffController(chartService, staffService);
 
         // Act
         var result = controller.Delete(id);
@@ -296,8 +283,7 @@ public class StaffControllerTest
         // Arrange
         string id = "";
         A.CallTo(() => staffService.Delete(id)).Throws(new InvalidParameterException());
-        var controller = new StaffController
-            (chartService, staffService);
+        var controller = new StaffController(chartService, staffService);
 
         // Act
         var result = controller.Delete(id);
@@ -319,8 +305,7 @@ public class StaffControllerTest
         bool? isAsc = null;
         A.CallTo(() => chartService.GetColumnChart
         (id, fromDate, toDate, isAsc, Role.Staff)).Returns(new());
-        var controller = new StaffController
-            (chartService, staffService);
+        var controller = new StaffController(chartService, staffService);
 
         // Act
         var result = controller.GetColumnChartByStaffId(id, fromDate, toDate, isAsc);
@@ -343,8 +328,7 @@ public class StaffControllerTest
         A.CallTo(() => chartService.GetColumnChart
         (id, fromDate, toDate, isAsc, Role.Staff))
             .Throws(new InvalidParameterException());
-        var controller = new StaffController
-            (chartService, staffService);
+        var controller = new StaffController(chartService, staffService);
 
         // Act
         var result = controller.GetColumnChartByStaffId(id, fromDate, toDate, isAsc);
@@ -362,8 +346,7 @@ public class StaffControllerTest
         // Arrange
         string id = "";
         A.CallTo(() => chartService.GetLineChart(id, Role.Staff)).Returns(new());
-        var controller = new StaffController
-            (chartService, staffService);
+        var controller = new StaffController(chartService, staffService);
 
         // Act
         var result = controller.GetLineChartByStaffId(id);
@@ -382,8 +365,7 @@ public class StaffControllerTest
         string id = "";
         A.CallTo(() => chartService.GetLineChart(id, Role.Staff))
             .Throws(new InvalidParameterException());
-        var controller = new StaffController
-            (chartService, staffService);
+        var controller = new StaffController(chartService, staffService);
 
         // Act
         var result = controller.GetLineChartByStaffId(id);
@@ -401,8 +383,7 @@ public class StaffControllerTest
         // Arrange
         string id = "";
         A.CallTo(() => chartService.GetTitleStaff(id)).Returns(new());
-        var controller = new StaffController
-            (chartService, staffService);
+        var controller = new StaffController(chartService, staffService);
 
         // Act
         var result = controller.GetTitleByStaffId(id);
@@ -421,8 +402,7 @@ public class StaffControllerTest
         string id = "";
         A.CallTo(() => chartService.GetTitleStaff(id))
             .Throws(new InvalidParameterException());
-        var controller = new StaffController
-            (chartService, staffService);
+        var controller = new StaffController(chartService, staffService);
 
         // Act
         var result = controller.GetTitleByStaffId(id);

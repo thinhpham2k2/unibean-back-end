@@ -7,9 +7,6 @@ using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Models.Stations;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Repository.Entities;
-using Unibean.Service.Models.Orders;
-using Unibean.Service.Models.OrderStates;
-using Unibean.Service.Services;
 using Unibean.Service.Validations;
 
 namespace Unibean.API.Controllers;
