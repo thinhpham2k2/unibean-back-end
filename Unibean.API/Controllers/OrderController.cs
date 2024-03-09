@@ -41,7 +41,7 @@ public class OrderController : ControllerBase
         (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public IActionResult GetOrderList(
+    public ActionResult<PagedResultModel<OrderModel>> GetList(
         [FromQuery] List<string> stationIds,
         [FromQuery] List<string> studentIds,
         [FromQuery] List<State> stateIds,

@@ -94,7 +94,7 @@ public class MajorControllerTest
         var controller = new MajorController(majorService);
 
         // Act
-        var result = controller.GetById("");
+        var result = controller.GetById(id);
 
         // Assert
         result.Should().NotBeNull();

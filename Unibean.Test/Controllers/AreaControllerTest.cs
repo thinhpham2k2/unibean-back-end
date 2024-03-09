@@ -95,7 +95,7 @@ public class AreaControllerTest
         var controller = new AreaController(areaService);
 
         // Act
-        var result = controller.GetById("");
+        var result = controller.GetById(id);
 
         // Assert
         result.Should().NotBeNull();
