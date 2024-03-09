@@ -102,7 +102,7 @@ public class BrandControllerTest
         // Arrange
         string id = "";
         JwtRequestModel jwt = new();
-        A.CallTo(() => jwtService.GetJwtRequest("Bearer TOKEN")).Returns(jwt);
+        A.CallTo(() => jwtService.GetJwtRequest("TOKEN")).Returns(jwt);
         A.CallTo(() => brandService.GetById(id, jwt)).Returns(new());
         var httpContext = new DefaultHttpContext();
         httpContext.Request.Headers["Authorization"] = "Bearer TOKEN";

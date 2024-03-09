@@ -101,7 +101,7 @@ public class CampaignController : ControllerBase
     /// </summary>
     [HttpPost]
     [Authorize(Roles = "Admin, Brand")]
-    [ProducesResponseType(typeof(CampaignModel), (int)HttpStatusCode.Created)]
+    [ProducesResponseType(typeof(CampaignExtraModel), (int)HttpStatusCode.Created)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
@@ -129,7 +129,7 @@ public class CampaignController : ControllerBase
     /// </summary>
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin, Brand")]
-    [ProducesResponseType(typeof(CampaignModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(CampaignExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
@@ -163,7 +163,7 @@ public class CampaignController : ControllerBase
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public ActionResult UpdateState(
+    public IActionResult UpdateState(
         [ValidCampaign(new[] {
             CampaignState.Pending,
             CampaignState.Rejected,
@@ -224,7 +224,8 @@ public class CampaignController : ControllerBase
     [ProducesResponseType(typeof(PagedResultModel<CampaignActivityModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public ActionResult<PagedResultModel<CampaignActivityModel>> GetActivityListByStoreId(string id,
+    public ActionResult<PagedResultModel<CampaignActivityModel>> GetActivityListByCampaignId(
+        string id,
         [FromQuery] List<CampaignState> stateIds,
         [FromQuery] PagingModel paging)
     {
@@ -263,7 +264,8 @@ public class CampaignController : ControllerBase
     [ProducesResponseType(typeof(PagedResultModel<CampusModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public ActionResult<PagedResultModel<CampusModel>> GetCampusListByStoreId(string id,
+    public ActionResult<PagedResultModel<CampusModel>> GetCampusListByCampaignId(
+        string id,
         [FromQuery] List<string> universityIds,
         [FromQuery] List<string> areaIds,
         [FromQuery] bool? state,
@@ -302,7 +304,7 @@ public class CampaignController : ControllerBase
     [ProducesResponseType(typeof(PagedResultModel<MajorModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public ActionResult<PagedResultModel<MajorModel>> GetMajorListByStoreId(string id,
+    public ActionResult<PagedResultModel<MajorModel>> GetMajorListByCampaignId(string id,
         [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
@@ -341,7 +343,7 @@ public class CampaignController : ControllerBase
     [ProducesResponseType(typeof(PagedResultModel<StoreModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public ActionResult<PagedResultModel<StoreModel>> GetStoreListByStoreId(string id,
+    public ActionResult<PagedResultModel<StoreModel>> GetStoreListByCampaignId(string id,
         [FromQuery] List<string> brandIds,
         [FromQuery] List<string> areaIds,
         [FromQuery] bool? state,
@@ -381,7 +383,8 @@ public class CampaignController : ControllerBase
     [ProducesResponseType(typeof(PagedResultModel<CampaignDetailModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public ActionResult<PagedResultModel<CampaignDetailModel>> GetCampaignDetailListByCampaignId(string id,
+    public ActionResult<PagedResultModel<CampaignDetailModel>> GetCampaignDetailListByCampaignId(
+        string id,
         [FromQuery] List<string> typeIds,
         [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
