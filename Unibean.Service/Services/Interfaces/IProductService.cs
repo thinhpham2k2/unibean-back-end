@@ -1,12 +1,11 @@
 ﻿using Unibean.Repository.Paging;
-using Unibean.Service.Models.Authens;
 using Unibean.Service.Models.Products;
 
 namespace Unibean.Service.Services.Interfaces;
 
 public interface IProductService
 {
-    Task<ProductModel> Add(CreateProductModel creation);
+    Task<ProductExtraModel> Add(CreateProductModel creation);
 
     void Delete(string id);
 

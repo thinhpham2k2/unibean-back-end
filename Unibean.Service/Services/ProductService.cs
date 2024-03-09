@@ -61,7 +61,7 @@ public class ProductService : IProductService
         this.imageRepository = imageRepository;
     }
 
-    public async Task<ProductModel> Add(CreateProductModel creation)
+    public async Task<ProductExtraModel> Add(CreateProductModel creation)
     {
         Product entity = mapper.Map<Product>(creation);
         entity = productRepository.Add(entity);
@@ -91,7 +91,7 @@ public class ProductService : IProductService
             }
         }
 
-        return mapper.Map<ProductModel>(entity);
+        return mapper.Map<ProductExtraModel>(entity);
     }
 
     public void Delete(string id)
