@@ -217,7 +217,7 @@ public class StaffController : ControllerBase
     [ProducesResponseType(typeof(TitleStaffModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public IActionResult GetTitleByAdminId(string id)
+    public IActionResult GetTitleByStaffId(string id)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 

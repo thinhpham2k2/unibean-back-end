@@ -34,8 +34,7 @@ public class RequestControllerTest
             Page = 1,
             Limit = 10,
         };
-        var controller = new RequestController
-            (requestService);
+        var controller = new RequestController(requestService);
 
         // Act
         var result = controller.GetList(brandIds, adminIds, state, paging);
@@ -61,8 +60,7 @@ public class RequestControllerTest
             Page = 1,
             Limit = 10,
         };
-        var controller = new RequestController
-            (requestService);
+        var controller = new RequestController(requestService);
 
         // Act
         var result = controller.GetList(brandIds, adminIds, state, paging);
@@ -80,8 +78,7 @@ public class RequestControllerTest
         // Arrange
         string id = "";
         A.CallTo(() => requestService.GetById(id)).Returns(new());
-        var controller = new RequestController
-            (requestService);
+        var controller = new RequestController(requestService);
 
         // Act
         var result = controller.GetById(id);
@@ -99,8 +96,7 @@ public class RequestControllerTest
         // Arrange
         string id = "";
         A.CallTo(() => requestService.GetById(id)).Throws(new InvalidParameterException());
-        var controller = new RequestController
-            (requestService);
+        var controller = new RequestController(requestService);
 
         // Act
         var result = controller.GetById(id);

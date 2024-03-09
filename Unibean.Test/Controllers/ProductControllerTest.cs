@@ -33,8 +33,7 @@ public class ProductControllerTest
             Page = 1,
             Limit = 10,
         };
-        var controller = new ProductController
-            (productService);
+        var controller = new ProductController(productService);
 
         // Act
         var result = controller.GetList(categoryIds, state, paging);
@@ -59,8 +58,7 @@ public class ProductControllerTest
             Page = 1,
             Limit = 10,
         };
-        var controller = new ProductController
-            (productService);
+        var controller = new ProductController(productService);
 
         // Act
         var result = controller.GetList(categoryIds, state, paging);
@@ -77,8 +75,7 @@ public class ProductControllerTest
         // Arrange
         string id = "";
         A.CallTo(() => productService.GetById(id)).Returns(new());
-        var controller = new ProductController
-            (productService);
+        var controller = new ProductController(productService);
 
         // Act
         var result = controller.GetById(id);
@@ -96,8 +93,7 @@ public class ProductControllerTest
         // Arrange
         string id = "";
         A.CallTo(() => productService.GetById(id)).Throws(new InvalidParameterException());
-        var controller = new ProductController
-            (productService);
+        var controller = new ProductController(productService);
 
         // Act
         var result = controller.GetById(id);
@@ -115,8 +111,7 @@ public class ProductControllerTest
         // Arrange
         CreateProductModel create = new();
         A.CallTo(() => productService.Add(create)).Returns<ProductExtraModel>(new());
-        var controller = new ProductController
-            (productService);
+        var controller = new ProductController(productService);
 
         // Act
         var result = controller.Create(create);
@@ -132,8 +127,7 @@ public class ProductControllerTest
     {
         // Arrange
         CreateProductModel create = new();
-        var controller = new ProductController
-            (productService);
+        var controller = new ProductController(productService);
         controller.ModelState.AddModelError("SessionName", "Required");
 
         // Act
@@ -153,8 +147,7 @@ public class ProductControllerTest
         CreateProductModel create = new();
         A.CallTo(() => productService.Add(create))
         .Throws(new InvalidParameterException());
-        var controller = new ProductController
-            (productService);
+        var controller = new ProductController(productService);
 
         // Act
         var result = controller.Create(create);
@@ -172,8 +165,7 @@ public class ProductControllerTest
         // Arrange
         CreateProductModel create = new();
         A.CallTo(() => productService.Add(create)).Returns<ProductExtraModel>(null);
-        var controller = new ProductController
-            (productService);
+        var controller = new ProductController(productService);
 
         // Act
         var result = controller.Create(create);
@@ -192,8 +184,7 @@ public class ProductControllerTest
         string id = "";
         UpdateProductModel update = new();
         A.CallTo(() => productService.Update(id, update)).Returns<ProductExtraModel>(new());
-        var controller = new ProductController
-            (productService);
+        var controller = new ProductController(productService);
 
         // Act
         var result = controller.Update(id, update);
@@ -210,8 +201,7 @@ public class ProductControllerTest
         // Arrange
         string id = "";
         UpdateProductModel update = new();
-        var controller = new ProductController
-            (productService);
+        var controller = new ProductController(productService);
         controller.ModelState.AddModelError("SessionName", "Required");
 
         // Act
@@ -232,8 +222,7 @@ public class ProductControllerTest
         UpdateProductModel update = new();
         A.CallTo(() => productService.Update(id, update))
         .Throws(new InvalidParameterException());
-        var controller = new ProductController
-            (productService);
+        var controller = new ProductController(productService);
 
         // Act
         var result = controller.Update(id, update);
@@ -252,8 +241,7 @@ public class ProductControllerTest
         string id = "";
         UpdateProductModel update = new();
         A.CallTo(() => productService.Update(id, update)).Returns<ProductExtraModel>(null);
-        var controller = new ProductController
-            (productService);
+        var controller = new ProductController(productService);
 
         // Act
         var result = controller.Update(id, update);
@@ -269,8 +257,7 @@ public class ProductControllerTest
     {
         // Arrange
         string id = "";
-        var controller = new ProductController
-            (productService);
+        var controller = new ProductController(productService);
 
         // Act
         var result = controller.Delete(id);
@@ -288,8 +275,7 @@ public class ProductControllerTest
         // Arrange
         string id = "";
         A.CallTo(() => productService.Delete(id)).Throws(new InvalidParameterException());
-        var controller = new ProductController
-            (productService);
+        var controller = new ProductController(productService);
 
         // Act
         var result = controller.Delete(id);
