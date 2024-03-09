@@ -137,7 +137,7 @@ public class BrandService : IBrandService
         this.emailService = emailService;
     }
 
-    public async Task<BrandModel> Add(CreateBrandModel creation)
+    public async Task<BrandExtraModel> Add(CreateBrandModel creation)
     {
         Account account = mapper.Map<Account>(creation);
 
@@ -162,7 +162,7 @@ public class BrandService : IBrandService
             brand.CoverFileName = f.FileName;
         }
 
-        return mapper.Map<BrandModel>(brandRepository.Add(brand));
+        return mapper.Map<BrandExtraModel>(brandRepository.Add(brand));
     }
 
     public BrandModel AddGoogle(CreateBrandGoogleModel creation)
@@ -257,7 +257,7 @@ public class BrandService : IBrandService
         throw new InvalidParameterException("Không tìm thấy thương hiệu");
     }
 
-    public PagedResultModel<TransactionModel> GetHistoryTransactionListByStudentId
+    public PagedResultModel<TransactionModel> GetHistoryTransactionListByBrandId
         (string id, List<WalletType> walletTypeIds, bool? state, string propertySort,
         bool isAsc, string search, int page, int limit)
     {

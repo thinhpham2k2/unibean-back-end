@@ -11,7 +11,7 @@ namespace Unibean.Service.Services.Interfaces;
 
 public interface IBrandService
 {
-    Task<BrandModel> Add(CreateBrandModel creation);
+    Task<BrandExtraModel> Add(CreateBrandModel creation);
 
     BrandModel AddGoogle(CreateBrandGoogleModel creation);
 
@@ -27,7 +27,7 @@ public interface IBrandService
         (string id, List<string> typeIds, List<string> storeIds, List<string> majorIds, List<string> campusIds,
         List<CampaignState> stateIds, string propertySort, bool isAsc, string search, int page, int limit);
 
-    PagedResultModel<TransactionModel> GetHistoryTransactionListByStudentId
+    PagedResultModel<TransactionModel> GetHistoryTransactionListByBrandId
         (string id, List<WalletType> walletTypeIds, bool? state, string propertySort, 
         bool isAsc, string search, int page, int limit);
 

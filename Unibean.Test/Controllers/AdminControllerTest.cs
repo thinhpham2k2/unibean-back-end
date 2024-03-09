@@ -246,7 +246,6 @@ public class AdminControllerTest
             .Throws(new InvalidParameterException());
         var controller = new AdminController
             (adminService, chartService, requestService, fireBaseService);
-        controller.ModelState.AddModelError("SessionName", "Required");
 
         // Act
         var result = controller.Update(id, update);
@@ -254,8 +253,8 @@ public class AdminControllerTest
         // Assert
         result.Should().NotBeNull();
         result.Should().BeOfType(typeof(Task<ActionResult>));
-        Assert.Equal(typeof(InvalidParameterException).ToString(),
-            result.Exception?.InnerException?.GetType().ToString());
+        Assert.Equal(StatusCodes.Status400BadRequest,
+            result.Result.GetType().GetProperty("StatusCode")?.GetValue(result.Result));
     }
 
     [Fact]
@@ -346,7 +345,8 @@ public class AdminControllerTest
         DateOnly fromDate = DateOnly.FromDateTime(DateTime.Now);
         DateOnly toDate = DateOnly.FromDateTime(DateTime.Now);
         bool? isAsc = null;
-        A.CallTo(() => chartService.GetColumnChart(id, fromDate, toDate, isAsc, Role.Admin))
+        A.CallTo(() => chartService.GetColumnChart
+        (id, fromDate, toDate, isAsc, Role.Admin))
             .Throws(new InvalidParameterException());
         var controller = new AdminController
             (adminService, chartService, requestService, fireBaseService);

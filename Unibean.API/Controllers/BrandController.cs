@@ -84,7 +84,8 @@ public class BrandController : ControllerBase
 
         try
         {
-            return StatusCode(StatusCodes.Status200OK, brandService.GetById(id, jwtService.GetJwtRequest(jwtToken.Split(" ")[1])));
+            return StatusCode(StatusCodes.Status200OK, 
+                brandService.GetById(id, jwtService.GetJwtRequest(jwtToken.Split(" ")[1])));
         }
         catch (InvalidParameterException e)
         {
@@ -97,7 +98,7 @@ public class BrandController : ControllerBase
     /// </summary>
     [HttpPost]
     [Authorize(Roles = "Admin")]
-    [ProducesResponseType(typeof(BrandModel), (int)HttpStatusCode.Created)]
+    [ProducesResponseType(typeof(BrandExtraModel), (int)HttpStatusCode.Created)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
@@ -234,7 +235,8 @@ public class BrandController : ControllerBase
 
         try
         {
-            return StatusCode(StatusCodes.Status200OK, chartService.GetColumnChart(id, fromDate, toDate, isAsc, Role.Brand));
+            return StatusCode(StatusCodes.Status200OK, 
+                chartService.GetColumnChart(id, fromDate, toDate, isAsc, Role.Brand));
         }
         catch (InvalidParameterException e)
         {
@@ -254,7 +256,8 @@ public class BrandController : ControllerBase
     [ProducesResponseType(typeof(PagedResultModel<TransactionModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public ActionResult<PagedResultModel<TransactionModel>> GetHistoryTransactionByStudentId(string id,
+    public ActionResult<PagedResultModel<TransactionModel>> GetHistoryTransactionByBrandId(
+        string id,
         [FromQuery] List<WalletType> walletTypeIds,
         [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
@@ -268,7 +271,7 @@ public class BrandController : ControllerBase
             if (propertySort != null && propertyInfo != null)
             {
                 PagedResultModel<TransactionModel>
-                result = brandService.GetHistoryTransactionListByStudentId
+                result = brandService.GetHistoryTransactionListByBrandId
                     (id, walletTypeIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"),
                     paging.Search, paging.Page, paging.Limit);
                 return StatusCode(StatusCodes.Status200OK, result);

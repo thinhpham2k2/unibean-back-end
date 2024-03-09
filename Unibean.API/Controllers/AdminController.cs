@@ -186,7 +186,8 @@ public class AdminController : ControllerBase
 
         try
         {
-            return StatusCode(StatusCodes.Status200OK, chartService.GetColumnChart(id, fromDate, toDate, isAsc, Role.Admin));
+            return StatusCode(StatusCodes.Status200OK, 
+                chartService.GetColumnChart(id, fromDate, toDate, isAsc, Role.Admin));
         }
         catch (InvalidParameterException e)
         {
