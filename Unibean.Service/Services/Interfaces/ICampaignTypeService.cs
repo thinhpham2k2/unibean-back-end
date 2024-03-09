@@ -5,7 +5,7 @@ namespace Unibean.Service.Services.Interfaces;
 
 public interface ICampaignTypeService
 {
-    Task<CampaignTypeModel> Add(CreateCampaignTypeModel creation);
+    Task<CampaignTypeExtraModel> Add(CreateCampaignTypeModel creation);
 
     void Delete(string id);
 
@@ -13,7 +13,7 @@ public interface ICampaignTypeService
         (bool? state, string propertySort, bool isAsc, 
         string search, int page, int limit);
 
-    CampaignTypeModel GetById(string id);
+    CampaignTypeExtraModel GetById(string id);
 
-    Task<CampaignTypeModel> Update(string id, UpdateCampaignTypeModel update);
+    Task<CampaignTypeExtraModel> Update(string id, UpdateCampaignTypeModel update);
 }

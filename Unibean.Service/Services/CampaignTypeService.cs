@@ -26,8 +26,12 @@ public class CampaignTypeService : ICampaignTypeService
         var config = new MapperConfiguration(cfg
                 =>
         {
-            cfg.CreateMap<CampaignType, CampaignTypeModel>().ReverseMap();
+            cfg.CreateMap<CampaignType, CampaignTypeModel>()
+            .ReverseMap();
             cfg.CreateMap<PagedResultModel<CampaignType>, PagedResultModel<CampaignTypeModel>>()
+            .ReverseMap();
+            cfg.CreateMap<CampaignType, CampaignTypeExtraModel>()
+            .ForMember(c => c.NumberOfCampaign, opt => opt.MapFrom(src => src.Campaigns.Count))
             .ReverseMap();
             cfg.CreateMap<CampaignType, UpdateCampaignTypeModel>()
             .ReverseMap()
@@ -45,7 +49,7 @@ public class CampaignTypeService : ICampaignTypeService
         this.fireBaseService = fireBaseService;
     }
 
-    public async Task<CampaignTypeModel> Add(CreateCampaignTypeModel creation)
+    public async Task<CampaignTypeExtraModel> Add(CreateCampaignTypeModel creation)
     {
         CampaignType entity = mapper.Map<CampaignType>(creation);
 
@@ -56,7 +60,7 @@ public class CampaignTypeService : ICampaignTypeService
             entity.Image = f.URL;
             entity.FileName = f.FileName;
         }
-        return mapper.Map<CampaignTypeModel>(campaignTypeRepository.Add(entity));
+        return mapper.Map<CampaignTypeExtraModel>(campaignTypeRepository.Add(entity));
     }
 
     public void Delete(string id)
@@ -91,17 +95,17 @@ public class CampaignTypeService : ICampaignTypeService
             campaignTypeRepository.GetAll(state, propertySort, isAsc, search, page, limit));
     }
 
-    public CampaignTypeModel GetById(string id)
+    public CampaignTypeExtraModel GetById(string id)
     {
         CampaignType entity = campaignTypeRepository.GetById(id);
         if (entity != null)
         {
-            return mapper.Map<CampaignTypeModel>(entity);
+            return mapper.Map<CampaignTypeExtraModel>(entity);
         }
         throw new InvalidParameterException("Không tìm thấy loại chiến dịch");
     }
 
-    public async Task<CampaignTypeModel> Update(string id, UpdateCampaignTypeModel update)
+    public async Task<CampaignTypeExtraModel> Update(string id, UpdateCampaignTypeModel update)
     {
         CampaignType entity = campaignTypeRepository.GetById(id);
         if (entity != null)
@@ -117,7 +121,7 @@ public class CampaignTypeService : ICampaignTypeService
                 entity.Image = f.URL;
                 entity.FileName = f.FileName;
             }
-            return mapper.Map<CampaignTypeModel>(campaignTypeRepository.Update(entity));
+            return mapper.Map<CampaignTypeExtraModel>(campaignTypeRepository.Update(entity));
         }
         throw new InvalidParameterException("Không tìm thấy loại chiến dịch");
     }
