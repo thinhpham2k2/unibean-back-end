@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Enable.EnumDisplayName;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
@@ -24,8 +25,8 @@ public class StaffService : IStaffService
     private readonly IAccountRepository accountRepository;
 
     public StaffService(
-        IStaffRepository staffRepository, 
-        IFireBaseService fireBaseService, 
+        IStaffRepository staffRepository,
+        IFireBaseService fireBaseService,
         IAccountRepository accountRepository)
     {
         var config = new MapperConfiguration(cfg
@@ -111,7 +112,7 @@ public class StaffService : IStaffService
         Staff entity = staffRepository.GetById(id);
         if (entity != null)
         {
-            if (entity.Station.Staffs.Count > 1)
+            if (entity.Station == null || entity.Station.Staffs.Count > 1)
             {
                 // Avatar
                 if (entity.Account.Avatar != null && entity.Account.Avatar.Length > 0)
@@ -135,7 +136,7 @@ public class StaffService : IStaffService
     }
 
     public PagedResultModel<StaffModel> GetAll
-        (List<string> stationIds, bool? state, string propertySort, 
+        (List<string> stationIds, bool? state, string propertySort,
         bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<StaffModel>>

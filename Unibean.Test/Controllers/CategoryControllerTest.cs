@@ -4,24 +4,24 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Unibean.API.Controllers;
 using Unibean.Repository.Paging;
-using Unibean.Service.Models.Areas;
+using Unibean.Service.Models.Categories;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Parameters;
 using Unibean.Service.Services.Interfaces;
 
 namespace Unibean.Test.Controllers;
 
-public class AreaControllerTest
+public class CategoryControllerTest
 {
-    private readonly IAreaService areaService;
+    private readonly ICategoryService categoryService;
 
-    public AreaControllerTest()
+    public CategoryControllerTest()
     {
-        areaService = A.Fake<IAreaService>();
+        categoryService = A.Fake<ICategoryService>();
     }
 
     [Fact]
-    public void AreaController_GetList_ReturnOK()
+    public void CategoryController_GetList_ReturnOK()
     {
         // Arrange
         bool? state = null;
@@ -32,20 +32,20 @@ public class AreaControllerTest
             Page = 1,
             Limit = 10,
         };
-        var controller = new AreaController(areaService);
+        var controller = new CategoryController(categoryService);
 
         // Act
         var result = controller.GetList(state, paging);
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().BeOfType(typeof(ActionResult<PagedResultModel<AreaModel>>));
+        result.Should().BeOfType(typeof(ActionResult<PagedResultModel<CategoryModel>>));
         Assert.Equal(StatusCodes.Status200OK,
             result.Result?.GetType().GetProperty("StatusCode")?.GetValue(result.Result));
     }
 
     [Fact]
-    public void AreaController_GetList_ReturnBadRequest()
+    public void CategoryController_GetList_ReturnBadRequest()
     {
         // Arrange
         bool? state = null;
@@ -56,25 +56,25 @@ public class AreaControllerTest
             Page = 1,
             Limit = 10,
         };
-        var controller = new AreaController(areaService);
+        var controller = new CategoryController(categoryService);
 
         // Act
         var result = controller.GetList(state, paging);
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().BeOfType(typeof(ActionResult<PagedResultModel<AreaModel>>));
+        result.Should().BeOfType(typeof(ActionResult<PagedResultModel<CategoryModel>>));
         Assert.Equal(StatusCodes.Status400BadRequest,
             result.Result?.GetType().GetProperty("StatusCode")?.GetValue(result.Result));
     }
 
     [Fact]
-    public void AreaController_GetById_ReturnOK()
+    public void CategoryController_GetById_ReturnOK()
     {
         // Arrange
         string id = "";
-        A.CallTo(() => areaService.GetById(id)).Returns(new());
-        var controller = new AreaController(areaService);
+        A.CallTo(() => categoryService.GetById(id)).Returns(new());
+        var controller = new CategoryController(categoryService);
 
         // Act
         var result = controller.GetById(id);
@@ -87,12 +87,13 @@ public class AreaControllerTest
     }
 
     [Fact]
-    public void AreaController_GetById_ReturnBadRequest()
+    public void CategoryController_GetById_ReturnBadRequest()
     {
         // Arrange
         string id = "";
-        A.CallTo(() => areaService.GetById(id)).Throws(new InvalidParameterException());
-        var controller = new AreaController(areaService);
+        A.CallTo(() => categoryService.GetById(id))
+            .Throws(new InvalidParameterException());
+        var controller = new CategoryController(categoryService);
 
         // Act
         var result = controller.GetById(id);
@@ -105,12 +106,13 @@ public class AreaControllerTest
     }
 
     [Fact]
-    public void AreaController_Create_ReturnCreated()
+    public void CategoryController_Create_ReturnCreated()
     {
         // Arrange
-        CreateAreaModel create = new();
-        A.CallTo(() => areaService.Add(create)).Returns<AreaExtraModel>(new());
-        var controller = new AreaController(areaService);
+        CreateCategoryModel create = new();
+        A.CallTo(() => categoryService.Add(create))
+            .Returns<CategoryExtraModel>(new());
+        var controller = new CategoryController(categoryService);
 
         // Act
         var result = controller.Create(create);
@@ -123,11 +125,11 @@ public class AreaControllerTest
     }
 
     [Fact]
-    public void AreaController_Create_ReturnBadRequest1()
+    public void CategoryController_Create_ReturnBadRequest1()
     {
         // Arrange
-        CreateAreaModel create = new();
-        var controller = new AreaController(areaService);
+        CreateCategoryModel create = new();
+        var controller = new CategoryController(categoryService);
         controller.ModelState.AddModelError("SessionName", "Required");
 
         // Act
@@ -141,13 +143,13 @@ public class AreaControllerTest
     }
 
     [Fact]
-    public void AreaController_Create_ReturnBadRequest2()
+    public void CategoryController_Create_ReturnBadRequest2()
     {
         // Arrange
-        CreateAreaModel create = new();
-        A.CallTo(() => areaService.Add(create))
+        CreateCategoryModel create = new();
+        A.CallTo(() => categoryService.Add(create))
             .Throws(new InvalidParameterException());
-        var controller = new AreaController(areaService);
+        var controller = new CategoryController(categoryService);
 
         // Act
         var result = controller.Create(create);
@@ -160,12 +162,13 @@ public class AreaControllerTest
     }
 
     [Fact]
-    public void AreaController_Create_ReturnNotFound()
+    public void CategoryController_Create_ReturnNotFound()
     {
         // Arrange
-        CreateAreaModel create = new();
-        A.CallTo(() => areaService.Add(create)).Returns<AreaExtraModel>(null);
-        var controller = new AreaController(areaService);
+        CreateCategoryModel create = new();
+        A.CallTo(() => categoryService.Add(create))
+            .Returns<CategoryExtraModel>(null);
+        var controller = new CategoryController(categoryService);
 
         // Act
         var result = controller.Create(create);
@@ -178,13 +181,14 @@ public class AreaControllerTest
     }
 
     [Fact]
-    public void AreaController_Update_ReturnOK()
+    public void CategoryController_Update_ReturnOK()
     {
         // Arrange
         string id = "";
-        UpdateAreaModel update = new();
-        A.CallTo(() => areaService.Update(id, update)).Returns<AreaExtraModel>(new());
-        var controller = new AreaController(areaService);
+        UpdateCategoryModel update = new();
+        A.CallTo(() => categoryService.Update(id, update))
+            .Returns<CategoryExtraModel>(new());
+        var controller = new CategoryController(categoryService);
 
         // Act
         var result = controller.Update(id, update);
@@ -197,12 +201,12 @@ public class AreaControllerTest
     }
 
     [Fact]
-    public void AreaController_Update_ReturnBadRequest1()
+    public void CategoryController_Update_ReturnBadRequest1()
     {
         // Arrange
         string id = "";
-        UpdateAreaModel update = new();
-        var controller = new AreaController(areaService);
+        UpdateCategoryModel update = new();
+        var controller = new CategoryController(categoryService);
         controller.ModelState.AddModelError("SessionName", "Required");
 
         // Act
@@ -216,14 +220,14 @@ public class AreaControllerTest
     }
 
     [Fact]
-    public void AreaController_Update_ReturnBadRequest2()
+    public void CategoryController_Update_ReturnBadRequest2()
     {
         // Arrange
         string id = "";
-        UpdateAreaModel update = new();
-        A.CallTo(() => areaService.Update(id, update))
+        UpdateCategoryModel update = new();
+        A.CallTo(() => categoryService.Update(id, update))
             .Throws(new InvalidParameterException());
-        var controller = new AreaController(areaService);
+        var controller = new CategoryController(categoryService);
 
         // Act
         var result = controller.Update(id, update);
@@ -236,13 +240,14 @@ public class AreaControllerTest
     }
 
     [Fact]
-    public void AreaController_Update_ReturnNotFound()
+    public void CategoryController_Update_ReturnNotFound()
     {
         // Arrange
         string id = "";
-        UpdateAreaModel update = new();
-        A.CallTo(() => areaService.Update(id, update)).Returns<AreaExtraModel>(null);
-        var controller = new AreaController(areaService);
+        UpdateCategoryModel update = new();
+        A.CallTo(() => categoryService.Update(id, update))
+            .Returns<CategoryExtraModel>(null);
+        var controller = new CategoryController(categoryService);
 
         // Act
         var result = controller.Update(id, update);
@@ -255,11 +260,11 @@ public class AreaControllerTest
     }
 
     [Fact]
-    public void AreaController_Delete_ReturnNoContent()
+    public void CategoryController_Delete_ReturnNoContent()
     {
         // Arrange
         string id = "";
-        var controller = new AreaController(areaService);
+        var controller = new CategoryController(categoryService);
 
         // Act
         var result = controller.Delete(id);
@@ -272,12 +277,13 @@ public class AreaControllerTest
     }
 
     [Fact]
-    public void AreaController_Delete_ReturnBadRequest()
+    public void CategoryController_Delete_ReturnBadRequest()
     {
         // Arrange
         string id = "";
-        A.CallTo(() => areaService.Delete(id)).Throws(new InvalidParameterException());
-        var controller = new AreaController(areaService);
+        A.CallTo(() => categoryService.Delete(id))
+            .Throws(new InvalidParameterException());
+        var controller = new CategoryController(categoryService);
 
         // Act
         var result = controller.Delete(id);

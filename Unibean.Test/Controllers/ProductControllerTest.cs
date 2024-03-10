@@ -4,26 +4,27 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Unibean.API.Controllers;
 using Unibean.Repository.Paging;
-using Unibean.Service.Models.Areas;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Parameters;
+using Unibean.Service.Models.Products;
 using Unibean.Service.Services.Interfaces;
 
 namespace Unibean.Test.Controllers;
 
-public class AreaControllerTest
+public class ProductControllerTest
 {
-    private readonly IAreaService areaService;
+    private readonly IProductService productService;
 
-    public AreaControllerTest()
+    public ProductControllerTest()
     {
-        areaService = A.Fake<IAreaService>();
+        productService = A.Fake<IProductService>();
     }
 
     [Fact]
-    public void AreaController_GetList_ReturnOK()
+    public void ProductController_GetList_ReturnOK()
     {
         // Arrange
+        List<string> categoryIds = new();
         bool? state = null;
         PagingModel paging = new()
         {
@@ -32,22 +33,23 @@ public class AreaControllerTest
             Page = 1,
             Limit = 10,
         };
-        var controller = new AreaController(areaService);
+        var controller = new ProductController(productService);
 
         // Act
-        var result = controller.GetList(state, paging);
+        var result = controller.GetList(categoryIds, state, paging);
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().BeOfType(typeof(ActionResult<PagedResultModel<AreaModel>>));
+        result.Should().BeOfType(typeof(ActionResult<PagedResultModel<ProductModel>>));
         Assert.Equal(StatusCodes.Status200OK,
             result.Result?.GetType().GetProperty("StatusCode")?.GetValue(result.Result));
     }
 
     [Fact]
-    public void AreaController_GetList_ReturnBadRequest()
+    public void ProductController_GetList_ReturnBadRequest()
     {
         // Arrange
+        List<string> categoryIds = new();
         bool? state = null;
         PagingModel paging = new()
         {
@@ -56,25 +58,24 @@ public class AreaControllerTest
             Page = 1,
             Limit = 10,
         };
-        var controller = new AreaController(areaService);
+        var controller = new ProductController(productService);
 
         // Act
-        var result = controller.GetList(state, paging);
+        var result = controller.GetList(categoryIds, state, paging);
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().BeOfType(typeof(ActionResult<PagedResultModel<AreaModel>>));
+        result.Should().BeOfType(typeof(ActionResult<PagedResultModel<ProductModel>>));
         Assert.Equal(StatusCodes.Status400BadRequest,
             result.Result?.GetType().GetProperty("StatusCode")?.GetValue(result.Result));
     }
-
     [Fact]
-    public void AreaController_GetById_ReturnOK()
+    public void ProductController_GetById_ReturnOK()
     {
         // Arrange
         string id = "";
-        A.CallTo(() => areaService.GetById(id)).Returns(new());
-        var controller = new AreaController(areaService);
+        A.CallTo(() => productService.GetById(id)).Returns(new());
+        var controller = new ProductController(productService);
 
         // Act
         var result = controller.GetById(id);
@@ -87,12 +88,12 @@ public class AreaControllerTest
     }
 
     [Fact]
-    public void AreaController_GetById_ReturnBadRequest()
+    public void ProductController_GetById_ReturnBadRequest()
     {
         // Arrange
         string id = "";
-        A.CallTo(() => areaService.GetById(id)).Throws(new InvalidParameterException());
-        var controller = new AreaController(areaService);
+        A.CallTo(() => productService.GetById(id)).Throws(new InvalidParameterException());
+        var controller = new ProductController(productService);
 
         // Act
         var result = controller.GetById(id);
@@ -105,12 +106,12 @@ public class AreaControllerTest
     }
 
     [Fact]
-    public void AreaController_Create_ReturnCreated()
+    public void ProductController_Create_ReturnCreated()
     {
         // Arrange
-        CreateAreaModel create = new();
-        A.CallTo(() => areaService.Add(create)).Returns<AreaExtraModel>(new());
-        var controller = new AreaController(areaService);
+        CreateProductModel create = new();
+        A.CallTo(() => productService.Add(create)).Returns<ProductExtraModel>(new());
+        var controller = new ProductController(productService);
 
         // Act
         var result = controller.Create(create);
@@ -121,13 +122,12 @@ public class AreaControllerTest
         Assert.Equal(StatusCodes.Status201Created,
             result.Result.GetType().GetProperty("StatusCode")?.GetValue(result.Result));
     }
-
     [Fact]
-    public void AreaController_Create_ReturnBadRequest1()
+    public void ProductController_Create_ReturnBadRequest1()
     {
         // Arrange
-        CreateAreaModel create = new();
-        var controller = new AreaController(areaService);
+        CreateProductModel create = new();
+        var controller = new ProductController(productService);
         controller.ModelState.AddModelError("SessionName", "Required");
 
         // Act
@@ -141,13 +141,13 @@ public class AreaControllerTest
     }
 
     [Fact]
-    public void AreaController_Create_ReturnBadRequest2()
+    public void ProductController_Create_ReturnBadRequest2()
     {
         // Arrange
-        CreateAreaModel create = new();
-        A.CallTo(() => areaService.Add(create))
-            .Throws(new InvalidParameterException());
-        var controller = new AreaController(areaService);
+        CreateProductModel create = new();
+        A.CallTo(() => productService.Add(create))
+        .Throws(new InvalidParameterException());
+        var controller = new ProductController(productService);
 
         // Act
         var result = controller.Create(create);
@@ -160,12 +160,12 @@ public class AreaControllerTest
     }
 
     [Fact]
-    public void AreaController_Create_ReturnNotFound()
+    public void ProductController_Create_ReturnNotFound()
     {
         // Arrange
-        CreateAreaModel create = new();
-        A.CallTo(() => areaService.Add(create)).Returns<AreaExtraModel>(null);
-        var controller = new AreaController(areaService);
+        CreateProductModel create = new();
+        A.CallTo(() => productService.Add(create)).Returns<ProductExtraModel>(null);
+        var controller = new ProductController(productService);
 
         // Act
         var result = controller.Create(create);
@@ -178,13 +178,13 @@ public class AreaControllerTest
     }
 
     [Fact]
-    public void AreaController_Update_ReturnOK()
+    public void ProductController_Update_ReturnOK()
     {
         // Arrange
         string id = "";
-        UpdateAreaModel update = new();
-        A.CallTo(() => areaService.Update(id, update)).Returns<AreaExtraModel>(new());
-        var controller = new AreaController(areaService);
+        UpdateProductModel update = new();
+        A.CallTo(() => productService.Update(id, update)).Returns<ProductExtraModel>(new());
+        var controller = new ProductController(productService);
 
         // Act
         var result = controller.Update(id, update);
@@ -195,14 +195,13 @@ public class AreaControllerTest
         Assert.Equal(StatusCodes.Status200OK,
             result.Result.GetType().GetProperty("StatusCode")?.GetValue(result.Result));
     }
-
     [Fact]
-    public void AreaController_Update_ReturnBadRequest1()
+    public void ProductController_Update_ReturnBadRequest1()
     {
         // Arrange
         string id = "";
-        UpdateAreaModel update = new();
-        var controller = new AreaController(areaService);
+        UpdateProductModel update = new();
+        var controller = new ProductController(productService);
         controller.ModelState.AddModelError("SessionName", "Required");
 
         // Act
@@ -216,14 +215,14 @@ public class AreaControllerTest
     }
 
     [Fact]
-    public void AreaController_Update_ReturnBadRequest2()
+    public void ProductController_Update_ReturnBadRequest2()
     {
         // Arrange
         string id = "";
-        UpdateAreaModel update = new();
-        A.CallTo(() => areaService.Update(id, update))
-            .Throws(new InvalidParameterException());
-        var controller = new AreaController(areaService);
+        UpdateProductModel update = new();
+        A.CallTo(() => productService.Update(id, update))
+        .Throws(new InvalidParameterException());
+        var controller = new ProductController(productService);
 
         // Act
         var result = controller.Update(id, update);
@@ -236,13 +235,13 @@ public class AreaControllerTest
     }
 
     [Fact]
-    public void AreaController_Update_ReturnNotFound()
+    public void ProductController_Update_ReturnNotFound()
     {
         // Arrange
         string id = "";
-        UpdateAreaModel update = new();
-        A.CallTo(() => areaService.Update(id, update)).Returns<AreaExtraModel>(null);
-        var controller = new AreaController(areaService);
+        UpdateProductModel update = new();
+        A.CallTo(() => productService.Update(id, update)).Returns<ProductExtraModel>(null);
+        var controller = new ProductController(productService);
 
         // Act
         var result = controller.Update(id, update);
@@ -253,13 +252,12 @@ public class AreaControllerTest
         Assert.Equal(StatusCodes.Status404NotFound,
             result.Result.GetType().GetProperty("StatusCode")?.GetValue(result.Result));
     }
-
     [Fact]
-    public void AreaController_Delete_ReturnNoContent()
+    public void ProductController_Delete_ReturnNoContent()
     {
         // Arrange
         string id = "";
-        var controller = new AreaController(areaService);
+        var controller = new ProductController(productService);
 
         // Act
         var result = controller.Delete(id);
@@ -272,12 +270,12 @@ public class AreaControllerTest
     }
 
     [Fact]
-    public void AreaController_Delete_ReturnBadRequest()
+    public void ProductController_Delete_ReturnBadRequest()
     {
         // Arrange
         string id = "";
-        A.CallTo(() => areaService.Delete(id)).Throws(new InvalidParameterException());
-        var controller = new AreaController(areaService);
+        A.CallTo(() => productService.Delete(id)).Throws(new InvalidParameterException());
+        var controller = new ProductController(productService);
 
         // Act
         var result = controller.Delete(id);

@@ -421,7 +421,7 @@ public class StoreController : ControllerBase
     [ProducesResponseType(typeof(TitleStoreModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public IActionResult GetTitleByAdminId(string id)
+    public IActionResult GetTitleByStoreId(string id)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 

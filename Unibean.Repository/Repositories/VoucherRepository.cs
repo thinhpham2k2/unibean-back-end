@@ -100,6 +100,14 @@ public class VoucherRepository : IVoucherRepository
                 .ThenInclude(v => v.CampaignDetail)
                     .ThenInclude(c => c.Campaign)
                         .ThenInclude(c => c.Type)
+            .Include(s => s.VoucherItems.Where(v => (bool)v.Status))
+                .ThenInclude(v => v.CampaignDetail)
+                    .ThenInclude(c => c.Campaign)
+                        .ThenInclude(s => s.Brand)
+            .Include(s => s.VoucherItems.Where(v => (bool)v.Status))
+                .ThenInclude(v => v.CampaignDetail)
+                    .ThenInclude(c => c.Campaign)
+                        .ThenInclude(s => s.CampaignActivities.Where(a => (bool)a.Status).OrderBy(a => a.Id))
             .FirstOrDefault();
         }
         catch (Exception ex)

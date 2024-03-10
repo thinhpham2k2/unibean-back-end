@@ -110,7 +110,7 @@ public class AdminControllerTest
             (adminService, chartService, requestService, fireBaseService);
 
         // Act
-        var result = controller.GetById("");
+        var result = controller.GetById(id);
 
         // Assert
         result.Should().NotBeNull();
