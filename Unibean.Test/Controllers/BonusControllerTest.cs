@@ -48,7 +48,30 @@ public class BonusControllerTest
     }
 
     [Fact]
-    public void BonusController_GetList_BadRequest()
+    public void BonusController_GetList_ReturnBadRequest1()
+    {
+        // Arrange
+        List<string> brandIds = new();
+        List<string> storeIds = new();
+        List<string> studentIds = new();
+        bool? state = null;
+        PagingModel paging = new()
+        {
+            Sort = "Ids,desc",
+            Search = "",
+            Page = 1,
+            Limit = 10,
+        };
+        var controller = new BonusController(bonusService);
+        controller.ModelState.AddModelError("SessionName", "Required");
+
+        // Act & Assert
+        Assert.Throws<InvalidParameterException>(
+            () => controller.GetList(brandIds, storeIds, studentIds, state, paging));
+    }
+
+    [Fact]
+    public void BonusController_GetList_ReturnBadRequest2()
     {
         // Arrange
         List<string> brandIds = new();

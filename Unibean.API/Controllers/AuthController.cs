@@ -161,7 +161,8 @@ public class AuthController : ControllerBase
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public async Task<IActionResult> GenerateWebsiteTokenByGoogle([FromBody] GoogleTokenModel token)
+    public async Task<IActionResult> GenerateWebsiteTokenByGoogle(
+        [FromBody] GoogleTokenModel token)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
         

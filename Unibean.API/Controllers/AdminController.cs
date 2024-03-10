@@ -226,7 +226,8 @@ public class AdminController : ControllerBase
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public IActionResult CreateRequest([ValidAdmin] string id, [FromBody] CreateRequestModel creation)
+    public IActionResult CreateRequest([ValidAdmin] string id, 
+        [FromBody] CreateRequestModel creation)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 

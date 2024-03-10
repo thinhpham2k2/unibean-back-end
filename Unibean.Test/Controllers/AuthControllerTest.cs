@@ -104,7 +104,7 @@ public class AuthControllerTest
         // Act
         var result = controller.GenerateWebsiteToken(login);
 
-        // Assert
+        // Act & Assert
         result.Should().NotBeNull();
         result.Should().BeOfType(typeof(ObjectResult));
         Assert.Equal(StatusCodes.Status303SeeOther,
@@ -112,7 +112,21 @@ public class AuthControllerTest
     }
 
     [Fact]
-    public void AuthController_GenerateWebsiteToken_ReturnBadRequest()
+    public void AuthController_GenerateWebsiteToken_ReturnBadRequest1()
+    {
+        // Arrange
+        LoginFromModel login = new();
+        var controller = new AuthController
+            (accountService, googleService, studentService, emailService);
+        controller.ModelState.AddModelError("SessionName", "Required");
+
+        // Assert
+        Assert.Throws<InvalidParameterException>(
+            () => controller.GenerateWebsiteToken(login));
+    }
+
+    [Fact]
+    public void AuthController_GenerateWebsiteToken_ReturnBadRequest2()
     {
         // Arrange
         LoginFromModel login = new();
@@ -193,7 +207,21 @@ public class AuthControllerTest
     }
 
     [Fact]
-    public void AuthController_GenerateMobileToken_ReturnBadRequest()
+    public void AuthController_GenerateMobileToken_ReturnBadRequest1()
+    {
+        // Arrange
+        LoginFromModel login = new();
+        var controller = new AuthController
+            (accountService, googleService, studentService, emailService);
+        controller.ModelState.AddModelError("SessionName", "Required");
+
+        // Act & Assert
+        Assert.Throws<InvalidParameterException>(
+            () => controller.GenerateMobileToken(login));
+    }
+
+    [Fact]
+    public void AuthController_GenerateMobileToken_ReturnBadRequest2()
     {
         // Arrange
         LoginFromModel login = new();

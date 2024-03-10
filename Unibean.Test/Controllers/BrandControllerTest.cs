@@ -65,7 +65,35 @@ public class BrandControllerTest
     }
 
     [Fact]
-    public void BrandController_GetList_ReturnBadRequest()
+    public void BrandController_GetList_ReturnBadRequest1()
+    {
+        // Arrange
+        bool? state = null;
+        PagingModel paging = new()
+        {
+            Sort = "Ids,desc",
+            Search = "",
+            Page = 1,
+            Limit = 10,
+        };
+        var httpContext = new DefaultHttpContext();
+        httpContext.Request.Headers["Authorization"] = "Bearer TOKEN";
+        var controller = new BrandController(brandService, jwtService, chartService)
+        {
+            ControllerContext = new ControllerContext()
+            {
+                HttpContext = httpContext
+            }
+        };
+        controller.ModelState.AddModelError("SessionName", "Required");
+
+        // Act & Assert
+        Assert.Throws<InvalidParameterException>(
+            () => controller.GetList(state, paging));
+    }
+
+    [Fact]
+    public void BrandController_GetList_ReturnBadRequest2()
     {
         // Arrange
         bool? state = null;
@@ -372,7 +400,32 @@ public class BrandControllerTest
     }
 
     [Fact]
-    public void BrandController_GetCampaignListByBrandId_ReturnBadRequest()
+    public void BrandController_GetCampaignListByBrandId_ReturnBadRequest1()
+    {
+        // Arrange
+        string id = "";
+        List<string> typeIds = new();
+        List<string> storeIds = new();
+        List<string> majorIds = new();
+        List<string> campusIds = new();
+        List<CampaignState> stateIds = new();
+        PagingModel paging = new()
+        {
+            Sort = "Ids,desc",
+            Search = "",
+            Page = 1,
+            Limit = 10,
+        };
+        var controller = new BrandController(brandService, jwtService, chartService);
+        controller.ModelState.AddModelError("SessionName", "Required");
+
+        // Act & Assert
+        Assert.Throws<InvalidParameterException>(
+            () => controller.GetCampaignListByBrandId(id, typeIds, storeIds, majorIds, campusIds, stateIds, paging));
+    }
+
+    [Fact]
+    public void BrandController_GetCampaignListByBrandId_ReturnBadRequest2()
     {
         // Arrange
         string id = "";
@@ -474,7 +527,30 @@ public class BrandControllerTest
     }
 
     [Fact]
-    public void BrandController_GetHistoryTransactionByBrandId_ReturnBadRequest()
+    public void BrandController_GetHistoryTransactionByBrandId_ReturnBadRequest1()
+    {
+        // Arrange
+        string id = "";
+        List<WalletType> walletTypeIds = new();
+        bool? state = null;
+        PagingModel paging = new()
+        {
+            Sort = "Ids,desc",
+            Search = "",
+            Page = 1,
+            Limit = 10,
+        };
+        var controller = new BrandController(brandService, jwtService, chartService);
+        controller.ModelState.AddModelError("SessionName", "Required");
+
+        // Act & Assert
+        Assert.Throws<InvalidParameterException>(
+            () => controller.GetHistoryTransactionByBrandId
+            (id, walletTypeIds, state, paging));
+    }
+
+    [Fact]
+    public void BrandController_GetHistoryTransactionByBrandId_ReturnBadRequest2()
     {
         // Arrange
         string id = "";
@@ -566,7 +642,30 @@ public class BrandControllerTest
     }
 
     [Fact]
-    public void BrandController_GetStoreListByBrandId_ReturnBadRequest()
+    public void BrandController_GetStoreListByBrandId_ReturnBadRequest1()
+    {
+        // Arrange
+        string id = "";
+        List<string> areaIds = new();
+        bool? state = null;
+        PagingModel paging = new()
+        {
+            Sort = "Ids,desc",
+            Search = "",
+            Page = 1,
+            Limit = 10,
+        };
+        var controller = new BrandController(brandService, jwtService, chartService);
+        controller.ModelState.AddModelError("SessionName", "Required");
+
+        // Act & Assert
+        Assert.Throws<InvalidParameterException>(
+            () => controller.GetStoreListByBrandId
+            (id, areaIds, state, paging));
+    }
+
+    [Fact]
+    public void BrandController_GetStoreListByBrandId_ReturnBadRequest2()
     {
         // Arrange
         string id = "";
@@ -657,7 +756,30 @@ public class BrandControllerTest
     }
 
     [Fact]
-    public void BrandController_GetVoucherListByBrandId_ReturnBadRequest()
+    public void BrandController_GetVoucherListByBrandId_ReturnBadRequest1()
+    {
+        // Arrange
+        string id = "";
+        List<string> typeIds = new();
+        bool? state = null;
+        PagingModel paging = new()
+        {
+            Sort = "Ids,desc",
+            Search = "",
+            Page = 1,
+            Limit = 10,
+        };
+        var controller = new BrandController(brandService, jwtService, chartService);
+        controller.ModelState.AddModelError("SessionName", "Required");
+
+        // Act & Assert
+        Assert.Throws<InvalidParameterException>(
+            () => controller.GetVoucherListByBrandId
+            (id, typeIds, state, paging));
+    }
+
+    [Fact]
+    public void BrandController_GetVoucherListByBrandId_ReturnBadRequest2()
     {
         // Arrange
         string id = "";

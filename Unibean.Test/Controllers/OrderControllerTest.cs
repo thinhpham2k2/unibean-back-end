@@ -53,7 +53,30 @@ public class OrderControllerTest
     }
 
     [Fact]
-    public void OrderController_GetList_ReturnBadRequest()
+    public void OrderController_GetList_ReturnBadRequest1()
+    {
+        // Arrange
+        List<string> stationIds = new();
+        List<string> studentIds = new();
+        List<State> stateIds = new();
+        bool? state = null;
+        PagingModel paging = new()
+        {
+            Sort = "Ids,desc",
+            Search = "",
+            Page = 1,
+            Limit = 10,
+        };
+        var controller = new OrderController(orderService, orderStateService);
+        controller.ModelState.AddModelError("SessionName", "Required");
+
+        // Act & Assert
+        Assert.Throws<InvalidParameterException>(
+            () => controller.GetList(stationIds, studentIds, stateIds, state, paging));
+    }
+
+    [Fact]
+    public void OrderController_GetList_ReturnBadRequest2()
     {
         // Arrange
         List<string> stationIds = new();
@@ -78,6 +101,7 @@ public class OrderControllerTest
         Assert.Equal(StatusCodes.Status400BadRequest,
             result.Result?.GetType().GetProperty("StatusCode")?.GetValue(result.Result));
     }
+
     [Fact]
     public void OrderController_GetById_ReturnOK()
     {
@@ -136,7 +160,23 @@ public class OrderControllerTest
     }
 
     [Fact]
-    public void OrderController_CreateStateForOrder_ReturnBadRequest()
+    public void OrderController_CreateStateForOrder_ReturnBadRequest1()
+    {
+        // Arrange
+        string id = "";
+        CreateOrderStateModel create = new();
+        A.CallTo(() => orderStateService.Add(id, create))
+            .Throws(new InvalidParameterException());
+        var controller = new OrderController(orderService, orderStateService);
+        controller.ModelState.AddModelError("SessionName", "Required");
+
+        // Act & Assert
+        Assert.Throws<InvalidParameterException>(
+            () => controller.CreateStateForOrder(id, create));
+    }
+
+    [Fact]
+    public void OrderController_CreateStateForOrder_ReturnBadRequest2()
     {
         // Arrange
         string id = "";

@@ -46,7 +46,28 @@ public class ProductControllerTest
     }
 
     [Fact]
-    public void ProductController_GetList_ReturnBadRequest()
+    public void ProductController_GetList_ReturnBadRequest1()
+    {
+        // Arrange
+        List<string> categoryIds = new();
+        bool? state = null;
+        PagingModel paging = new()
+        {
+            Sort = "Ids,desc",
+            Search = "",
+            Page = 1,
+            Limit = 10,
+        };
+        var controller = new ProductController(productService);
+        controller.ModelState.AddModelError("SessionName", "Required");
+
+        // Act & Assert
+        Assert.Throws<InvalidParameterException>(
+            () => controller.GetList(categoryIds, state, paging));
+    }
+
+    [Fact]
+    public void ProductController_GetList_ReturnBadRequest2()
     {
         // Arrange
         List<string> categoryIds = new();
@@ -69,6 +90,7 @@ public class ProductControllerTest
         Assert.Equal(StatusCodes.Status400BadRequest,
             result.Result?.GetType().GetProperty("StatusCode")?.GetValue(result.Result));
     }
+
     [Fact]
     public void ProductController_GetById_ReturnOK()
     {

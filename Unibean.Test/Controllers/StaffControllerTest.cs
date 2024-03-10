@@ -50,7 +50,28 @@ public class StaffControllerTest
     }
 
     [Fact]
-    public void StaffController_GetList_ReturnBadRequest()
+    public void StaffController_GetList_ReturnBadRequest1()
+    {
+        // Arrange
+        List<string> stationIds = new();
+        bool? state = null;
+        PagingModel paging = new()
+        {
+            Sort = "Ids,desc",
+            Search = "",
+            Page = 1,
+            Limit = 10,
+        };
+        var controller = new StaffController(chartService, staffService);
+        controller.ModelState.AddModelError("SessionName", "Required");
+
+        // Act & Assert
+        Assert.Throws<InvalidParameterException>(
+            () => controller.GetList(stationIds, state, paging));
+    }
+
+    [Fact]
+    public void StaffController_GetList_ReturnBadRequest2()
     {
         // Arrange
         List<string> stationIds = new();
