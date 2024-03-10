@@ -46,7 +46,27 @@ public class StationControllerTest
     }
 
     [Fact]
-    public void StationController_GetList_ReturnBadRequest()
+    public void StationController_GetList_ReturnBadRequest1()
+    {
+        // Arrange
+        List<StationState> stateIds = new();
+        PagingModel paging = new()
+        {
+            Sort = "Ids,desc",
+            Search = "",
+            Page = 1,
+            Limit = 10,
+        };
+        var controller = new StationController(stationService);
+        controller.ModelState.AddModelError("SessionName", "Required");
+
+        // Act & Assert
+        Assert.Throws<InvalidParameterException>(
+            () => controller.GetList(stateIds, paging));
+    }
+
+    [Fact]
+    public void StationController_GetList_ReturnBadRequest2()
     {
         // Arrange
         List<StationState> stateIds = new();
@@ -68,6 +88,7 @@ public class StationControllerTest
         Assert.Equal(StatusCodes.Status400BadRequest,
             result.Result?.GetType().GetProperty("StatusCode")?.GetValue(result.Result));
     }
+
     [Fact]
     public void StationController_GetById_ReturnOK()
     {
@@ -307,7 +328,23 @@ public class StationControllerTest
     }
 
     [Fact]
-    public void StationController_UpdateState_ReturnBadRequest()
+    public void StationController_UpdateState_ReturnBadRequest1()
+    {
+        // Arrange
+        string id = "";
+        StationState stateId = new();
+        A.CallTo(() => stationService.UpdateState(id, stateId))
+            .Throws(new InvalidParameterException());
+        var controller = new StationController(stationService);
+        controller.ModelState.AddModelError("SessionName", "Required");
+
+        // Act & Assert
+        Assert.Throws<InvalidParameterException>(
+            () => controller.UpdateState(id, stateId));
+    }
+
+    [Fact]
+    public void StationController_UpdateState_ReturnBadRequest2()
     {
         // Arrange
         string id = "";

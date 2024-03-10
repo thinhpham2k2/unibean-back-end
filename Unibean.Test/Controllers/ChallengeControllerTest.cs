@@ -47,7 +47,28 @@ public class ChallengeControllerTest
     }
 
     [Fact]
-    public void ChallengeController_GetList_ReturnBadRequest()
+    public void ChallengeController_GetList_ReturnBadRequest1()
+    {
+        // Arrange
+        List<ChallengeType> typeIds = new();
+        bool? state = null;
+        PagingModel paging = new()
+        {
+            Sort = "Ids,desc",
+            Search = "",
+            Page = 1,
+            Limit = 10,
+        };
+        var controller = new ChallengeController(challengeService);
+        controller.ModelState.AddModelError("SessionName", "Required");
+
+        // Act & Assert
+        Assert.Throws<InvalidParameterException>(
+            () => controller.GetList(typeIds, state, paging));
+    }
+
+    [Fact]
+    public void ChallengeController_GetList_ReturnBadRequest2()
     {
         // Arrange
         List<ChallengeType> typeIds = new();

@@ -215,7 +215,8 @@ public class StoreController : ControllerBase
     [ProducesResponseType(typeof(PagedResultModel<CampaignDetailModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public ActionResult<PagedResultModel<CampaignDetailModel>> GetVoucherListByStoreId(string id,
+    public ActionResult<PagedResultModel<CampaignDetailModel>> GetVoucherListByStoreId(
+        string id,
         [FromQuery] List<string> campaignIds,
         [FromQuery] List<string> typeIds,
         [FromQuery] bool? state,
@@ -254,13 +255,15 @@ public class StoreController : ControllerBase
     [ProducesResponseType(typeof(CampaignDetailExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public ActionResult<CampaignDetailExtraModel> GetCampaignDetailById(string id, string detailId)
+    public ActionResult<CampaignDetailExtraModel> GetCampaignDetailById
+        (string id, string detailId)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         try
         {
-            return StatusCode(StatusCodes.Status200OK, storeService.GetCampaignDetailById(id, detailId));
+            return StatusCode(StatusCodes.Status200OK, 
+                storeService.GetCampaignDetailById(id, detailId));
         }
         catch (InvalidParameterException e)
         {
@@ -308,9 +311,8 @@ public class StoreController : ControllerBase
     [Authorize(Roles = "Store")]
     [ProducesResponseType(typeof(VoucherItemExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public ActionResult<string> GetVoucherInformation(
+    public ActionResult<VoucherItemExtraModel> GetVoucherInformation(
         [ValidStore] string id,
         [ValidItem] string code)
     {
@@ -318,7 +320,8 @@ public class StoreController : ControllerBase
 
         try
         {
-            return StatusCode(StatusCodes.Status200OK, storeService.GetVoucherItemByCode(id, code));
+            return StatusCode(StatusCodes.Status200OK, 
+                storeService.GetVoucherItemByCode(id, code));
         }
         catch (InvalidParameterException e)
         {
@@ -364,7 +367,8 @@ public class StoreController : ControllerBase
     [ProducesResponseType(typeof(PagedResultModel<StoreTransactionModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public ActionResult<PagedResultModel<StoreTransactionModel>> GetHistoryTransactionByStoreId(string id,
+    public ActionResult<PagedResultModel<StoreTransactionModel>> GetHistoryTransactionByStoreId(
+        string id,
         [FromQuery] List<StoreTransactionType> typeIds,
         [FromQuery] bool? state,
         [FromQuery] PagingModel paging)

@@ -62,7 +62,33 @@ public class CampaignControllerTest
     }
 
     [Fact]
-    public void CampaignController_GetList_ReturnBadRequest()
+    public void CampaignController_GetList_ReturnBadRequest1()
+    {
+        // Arrange
+        List<string> brandIds = new();
+        List<string> typeIds = new();
+        List<string> storeIds = new();
+        List<string> majorIds = new();
+        List<string> campusIds = new();
+        List<CampaignState> stateIds = new();
+        PagingModel paging = new()
+        {
+            Sort = "Ids,desc",
+            Search = "",
+            Page = 1,
+            Limit = 10,
+        };
+        var controller = new CampaignController(campaignService, jwtService);
+        controller.ModelState.AddModelError("SessionName", "Required");
+
+        // Act & Assert
+        Assert.Throws<InvalidParameterException>(
+            () => controller.GetList(brandIds, typeIds,
+            storeIds, majorIds, campusIds, stateIds, paging));
+    }
+
+    [Fact]
+    public void CampaignController_GetList_ReturnBadRequest2()
     {
         // Arrange
         List<string> brandIds = new();
@@ -313,7 +339,33 @@ public class CampaignControllerTest
     }
 
     [Fact]
-    public void CampaignController_UpdateState_ReturnBadRequest()
+    public void CampaignController_UpdateState_ReturnBadRequest1()
+    {
+        // Arrange
+        string id = "";
+        JwtRequestModel jwt = new();
+        CampaignState stateId = new();
+        A.CallTo(() => jwtService.GetJwtRequest("TOKEN")).Returns(jwt);
+        A.CallTo(() => campaignService.UpdateState(id, stateId, jwt))
+            .Throws(new InvalidParameterException());
+        var httpContext = new DefaultHttpContext();
+        httpContext.Request.Headers["Authorization"] = "Bearer TOKEN";
+        var controller = new CampaignController(campaignService, jwtService)
+        {
+            ControllerContext = new ControllerContext()
+            {
+                HttpContext = httpContext
+            }
+        };
+        controller.ModelState.AddModelError("SessionName", "Required");
+
+        // Act & Assert
+        Assert.Throws<InvalidParameterException>(
+            () => controller.UpdateState(id, stateId));
+    }
+
+    [Fact]
+    public void CampaignController_UpdateState_ReturnBadRequest2()
     {
         // Arrange
         string id = "";
@@ -433,7 +485,28 @@ public class CampaignControllerTest
     }
 
     [Fact]
-    public void CampaignController_GetActivityListByCampaignId_ReturnBadRequest()
+    public void CampaignController_GetActivityListByCampaignId_ReturnBadRequest1()
+    {
+        // Arrange
+        string id = "";
+        List<CampaignState> stateIds = new();
+        PagingModel paging = new()
+        {
+            Sort = "Ids,desc",
+            Search = "",
+            Page = 1,
+            Limit = 10,
+        };
+        var controller = new CampaignController(campaignService, jwtService);
+        controller.ModelState.AddModelError("SessionName", "Required");
+
+        // Act & Assert
+        Assert.Throws<InvalidParameterException>(
+            () => controller.GetActivityListByCampaignId(id, stateIds, paging));
+    }
+
+    [Fact]
+    public void CampaignController_GetActivityListByCampaignId_ReturnBadRequest2()
     {
         // Arrange
         string id = "";
@@ -486,7 +559,31 @@ public class CampaignControllerTest
     }
 
     [Fact]
-    public void CampaignController_GetCampusListByCampaignId_ReturnBadRequest()
+    public void CampaignController_GetCampusListByCampaignId_ReturnBadRequest1()
+    {
+        // Arrange
+        string id = "";
+        List<string> universityIds = new();
+        List<string> areaIds = new();
+        bool? state = null;
+        PagingModel paging = new()
+        {
+            Sort = "Ids,desc",
+            Search = "",
+            Page = 1,
+            Limit = 10,
+        };
+        var controller = new CampaignController(campaignService, jwtService);
+        controller.ModelState.AddModelError("SessionName", "Required");
+
+        // Act & Assert
+        Assert.Throws<InvalidParameterException>(
+            () => controller.GetCampusListByCampaignId
+            (id, universityIds, areaIds, state, paging));
+    }
+
+    [Fact]
+    public void CampaignController_GetCampusListByCampaignId_ReturnBadRequest2()
     {
         // Arrange
         string id = "";
@@ -539,7 +636,28 @@ public class CampaignControllerTest
     }
 
     [Fact]
-    public void CampaignController_GetMajorListByCampaignId_ReturnBadRequest()
+    public void CampaignController_GetMajorListByCampaignId_ReturnBadRequest1()
+    {
+        // Arrange
+        string id = "";
+        bool? state = null;
+        PagingModel paging = new()
+        {
+            Sort = "Ids,desc",
+            Search = "",
+            Page = 1,
+            Limit = 10,
+        };
+        var controller = new CampaignController(campaignService, jwtService);
+        controller.ModelState.AddModelError("SessionName", "Required");
+
+        // Act & Assert
+        Assert.Throws<InvalidParameterException>(
+            () => controller.GetMajorListByCampaignId(id, state, paging));
+    }
+
+    [Fact]
+    public void CampaignController_GetMajorListByCampaignId_ReturnBadRequest2()
     {
         // Arrange
         string id = "";
@@ -591,7 +709,30 @@ public class CampaignControllerTest
     }
 
     [Fact]
-    public void CampaignController_GetStoreListByCampaignId_ReturnBadRequest()
+    public void CampaignController_GetStoreListByCampaignId_ReturnBadRequest1()
+    {
+        // Arrange
+        string id = "";
+        List<string> brandIds = new();
+        List<string> areaIds = new();
+        bool? state = null;
+        PagingModel paging = new()
+        {
+            Sort = "Ids,desc",
+            Search = "",
+            Page = 1,
+            Limit = 10,
+        };
+        var controller = new CampaignController(campaignService, jwtService);
+        controller.ModelState.AddModelError("SessionName", "Required");
+
+        // Act & Assert
+        Assert.Throws<InvalidParameterException>(
+            () => controller.GetStoreListByCampaignId(id, brandIds, areaIds, state, paging));
+    }
+
+    [Fact]
+    public void CampaignController_GetStoreListByCampaignId_ReturnBadRequest2()
     {
         // Arrange
         string id = "";
@@ -644,7 +785,29 @@ public class CampaignControllerTest
     }
 
     [Fact]
-    public void CampaignController_GetCampaignDetailListByCampaignId_ReturnBadRequest()
+    public void CampaignController_GetCampaignDetailListByCampaignId_ReturnBadRequest1()
+    {
+        // Arrange
+        string id = "";
+        List<string> typeIds = new();
+        bool? state = null;
+        PagingModel paging = new()
+        {
+            Sort = "Ids,desc",
+            Search = "",
+            Page = 1,
+            Limit = 10,
+        };
+        var controller = new CampaignController(campaignService, jwtService);
+        controller.ModelState.AddModelError("SessionName", "Required");
+
+        // Act & Assert
+        Assert.Throws<InvalidParameterException>(
+            () => controller.GetCampaignDetailListByCampaignId(id, typeIds, state, paging));
+    }
+
+    [Fact]
+    public void CampaignController_GetCampaignDetailListByCampaignId_ReturnBadRequest2()
     {
         // Arrange
         string id = "";
@@ -729,7 +892,24 @@ public class CampaignControllerTest
     }
 
     [Fact]
-    public void CampaignController_BuyVoucher_ReturnBadRequest()
+    public void CampaignController_BuyVoucher_ReturnBadRequest1()
+    {
+        // Arrange
+        string id = "";
+        string detailId = "";
+        CreateBuyActivityModel creation = new();
+        A.CallTo(() => campaignService.AddActivity(id, detailId, creation))
+            .Throws(new InvalidParameterException());
+        var controller = new CampaignController(campaignService, jwtService);
+        controller.ModelState.AddModelError("SessionName", "Required");
+
+        // Act & Assert
+        Assert.Throws<InvalidParameterException>(
+            () => controller.BuyVoucher(id, detailId, creation));
+    }
+
+    [Fact]
+    public void CampaignController_BuyVoucher_ReturnBadRequest2()
     {
         // Arrange
         string id = "";

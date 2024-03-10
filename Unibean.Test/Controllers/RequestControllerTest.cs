@@ -47,7 +47,29 @@ public class RequestControllerTest
     }
 
     [Fact]
-    public void RequestController_GetList_ReturnBadRequest()
+    public void RequestController_GetList_ReturnBadRequest1()
+    {
+        // Arrange
+        List<string> brandIds = new();
+        List<string> adminIds = new();
+        bool? state = null;
+        PagingModel paging = new()
+        {
+            Sort = "Ids,desc",
+            Search = "",
+            Page = 1,
+            Limit = 10,
+        };
+        var controller = new RequestController(requestService);
+        controller.ModelState.AddModelError("SessionName", "Required");
+
+        // Act & Assert
+        Assert.Throws<InvalidParameterException>(
+            () => controller.GetList(brandIds, adminIds, state, paging));
+    }
+
+    [Fact]
+    public void RequestController_GetList_ReturnBadRequest2()
     {
         // Arrange
         List<string> brandIds = new();

@@ -45,7 +45,27 @@ public class MajorControllerTest
     }
 
     [Fact]
-    public void MajorController_GetList_ReturnBadRequest()
+    public void MajorController_GetList_ReturnBadRequest1()
+    {
+        // Arrange
+        bool? state = null;
+        PagingModel paging = new()
+        {
+            Sort = "Ids,desc",
+            Search = "",
+            Page = 1,
+            Limit = 10,
+        };
+        var controller = new MajorController(majorService);
+        controller.ModelState.AddModelError("SessionName", "Required");
+
+        // Act & Assert
+        Assert.Throws<InvalidParameterException>(
+            () => controller.GetList(state, paging));
+    }
+
+    [Fact]
+    public void MajorController_GetList_ReturnBadRequest2()
     {
         // Arrange
         bool? state = null;
@@ -67,6 +87,7 @@ public class MajorControllerTest
         Assert.Equal(StatusCodes.Status400BadRequest,
             result.Result?.GetType().GetProperty("StatusCode")?.GetValue(result.Result));
     }
+
     [Fact]
     public void MajorController_GetById_ReturnOK()
     {

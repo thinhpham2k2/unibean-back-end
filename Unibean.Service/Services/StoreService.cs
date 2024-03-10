@@ -125,7 +125,7 @@ public class StoreService : IStoreService
         this.voucherItemService = voucherItemService;
     }
 
-    public async Task<StoreModel> Add(CreateStoreModel creation)
+    public async Task<StoreExtraModel> Add(CreateStoreModel creation)
     {
         Account account = mapper.Map<Account>(creation);
 
@@ -141,7 +141,7 @@ public class StoreService : IStoreService
         Store store = mapper.Map<Store>(creation);
         store.AccountId = account.Id;
 
-        return mapper.Map<StoreModel>(storeRepository.Add(store));
+        return mapper.Map<StoreExtraModel>(storeRepository.Add(store));
     }
 
     public bool AddActivity

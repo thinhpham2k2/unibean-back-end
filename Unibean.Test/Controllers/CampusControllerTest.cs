@@ -47,7 +47,29 @@ public class CampusControllerTest
     }
 
     [Fact]
-    public void CampusController_GetList_ReturnBadRequest()
+    public void CampusController_GetList_ReturnBadRequest1()
+    {
+        // Arrange
+        List<string> universityIds = new();
+        List<string> areaIds = new();
+        bool? state = null;
+        PagingModel paging = new()
+        {
+            Sort = "Ids,desc",
+            Search = "",
+            Page = 1,
+            Limit = 10,
+        };
+        var controller = new CampusController(campusService);
+        controller.ModelState.AddModelError("SessionName", "Required");
+
+        // Act & Assert
+        Assert.Throws<InvalidParameterException>(
+            () => controller.GetList(universityIds, areaIds, state, paging));
+    }
+
+    [Fact]
+    public void CampusController_GetList_ReturnBadRequest2()
     {
         // Arrange
         List<string> universityIds = new();
@@ -284,7 +306,7 @@ public class CampusControllerTest
     }
 
     [Fact]
-    public void CampusController_Delete_ReturnNoBadRequest()
+    public void CampusController_Delete_ReturnBadRequest()
     {
         // Arrange
         string id = "";

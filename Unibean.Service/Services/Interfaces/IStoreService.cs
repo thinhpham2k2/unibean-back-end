@@ -9,7 +9,7 @@ namespace Unibean.Service.Services.Interfaces;
 
 public interface IStoreService
 {
-    Task<StoreModel> Add(CreateStoreModel creation);
+    Task<StoreExtraModel> Add(CreateStoreModel creation);
 
     bool AddActivity
         (string id, string code, CreateUseActivityModel creation);

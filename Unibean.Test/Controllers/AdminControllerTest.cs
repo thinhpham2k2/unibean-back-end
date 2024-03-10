@@ -57,7 +57,28 @@ public class AdminControllerTest
     }
 
     [Fact]
-    public void AdminController_GetList_ReturnBadRequest()
+    public void AdminController_GetList_ReturnBadRequest1()
+    {
+        // Arrange
+        bool? state = null;
+        PagingModel paging = new()
+        {
+            Sort = "Id,desc",
+            Search = "",
+            Page = 1,
+            Limit = 10,
+        };
+        var controller = new AdminController
+            (adminService, chartService, requestService, fireBaseService);
+        controller.ModelState.AddModelError("SessionName", "Required");
+
+        // Act & Assert
+        Assert.Throws<InvalidParameterException>(
+            () => controller.GetList(state, paging));
+    }
+
+    [Fact]
+    public void AdminController_GetList_ReturnBadRequest2()
     {
         // Arrange
         bool? state = null;
@@ -430,7 +451,7 @@ public class AdminControllerTest
             (adminService, chartService, requestService, fireBaseService);
         controller.ModelState.AddModelError("SessionName", "Required");
 
-        // Assert
+        // Act & Assert
         Assert.Throws<InvalidParameterException>(
             () => controller.CreateRequest(id, create));
     }

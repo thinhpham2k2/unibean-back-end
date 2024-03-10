@@ -45,7 +45,27 @@ public class AreaControllerTest
     }
 
     [Fact]
-    public void AreaController_GetList_ReturnBadRequest()
+    public void AreaController_GetList_ReturnBadRequest1()
+    {
+        // Arrange
+        bool? state = null;
+        PagingModel paging = new()
+        {
+            Sort = "Id,desc",
+            Search = "",
+            Page = 1,
+            Limit = 10,
+        };
+        var controller = new AreaController(areaService);
+        controller.ModelState.AddModelError("SessionName", "Required");
+
+        // Act & Assert
+        Assert.Throws<InvalidParameterException>(
+            () => controller.GetList(state, paging));
+    }
+
+    [Fact]
+    public void AreaController_GetList_ReturnBadRequest2()
     {
         // Arrange
         bool? state = null;
