@@ -40,7 +40,8 @@ public class VoucherService : IVoucherService
             .ForMember(v => v.TypeName, opt => opt.MapFrom(src => src.Type.TypeName))
             .ForMember(v => v.NumberOfItems, opt => opt.MapFrom(src => src.VoucherItems.Count))
             .ForMember(v => v.Campaigns, opt => opt.MapFrom(
-                src => src.VoucherItems.Select(v => v.CampaignDetail.Campaign).Distinct()))
+                src => src.VoucherItems.Where(v => v.CampaignDetail != null)
+                .Select(v => v.CampaignDetail.Campaign).Distinct()))
             .ReverseMap();
             cfg.CreateMap<Campaign, CampaignModel>()
             .ForMember(c => c.BrandName, opt => opt.MapFrom(src => src.Brand.BrandName))
