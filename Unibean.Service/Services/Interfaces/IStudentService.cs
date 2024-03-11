@@ -11,7 +11,7 @@ namespace Unibean.Service.Services.Interfaces;
 
 public interface IStudentService
 {
-    Task<StudentModel> Add(CreateStudentModel creation);
+    Task<StudentExtraModel> Add(CreateStudentModel creation);
 
     Task<StudentModel> AddGoogle(CreateStudentGoogleModel creation);
 

@@ -220,7 +220,7 @@ public class StudentService : IStudentService
         this.emailService = emailService;
     }
 
-    public async Task<StudentModel> Add(CreateStudentModel creation)
+    public async Task<StudentExtraModel> Add(CreateStudentModel creation)
     {
         Account account = mapper.Map<Account>(creation);
 
@@ -309,7 +309,7 @@ public class StudentService : IStudentService
             }
         }
 
-        return mapper.Map<StudentModel>(student);
+        return mapper.Map<StudentExtraModel>(student);
     }
 
     public async Task<StudentModel> AddGoogle(CreateStudentGoogleModel creation)
