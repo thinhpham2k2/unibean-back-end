@@ -2,6 +2,7 @@
 using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Repository.Repositories;
 using Unibean.Service.Models.Campaigns;
+using Unibean.Service.Models.Validations;
 
 namespace Unibean.Service.Validations;
 
@@ -25,6 +26,23 @@ public class ValidConstraint : ValidationAttribute
                     .Select(c => storeRepository.GetById(c.StoreId)).Select(s => s.AreaId).ToList();
 
                 List<string> campusArea = create.CampaignCampuses
+                    .Select(c => campusRepository.GetById(c.CampusId)).Select(c => c.AreaId).ToList();
+
+                if (campusArea.All(a => storeArea.Contains(a)))
+                {
+                    return ValidationResult.Success;
+                }
+                return new ValidationResult(ErrorMessage1);
+            }
+        }
+        else if (validationContext.ObjectInstance is CampaignMSCModel verify)
+        {
+            if (verify.CampaignStores != null && verify.CampaignCampuses != null)
+            {
+                List<string> storeArea = verify.CampaignStores
+                    .Select(c => storeRepository.GetById(c.StoreId)).Select(s => s.AreaId).ToList();
+
+                List<string> campusArea = verify.CampaignCampuses
                     .Select(c => campusRepository.GetById(c.CampusId)).Select(c => c.AreaId).ToList();
 
                 if (campusArea.All(a => storeArea.Contains(a)))

@@ -12,6 +12,51 @@ namespace Unibean.API.Controllers;
 public class ValidationController : ControllerBase
 {
     /// <summary>
+    /// Brand id validation
+    /// </summary>
+    [AllowAnonymous]
+    [HttpPost("brand-id")]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public IActionResult BrandIdValidation([FromBody] BrandIdModel id)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        return StatusCode(StatusCodes.Status200OK, id.BrandId + " is valid");
+    }
+
+    /// <summary>
+    /// Cost and campaign details  validation
+    /// </summary>
+    [AllowAnonymous]
+    [HttpPost("campaign-cd")]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public IActionResult CampaignMSCValidation([FromBody] CampaignCDModel cd)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        return StatusCode(StatusCodes.Status200OK, cd.ToString() + " is valid");
+    }
+
+    /// <summary>
+    /// Campaign majors, stores, campuses  validation
+    /// </summary>
+    [AllowAnonymous]
+    [HttpPost("campaign-msc")]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public IActionResult CampaignMSCValidation([FromBody] CampaignMSCModel msc)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        return StatusCode(StatusCodes.Status200OK, msc.ToString() + " is valid");
+    }
+
+    /// <summary>
     /// Code validation
     /// </summary>
     [AllowAnonymous]
@@ -69,6 +114,36 @@ public class ValidationController : ControllerBase
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         return StatusCode(StatusCodes.Status200OK, phone.Phone + " is valid");
+    }
+
+    /// <summary>
+    /// Time validation
+    /// </summary>
+    [AllowAnonymous]
+    [HttpPost("time")]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public IActionResult TimeValidation([FromBody] TimeModel time)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        return StatusCode(StatusCodes.Status200OK, time.StartOn + " & " + time.EndOn + " is valid");
+    }
+
+    /// <summary>
+    /// Type id validation
+    /// </summary>
+    [AllowAnonymous]
+    [HttpPost("type-id")]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public IActionResult TypeIdValidation([FromBody] TypeIdModel id)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        return StatusCode(StatusCodes.Status200OK, id.TypeId + " is valid");
     }
 
     /// <summary>

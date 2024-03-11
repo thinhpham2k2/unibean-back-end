@@ -23,7 +23,7 @@ public class ExceptionFilter : IExceptionFilter
                 }
             }
 
-            context.Result = new BadRequestObjectResult(errorMessages);
+            context.Result = new BadRequestObjectResult(errorMessages.Distinct());
             context.ExceptionHandled = true;
         }
     }
