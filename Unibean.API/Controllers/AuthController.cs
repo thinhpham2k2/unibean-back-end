@@ -60,7 +60,7 @@ public class AuthController : ControllerBase
             var account = accountService.GetByUserNameAndPassword(requestLogin.UserName, requestLogin.Password);
             return AccountAuthentication(account != null
                 && (account.Role.Equals("Admin")
-                || account.Role.Equals("Student")
+                || account.Role.Equals("Brand")
                 || account.Role.Equals("Staff"))
                 ? account : null);
         }
