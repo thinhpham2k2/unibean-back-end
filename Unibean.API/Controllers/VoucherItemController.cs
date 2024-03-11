@@ -93,7 +93,6 @@ public class VoucherItemController : ControllerBase
     [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType(typeof(FileContentResult), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult Create([FromBody] CreateVoucherItemModel creation)
     {
@@ -140,8 +139,6 @@ public class VoucherItemController : ControllerBase
     [HttpGet("template")]
     [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType(typeof(FileContentResult), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult GetTemplate()
     {
@@ -166,7 +163,6 @@ public class VoucherItemController : ControllerBase
     [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType(typeof(FileContentResult), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> ImportTemplate([FromForm] InsertVoucherItemModel insert)
     {

@@ -96,7 +96,7 @@ public class StudentController : ControllerBase
     /// </summary>
     [HttpPost]
     [Authorize(Roles = "Admin")]
-    [ProducesResponseType(typeof(StudentModel), (int)HttpStatusCode.Created)]
+    [ProducesResponseType(typeof(StudentExtraModel), (int)HttpStatusCode.Created)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
@@ -277,7 +277,8 @@ public class StudentController : ControllerBase
     [ProducesResponseType(typeof(PagedResultModel<StudentChallengeModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public ActionResult<PagedResultModel<StudentChallengeModel>> GetChallengeListByStudentId(string id,
+    public ActionResult<PagedResultModel<StudentChallengeModel>> GetChallengeListByStudentId(
+        string id,
         [FromQuery] List<ChallengeType> typeIds,
         [FromQuery] bool? state,
         [FromQuery] bool? isCompleted,
@@ -348,7 +349,8 @@ public class StudentController : ControllerBase
     [ProducesResponseType(typeof(PagedResultModel<TransactionModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public ActionResult<PagedResultModel<TransactionModel>> GetHistoryTransactionListByStudentId(string id,
+    public ActionResult<PagedResultModel<TransactionModel>> GetHistoryTransactionListByStudentId(
+        string id,
         [FromQuery] List<TransactionType> typeIds,
         [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
@@ -388,7 +390,8 @@ public class StudentController : ControllerBase
     [ProducesResponseType(typeof(PagedResultModel<OrderModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public ActionResult<PagedResultModel<OrderModel>> GetOrderListByStudentId(string id,
+    public ActionResult<PagedResultModel<OrderModel>> GetOrderListByStudentId(
+        string id,
         [FromQuery] List<string> stationIds,
         [FromQuery] List<State> stateIds,
         [FromQuery] bool? state,
@@ -423,10 +426,12 @@ public class StudentController : ControllerBase
     /// <param name="create">Create order.</param>
     [HttpPost("{id}/orders")]
     [Authorize(Roles = "Admin, Student")]
-    [ProducesResponseType(typeof(OrderExtraModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(OrderModel), (int)HttpStatusCode.Created)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public IActionResult CreateOrder([ValidStudent(new[] { StudentState.Active })] string id, [FromBody] CreateOrderModel create)
+    public IActionResult CreateOrder(
+        [ValidStudent(new[] { StudentState.Active })] string id, 
+        [FromBody] CreateOrderModel create)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
@@ -457,7 +462,8 @@ public class StudentController : ControllerBase
 
         try
         {
-            return StatusCode(StatusCodes.Status200OK, studentService.GetOrderByOrderId(id, orderId));
+            return StatusCode(StatusCodes.Status200OK,
+                studentService.GetOrderByOrderId(id, orderId));
         }
         catch (InvalidParameterException e)
         {
@@ -480,7 +486,8 @@ public class StudentController : ControllerBase
     [ProducesResponseType(typeof(PagedResultModel<VoucherItemModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public ActionResult<PagedResultModel<OrderModel>> GetVoucherListByStudentId(string id,
+    public ActionResult<PagedResultModel<VoucherItemModel>> GetVoucherListByStudentId(
+        string id,
         [FromQuery] List<string> campaignIds,
         [FromQuery] List<string> voucherIds,
         [FromQuery] List<string> brandIds,
@@ -527,7 +534,8 @@ public class StudentController : ControllerBase
 
         try
         {
-            return StatusCode(StatusCodes.Status200OK, studentService.GetVoucherItemByVoucherId(id, voucherId));
+            return StatusCode(StatusCodes.Status200OK,
+                studentService.GetVoucherItemByVoucherId(id, voucherId));
         }
         catch (InvalidParameterException e)
         {
