@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Unibean.Service.Models.Campaigns;
+using Unibean.Service.Models.Validations;
 
 namespace Unibean.Service.Validations;
 
@@ -14,6 +15,17 @@ public class ValidCampaignStore : ValidationAttribute
             if (create.CampaignStores != null)
             {
                 List<string> storeIds = create.CampaignStores.Select(c => c.StoreId).ToList();
+                if (storeIds.Count.Equals(storeIds.Distinct().ToList().Count) && storeIds.Count > 0)
+                {
+                    return ValidationResult.Success;
+                }
+            }
+        }
+        else if (validationContext.ObjectInstance is CampaignMSCModel verify)
+        {
+            if (verify.CampaignStores != null)
+            {
+                List<string> storeIds = verify.CampaignStores.Select(c => c.StoreId).ToList();
                 if (storeIds.Count.Equals(storeIds.Distinct().ToList().Count) && storeIds.Count > 0)
                 {
                     return ValidationResult.Success;
