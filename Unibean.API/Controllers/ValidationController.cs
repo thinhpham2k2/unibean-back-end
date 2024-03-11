@@ -34,7 +34,7 @@ public class ValidationController : ControllerBase
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public IActionResult CampaignMSCValidation([FromBody] CampaignCDModel cd)
+    public IActionResult CampaignCDValidation([FromBody] CampaignCDModel cd)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
