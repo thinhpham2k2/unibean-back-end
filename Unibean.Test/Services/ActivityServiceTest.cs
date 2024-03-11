@@ -1,9 +1,7 @@
 ﻿using FakeItEasy;
 using FluentAssertions;
 using Unibean.Repository.Entities;
-using Unibean.Repository.Repositories;
 using Unibean.Repository.Repositories.Interfaces;
-using Unibean.Service.Models.Accounts;
 using Unibean.Service.Models.Activities;
 using Unibean.Service.Models.Activity;
 using Unibean.Service.Models.Transactions;
@@ -61,8 +59,8 @@ public class ActivityServiceTest
         {
             new(), new(), new()
         };
-        CreateActivityModel creation = A.Fake<CreateActivityModel>();
-        A.CallTo(() => activityRepository.GetList(storeIds, studentIds, voucherIds, search)).Returns(activities);
+        A.CallTo(() => activityRepository.GetList(storeIds, studentIds, voucherIds, search))
+            .Returns(activities);
         var service = new ActivityService(activityRepository, voucherItemRepository);
 
         //Act
