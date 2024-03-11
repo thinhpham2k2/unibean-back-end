@@ -1,10 +1,8 @@
-﻿using Enable.EnumDisplayName;
-using FakeItEasy;
+﻿using FakeItEasy;
 using FluentAssertions;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Service.Models.Accounts;
-using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Services;
 using Unibean.Service.Services.Interfaces;
 
