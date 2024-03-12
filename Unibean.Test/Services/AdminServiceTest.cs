@@ -28,11 +28,12 @@ public class AdminServiceTest
     public void AdminService_Add()
     {
         // Arrange
+        string id = "id";
         CreateAdminModel creation = A.Fake<CreateAdminModel>();
         A.CallTo(() => accountRepository.Add(A<Account>.Ignored)).Returns(new());
         A.CallTo(() => adminRepository.Add(A<Admin>.Ignored)).Returns(new()
         {
-            Id = "id"
+            Id = id
         });
         var service = new AdminService
             (adminRepository, fireBaseService, accountRepository);
@@ -43,7 +44,7 @@ public class AdminServiceTest
         // Assert
         result.Should().NotBeNull();
         result.Should().BeOfType(typeof(Task<AdminExtraModel>));
-        Assert.Equal("id", result.Result.Id);
+        Assert.Equal(id, result.Result.Id);
     }
 
     [Fact]
