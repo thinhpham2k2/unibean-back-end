@@ -19,7 +19,7 @@ public class ActivityTransactionServiceTest
     [Fact]
     public void ActivityTransactionService_GetAll()
     {
-        //Arrange
+        // Arrange
         List<string> walletIds = new();
         List<string> activityIds = new();
         string search = "";
@@ -31,10 +31,10 @@ public class ActivityTransactionServiceTest
             (walletIds, activityIds, search)).Returns(activities);
         var service = new ActivityTransactionService(activityTransactionRepo);
 
-        //Act
+        // Act
         var result = service.GetAll(walletIds, activityIds, search);
 
-        //Assert
+        // Assert
         result.Should().NotBeNull();
         result.Should().BeOfType(typeof(List<TransactionModel>));
         Assert.Equal(activities.Count, result.Count);

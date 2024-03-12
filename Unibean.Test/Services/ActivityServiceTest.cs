@@ -25,7 +25,7 @@ public class ActivityServiceTest
     [Fact]
     public void ActivityService_Add()
     {
-        //Arrange
+        // Arrange
         string id = "id";
         Type type = Type.Buy;
         CreateActivityModel creation = A.Fake<CreateActivityModel>();
@@ -37,10 +37,10 @@ public class ActivityServiceTest
         });
         var service = new ActivityService(activityRepository, voucherItemRepository);
 
-        //Act
+        // Act
         var result = service.Add(creation);
 
-        //Assert
+        // Assert
         result.Should().NotBeNull();
         result.Should().BeOfType(typeof(ActivityModel));
         Assert.Equal(id, result.VoucherItemId);
@@ -50,7 +50,7 @@ public class ActivityServiceTest
     [Fact]
     public void ActivityService_GetList()
     {
-        //Arrange
+        // Arrange
         string search = "";
         List<string> storeIds = new();
         List<string> studentIds = new();
@@ -63,10 +63,10 @@ public class ActivityServiceTest
             .Returns(activities);
         var service = new ActivityService(activityRepository, voucherItemRepository);
 
-        //Act
+        // Act
         var result = service.GetList(storeIds, studentIds, voucherIds, search);
 
-        //Assert
+        // Assert
         result.Should().NotBeNull();
         result.Should().BeOfType(typeof(List<StoreTransactionModel>));
         Assert.Equal(activities.Count, result.Count);

@@ -38,7 +38,7 @@ public class AccountServiceTest
     [Fact]
     public void AccountService_AddBrand()
     {
-        //Arrange
+        // Arrange
         Role role = Role.Brand;
         CreateBrandAccountModel creation = A.Fake<CreateBrandAccountModel>();
         A.CallTo(() => accountRepository.Add(A<Account>.Ignored))
@@ -50,10 +50,10 @@ public class AccountServiceTest
             (accountRepository, fireBaseService, brandRepository, studentRepository,
             invitationService, studentChallengeService, emailService);
 
-        //Act
+        // Act
         var result = service.AddBrand(creation);
 
-        //Assert
+        // Assert
         result.Should().NotBeNull();
         result.Should().BeOfType(typeof(Task<AccountModel>));
         Assert.Equal(role.ToString(), result.Result.Role);
@@ -62,7 +62,7 @@ public class AccountServiceTest
     [Fact]
     public void AccountService_AddGoogle()
     {
-        //Arrange
+        // Arrange
         Role role = Role.Student;
         CreateGoogleAccountModel creation = new()
         {
@@ -77,10 +77,10 @@ public class AccountServiceTest
             (accountRepository, fireBaseService, brandRepository, studentRepository,
             invitationService, studentChallengeService, emailService);
 
-        //Act
+        // Act
         var result = service.AddGoogle(creation);
 
-        //Assert
+        // Assert
         result.Should().NotBeNull();
         result.Should().BeOfType(typeof(AccountModel));
         Assert.Equal(role.ToString(), result.Role);
@@ -89,7 +89,7 @@ public class AccountServiceTest
     [Fact]
     public void AccountService_AddStudent()
     {
-        //Arrange
+        // Arrange
         Role role = Role.Student;
         CreateStudentAccountModel creation = A.Fake<CreateStudentAccountModel>();
         A.CallTo(() => accountRepository.Add(A<Account>.Ignored))
@@ -101,10 +101,10 @@ public class AccountServiceTest
             (accountRepository, fireBaseService, brandRepository, studentRepository,
             invitationService, studentChallengeService, emailService);
 
-        //Act
+        // Act
         var result = service.AddStudent(creation);
 
-        //Assert
+        // Assert
         result.Should().NotBeNull();
         result.Should().BeOfType(typeof(Task<AccountModel>));
         Assert.Equal(role.ToString(), result.Result.Role);
@@ -113,7 +113,7 @@ public class AccountServiceTest
     [Fact]
     public void AccountService_GetByEmail()
     {
-        //Arrange
+        // Arrange
         string email = "";
         Role role = Role.Student;
         A.CallTo(() => accountRepository.GetByEmail(email))
@@ -125,10 +125,10 @@ public class AccountServiceTest
             (accountRepository, fireBaseService, brandRepository, studentRepository,
             invitationService, studentChallengeService, emailService);
 
-        //Act
+        // Act
         var result = service.GetByEmail(email);
 
-        //Assert
+        // Assert
         result.Should().NotBeNull();
         result.Should().BeOfType(typeof(AccountModel));
         Assert.Equal(role.ToString(), result.Role);
@@ -137,7 +137,7 @@ public class AccountServiceTest
     [Fact]
     public void AccountService_GetByUserNameAndPassword()
     {
-        //Arrange
+        // Arrange
         string userName = "";
         string password = "";
         Role role = Role.Student;
@@ -150,10 +150,10 @@ public class AccountServiceTest
             (accountRepository, fireBaseService, brandRepository, studentRepository,
             invitationService, studentChallengeService, emailService);
 
-        //Act
+        // Act
         var result = service.GetByUserNameAndPassword(userName, password);
 
-        //Assert
+        // Assert
         result.Should().NotBeNull();
         result.Should().BeOfType(typeof(AccountModel));
         Assert.Equal(role.ToString(), result.Role);
