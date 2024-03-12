@@ -11,7 +11,6 @@ namespace Unibean.Test.Services;
 
 public class AreaServiceTest
 {
-
     private readonly IAreaRepository areaRepository;
 
     private readonly IFireBaseService fireBaseService;

@@ -130,7 +130,7 @@ public class AdminServiceTest
         // Arrange
         string id = "id";
         string fullName = "fullName";
-        UpdateAdminModel update = new();
+        UpdateAdminModel update = A.Fake<UpdateAdminModel>();
         A.CallTo(() => adminRepository.GetById(id));
         A.CallTo(() => adminRepository.Update(A<Admin>.Ignored))
             .Returns(new()

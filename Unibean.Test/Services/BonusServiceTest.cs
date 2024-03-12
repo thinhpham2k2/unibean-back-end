@@ -11,7 +11,6 @@ namespace Unibean.Test.Services;
 
 public class BonusServiceTest
 {
-
     private readonly IBonusRepository bonusRepository;
 
     private readonly IStoreRepository storeRepository;
