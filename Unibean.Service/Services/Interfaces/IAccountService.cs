@@ -1,5 +1,4 @@
-﻿using Unibean.Repository.Entities;
-using Unibean.Service.Models.Accounts;
+﻿using Unibean.Service.Models.Accounts;
 
 namespace Unibean.Service.Services.Interfaces;
 
