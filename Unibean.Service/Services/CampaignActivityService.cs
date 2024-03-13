@@ -2,10 +2,8 @@
 using Enable.EnumDisplayName;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
-using Unibean.Repository.Repositories;
 using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Service.Models.CampaignActivities;
-using Unibean.Service.Models.CampaignDetails;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Services.Interfaces;
 
