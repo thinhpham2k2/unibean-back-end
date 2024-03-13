@@ -4,6 +4,7 @@ using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Service.Models.Areas;
+using Unibean.Service.Models.Brands;
 using Unibean.Service.Services;
 using Unibean.Service.Services.Interfaces;
 
@@ -119,7 +120,7 @@ public class AreaServiceTest
         // Arrange
         string id = "id";
         string areaName = "areaName";
-        UpdateAreaModel update = new();
+        UpdateAreaModel update = A.Fake<UpdateAreaModel>();
         A.CallTo(() => areaRepository.GetById(id));
         A.CallTo(() => areaRepository.Update(A<Area>.Ignored))
             .Returns(new()
