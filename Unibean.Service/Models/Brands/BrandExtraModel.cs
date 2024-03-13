@@ -25,6 +25,7 @@ public class BrandExtraModel
     public bool? State { get; set; }
     public bool? Status { get; set; }
     public int? NumberOfFollowers { get; set; }
+    public int? NumberOfCampaigns { get; set; }
     public bool? IsFavor { get; set; }
     public int? GreenWalletId { get; set; }
     public string GreenWallet { get; set; }

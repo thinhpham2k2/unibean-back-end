@@ -968,9 +968,11 @@ public class StudentControllerTest
         // Arrange
         string id = "";
         List<string> campaignIds = new();
+        List<string> campaignDetailIds = new();
         List<string> voucherIds = new();
         List<string> brandIds = new();
         List<string> typeIds = new();
+        bool? isUsed = null;
         bool? state = null;
         PagingModel paging = new()
         {
@@ -983,7 +985,7 @@ public class StudentControllerTest
 
         // Act
         var result = controller.GetVoucherListByStudentId
-            (id, campaignIds, voucherIds, brandIds, typeIds, state, paging);
+            (id, campaignIds, campaignDetailIds, voucherIds, brandIds, typeIds, isUsed, state, paging);
 
         // Assert
         result.Should().NotBeNull();
@@ -998,9 +1000,11 @@ public class StudentControllerTest
         // Arrange
         string id = "";
         List<string> campaignIds = new();
+        List<string> campaignDetailIds = new();
         List<string> voucherIds = new();
         List<string> brandIds = new();
         List<string> typeIds = new();
+        bool? isUsed = null;
         bool? state = null;
         PagingModel paging = new()
         {
@@ -1015,7 +1019,7 @@ public class StudentControllerTest
         // Act & Assert
         Assert.Throws<InvalidParameterException>(
             () => controller.GetVoucherListByStudentId
-            (id, campaignIds, voucherIds, brandIds, typeIds, state, paging));
+            (id, campaignIds, campaignDetailIds, voucherIds, brandIds, typeIds, isUsed, state, paging));
     }
 
     [Fact]
@@ -1024,9 +1028,11 @@ public class StudentControllerTest
         // Arrange
         string id = "";
         List<string> campaignIds = new();
+        List<string> campaignDetailIds = new();
         List<string> voucherIds = new();
         List<string> brandIds = new();
         List<string> typeIds = new();
+        bool? isUsed = null;
         bool? state = null;
         PagingModel paging = new()
         {
@@ -1039,7 +1045,7 @@ public class StudentControllerTest
 
         // Act
         var result = controller.GetVoucherListByStudentId
-            (id, campaignIds, voucherIds, brandIds, typeIds, state, paging);
+            (id, campaignIds, campaignDetailIds, voucherIds, brandIds, typeIds, isUsed, state, paging);
 
         // Assert
         result.Should().NotBeNull();

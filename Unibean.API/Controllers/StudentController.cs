@@ -476,9 +476,11 @@ public class StudentController : ControllerBase
     /// </summary>
     /// <param name="id">Student id.</param>
     /// <param name="campaignIds">Filter by campaign id.</param>
+    /// <param name="campaignDetailIds">Filter by campaign detail id.</param>
     /// <param name="voucherIds">Filter by voucher id.</param>
     /// <param name="brandIds">Filter by brand id.</param>
     /// <param name="typeIds">Filter by voucher type id.</param>
+    /// <param name="isUsed">Filter by used state.</param>
     /// <param name="state">Filter by voucher state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/vouchers")]
@@ -488,10 +490,12 @@ public class StudentController : ControllerBase
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<VoucherItemModel>> GetVoucherListByStudentId(
         string id,
-        [FromQuery] List<string> campaignIds,
-        [FromQuery] List<string> voucherIds,
         [FromQuery] List<string> brandIds,
+        [FromQuery] List<string> campaignIds,
+        [FromQuery] List<string> campaignDetailIds,
+        [FromQuery] List<string> voucherIds,
         [FromQuery] List<string> typeIds,
+        [FromQuery] bool? isUsed,
         [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
@@ -505,8 +509,8 @@ public class StudentController : ControllerBase
             {
                 PagedResultModel<VoucherItemModel>
                 result = studentService.GetVoucherListByStudentId
-                    (campaignIds, voucherIds, brandIds, typeIds, id, state,
-                    propertySort, paging.Sort.Split(",")[1].Equals("asc"),
+                    (campaignIds, campaignDetailIds, voucherIds, brandIds, typeIds, id, 
+                    isUsed, state,propertySort, paging.Sort.Split(",")[1].Equals("asc"),
                     paging.Search, paging.Page, paging.Limit);
                 return StatusCode(StatusCodes.Status200OK, result);
             }

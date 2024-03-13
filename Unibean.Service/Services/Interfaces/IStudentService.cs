@@ -42,8 +42,8 @@ public interface IStudentService
     VoucherItemExtraModel GetVoucherItemByVoucherId(string id, string voucherId);
 
     PagedResultModel<VoucherItemModel> GetVoucherListByStudentId
-        (List<string> campaignIds, List<string> voucherIds, List<string> brandIds, List<string> typeIds,
-        string id, bool? state, string propertySort, bool isAsc, string search, int page, int limit);
+        (List<string> campaignIds, List<string> campaignDetailIds, List<string> voucherIds, List<string> brandIds, List<string> typeIds,
+        string id, bool? state, bool? isUsed, string propertySort, bool isAsc, string search, int page, int limit);
 
     List<string> GetWishlistsByStudentId(string id);
 

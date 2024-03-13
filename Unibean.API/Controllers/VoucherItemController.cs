@@ -27,10 +27,13 @@ public class VoucherItemController : ControllerBase
     /// </summary>
     /// <param name="brandIds">Filter by brand id.</param>
     /// <param name="campaignIds">Filter by campaign id.</param>
+    /// <param name="campaignDetailIds">Filter by campaign detail id.</param>
     /// <param name="voucherIds">Filter by voucher id.</param>
     /// <param name="typeIds">Filter by type id.</param>
     /// <param name="studentIds">Filter by student id.</param>
     /// <param name="isLocked">Filter by lock state.</param>
+    /// <param name="isBought">Filter by bought state.</param>
+    /// <param name="isUsed">Filter by used state.</param>
     /// <param name="state">Filter by voucher item state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
@@ -42,10 +45,13 @@ public class VoucherItemController : ControllerBase
     public ActionResult<PagedResultModel<VoucherItemModel>> GetList(
         [FromQuery] List<string> brandIds,
         [FromQuery] List<string> campaignIds,
+        [FromQuery] List<string> campaignDetailIds,
         [FromQuery] List<string> voucherIds,
         [FromQuery] List<string> typeIds,
         [FromQuery] List<string> studentIds,
         [FromQuery] bool? isLocked,
+        [FromQuery] bool? isBought,
+        [FromQuery] bool? isUsed,
         [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
@@ -57,8 +63,8 @@ public class VoucherItemController : ControllerBase
         {
             PagedResultModel<VoucherItemModel>
                 result = voucherItemService.GetAll
-                (campaignIds, voucherIds, brandIds, typeIds, studentIds, isLocked, state, propertySort,
-                paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
+                (campaignIds, campaignDetailIds, voucherIds, brandIds, typeIds, studentIds, isLocked, isBought, isUsed, 
+                state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
             return StatusCode(StatusCodes.Status200OK, result);
         }
         return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của mục khuyến mãi");

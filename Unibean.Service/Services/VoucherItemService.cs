@@ -122,13 +122,13 @@ public class VoucherItemService : IVoucherItemService
     }
 
     public PagedResultModel<VoucherItemModel> GetAll
-        (List<string> campaignIds, List<string> voucherIds, List<string> brandIds,
-        List<string> typeIds, List<string> studentIds, bool? isLocked, bool? state,
+        (List<string> campaignIds, List<string> campaignDetailIds, List<string> voucherIds, List<string> brandIds,
+        List<string> typeIds, List<string> studentIds, bool? isLocked, bool? isBought, bool? isUsed, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<VoucherItemModel>>(voucherItemRepository.GetAll
-            (campaignIds, voucherIds, brandIds, typeIds, studentIds, isLocked, state,
-            propertySort, isAsc, search, page, limit));
+            (campaignIds, campaignDetailIds, voucherIds, brandIds, typeIds, studentIds, isLocked, isBought, 
+            isUsed, state, propertySort, isAsc, search, page, limit));
     }
 
     public VoucherItemExtraModel GetById(string id)

@@ -63,9 +63,7 @@ public class CampaignDetailRepository : ICampaignDetailRepository
                .Include(a => a.Voucher)
                     .ThenInclude(v => v.Type)
                .Include(d => d.Campaign)
-               .Include(d => d.VoucherItems.Where(
-                   v => (bool)v.Status && (bool)v.State && (bool)v.IsLocked 
-                   && !(bool)v.IsBought && !(bool)v.IsUsed))
+               .Include(d => d.VoucherItems.Where(v => (bool)v.Status && (bool)v.State))
                .ToList();
 
             pagedResult = new PagedResultModel<CampaignDetail>
@@ -110,9 +108,7 @@ public class CampaignDetailRepository : ICampaignDetailRepository
                .Include(a => a.Voucher)
                     .ThenInclude(v => v.Type)
                .Include(d => d.Campaign)
-               .Include(d => d.VoucherItems.Where(
-                   v => (bool)v.Status && (bool)v.State && (bool)v.IsLocked
-                   && !(bool)v.IsBought && !(bool)v.IsUsed))
+               .Include(d => d.VoucherItems.Where(v => (bool)v.Status && (bool)v.State))
                .ToList();
 
             pagedResult = new PagedResultModel<CampaignDetail>

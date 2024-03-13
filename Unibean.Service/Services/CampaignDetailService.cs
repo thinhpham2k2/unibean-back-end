@@ -25,7 +25,15 @@ public class CampaignDetailService : ICampaignDetailService
             .ForMember(c => c.VoucherName, opt => opt.MapFrom(src => src.Voucher.VoucherName))
             .ForMember(c => c.VoucherImage, opt => opt.MapFrom(src => src.Voucher.Image))
             .ForMember(c => c.CampaignName, opt => opt.MapFrom(src => src.Campaign.CampaignName))
-            .ForMember(c => c.QuantityInStock, opt => opt.MapFrom(src => src.VoucherItems.Count))
+            .ForMember(c => c.QuantityInStock, opt => opt.MapFrom(
+                src => src.VoucherItems.Where(
+                   v => (bool)v.IsLocked && !(bool)v.IsBought && !(bool)v.IsUsed).Count()))
+            .ForMember(c => c.QuantityInBought, opt => opt.MapFrom(
+                src => src.VoucherItems.Where(
+                   v => (bool)v.IsLocked && (bool)v.IsBought).Count()))
+            .ForMember(c => c.QuantityInUsed, opt => opt.MapFrom(
+                src => src.VoucherItems.Where(
+                   v => (bool)v.IsLocked && (bool)v.IsUsed).Count()))
             .ReverseMap();
             cfg.CreateMap<PagedResultModel<CampaignDetail>, PagedResultModel<CampaignDetailModel>>()
             .ReverseMap();

@@ -91,8 +91,8 @@ public class VoucherItemRepository : IVoucherItemRepository
     }
 
     public PagedResultModel<VoucherItem> GetAll
-        (List<string> campaignIds, List<string> voucherIds, List<string> brandIds,
-        List<string> typeIds, List<string> studentIds, bool? isLocked, bool? state,
+        (List<string> campaignIds, List<string> campaignDetailIds, List<string> voucherIds, List<string> brandIds,
+        List<string> typeIds, List<string> studentIds, bool? isLocked, bool? isBought, bool? isUsed, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<VoucherItem> pagedResult = new();
@@ -108,12 +108,15 @@ public class VoucherItemRepository : IVoucherItemRepository
                 || EF.Functions.Like(t.Voucher.Brand.BrandName, "%" + search + "%")
                 || EF.Functions.Like(t.CampaignDetail.Description, "%" + search + "%"))
                 && (campaignIds.Count == 0 || campaignIds.Contains(t.CampaignDetail.CampaignId))
+                && (campaignDetailIds.Count == 0 || campaignDetailIds.Contains(t.CampaignDetailId))
                 && (voucherIds.Count == 0 || voucherIds.Contains(t.VoucherId))
                 && (brandIds.Count == 0 || brandIds.Contains(t.CampaignDetail.Campaign.BrandId))
                 && (typeIds.Count == 0 || typeIds.Contains(t.Voucher.TypeId))
                 && (studentIds.Count == 0 || studentIds.Contains(t.Activities.FirstOrDefault(a
                     => (bool)a.Status).StudentId))
                 && (isLocked == null || isLocked.Equals(t.IsLocked))
+                && (isBought == null || isBought.Equals(t.IsBought))
+                && (isUsed == null || isUsed.Equals(t.IsUsed))
                 && (state == null || state.Equals(t.State))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
@@ -150,31 +153,6 @@ public class VoucherItemRepository : IVoucherItemRepository
             throw new Exception(ex.Message);
         }
         return pagedResult;
-    }
-
-    public List<VoucherItem> GetAllByCampaign
-        (List<string> campaignIds, List<string> voucherIds, int limit)
-    {
-        try
-        {
-            using var db = new UnibeanDBContext();
-
-            var query = db.VoucherItems
-                .Where(t => (campaignIds.Count == 0 || campaignIds.Contains(t.CampaignDetail.CampaignId))
-                && (voucherIds.Count == 0 || voucherIds.Contains(t.CampaignDetail.CampaignId))
-                && !(bool)t.IsBought
-                && !(bool)t.IsUsed
-                && (bool)t.State
-                && (bool)t.Status);
-
-            return query.Take(limit)
-                .Include(v => v.Voucher)
-                .ToList();
-        }
-        catch (Exception ex)
-        {
-            throw new Exception(ex.Message);
-        }
     }
 
     public VoucherItem GetById(string id)
