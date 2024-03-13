@@ -3,66 +3,64 @@ using FluentAssertions;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
-using Unibean.Service.Models.Areas;
-using Unibean.Service.Models.Brands;
+using Unibean.Service.Models.Categories;
 using Unibean.Service.Services;
 using Unibean.Service.Services.Interfaces;
 
 namespace Unibean.Test.Services;
 
-public class AreaServiceTest
+public class CategoryServiceTest
 {
-    private readonly IAreaRepository areaRepository;
+    private readonly ICategoryRepository categoryRepository;
 
     private readonly IFireBaseService fireBaseService;
 
-    public AreaServiceTest()
+    public CategoryServiceTest()
     {
-        areaRepository = A.Fake<IAreaRepository>();
+        categoryRepository = A.Fake<ICategoryRepository>();
         fireBaseService = A.Fake<IFireBaseService>();
     }
 
     [Fact]
-    public void AreaService_Add()
+    public void CategoryService_Add()
     {
         // Arrange
         string id = "id";
-        CreateAreaModel creation = A.Fake<CreateAreaModel>();
-        A.CallTo(() => areaRepository.Add(A<Area>.Ignored)).Returns(new()
+        CreateCategoryModel creation = A.Fake<CreateCategoryModel>();
+        A.CallTo(() => categoryRepository.Add(A<Category>.Ignored)).Returns(new()
         {
             Id = id
         });
-        var service = new AreaService(areaRepository, fireBaseService);
+        var service = new CategoryService(categoryRepository, fireBaseService);
 
         // Act
         var result = service.Add(creation);
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().BeOfType(typeof(Task<AreaExtraModel>));
+        result.Should().BeOfType(typeof(Task<CategoryExtraModel>));
         Assert.Equal(id, result.Result.Id);
     }
 
     [Fact]
-    public void AreaService_Delete()
+    public void CategoryService_Delete()
     {
         // Arrange
         string id = "id";
-        A.CallTo(() => areaRepository.GetById(id)).Returns(new()
+        A.CallTo(() => categoryRepository.GetById(id)).Returns(new()
         {
             Id = id,
-            Campuses = new List<Campus>(),
-            Stores = new List<Store>(),
+            Products = new List<Product>(),
         });
-        A.CallTo(() => areaRepository.Delete(id));
-        var service = new AreaService(areaRepository, fireBaseService);
+        A.CallTo(() => categoryRepository.Delete(id));
+        var service = new CategoryService(categoryRepository, fireBaseService);
 
         // Act & Assert
         service.Delete(id);
     }
 
     [Fact]
-    public void AreaService_GetAll()
+    public void CategoryService_GetAll()
     {
         // Arrange
         bool? state = null;
@@ -71,7 +69,7 @@ public class AreaServiceTest
         string search = "";
         int page = 1;
         int limit = 10;
-        PagedResultModel<Area> pagedResultModel = new()
+        PagedResultModel<Category> pagedResultModel = new()
         {
             Result = new()
             {
@@ -80,63 +78,63 @@ public class AreaServiceTest
                 new()
             }
         };
-        A.CallTo(() => areaRepository.GetAll(state, propertySort, isAsc, search, page, limit))
+        A.CallTo(() => categoryRepository.GetAll(state, propertySort, isAsc, search, page, limit))
             .Returns(pagedResultModel);
-        var service = new AreaService(areaRepository, fireBaseService);
+        var service = new CategoryService(categoryRepository, fireBaseService);
 
         // Act
         var result = service.GetAll(state, propertySort, isAsc, search, page, limit);
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().BeOfType(typeof(PagedResultModel<AreaModel>));
+        result.Should().BeOfType(typeof(PagedResultModel<CategoryModel>));
         Assert.Equal(pagedResultModel.Result.Count, result.Result.Count);
     }
 
     [Fact]
-    public void AreaService_GetById()
+    public void CategoryService_GetById()
     {
         // Arrange
         string id = "id";
-        A.CallTo(() => areaRepository.GetById(id))
+        A.CallTo(() => categoryRepository.GetById(id))
             .Returns(new()
             {
                 Id = id
             });
-        var service = new AreaService(areaRepository, fireBaseService);
+        var service = new CategoryService(categoryRepository, fireBaseService);
 
         // Act
         var result = service.GetById(id);
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().BeOfType(typeof(AreaExtraModel));
+        result.Should().BeOfType(typeof(CategoryExtraModel));
         Assert.Equal(id, result.Id);
     }
 
     [Fact]
-    public void AreaService_Update()
+    public void CategoryService_Update()
     {
         // Arrange
         string id = "id";
-        string areaName = "areaName";
-        UpdateAreaModel update = A.Fake<UpdateAreaModel>();
-        A.CallTo(() => areaRepository.GetById(id));
-        A.CallTo(() => areaRepository.Update(A<Area>.Ignored))
+        string categoryName = "categoryName";
+        UpdateCategoryModel update = A.Fake<UpdateCategoryModel>();
+        A.CallTo(() => categoryRepository.GetById(id));
+        A.CallTo(() => categoryRepository.Update(A<Category>.Ignored))
             .Returns(new()
             {
                 Id = id,
-                AreaName = areaName
+                CategoryName = categoryName
             });
-        var service = new AreaService(areaRepository, fireBaseService);
+        var service = new CategoryService(categoryRepository, fireBaseService);
 
         // Act
         var result = service.Update(id, update);
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().BeOfType(typeof(Task<AreaExtraModel>));
+        result.Should().BeOfType(typeof(Task<CategoryExtraModel>));
         Assert.Equal(id, result.Result.Id);
-        Assert.Equal(areaName, result.Result.AreaName);
+        Assert.Equal(categoryName, result.Result.CategoryName);
     }
 }
