@@ -1,9 +1,9 @@
 ﻿using FakeItEasy;
 using FluentAssertions;
 using Unibean.Repository.Entities;
+using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Service.Models.Activities;
-using Unibean.Service.Models.Activity;
 using Unibean.Service.Models.Transactions;
 using Unibean.Service.Services;
 using Type = Unibean.Repository.Entities.Type;
@@ -34,6 +34,14 @@ public class ActivityServiceTest
         {
             VoucherItemId = id,
             Type = type,
+            VoucherItem = new()
+            {
+                CampaignDetail = new()
+                {
+                    Price = 0,
+                    Rate = 0
+                }
+            }
         });
         var service = new ActivityService(activityRepository, voucherItemRepository);
 
@@ -45,6 +53,114 @@ public class ActivityServiceTest
         result.Should().BeOfType(typeof(ActivityModel));
         Assert.Equal(id, result.VoucherItemId);
         Assert.Equal(type.ToString(), result.Type);
+    }
+
+    [Fact]
+    public void ActivityService_GetAll()
+    {
+        // Arrange
+        List<string> brandIds = new();
+        List<string> storeIds = new();
+        List<string> studentIds = new();
+        List<string> campaginIds = new();
+        List<string> campaginDetailIds = new();
+        List<string> voucherIds = new();
+        List<string> voucherItemIds = new();
+        List<Type> typeIds = new();
+        bool? state = null;
+        string propertySort = "";
+        bool isAsc = true;
+        string search = "";
+        int page = 1;
+        int limit = 10;
+        PagedResultModel<Activity> pagedResultModel = new()
+        {
+            Result = new()
+            {
+                new()
+                {
+                    Type = Type.Buy,
+                    VoucherItem = new()
+                    {
+                        CampaignDetail = new()
+                        {
+                            Price = 0,
+                            Rate = 0,
+                        }
+                    }
+                },
+                new()
+                {
+                    Type = Type.Use,
+                    VoucherItem = new()
+                    {
+                        CampaignDetail = new()
+                        {
+                            Price = 0,
+                            Rate = 0,
+                        }
+                    }
+                },
+                new()
+                {
+                    Type = Type.Refund,
+                    VoucherItem = new()
+                    {
+                        CampaignDetail = new()
+                        {
+                            Price = 0,
+                            Rate = 0,
+                        }
+                    }
+                }
+            }
+        };
+        A.CallTo(() => activityRepository.GetAll(brandIds, storeIds, studentIds, campaginIds,
+            campaginDetailIds, voucherIds, voucherItemIds, typeIds, state, propertySort, isAsc,
+            search, page, limit)).Returns(pagedResultModel);
+        var service = new ActivityService(activityRepository, voucherItemRepository);
+
+        // Act
+        var result = service.GetAll(brandIds, storeIds, studentIds, campaginIds, campaginDetailIds,
+            voucherIds, voucherItemIds, typeIds, state, propertySort, isAsc, search, page, limit);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(PagedResultModel<ActivityModel>));
+        Assert.Equal(pagedResultModel.Result.Count, result.Result.Count);
+    }
+
+    [Fact]
+    public void ActivityService_GetById()
+    {
+        // Arrange
+        string id = "id";
+        Type type = Type.Use;
+        A.CallTo(() => activityRepository.GetById(id))
+            .Returns(new()
+            {
+                Id = id,
+                Type = type,
+                VoucherItem = new()
+                {
+                    CampaignDetail = new()
+                    {
+                        Price = 1,
+                        Rate = 2,
+                    }
+                }
+            });
+        var service = new ActivityService(activityRepository, voucherItemRepository);
+
+        // Act
+        var result = service.GetById(id);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(ActivityExtraModel));
+        Assert.Equal(id, result.Id);
+        Assert.Equal(type.ToString(), result.Type);
+        Assert.Equal(2, result.Amount);
     }
 
     [Fact]

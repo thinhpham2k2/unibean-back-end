@@ -26,10 +26,13 @@ public class VoucherItemControllerTest
         // Arrange
         List<string> brandIds = new();
         List<string> campaignIds = new();
+        List<string> campaignDetailIds = new();
         List<string> voucherIds = new();
         List<string> typeIds = new();
         List<string> studentIds = new();
         bool? isLocked = null;
+        bool? isBought = null;
+        bool? isUsed = null;
         bool? state = null;
         PagingModel paging = new()
         {
@@ -42,7 +45,8 @@ public class VoucherItemControllerTest
 
         // Act
         var result = controller.GetList
-            (brandIds, campaignIds, voucherIds, typeIds, studentIds, isLocked, state, paging);
+            (brandIds, campaignIds, campaignDetailIds, voucherIds, typeIds, 
+            studentIds, isLocked, isBought, isUsed, state, paging);
 
         // Assert
         result.Should().NotBeNull();
@@ -57,10 +61,13 @@ public class VoucherItemControllerTest
         // Arrange
         List<string> brandIds = new();
         List<string> campaignIds = new();
+        List<string> campaignDetailIds = new();
         List<string> voucherIds = new();
         List<string> typeIds = new();
         List<string> studentIds = new();
         bool? isLocked = null;
+        bool? isBought = null;
+        bool? isUsed = null;
         bool? state = null;
         PagingModel paging = new()
         {
@@ -75,7 +82,8 @@ public class VoucherItemControllerTest
         // Act & Assert
         Assert.Throws<InvalidParameterException>(
             () => controller.GetList
-            (brandIds, campaignIds, voucherIds, typeIds, studentIds, isLocked, state, paging));
+            (brandIds, campaignIds, campaignDetailIds, voucherIds, typeIds,
+            studentIds, isLocked, isBought, isUsed, state, paging));
     }
 
     [Fact]
@@ -84,10 +92,13 @@ public class VoucherItemControllerTest
         // Arrange
         List<string> brandIds = new();
         List<string> campaignIds = new();
+        List<string> campaignDetailIds = new();
         List<string> voucherIds = new();
         List<string> typeIds = new();
         List<string> studentIds = new();
         bool? isLocked = null;
+        bool? isBought = null;
+        bool? isUsed = null;
         bool? state = null;
         PagingModel paging = new()
         {
@@ -100,7 +111,8 @@ public class VoucherItemControllerTest
 
         // Act
         var result = controller.GetList
-            (brandIds, campaignIds, voucherIds, typeIds, studentIds, isLocked, state, paging);
+            (brandIds, campaignIds, campaignDetailIds, voucherIds, typeIds, 
+            studentIds, isLocked, isBought, isUsed, state, paging);
 
         // Assert
         result.Should().NotBeNull();

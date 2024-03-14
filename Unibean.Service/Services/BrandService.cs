@@ -82,6 +82,7 @@ public class BrandService : IBrandService
             .ForMember(p => p.Email, opt => opt.MapFrom(src => src.Account.Email))
             .ForMember(p => p.Phone, opt => opt.MapFrom(src => src.Account.Phone))
             .ForMember(p => p.NumberOfFollowers, opt => opt.MapFrom(src => src.Wishlists.Count))
+            .ForMember(p => p.NumberOfCampaigns, opt => opt.MapFrom(src => src.Campaigns.Count))
             .ForMember(p => p.GreenWalletId, opt => opt.MapFrom(src => (int)src.Wallets.Where(w => w.Type.Equals(WalletType.Green)).FirstOrDefault().Type))
             .ForMember(p => p.GreenWallet, opt => opt.MapFrom(src => src.Wallets.Where(w => w.Type.Equals(WalletType.Green)).FirstOrDefault().Type))
             .ForMember(p => p.GreenWalletName, opt => opt.MapFrom(src => src.Wallets.Where(w => w.Type.Equals(WalletType.Green)).FirstOrDefault().Type.GetDisplayName()))

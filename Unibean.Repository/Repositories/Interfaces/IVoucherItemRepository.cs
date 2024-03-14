@@ -22,12 +22,9 @@ public interface IVoucherItemRepository
     void Delete(string id);
 
     PagedResultModel<VoucherItem> GetAll
-        (List<string> campaignIds, List<string> voucherIds, List<string> brandIds, 
-        List<string> typeIds, List<string> studentIds, bool? isLocked, bool? state,
+        (List<string> campaignIds, List<string> campaignDetailIds, List<string> voucherIds, List<string> brandIds, 
+        List<string> typeIds, List<string> studentIds, bool? isLocked, bool? isBought, bool? isUsed, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit);
-
-    List<VoucherItem> GetAllByCampaign
-        (List<string> campaignIds, List<string> voucherIds, int limit);
 
     VoucherItem GetById(string id);
 
