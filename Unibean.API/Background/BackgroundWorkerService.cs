@@ -72,6 +72,25 @@ public class BackgroundWorkerService : BackgroundService
                 }
             }
 
+            campaigns = campaignRepository.GetAllEnded(new() { CampaignState.Active });
+
+            if (campaigns.Count > 0)
+            {
+                foreach (Campaign campaign in campaigns)
+                {
+                    campaignRepository.ExpiredToClosed(campaign.Id);
+                    campaignActivityRepository.Add(new CampaignActivity
+                    {
+                        Id = Ulid.NewUlid().ToString(),
+                        CampaignId = campaign.Id,
+                        State = CampaignState.Inactive,
+                        DateCreated = DateTime.Now,
+                        Description = CampaignState.Inactive.GetEnumDescription(),
+                        Status = true,
+                    });
+                }
+            }
+
             await Task.Delay(300000, stoppingToken);
         }
     }
