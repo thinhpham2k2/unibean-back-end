@@ -6,7 +6,7 @@ public class TransactionModel
     public string Name { get; set; }
     public string RequestId { get; set; }
     public string WalletId { get; set; }
-    public string WalletTypeId { get; set; }
+    public int WalletTypeId { get; set; }
     public string WalletType { get; set; }
     public string WalletTypeName { get; set; }
     public string TypeName { get; set; }

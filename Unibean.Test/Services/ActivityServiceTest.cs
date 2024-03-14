@@ -3,7 +3,6 @@ using FluentAssertions;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Service.Models.Activities;
-using Unibean.Service.Models.Activity;
 using Unibean.Service.Models.Transactions;
 using Unibean.Service.Services;
 using Type = Unibean.Repository.Entities.Type;
@@ -34,6 +33,14 @@ public class ActivityServiceTest
         {
             VoucherItemId = id,
             Type = type,
+            VoucherItem = new()
+            {
+                CampaignDetail = new()
+                {
+                    Price = 0,
+                    Rate = 0
+                }
+            }
         });
         var service = new ActivityService(activityRepository, voucherItemRepository);
 

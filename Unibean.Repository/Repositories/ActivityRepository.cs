@@ -159,7 +159,8 @@ public class ActivityRepository : IActivityRepository
     }
 
     public PagedResultModel<Activity> GetAll
-        (List<string> storeIds, List<string> studentIds, List<string> voucherIds,
+        (List<string> brandIds, List<string> storeIds, List<string> studentIds, List<string> campaginIds,
+        List<string> campaginDetailIds, List<string> voucherIds, List<string> voucherItemIds, List<Type> typeIds,
         bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<Activity> pagedResult = new();
@@ -173,9 +174,14 @@ public class ActivityRepository : IActivityRepository
                 || EF.Functions.Like(t.Student.FullName, "%" + search + "%")
                 || EF.Functions.Like(t.VoucherItem.Voucher.VoucherName, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
+                && (brandIds.Count == 0 || brandIds.Contains(t.Store.BrandId))
                 && (storeIds.Count == 0 || storeIds.Contains(t.StoreId))
                 && (studentIds.Count == 0 || studentIds.Contains(t.StudentId))
-                && (voucherIds.Count == 0 || voucherIds.Contains(t.VoucherItemId))
+                && (campaginIds.Count == 0 || campaginIds.Contains(t.VoucherItem.CampaignDetail.CampaignId))
+                && (campaginDetailIds.Count == 0 || campaginDetailIds.Contains(t.VoucherItem.CampaignDetailId))
+                && (voucherIds.Count == 0 || voucherIds.Contains(t.VoucherItem.VoucherId))
+                && (voucherItemIds.Count == 0 || voucherItemIds.Contains(t.VoucherItemId))
+                && (typeIds.Count == 0 || typeIds.Contains(t.Type.Value))
                 && (state == null || state.Equals(t.State))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
@@ -185,11 +191,12 @@ public class ActivityRepository : IActivityRepository
                .Take(limit)
                .Include(s => s.ActivityTransactions.Where(a => (bool)a.Status))
                     .ThenInclude(a => a.Wallet)
-                        .ThenInclude(w => w.Type)
                .Include(s => s.Store)
                .Include(s => s.Student)
                .Include(s => s.VoucherItem)
                     .ThenInclude(v => v.Voucher)
+               .Include(s => s.VoucherItem)
+                    .ThenInclude(v => v.CampaignDetail)
                .ToList();
 
             pagedResult = new PagedResultModel<Activity>
@@ -219,14 +226,20 @@ public class ActivityRepository : IActivityRepository
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.ActivityTransactions.Where(a => (bool)a.Status))
                 .ThenInclude(a => a.Wallet)
-                    .ThenInclude(w => w.Type)
             .Include(s => s.Student)
+                .ThenInclude(s => s.Account)
             .Include(s => s.Store)
-                .ThenInclude(s => s.Brand)
+                .ThenInclude(s => s.Account)
             .Include(s => s.VoucherItem)
-                .ThenInclude(v => v.Voucher.Type)
+                .ThenInclude(v => v.Voucher)
+                    .ThenInclude(v => v.Type)
             .Include(s => s.VoucherItem)
-                .ThenInclude(v => v.CampaignDetail.Campaign)
+                .ThenInclude(v => v.Voucher)
+                    .ThenInclude(v => v.Brand)
+                        .ThenInclude(b => b.Account)
+            .Include(s => s.VoucherItem)
+                .ThenInclude(v => v.CampaignDetail)
+                    .ThenInclude(d => d.Campaign)
             .FirstOrDefault();
         }
         catch (Exception ex)
