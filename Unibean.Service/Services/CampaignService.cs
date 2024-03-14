@@ -517,6 +517,9 @@ public class CampaignService : ICampaignService
                         case CampaignState.Inactive
                         when new[] { CampaignState.Cancelled }.Contains(stateId) && entity.StartOn <= DateOnly.FromDateTime(DateTime.Now):
                             throw new InvalidParameterException("Trạng thái không hợp lệ do chiến dịch đã bắt đầu");
+                        case CampaignState.Inactive
+                        when new[] { CampaignState.Active }.Contains(stateId) && entity.TotalSpending >= entity.TotalIncome:
+                            throw new InvalidParameterException("Trạng thái không hợp lệ do chiến dịch đã hết số dư đậu");
                     }
 
                     if (entity.CampaignActivities.LastOrDefault().State.Equals(CampaignState.Pending)

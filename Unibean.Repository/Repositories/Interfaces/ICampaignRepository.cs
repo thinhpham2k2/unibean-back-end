@@ -20,6 +20,8 @@ public interface ICampaignRepository
         List<string> majorIds, List<string> campusIds, List<CampaignState> stateIds, 
         string propertySort, bool isAsc, string search, int page, int limit);
 
+    List<Campaign> GetAllEnded(List<CampaignState> stateIds);
+
     List<Campaign> GetAllExpired(List<CampaignState> stateIds, DateOnly date);
 
     Campaign GetById(string id);
