@@ -480,12 +480,12 @@ public class StudentService : IStudentService
         (string id, List<TransactionType> typeIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
-        Student entity = studentRepository.GetById(id);
-        if (entity != null)
+        List<string> list = studentRepository.GetWalletListById(id);
+        if (list.Count > 0)
         {
             return transactionService.
-                GetAll(studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(),
-                typeIds, state, propertySort, isAsc, search, page, limit, Role.Student);
+                GetAll(list, typeIds, state, propertySort,
+                isAsc, search, page, limit, Role.Student);
         }
         throw new InvalidParameterException("Không tìm thấy sinh viên");
     }

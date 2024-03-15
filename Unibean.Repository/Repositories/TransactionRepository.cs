@@ -122,7 +122,6 @@ public class TransactionRepository : ITransactionRepository
                         && (bool)a.Status)
                         .Include(s => s.Wallet)
                         .Include(s => s.Activity)
-                        .Include(s => s.Activity)
                             .ThenInclude(a => a.VoucherItem)
                                 .ThenInclude(v => v.Voucher).ToList());
                     }
