@@ -234,6 +234,24 @@ public class StudentRepository : IStudentRepository
         return student;
     }
 
+    public List<string> GetWalletListById(string id)
+    {
+        List<string> list = new();
+        try
+        {
+            using var db = new UnibeanDBContext();
+            list.AddRange(db.Students
+            .Where(s => s.Id.Equals(id) && (bool)s.Status)
+            .Include(s => s.Wallets).FirstOrDefault()
+            .Wallets.Select(w => w.Id).ToList());
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return list;
+    }
+
     public Student Update(Student update)
     {
         try
