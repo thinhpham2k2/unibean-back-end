@@ -106,6 +106,23 @@ public class StudentRepository : IStudentRepository
         return student != null;
     }
 
+    public bool CheckStudentId(string id)
+    {
+        Student student = new();
+        try
+        {
+            using var db = new UnibeanDBContext();
+            student = db.Students
+            .Where(s => s.Id.Equals(id) && (bool)s.Status)
+            .FirstOrDefault();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return student != null;
+    }
+
     public long CountStudent()
     {
         long count = 0;
