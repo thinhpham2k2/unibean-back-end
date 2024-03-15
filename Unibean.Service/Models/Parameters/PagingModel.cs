@@ -12,7 +12,7 @@ public class PagingModel
     /// </summary>
     [FromQuery(Name = "sort")]
     [DefaultValue("Id,desc")]
-    [Required(ErrorMessage = "sort property is required")]
+    [Required(ErrorMessage = "Thuộc tính sắp xếp là bắt buộc")]
     public string Sort { get; set; }
 
     /// <summary>
@@ -27,8 +27,8 @@ public class PagingModel
     /// </summary>
     [DefaultValue("1")]
     [FromQuery(Name = "page")]
-    [Required(ErrorMessage = "page is required")]
-    [Range(1, int.MaxValue, ErrorMessage = "The page must be positive")]
+    [Required(ErrorMessage = "Số trang là bắt buộc")]
+    [Range(1, int.MaxValue, ErrorMessage = "Số trang phải là số dương")]
     public int Page { get; set; }
 
     /// <summary>
@@ -36,7 +36,7 @@ public class PagingModel
     /// </summary>
     [DefaultValue("10")]
     [FromQuery(Name = "limit")]
-    [Required(ErrorMessage = "limit is required")]
-    [Range(1, int.MaxValue, ErrorMessage = "The limit must be positive")]
+    [Required(ErrorMessage = "Số dòng là bắt buộc")]
+    [Range(1, int.MaxValue, ErrorMessage = "Số dòng phải là số dương")]
     public int Limit { get; set; }
 }

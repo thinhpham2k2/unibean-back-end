@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
+using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Service.Models.ChallengeTransactions;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Orders;

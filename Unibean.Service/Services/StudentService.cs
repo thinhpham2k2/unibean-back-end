@@ -19,14 +19,6 @@ using Unibean.Service.Models.ChallengeTransactions;
 
 namespace Unibean.Service.Services;
 
-public enum TransactionType
-{
-    ActivityTransaction = 1,
-    OrderTransaction = 2,
-    ChallengeTransaction = 3,
-    BonusTransaction = 4
-}
-
 public class StudentService : IStudentService
 {
     private readonly Mapper mapper;
@@ -47,17 +39,13 @@ public class StudentService : IStudentService
 
     private readonly IChallengeTransactionService challengeTransactionService;
 
-    private readonly IOrderTransactionService orderTransactionService;
-
-    private readonly IBonusTransactionService bonusTransactionService;
-
-    private readonly IActivityTransactionService activityTransactionService;
-
     private readonly IOrderService orderService;
 
     private readonly IVoucherItemService voucherItemService;
 
     private readonly IEmailService emailService;
+
+    private readonly ITransactionService transactionService;
 
     public StudentService(IStudentRepository studentRepository,
         IFireBaseService fireBaseService,
@@ -65,12 +53,10 @@ public class StudentService : IStudentService
         IInvitationService invitationService,
         IStudentChallengeService studentChallengeService,
         IChallengeTransactionService challengeTransactionService,
-        IOrderTransactionService orderTransactionService,
-        IBonusTransactionService bonusTransactionService,
-        IActivityTransactionService activityTransactionService,
         IOrderService orderService,
         IVoucherItemService voucherItemService,
-        IEmailService emailService)
+        IEmailService emailService,
+        ITransactionService transactionService)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -212,12 +198,10 @@ public class StudentService : IStudentService
         this.invitationService = invitationService;
         this.studentChallengeService = studentChallengeService;
         this.challengeTransactionService = challengeTransactionService;
-        this.orderTransactionService = orderTransactionService;
-        this.bonusTransactionService = bonusTransactionService;
-        this.activityTransactionService = activityTransactionService;
         this.orderService = orderService;
         this.voucherItemService = voucherItemService;
         this.emailService = emailService;
+        this.transactionService = transactionService;
     }
 
     public async Task<StudentExtraModel> Add(CreateStudentModel creation)
@@ -499,40 +483,9 @@ public class StudentService : IStudentService
         Student entity = studentRepository.GetById(id);
         if (entity != null)
         {
-            var query = (typeIds.Contains(TransactionType.ChallengeTransaction) || typeIds.Count == 0 ?
-                challengeTransactionService.GetAll
-                (studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search) : new())
-
-                .Concat(typeIds.Contains(TransactionType.OrderTransaction) || typeIds.Count == 0 ?
-                orderTransactionService.GetAll
-                (studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search) : new())
-
-                .Concat(typeIds.Contains(TransactionType.BonusTransaction) || typeIds.Count == 0 ?
-                bonusTransactionService.GetAll
-                (studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), new(), search) : new())
-
-                .Concat(typeIds.Contains(TransactionType.ActivityTransaction) || typeIds.Count == 0 ?
-                activityTransactionService.GetAll
-                (studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), search) : new())
-
-                .AsQueryable()
-                .Where(t => state == null || state.Equals(t.State))
-                .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
-
-            var result = query
-                .Skip((page - 1) * limit)
-                .Take(limit)
-                .ToList();
-
-            return new()
-            {
-                CurrentPage = page,
-                PageSize = limit,
-                PageCount = (int)Math.Ceiling((double)query.Count() / limit),
-                Result = result,
-                RowCount = result.Count,
-                TotalCount = query.Count()
-            };
+            return transactionService.
+                GetAll(studentRepository.GetById(id).Wallets.Select(w => w.Id).ToList(),
+                typeIds, state, propertySort, isAsc, search, page, limit, Role.Student);
         }
         throw new InvalidParameterException("Không tìm thấy sinh viên");
     }

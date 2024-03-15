@@ -28,7 +28,7 @@ public interface IBrandService
         List<CampaignState> stateIds, string propertySort, bool isAsc, string search, int page, int limit);
 
     PagedResultModel<TransactionModel> GetHistoryTransactionListByBrandId
-        (string id, List<WalletType> walletTypeIds, bool? state, string propertySort, 
+        (string id, bool? state, string propertySort, 
         bool isAsc, string search, int page, int limit);
 
     PagedResultModel<StoreModel> GetStoreListByBrandId

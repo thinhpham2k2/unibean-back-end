@@ -20,7 +20,7 @@ public class OrderTransactionService : IOrderTransactionService
             =>
         {
             cfg.CreateMap<OrderTransaction, TransactionModel>()
-            .ForMember(t => t.Name, opt => opt.MapFrom(src => "Tạo đơn hàng (" + ((decimal)src.Amount).ToString("N") + " đậu)"))
+            .ForMember(t => t.Name, opt => opt.MapFrom(src => "Tạo đơn hàng"))
             .ForMember(t => t.RequestId, opt => opt.MapFrom(src => src.OrderId))
             .ForMember(t => t.WalletTypeId, opt => opt.MapFrom(src => (int)src.Wallet.Type))
             .ForMember(t => t.WalletType, opt => opt.MapFrom(src => src.Wallet.Type))
