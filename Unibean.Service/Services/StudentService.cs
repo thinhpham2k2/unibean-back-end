@@ -461,8 +461,7 @@ public class StudentService : IStudentService
         (List<ChallengeType> typeIds, string id, bool? isCompleted, bool? state,
         bool? isClaimed, string propertySort, bool isAsc, string search, int page, int limit)
     {
-        Student entity = studentRepository.GetById(id);
-        if (entity != null)
+        if (studentRepository.CheckStudentId(id))
         {
             PagedResultModel<StudentChallengeModel> result = studentChallengeService.GetAll
                 (new() { id }, new(), typeIds, state, propertySort, isAsc, search, page, limit);
@@ -492,8 +491,7 @@ public class StudentService : IStudentService
 
     public OrderExtraModel GetOrderByOrderId(string id, string orderId)
     {
-        Student entity = studentRepository.GetById(id);
-        if (entity != null)
+        if (studentRepository.CheckStudentId(id))
         {
             OrderExtraModel order = orderService.GetById(orderId);
             if (order != null && order.StudentId.Equals(id))
@@ -509,8 +507,7 @@ public class StudentService : IStudentService
         (List<string> stationIds, List<State> stateIds, string id, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
-        Student entity = studentRepository.GetById(id);
-        if (entity != null)
+        if (studentRepository.CheckStudentId(id))
         {
             return orderService.GetAll
                 (stationIds, new() { id }, stateIds, state, propertySort, isAsc, search, page, limit);
@@ -520,8 +517,7 @@ public class StudentService : IStudentService
 
     public VoucherItemExtraModel GetVoucherItemByVoucherId(string id, string voucherId)
     {
-        Student entity = studentRepository.GetById(id);
-        if (entity != null)
+        if (studentRepository.CheckStudentId(id))
         {
             VoucherItemExtraModel voucher = voucherItemService.GetById(voucherId);
             if (voucher != null && !voucher.StudentId.IsNullOrEmpty() && voucher.StudentId.Equals(id))
@@ -537,8 +533,7 @@ public class StudentService : IStudentService
         (List<string> campaignIds, List<string> campaignDetailIds, List<string> voucherIds, List<string> brandIds, List<string> typeIds,
         string id, bool? state, bool? isUsed, string propertySort, bool isAsc, string search, int page, int limit)
     {
-        Student entity = studentRepository.GetById(id);
-        if (entity != null)
+        if (studentRepository.CheckStudentId(id))
         {
             return voucherItemService.GetAll
                 (campaignIds, campaignDetailIds, voucherIds, brandIds, typeIds, new() { id },

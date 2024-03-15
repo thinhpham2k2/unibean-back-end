@@ -7,6 +7,8 @@ public interface IStudentRepository
 {
     Student Add(Student creation);
 
+    bool CheckStudentId(string id);
+
     long CountStudent();
 
     long CountStudentToday(DateOnly date);
