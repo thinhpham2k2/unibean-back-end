@@ -248,7 +248,6 @@ public class BrandController : ControllerBase
     /// Get history transaction by brand id
     /// </summary>
     /// <param name="id">Brand id.</param>
-    /// <param name="walletTypeIds">Filter by wallet type id --- Green = 1, Red = 2</param>
     /// <param name="state">Filter by history transaction state.</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet("{id}/histories")]
@@ -258,7 +257,6 @@ public class BrandController : ControllerBase
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<PagedResultModel<TransactionModel>> GetHistoryTransactionByBrandId(
         string id,
-        [FromQuery] List<WalletType> walletTypeIds,
         [FromQuery] bool? state,
         [FromQuery] PagingModel paging)
     {
@@ -272,7 +270,7 @@ public class BrandController : ControllerBase
             {
                 PagedResultModel<TransactionModel>
                 result = brandService.GetHistoryTransactionListByBrandId
-                    (id, walletTypeIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"),
+                    (id, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"),
                     paging.Search, paging.Page, paging.Limit);
                 return StatusCode(StatusCodes.Status200OK, result);
             }

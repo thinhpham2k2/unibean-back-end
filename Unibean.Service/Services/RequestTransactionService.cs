@@ -19,7 +19,7 @@ public class RequestTransactionService : IRequestTransactionService
             =>
         {
             cfg.CreateMap<RequestTransaction, TransactionModel>()
-            .ForMember(t => t.Name, opt => opt.MapFrom(src => "Nạp đậu (" + src.Amount + " đậu)"))
+            .ForMember(t => t.Name, opt => opt.MapFrom(src => "Nạp đậu"))
             .ForMember(t => t.RequestId, opt => opt.MapFrom(src => src.RequestId))
             .ForMember(t => t.WalletTypeId, opt => opt.MapFrom(src => (int)src.Wallet.Type))
             .ForMember(t => t.WalletType, opt => opt.MapFrom(src => src.Wallet.Type))

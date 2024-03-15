@@ -37,13 +37,9 @@ public class BrandService : IBrandService
 
     private readonly IVoucherService voucherService;
 
-    private readonly IBonusTransactionService bonusTransactionService;
-
-    private readonly ICampaignTransactionService walletTransactionService;
-
-    private readonly IRequestTransactionService requestTransactionService;
-
     private readonly IEmailService emailService;
+
+    private readonly ITransactionService transactionService;
 
     public BrandService(IBrandRepository brandRepository,
         IFireBaseService fireBaseService,
@@ -51,10 +47,8 @@ public class BrandService : IBrandService
         ICampaignService campaignService,
         IStoreService storeService,
         IVoucherService voucherService,
-        IBonusTransactionService bonusTransactionService,
-        ICampaignTransactionService walletTransactionService,
-        IRequestTransactionService requestTransactionService,
-        IEmailService emailService)
+        IEmailService emailService,
+        ITransactionService transactionService)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -132,10 +126,8 @@ public class BrandService : IBrandService
         this.campaignService = campaignService;
         this.storeService = storeService;
         this.voucherService = voucherService;
-        this.bonusTransactionService = bonusTransactionService;
-        this.walletTransactionService = walletTransactionService;
-        this.requestTransactionService = requestTransactionService;
         this.emailService = emailService;
+        this.transactionService = transactionService;
     }
 
     public async Task<BrandExtraModel> Add(CreateBrandModel creation)
@@ -259,36 +251,15 @@ public class BrandService : IBrandService
     }
 
     public PagedResultModel<TransactionModel> GetHistoryTransactionListByBrandId
-        (string id, List<WalletType> walletTypeIds, bool? state, string propertySort,
+        (string id, bool? state, string propertySort,
         bool isAsc, string search, int page, int limit)
     {
         Brand entity = brandRepository.GetById(id);
         if (entity != null)
         {
-            var query = bonusTransactionService.GetAll
-                (brandRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), walletTypeIds, search)
-                .Concat(walletTransactionService.GetAll
-                (brandRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), walletTypeIds, search))
-                .Concat(requestTransactionService.GetAll
-                (brandRepository.GetById(id).Wallets.Select(w => w.Id).ToList(), new(), walletTypeIds, search))
-                .AsQueryable()
-                .Where(t => state == null || state.Equals(t.State))
-                .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
-
-            var result = query
-                .Skip((page - 1) * limit)
-                .Take(limit)
-                .ToList();
-
-            return new()
-            {
-                CurrentPage = page,
-                PageSize = limit,
-                PageCount = (int)Math.Ceiling((double)query.Count() / limit),
-                Result = result,
-                RowCount = result.Count,
-                TotalCount = query.Count()
-            };
+            return transactionService.
+                GetAll(brandRepository.GetById(id).Wallets.Select(w => w.Id).ToList(),
+                new(), state, propertySort, isAsc, search, page, limit, Role.Brand);
         }
         throw new InvalidParameterException("Không tìm thấy thương hiệu");
     }

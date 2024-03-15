@@ -517,7 +517,7 @@ public class BrandControllerTest
 
         // Act
         var result = controller.GetHistoryTransactionByBrandId
-            (id, walletTypeIds, state, paging);
+            (id, state, paging);
 
         // Assert
         result.Should().NotBeNull();
@@ -546,7 +546,7 @@ public class BrandControllerTest
         // Act & Assert
         Assert.Throws<InvalidParameterException>(
             () => controller.GetHistoryTransactionByBrandId
-            (id, walletTypeIds, state, paging));
+            (id, state, paging));
     }
 
     [Fact]
@@ -567,7 +567,7 @@ public class BrandControllerTest
 
         // Act
         var result = controller.GetHistoryTransactionByBrandId
-            (id, walletTypeIds, state, paging);
+            (id, state, paging);
 
         // Assert
         result.Should().NotBeNull();

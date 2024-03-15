@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Unibean.API.Controllers;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
+using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Orders;
 using Unibean.Service.Models.Parameters;
@@ -12,7 +13,6 @@ using Unibean.Service.Models.StudentChallenges;
 using Unibean.Service.Models.Students;
 using Unibean.Service.Models.Transactions;
 using Unibean.Service.Models.VoucherItems;
-using Unibean.Service.Services;
 using Unibean.Service.Services.Interfaces;
 
 namespace Unibean.Test.Controllers;

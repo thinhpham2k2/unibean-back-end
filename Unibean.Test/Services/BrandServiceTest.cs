@@ -28,13 +28,9 @@ public class BrandServiceTest
 
     private readonly IVoucherService voucherService;
 
-    private readonly IBonusTransactionService bonusTransactionService;
-
-    private readonly ICampaignTransactionService walletTransactionService;
-
-    private readonly IRequestTransactionService requestTransactionService;
-
     private readonly IEmailService emailService;
+
+    private readonly ITransactionService transactionService;
 
     public BrandServiceTest()
     {
@@ -44,10 +40,8 @@ public class BrandServiceTest
         campaignService = A.Fake<ICampaignService>();
         storeService = A.Fake<IStoreService>();
         voucherService = A.Fake<IVoucherService>();
-        bonusTransactionService = A.Fake<IBonusTransactionService>();
-        walletTransactionService = A.Fake<ICampaignTransactionService>();
-        requestTransactionService = A.Fake<IRequestTransactionService>();
         emailService = A.Fake<IEmailService>();
+        transactionService = A.Fake<ITransactionService>();
     }
 
     [Fact]
@@ -62,8 +56,7 @@ public class BrandServiceTest
             Id = id
         });
         var service = new BrandService(brandRepository, fireBaseService, accountRepository,
-            campaignService, storeService, voucherService, bonusTransactionService,
-            walletTransactionService, requestTransactionService, emailService);
+            campaignService, storeService, voucherService, emailService, transactionService);
 
         // Act
         var result = service.Add(creation);
@@ -86,8 +79,7 @@ public class BrandServiceTest
                 Id = id
             });
         var service = new BrandService(brandRepository, fireBaseService, accountRepository,
-            campaignService, storeService, voucherService, bonusTransactionService,
-            walletTransactionService, requestTransactionService, emailService);
+            campaignService, storeService, voucherService, emailService, transactionService);
 
         // Act
         var result = service.AddGoogle(creation);
@@ -114,8 +106,7 @@ public class BrandServiceTest
         A.CallTo(() => brandRepository.Delete(id));
         A.CallTo(() => accountRepository.Delete(id));
         var service = new BrandService(brandRepository, fireBaseService, accountRepository,
-            campaignService, storeService, voucherService, bonusTransactionService,
-            walletTransactionService, requestTransactionService, emailService);
+            campaignService, storeService, voucherService, emailService, transactionService);
 
         // Act & Assert
         service.Delete(id);
@@ -147,8 +138,7 @@ public class BrandServiceTest
         A.CallTo(() => brandRepository.GetAll(state, propertySort, isAsc, search, page, limit))
             .Returns(pagedResultModel);
         var service = new BrandService(brandRepository, fireBaseService, accountRepository,
-            campaignService, storeService, voucherService, bonusTransactionService,
-            walletTransactionService, requestTransactionService, emailService);
+            campaignService, storeService, voucherService, emailService, transactionService);
 
         // Act
         var result = service.GetAll(state, propertySort, isAsc, search, page, limit, request);
@@ -174,8 +164,7 @@ public class BrandServiceTest
                 Id = id
             });
         var service = new BrandService(brandRepository, fireBaseService, accountRepository,
-            campaignService, storeService, voucherService, bonusTransactionService,
-            walletTransactionService, requestTransactionService, emailService);
+            campaignService, storeService, voucherService, emailService, transactionService);
 
         // Act
         var result = service.GetById(id, request);
@@ -215,8 +204,7 @@ public class BrandServiceTest
                 campusIds, stateIds, propertySort, isAsc, search, page, limit))
             .Returns(pagedResultModel);
         var service = new BrandService(brandRepository, fireBaseService, accountRepository,
-            campaignService, storeService, voucherService, bonusTransactionService,
-            walletTransactionService, requestTransactionService, emailService);
+            campaignService, storeService, voucherService, emailService, transactionService);
 
         // Act
         var result = service.GetCampaignListByBrandId
@@ -234,18 +222,20 @@ public class BrandServiceTest
     {
         // Arrange
         string id = "";
-        List<WalletType> walletTypeIds = new();
         bool? state = null;
         string propertySort = "Id";
         bool isAsc = true;
         string search = "";
         int page = 1;
         int limit = 10;
-        List<TransactionModel> list = new()
+        PagedResultModel<TransactionModel> list = new()
         {
-            new(),
-            new(),
-            new()
+            Result = new()
+            {
+                new(),
+                new(),
+                new()
+            }
         };
         A.CallTo(() => brandRepository.GetById(id)).Returns(new()
         {
@@ -257,20 +247,19 @@ public class BrandServiceTest
                 }
             }
         });
-        A.CallTo(() => bonusTransactionService.GetAll(new() { id }, new(), walletTypeIds, search))
+        A.CallTo(() => transactionService.GetAll(new() { id }, new(), state, propertySort, isAsc, search, page, limit, Role.Brand))
             .Returns(list);
         var service = new BrandService(brandRepository, fireBaseService, accountRepository,
-            campaignService, storeService, voucherService, bonusTransactionService,
-            walletTransactionService, requestTransactionService, emailService);
+            campaignService, storeService, voucherService, emailService, transactionService);
 
         // Act
         var result = service.GetHistoryTransactionListByBrandId
-            (id, walletTypeIds, state, propertySort, isAsc, search, page, limit);
+            (id, state, propertySort, isAsc, search, page, limit);
 
         // Assert
         result.Should().NotBeNull();
         result.Should().BeOfType(typeof(PagedResultModel<TransactionModel>));
-        Assert.Equal(list.Count, result.Result.Count);
+        Assert.Equal(list.Result.Count, result.Result.Count);
     }
 
     [Fact]
@@ -303,8 +292,7 @@ public class BrandServiceTest
                 propertySort, isAsc, search, page, limit))
             .Returns(pagedResultModel);
         var service = new BrandService(brandRepository, fireBaseService, accountRepository,
-            campaignService, storeService, voucherService, bonusTransactionService,
-            walletTransactionService, requestTransactionService, emailService);
+            campaignService, storeService, voucherService, emailService, transactionService);
 
         // Act
         var result = service.GetStoreListByBrandId
@@ -346,8 +334,7 @@ public class BrandServiceTest
                 propertySort, isAsc, search, page, limit))
             .Returns(pagedResultModel);
         var service = new BrandService(brandRepository, fireBaseService, accountRepository,
-            campaignService, storeService, voucherService, bonusTransactionService,
-            walletTransactionService, requestTransactionService, emailService);
+            campaignService, storeService, voucherService, emailService, transactionService);
 
         // Act
         var result = service.GetVoucherListByBrandId
@@ -374,8 +361,7 @@ public class BrandServiceTest
                 BrandName = brandName
             });
         var service = new BrandService(brandRepository, fireBaseService, accountRepository,
-            campaignService, storeService, voucherService, bonusTransactionService,
-            walletTransactionService, requestTransactionService, emailService);
+            campaignService, storeService, voucherService, emailService, transactionService);
 
         // Act
         var result = service.Update(id, update);
