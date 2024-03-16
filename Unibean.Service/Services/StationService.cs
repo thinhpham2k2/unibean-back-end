@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Enable.EnumDisplayName;
-using System.Linq;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
@@ -8,7 +7,6 @@ using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Stations;
 using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Utilities.FireBase;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Unibean.Service.Services;
 
