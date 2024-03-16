@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Enable.EnumDisplayName;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
