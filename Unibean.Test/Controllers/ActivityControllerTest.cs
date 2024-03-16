@@ -28,8 +28,8 @@ public class ActivityControllerTest
         List<string> brandIds = new();
         List<string> storeIds = new();
         List<string> studentIds = new();
-        List<string> campaginIds = new();
-        List<string> campaginDetailIds = new();
+        List<string> campaignIds = new();
+        List<string> campaignDetailIds = new();
         List<string> voucherIds = new();
         List<string> voucherItemIds = new();
         List<Type> typeIds = new();
@@ -44,8 +44,8 @@ public class ActivityControllerTest
         var controller = new ActivityController(activityService);
 
         // Act
-        var result = controller.GetList(brandIds, storeIds, studentIds, campaginIds, 
-            campaginDetailIds, voucherIds, voucherItemIds, typeIds, state, paging);
+        var result = controller.GetList(brandIds, storeIds, studentIds, campaignIds, 
+            campaignDetailIds, voucherIds, voucherItemIds, typeIds, state, paging);
 
         // Assert
         result.Should().NotBeNull();
@@ -61,8 +61,8 @@ public class ActivityControllerTest
         List<string> brandIds = new();
         List<string> storeIds = new();
         List<string> studentIds = new();
-        List<string> campaginIds = new();
-        List<string> campaginDetailIds = new();
+        List<string> campaignIds = new();
+        List<string> campaignDetailIds = new();
         List<string> voucherIds = new();
         List<string> voucherItemIds = new();
         List<Type> typeIds = new();
@@ -79,8 +79,8 @@ public class ActivityControllerTest
 
         // Act & Assert
         Assert.Throws<InvalidParameterException>(
-            () => controller.GetList(brandIds, storeIds, studentIds, campaginIds,
-            campaginDetailIds, voucherIds, voucherItemIds, typeIds, state, paging));
+            () => controller.GetList(brandIds, storeIds, studentIds, campaignIds,
+            campaignDetailIds, voucherIds, voucherItemIds, typeIds, state, paging));
     }
 
     [Fact]
@@ -90,8 +90,8 @@ public class ActivityControllerTest
         List<string> brandIds = new();
         List<string> storeIds = new();
         List<string> studentIds = new();
-        List<string> campaginIds = new();
-        List<string> campaginDetailIds = new();
+        List<string> campaignIds = new();
+        List<string> campaignDetailIds = new();
         List<string> voucherIds = new();
         List<string> voucherItemIds = new();
         List<Type> typeIds = new();
@@ -106,8 +106,8 @@ public class ActivityControllerTest
         var controller = new ActivityController(activityService);
 
         // Act
-        var result = controller.GetList(brandIds, storeIds, studentIds, campaginIds,
-            campaginDetailIds, voucherIds, voucherItemIds, typeIds, state, paging);
+        var result = controller.GetList(brandIds, storeIds, studentIds, campaignIds,
+            campaignDetailIds, voucherIds, voucherItemIds, typeIds, state, paging);
 
         // Assert
         result.Should().NotBeNull();

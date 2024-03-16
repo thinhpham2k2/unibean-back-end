@@ -13,8 +13,8 @@ public interface IActivityRepository
     void Delete(string id);
 
     PagedResultModel<Activity> GetAll
-        (List<string> brandIds, List<string> storeIds, List<string> studentIds, List<string> campaginIds,
-        List<string> campaginDetailIds, List<string> voucherIds, List<string> voucherItemIds, List<Type> typeIds,
+        (List<string> brandIds, List<string> storeIds, List<string> studentIds, List<string> campaignIds,
+        List<string> campaignDetailIds, List<string> voucherIds, List<string> voucherItemIds, List<Type> typeIds,
         bool? state, string propertySort, bool isAsc, string search, int page, int limit);
 
     List<Activity> GetList

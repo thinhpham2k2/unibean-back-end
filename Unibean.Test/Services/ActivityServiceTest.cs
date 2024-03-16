@@ -62,8 +62,8 @@ public class ActivityServiceTest
         List<string> brandIds = new();
         List<string> storeIds = new();
         List<string> studentIds = new();
-        List<string> campaginIds = new();
-        List<string> campaginDetailIds = new();
+        List<string> campaignIds = new();
+        List<string> campaignDetailIds = new();
         List<string> voucherIds = new();
         List<string> voucherItemIds = new();
         List<Type> typeIds = new();
@@ -115,13 +115,13 @@ public class ActivityServiceTest
                 }
             }
         };
-        A.CallTo(() => activityRepository.GetAll(brandIds, storeIds, studentIds, campaginIds,
-            campaginDetailIds, voucherIds, voucherItemIds, typeIds, state, propertySort, isAsc,
+        A.CallTo(() => activityRepository.GetAll(brandIds, storeIds, studentIds, campaignIds,
+            campaignDetailIds, voucherIds, voucherItemIds, typeIds, state, propertySort, isAsc,
             search, page, limit)).Returns(pagedResultModel);
         var service = new ActivityService(activityRepository, voucherItemRepository);
 
         // Act
-        var result = service.GetAll(brandIds, storeIds, studentIds, campaginIds, campaginDetailIds,
+        var result = service.GetAll(brandIds, storeIds, studentIds, campaignIds, campaignDetailIds,
             voucherIds, voucherItemIds, typeIds, state, propertySort, isAsc, search, page, limit);
 
         // Assert

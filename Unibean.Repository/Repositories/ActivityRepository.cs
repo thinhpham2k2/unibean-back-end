@@ -159,8 +159,8 @@ public class ActivityRepository : IActivityRepository
     }
 
     public PagedResultModel<Activity> GetAll
-        (List<string> brandIds, List<string> storeIds, List<string> studentIds, List<string> campaginIds,
-        List<string> campaginDetailIds, List<string> voucherIds, List<string> voucherItemIds, List<Type> typeIds,
+        (List<string> brandIds, List<string> storeIds, List<string> studentIds, List<string> campaignIds,
+        List<string> campaignDetailIds, List<string> voucherIds, List<string> voucherItemIds, List<Type> typeIds,
         bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<Activity> pagedResult = new();
@@ -177,8 +177,8 @@ public class ActivityRepository : IActivityRepository
                 && (brandIds.Count == 0 || brandIds.Contains(t.Store.BrandId))
                 && (storeIds.Count == 0 || storeIds.Contains(t.StoreId))
                 && (studentIds.Count == 0 || studentIds.Contains(t.StudentId))
-                && (campaginIds.Count == 0 || campaginIds.Contains(t.VoucherItem.CampaignDetail.CampaignId))
-                && (campaginDetailIds.Count == 0 || campaginDetailIds.Contains(t.VoucherItem.CampaignDetailId))
+                && (campaignIds.Count == 0 || campaignIds.Contains(t.VoucherItem.CampaignDetail.CampaignId))
+                && (campaignDetailIds.Count == 0 || campaignDetailIds.Contains(t.VoucherItem.CampaignDetailId))
                 && (voucherIds.Count == 0 || voucherIds.Contains(t.VoucherItem.VoucherId))
                 && (voucherItemIds.Count == 0 || voucherItemIds.Contains(t.VoucherItemId))
                 && (typeIds.Count == 0 || typeIds.Contains(t.Type.Value))
