@@ -251,6 +251,23 @@ public class StudentRepository : IStudentRepository
         return student;
     }
 
+    public Student GetByIdForValidation(string id)
+    {
+        Student student = new();
+        try
+        {
+            using var db = new UnibeanDBContext();
+            student = db.Students
+            .Where(s => s.Id.Equals(id) && (bool)s.Status)
+            .FirstOrDefault();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return student;
+    }
+
     public List<string> GetWalletListById(string id)
     {
         List<string> list = new();
