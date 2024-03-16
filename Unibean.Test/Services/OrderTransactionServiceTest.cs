@@ -23,12 +23,12 @@ public class OrderTransactionServiceTest
         List<string> walletIds = new();
         List<string> orderIds = new();
         string search = "";
-        List<OrderTransaction> activities = new()
+        List<OrderTransaction> orders = new()
         {
             new(), new(), new()
         };
         A.CallTo(() => orderTransactionRepo.GetAll
-            (walletIds, orderIds, search)).Returns(activities);
+            (walletIds, orderIds, search)).Returns(orders);
         var service = new OrderTransactionService(orderTransactionRepo);
 
         // Act
@@ -37,6 +37,6 @@ public class OrderTransactionServiceTest
         // Assert
         result.Should().NotBeNull();
         result.Should().BeOfType(typeof(List<TransactionModel>));
-        Assert.Equal(activities.Count, result.Count);
+        Assert.Equal(orders.Count, result.Count);
     }
 }
