@@ -4,7 +4,6 @@ using System.Security.Cryptography;
 using Unibean.Repository.Entities;
 using Unibean.Service.Models.Accounts;
 using Unibean.Service.Models.Authens;
-using Unibean.Service.Models.Brands;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Services.Interfaces;
 
