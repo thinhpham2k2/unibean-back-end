@@ -2,9 +2,7 @@
 using FluentAssertions;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
-using Unibean.Repository.Repositories;
 using Unibean.Repository.Repositories.Interfaces;
-using Unibean.Service.Models.Admins;
 using Unibean.Service.Models.Orders;
 using Unibean.Service.Services;
 using Unibean.Service.Services.Interfaces;
