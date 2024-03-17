@@ -37,7 +37,7 @@ public class CampaignActivityServiceTest
                 new()
             }
         };
-        A.CallTo(() => campaignActivityRepository.GetAll(campaignIds, stateIds, 
+        A.CallTo(() => campaignActivityRepository.GetAll(campaignIds, stateIds,
             propertySort, isAsc, search, page, limit)).Returns(pagedResultModel);
         var service = new CampaignActivityService(campaignActivityRepository);
 

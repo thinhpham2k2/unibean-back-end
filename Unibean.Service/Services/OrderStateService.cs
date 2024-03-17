@@ -15,7 +15,7 @@ public class OrderStateService : IOrderStateService
 
     private readonly IOrderStateRepository orderStateRepository;
 
-    public OrderStateService(IEmailService emailService, 
+    public OrderStateService(IEmailService emailService,
         IOrderRepository orderRepository,
         IOrderStateRepository orderStateRepository)
     {

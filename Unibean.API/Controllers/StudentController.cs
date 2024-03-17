@@ -12,7 +12,6 @@ using Unibean.Service.Models.StudentChallenges;
 using Unibean.Service.Models.Students;
 using Unibean.Service.Models.Transactions;
 using Unibean.Service.Models.VoucherItems;
-using Unibean.Service.Services;
 using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Validations;
 
@@ -318,7 +317,7 @@ public class StudentController : ControllerBase
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult ClaimChallenge(
-        [ValidStudent(new[] { StudentState.Active })] string id, 
+        [ValidStudent(new[] { StudentState.Active })] string id,
         [ValidStudentChallenge] string challengeId)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -431,7 +430,7 @@ public class StudentController : ControllerBase
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult CreateOrder(
-        [ValidStudent(new[] { StudentState.Active })] string id, 
+        [ValidStudent(new[] { StudentState.Active })] string id,
         [FromBody] CreateOrderModel create)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -510,8 +509,8 @@ public class StudentController : ControllerBase
             {
                 PagedResultModel<VoucherItemModel>
                 result = studentService.GetVoucherListByStudentId
-                    (campaignIds, campaignDetailIds, voucherIds, brandIds, typeIds, id, 
-                    isUsed, state,propertySort, paging.Sort.Split(",")[1].Equals("asc"),
+                    (campaignIds, campaignDetailIds, voucherIds, brandIds, typeIds, id,
+                    isUsed, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"),
                     paging.Search, paging.Page, paging.Limit);
                 return StatusCode(StatusCodes.Status200OK, result);
             }

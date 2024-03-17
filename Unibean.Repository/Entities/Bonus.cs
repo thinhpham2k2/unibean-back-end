@@ -44,4 +44,4 @@ public class Bonus
     public bool? Status { get; set; }
 
     public virtual ICollection<BonusTransaction> BonusTransactions { get; set; }
-}   
+}

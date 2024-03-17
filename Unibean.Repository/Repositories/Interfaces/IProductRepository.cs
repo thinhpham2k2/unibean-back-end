@@ -12,7 +12,7 @@ public interface IProductRepository
     void Delete(string id);
 
     PagedResultModel<Product> GetAll
-        (List<string> categoryIds, bool? state, string propertySort, 
+        (List<string> categoryIds, bool? state, string propertySort,
         bool isAsc, string search, int page, int limit);
 
     Product GetById(string id);

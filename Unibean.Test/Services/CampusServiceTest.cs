@@ -80,7 +80,7 @@ public class CampusServiceTest
                 new()
             }
         };
-        A.CallTo(() => campusRepository.GetAll(universityIds, areaIds, state, 
+        A.CallTo(() => campusRepository.GetAll(universityIds, areaIds, state,
             propertySort, isAsc, search, page, limit)).Returns(pagedResultModel);
         var service = new CampusService(campusRepository, fireBaseService);
 

@@ -49,7 +49,7 @@ public class CampusController : ControllerBase
         {
             PagedResultModel<CampusModel>
                 result = campusService.GetAll
-                (universityIds, areaIds, state, propertySort, 
+                (universityIds, areaIds, state, propertySort,
                 paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
             return StatusCode(StatusCodes.Status200OK, result);
         }

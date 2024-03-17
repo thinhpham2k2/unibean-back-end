@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Unibean.Repository.Repositories;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System.ComponentModel.DataAnnotations;
 using Unibean.Repository.Repositories.Interfaces;
 
 namespace Unibean.Service.Validations;
@@ -8,10 +8,9 @@ public class ValidEmail : ValidationAttribute
 {
     private new const string ErrorMessage = "Email đã được sử dụng";
 
-    private readonly IAccountRepository accountRepository = new AccountRepository();
-
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
+        var accountRepository = validationContext.GetService<IAccountRepository>();
         string email = value.ToString();
         if (accountRepository.CheckEmailDuplicate(email))
         {

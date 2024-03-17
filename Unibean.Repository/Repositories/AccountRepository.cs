@@ -7,11 +7,18 @@ namespace Unibean.Repository.Repositories;
 
 public class AccountRepository : IAccountRepository
 {
+    private readonly UnibeanDBContext unibeanDB;
+
+    public AccountRepository(UnibeanDBContext unibeanDB)
+    {
+        this.unibeanDB = unibeanDB;
+    }
+
     public Account Add(Account creation)
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             creation = db.Accounts.Add(creation).Entity;
             db.SaveChanges();
         }
@@ -27,7 +34,7 @@ public class AccountRepository : IAccountRepository
         Account account = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             account = db.Accounts
                 .Where(a => a.Email.Equals(email)).FirstOrDefault();
         }
@@ -43,7 +50,7 @@ public class AccountRepository : IAccountRepository
         Account account = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             account = db.Accounts
                 .Where(a => a.Phone.Equals(phone)).FirstOrDefault();
         }
@@ -59,7 +66,7 @@ public class AccountRepository : IAccountRepository
         Account account = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             account = db.Accounts
                 .Where(p => p.UserName.Equals(userName)).FirstOrDefault();
         }
@@ -74,7 +81,7 @@ public class AccountRepository : IAccountRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var account = db.Accounts.FirstOrDefault(b => b.Id.Equals(id));
             account.Status = false;
             db.Accounts.Update(account);
@@ -91,7 +98,7 @@ public class AccountRepository : IAccountRepository
         Account account = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             account = db.Accounts.Where(a => a.Email.Equals(email)
             && (bool)a.Status)
                 .Include(a => a.Admins)
@@ -113,7 +120,7 @@ public class AccountRepository : IAccountRepository
         Account account = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             account = db.Accounts
             .Where(a => a.Id.Equals(id) && (bool)a.Status)
             .Include(a => a.Admins)
@@ -135,17 +142,15 @@ public class AccountRepository : IAccountRepository
         Account account = new();
         try
         {
-            using (var db = new UnibeanDBContext())
-            {
-                account = db.Accounts.Where(a => a.UserName.Equals(userName)
-                && (bool)a.Status)
-                    .Include(a => a.Admins)
-                    .Include(a => a.Staffs)
-                    .Include(a => a.Brands)
-                    .Include(a => a.Stores)
-                    .Include(a => a.Students)
-                    .FirstOrDefault();
-            }
+            var db = unibeanDB;
+            account = db.Accounts.Where(a => a.UserName.Equals(userName)
+            && (bool)a.Status)
+                .Include(a => a.Admins)
+                .Include(a => a.Staffs)
+                .Include(a => a.Brands)
+                .Include(a => a.Stores)
+                .Include(a => a.Students)
+                .FirstOrDefault();
             if (account != null)
             {
                 if (!BCryptNet.Verify(password, account.Password))
@@ -165,7 +170,7 @@ public class AccountRepository : IAccountRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             update = db.Accounts.Update(update).Entity;
             db.SaveChanges();
         }

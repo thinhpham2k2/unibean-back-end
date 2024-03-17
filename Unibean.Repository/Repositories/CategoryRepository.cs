@@ -8,11 +8,18 @@ namespace Unibean.Repository.Repositories;
 
 public class CategoryRepository : ICategoryRepository
 {
+    private readonly UnibeanDBContext unibeanDB;
+
+    public CategoryRepository(UnibeanDBContext unibeanDB)
+    {
+        this.unibeanDB = unibeanDB;
+    }
+
     public Category Add(Category creation)
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             creation = db.Categories.Add(creation).Entity;
             db.SaveChanges();
         }
@@ -27,7 +34,7 @@ public class CategoryRepository : ICategoryRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var category = db.Categories.FirstOrDefault(b => b.Id.Equals(id));
             category.Status = false;
             db.Categories.Update(category);
@@ -45,7 +52,7 @@ public class CategoryRepository : ICategoryRepository
         PagedResultModel<Category> pagedResult = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var query = db.Categories
                 .Where(t => (EF.Functions.Like(t.CategoryName, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
@@ -80,7 +87,7 @@ public class CategoryRepository : ICategoryRepository
         Category category = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             category = db.Categories
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(c => c.Products.Where(p => (bool)p.Status))
@@ -97,7 +104,7 @@ public class CategoryRepository : ICategoryRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             update = db.Categories.Update(update).Entity;
             db.SaveChanges();
         }

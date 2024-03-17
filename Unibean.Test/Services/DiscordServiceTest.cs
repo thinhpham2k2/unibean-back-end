@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using Unibean.Service.Services;
+﻿using Unibean.Service.Services;
 
 namespace Unibean.Test.Services;
 

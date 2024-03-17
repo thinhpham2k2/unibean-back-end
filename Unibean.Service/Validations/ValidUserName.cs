@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
-using Unibean.Repository.Repositories;
 using Unibean.Repository.Repositories.Interfaces;
 
 namespace Unibean.Service.Validations;
@@ -12,10 +12,9 @@ public class ValidUserName : ValidationAttribute
 
     private const string ErrorMessage1 = "Tên đăng nhập đã được sử dụng";
 
-    private readonly IAccountRepository accountRepository = new AccountRepository();
-
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
+        var accountRepository = validationContext.GetService<IAccountRepository>();
         string userName = value.ToString();
         if (Regex.IsMatch(userName, @"^[a-z0-9]{5,50}$"))
         {

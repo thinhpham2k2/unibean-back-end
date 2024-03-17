@@ -262,7 +262,7 @@ public class StoreController : ControllerBase
 
         try
         {
-            return StatusCode(StatusCodes.Status200OK, 
+            return StatusCode(StatusCodes.Status200OK,
                 storeService.GetCampaignDetailById(id, detailId));
         }
         catch (InvalidParameterException e)
@@ -320,7 +320,7 @@ public class StoreController : ControllerBase
 
         try
         {
-            return StatusCode(StatusCodes.Status200OK, 
+            return StatusCode(StatusCodes.Status200OK,
                 storeService.GetVoucherItemByCode(id, code));
         }
         catch (InvalidParameterException e)

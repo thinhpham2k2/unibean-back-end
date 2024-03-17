@@ -122,9 +122,9 @@ public class VoucherTypeServiceTest
         A.CallTo(() => voucherTypeRepository.GetById(id));
         A.CallTo(() => voucherTypeRepository.Update(A<VoucherType>.Ignored))
         .Returns(new()
-            {
-                Id = id,
-                TypeName = typeName
+        {
+            Id = id,
+            TypeName = typeName
         });
         var service = new VoucherTypeService(voucherTypeRepository, fireBaseService);
 

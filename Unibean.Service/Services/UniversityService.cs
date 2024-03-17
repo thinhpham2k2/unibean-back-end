@@ -19,7 +19,7 @@ public class UniversityService : IUniversityService
 
     private readonly IFireBaseService fireBaseService;
 
-    public UniversityService(IUniversityRepository universityRepository, 
+    public UniversityService(IUniversityRepository universityRepository,
         IFireBaseService fireBaseService)
     {
         var config = new MapperConfiguration(cfg

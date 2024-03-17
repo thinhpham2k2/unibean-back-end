@@ -8,11 +8,18 @@ namespace Unibean.Repository.Repositories;
 
 public class StoreRepository : IStoreRepository
 {
+    private readonly UnibeanDBContext unibeanDB;
+
+    public StoreRepository(UnibeanDBContext unibeanDB)
+    {
+        this.unibeanDB = unibeanDB;
+    }
+
     public Store Add(Store creation)
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             creation = db.Stores.Add(creation).Entity;
             db.SaveChanges();
         }
@@ -27,7 +34,7 @@ public class StoreRepository : IStoreRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var store = db.Stores.FirstOrDefault(b => b.Id.Equals(id));
             store.Status = false;
             db.Stores.Update(store);
@@ -46,7 +53,7 @@ public class StoreRepository : IStoreRepository
         PagedResultModel<Store> pagedResult = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var query = db.Stores
                 .Where(t => (EF.Functions.Like(t.StoreName, "%" + search + "%")
                 || EF.Functions.Like(t.Brand.BrandName, "%" + search + "%")
@@ -91,7 +98,7 @@ public class StoreRepository : IStoreRepository
         PagedResultModel<Store> pagedResult = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var query = db.Campaigns
                 .Where(c => (campaignIds.Count == 0 || campaignIds.Contains(c.Id))
                 && (brandIds.Count == 0 || brandIds.Contains(c.BrandId))
@@ -134,7 +141,7 @@ public class StoreRepository : IStoreRepository
         Store store = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             store = db.Stores
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.Brand)
@@ -160,7 +167,7 @@ public class StoreRepository : IStoreRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             update = db.Stores.Update(update).Entity;
             db.SaveChanges();
         }

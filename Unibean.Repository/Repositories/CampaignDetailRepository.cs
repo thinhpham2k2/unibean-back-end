@@ -8,11 +8,18 @@ namespace Unibean.Repository.Repositories;
 
 public class CampaignDetailRepository : ICampaignDetailRepository
 {
+    private readonly UnibeanDBContext unibeanDB;
+
+    public CampaignDetailRepository(UnibeanDBContext unibeanDB)
+    {
+        this.unibeanDB = unibeanDB;
+    }
+
     public CampaignDetail Add(CampaignDetail creation)
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             creation = db.CampaignDetails.Add(creation).Entity;
             db.SaveChanges();
         }
@@ -27,7 +34,7 @@ public class CampaignDetailRepository : ICampaignDetailRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var detail = db.CampaignDetails.FirstOrDefault(b => b.Id.Equals(id));
             detail.Status = false;
             db.CampaignDetails.Update(detail);
@@ -40,13 +47,13 @@ public class CampaignDetailRepository : ICampaignDetailRepository
     }
 
     public PagedResultModel<CampaignDetail> GetAll
-        (List<string> campaignIds, List<string> typeIds, bool? state, 
+        (List<string> campaignIds, List<string> typeIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<CampaignDetail> pagedResult = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var query = db.CampaignDetails
                 .Where(t => (EF.Functions.Like(t.Voucher.VoucherName, "%" + search + "%")
                 || EF.Functions.Like(t.Campaign.CampaignName, "%" + search + "%")
@@ -84,13 +91,13 @@ public class CampaignDetailRepository : ICampaignDetailRepository
     }
 
     public PagedResultModel<CampaignDetail> GetAllByStore
-        (string storeId, List<string> campaignIds, List<string> typeIds, 
+        (string storeId, List<string> campaignIds, List<string> typeIds,
         bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<CampaignDetail> pagedResult = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var query = db.CampaignDetails
                 .Where(t => (EF.Functions.Like(t.Voucher.VoucherName, "%" + search + "%")
                 || EF.Functions.Like(t.Campaign.CampaignName, "%" + search + "%")
@@ -134,12 +141,12 @@ public class CampaignDetailRepository : ICampaignDetailRepository
         List<string> items = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             items = db.CampaignDetails
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .SelectMany(d => d.VoucherItems.Where(
-                v => (bool)v.Status && (bool)v.State 
-                && (bool)v.IsLocked && !(bool)v.IsBought 
+                v => (bool)v.Status && (bool)v.State
+                && (bool)v.IsLocked && !(bool)v.IsBought
                 && !(bool)v.IsUsed && v.CampaignDetailId != null).Select(v => v.Id)).ToList();
         }
         catch (Exception ex)
@@ -154,7 +161,7 @@ public class CampaignDetailRepository : ICampaignDetailRepository
         CampaignDetail detail = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             detail = db.CampaignDetails
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(a => a.Voucher)
@@ -174,7 +181,7 @@ public class CampaignDetailRepository : ICampaignDetailRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             update = db.CampaignDetails.Update(update).Entity;
             db.SaveChanges();
         }

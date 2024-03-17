@@ -6,7 +6,7 @@ namespace Unibean.Service.Validations;
 public class ValidState : ValidationAttribute
 {
     private new const string ErrorMessage = "Trạng thái đơn hàng không hợp lệ";
-    
+
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
         if (int.TryParse(value.ToString(), out int state))

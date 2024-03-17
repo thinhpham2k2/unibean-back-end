@@ -5,8 +5,8 @@ namespace Unibean.Service.Validations;
 
 public class ValidChallengeType : ValidationAttribute
 {
-    private new const string ErrorMessage = "Loại thử thách không hợp lệ"; 
-    
+    private new const string ErrorMessage = "Loại thử thách không hợp lệ";
+
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
         if (int.TryParse(value.ToString(), out int type))

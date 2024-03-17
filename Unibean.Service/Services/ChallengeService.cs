@@ -20,7 +20,7 @@ public class ChallengeService : IChallengeService
 
     private readonly IFireBaseService fireBaseService;
 
-    public ChallengeService(IChallengeRepository challengeRepository, 
+    public ChallengeService(IChallengeRepository challengeRepository,
         IFireBaseService fireBaseService)
     {
         var config = new MapperConfiguration(cfg
@@ -96,7 +96,7 @@ public class ChallengeService : IChallengeService
     }
 
     public PagedResultModel<ChallengeModel> GetAll
-        (List<ChallengeType> typeIds, bool? state, string propertySort, 
+        (List<ChallengeType> typeIds, bool? state, string propertySort,
         bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<ChallengeModel>>(challengeRepository.GetAll

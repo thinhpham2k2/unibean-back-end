@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Unibean.Repository.Repositories.Interfaces;
-using Unibean.Repository.Repositories;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
+using Unibean.Repository.Repositories.Interfaces;
 
 namespace Unibean.Service.Validations;
 
@@ -11,11 +11,10 @@ public class ValidPhone : ValidationAttribute
 
     private const string ErrorMessage1 = "Số điện thoại đã được sử dụng";
 
-    private readonly IAccountRepository accountRepository = new AccountRepository();
-
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
         string phone = value.ToString();
+        var accountRepository = validationContext.GetService<IAccountRepository>();
         if (Regex.IsMatch(phone, @"\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})"))
         {
             if (accountRepository.CheckPhoneDuplicate(phone))

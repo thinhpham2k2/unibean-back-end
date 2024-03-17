@@ -11,7 +11,7 @@ public interface IStudentChallengeService
     void Delete(string id);
 
     PagedResultModel<StudentChallengeModel> GetAll
-        (List<string> studentIds, List<string> challengeIds, List<ChallengeType> typeIds, 
+        (List<string> studentIds, List<string> challengeIds, List<ChallengeType> typeIds,
         bool? state, string propertySort, bool isAsc, string search, int page, int limit);
 
     StudentChallengeModel GetById(string id);

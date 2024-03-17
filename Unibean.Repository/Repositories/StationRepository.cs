@@ -8,11 +8,18 @@ namespace Unibean.Repository.Repositories;
 
 public class StationRepository : IStationRepository
 {
+    private readonly UnibeanDBContext unibeanDB;
+
+    public StationRepository(UnibeanDBContext unibeanDB)
+    {
+        this.unibeanDB = unibeanDB;
+    }
+
     public Station Add(Station creation)
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             creation = db.Stations.Add(creation).Entity;
             db.SaveChanges();
         }
@@ -27,7 +34,7 @@ public class StationRepository : IStationRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var station = db.Stations.FirstOrDefault(b => b.Id.Equals(id));
             station.Status = false;
             db.Stations.Update(station);
@@ -45,7 +52,7 @@ public class StationRepository : IStationRepository
         PagedResultModel<Station> pagedResult = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var query = db.Stations
                 .Where(t => (EF.Functions.Like(t.StationName, "%" + search + "%")
                 || EF.Functions.Like(t.Address, "%" + search + "%")
@@ -83,7 +90,7 @@ public class StationRepository : IStationRepository
         Station station = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             station = db.Stations
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.Staffs.Where(s => (bool)s.Status))
@@ -102,7 +109,7 @@ public class StationRepository : IStationRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             update = db.Stations.Update(update).Entity;
             db.SaveChanges();
         }

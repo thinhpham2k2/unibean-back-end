@@ -19,7 +19,7 @@ public class CampusService : ICampusService
 
     private readonly IFireBaseService fireBaseService;
 
-    public CampusService(ICampusRepository campusRepository, 
+    public CampusService(ICampusRepository campusRepository,
         IFireBaseService fireBaseService)
     {
         var config = new MapperConfiguration(cfg
@@ -94,7 +94,7 @@ public class CampusService : ICampusService
     }
 
     public PagedResultModel<CampusModel> GetAll
-        (List<string> universityIds, List<string> areaIds, bool? state, 
+        (List<string> universityIds, List<string> areaIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<CampusModel>>(campusRepository.GetAll

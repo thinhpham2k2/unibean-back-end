@@ -8,11 +8,18 @@ namespace Unibean.Repository.Repositories;
 
 public class CampaignActivityRepository : ICampaignActivityRepository
 {
+    private readonly UnibeanDBContext unibeanDB;
+
+    public CampaignActivityRepository(UnibeanDBContext unibeanDB)
+    {
+        this.unibeanDB = unibeanDB;
+    }
+
     public CampaignActivity Add(CampaignActivity creation)
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             creation = db.CampaignActivities.Add(creation).Entity;
             db.SaveChanges();
         }
@@ -27,7 +34,7 @@ public class CampaignActivityRepository : ICampaignActivityRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var activity = db.CampaignActivities.FirstOrDefault(b => b.Id.Equals(id));
             activity.Status = false;
             db.CampaignActivities.Update(activity);
@@ -46,7 +53,7 @@ public class CampaignActivityRepository : ICampaignActivityRepository
         PagedResultModel<CampaignActivity> pagedResult = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var query = db.CampaignActivities
                 .Where(t => (EF.Functions.Like((string)(object)t.State, "%" + search + "%")
                 || EF.Functions.Like(t.Campaign.CampaignName, "%" + search + "%")
@@ -87,7 +94,7 @@ public class CampaignActivityRepository : ICampaignActivityRepository
         CampaignActivity activity = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             activity = db.CampaignActivities
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(d => d.Campaign)
@@ -107,7 +114,7 @@ public class CampaignActivityRepository : ICampaignActivityRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             update = db.CampaignActivities.Update(update).Entity;
             db.SaveChanges();
         }

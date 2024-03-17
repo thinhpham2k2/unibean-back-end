@@ -29,7 +29,7 @@ public class VoucherItemModel
     public DateTime? DateCreated { get; set; }
     public DateTime? DateLocked { get; set; }
     public DateTime? DateBought { get; set; }
-    public DateTime? DateUsed{ get; set; }
+    public DateTime? DateUsed { get; set; }
     public string Description { get; set; }
     public bool? State { get; set; }
     public bool? Status { get; set; }

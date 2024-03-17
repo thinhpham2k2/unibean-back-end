@@ -21,7 +21,7 @@ public interface IStudentService
     void Delete(string id);
 
     PagedResultModel<StudentModel> GetAll
-        (List<string> majorIds, List<string> campusIds, List<StudentState> stateIds, bool? isVerify, 
+        (List<string> majorIds, List<string> campusIds, List<StudentState> stateIds, bool? isVerify,
         string propertySort, bool isAsc, string search, int page, int limit);
 
     StudentExtraModel GetById(string id);
@@ -29,11 +29,11 @@ public interface IStudentService
     OrderExtraModel GetOrderByOrderId(string id, string orderId);
 
     PagedResultModel<StudentChallengeModel> GetChallengeListByStudentId
-        (List<ChallengeType> typeIds, string id, bool? isCompleted, bool? state, bool? isClaimed, string propertySort, 
+        (List<ChallengeType> typeIds, string id, bool? isCompleted, bool? state, bool? isClaimed, string propertySort,
         bool isAsc, string search, int page, int limit);
 
     PagedResultModel<TransactionModel> GetHistoryTransactionListByStudentId
-        (string id, List<TransactionType> typeIds, bool? state, string propertySort, 
+        (string id, List<TransactionType> typeIds, bool? state, string propertySort,
         bool isAsc, string search, int page, int limit);
 
     PagedResultModel<OrderModel> GetOrderListByStudentId

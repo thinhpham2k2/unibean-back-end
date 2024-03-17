@@ -8,11 +8,18 @@ namespace Unibean.Repository.Repositories;
 
 public class VoucherTypeRepository : IVoucherTypeRepository
 {
+    private readonly UnibeanDBContext unibeanDB;
+
+    public VoucherTypeRepository(UnibeanDBContext unibeanDB)
+    {
+        this.unibeanDB = unibeanDB;
+    }
+
     public VoucherType Add(VoucherType creation)
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             creation = db.VoucherTypes.Add(creation).Entity;
             db.SaveChanges();
         }
@@ -27,7 +34,7 @@ public class VoucherTypeRepository : IVoucherTypeRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var type = db.VoucherTypes.FirstOrDefault(b => b.Id.Equals(id));
             type.Status = false;
             db.VoucherTypes.Update(type);
@@ -45,7 +52,7 @@ public class VoucherTypeRepository : IVoucherTypeRepository
         PagedResultModel<VoucherType> pagedResult = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var query = db.VoucherTypes
                 .Where(t => (EF.Functions.Like(t.TypeName, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
@@ -80,7 +87,7 @@ public class VoucherTypeRepository : IVoucherTypeRepository
         VoucherType type = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             type = db.VoucherTypes
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.Vouchers.Where(v => (bool)v.Status))
@@ -97,7 +104,7 @@ public class VoucherTypeRepository : IVoucherTypeRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             update = db.VoucherTypes.Update(update).Entity;
             db.SaveChanges();
         }

@@ -9,11 +9,18 @@ namespace Unibean.Repository.Repositories;
 
 public class CampaignRepository : ICampaignRepository
 {
+    private readonly UnibeanDBContext unibeanDB;
+
+    public CampaignRepository(UnibeanDBContext unibeanDB)
+    {
+        this.unibeanDB = unibeanDB;
+    }
+
     public Campaign Add(Campaign creation)
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
 
             // Create campaign activity
             creation.CampaignActivities = new List<CampaignActivity> {
@@ -121,7 +128,7 @@ public class CampaignRepository : ICampaignRepository
         List<string> emails = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
 
             // Get campaign wallet
             var campaign = db.Campaigns
@@ -262,7 +269,7 @@ public class CampaignRepository : ICampaignRepository
         long count = 0;
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             count = db.Campaigns.Where(c => (bool)c.Status).Count();
         }
         catch (Exception ex)
@@ -276,7 +283,7 @@ public class CampaignRepository : ICampaignRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var campaign = db.Campaigns.FirstOrDefault(b => b.Id.Equals(id));
             campaign.Status = false;
             db.Campaigns.Update(campaign);
@@ -292,7 +299,7 @@ public class CampaignRepository : ICampaignRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
 
             // Get campaign wallet
             var campaign = db.Campaigns
@@ -361,7 +368,7 @@ public class CampaignRepository : ICampaignRepository
         PagedResultModel<Campaign> pagedResult = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var query = db.Campaigns
                 .Where(t => (EF.Functions.Like(t.CampaignName, "%" + search + "%")
                 || EF.Functions.Like(t.Link, "%" + search + "%")
@@ -410,7 +417,7 @@ public class CampaignRepository : ICampaignRepository
 
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var query = db.Campaigns
                 .Where(t =>
                 stateIds.Contains(t.CampaignActivities.OrderBy(a => a.Id).LastOrDefault().State.Value)
@@ -437,7 +444,7 @@ public class CampaignRepository : ICampaignRepository
 
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var query = db.Campaigns
                 .Where(t =>
                 stateIds.Contains(t.CampaignActivities.OrderBy(a => a.Id).LastOrDefault().State.Value)
@@ -462,7 +469,7 @@ public class CampaignRepository : ICampaignRepository
         Campaign campaign = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             campaign = db.Campaigns
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.Brand)
@@ -494,7 +501,7 @@ public class CampaignRepository : ICampaignRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             if (!update.CampaignActivities.LastOrDefault().State.Equals(CampaignState.Pending))
             {
                 db.CampaignActivities.Add(new CampaignActivity

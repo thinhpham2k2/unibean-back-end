@@ -10,7 +10,7 @@ public interface ICampusRepository
     void Delete(string id);
 
     PagedResultModel<Campus> GetAll
-        (List<string> universityIds, List<string> areaIds, bool? state, 
+        (List<string> universityIds, List<string> areaIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit);
 
     PagedResultModel<Campus> GetAllByCampaign

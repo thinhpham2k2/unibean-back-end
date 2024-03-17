@@ -12,5 +12,5 @@ public class CreateUseActivityModel
     public string Description { get; set; }
 
     [Required(ErrorMessage = "Trạng thái là bắt buộc")]
-    public bool? State { get; set; }    
+    public bool? State { get; set; }
 }

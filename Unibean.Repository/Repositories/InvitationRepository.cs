@@ -5,11 +5,18 @@ namespace Unibean.Repository.Repositories;
 
 public class InvitationRepository : IInvitationRepository
 {
+    private readonly UnibeanDBContext unibeanDB;
+
+    public InvitationRepository(UnibeanDBContext unibeanDB)
+    {
+        this.unibeanDB = unibeanDB;
+    }
+
     public Invitation Add(Invitation creation)
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             creation = db.Invitations.Add(creation).Entity;
             db.SaveChanges();
         }
@@ -25,7 +32,7 @@ public class InvitationRepository : IInvitationRepository
         Invitation invitation = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             invitation = db.Invitations
             .Where(s => s.InviteeId.Equals(invitee) && (bool)s.Status)
             .FirstOrDefault();

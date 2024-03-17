@@ -1,6 +1,4 @@
 ﻿using FluentAssertions;
-using Unibean.Repository.Paging;
-using Unibean.Service.Models.Admins;
 using Unibean.Service.Services;
 
 namespace Unibean.Test.Services;

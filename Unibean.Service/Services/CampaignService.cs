@@ -493,7 +493,7 @@ public class CampaignService : ICampaignService
                     switch (entity.CampaignActivities.LastOrDefault().State)
                     {
                         case CampaignState.Pending
-                        when (request.Role.Equals("Brand") && !new[] { CampaignState.Cancelled }.Contains(stateId)) 
+                        when (request.Role.Equals("Brand") && !new[] { CampaignState.Cancelled }.Contains(stateId))
                         || new[] { CampaignState.Inactive, CampaignState.Closed }.Contains(stateId):
                             throw new InvalidParameterException("Trạng thái không hợp lệ cho chiến dịch đang chờ duyệt");
                         case CampaignState.Rejected

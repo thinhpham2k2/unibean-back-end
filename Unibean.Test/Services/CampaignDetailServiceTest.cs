@@ -38,7 +38,7 @@ public class CampaignDetailServiceTest
                 new()
             }
         };
-        A.CallTo(() => campaignDetailRepository.GetAll(campaignIds, typeIds, state, 
+        A.CallTo(() => campaignDetailRepository.GetAll(campaignIds, typeIds, state,
             propertySort, isAsc, search, page, limit)).Returns(pagedResultModel);
         var service = new CampaignDetailService(campaignDetailRepository);
 
@@ -74,7 +74,7 @@ public class CampaignDetailServiceTest
                 new()
             }
         };
-        A.CallTo(() => campaignDetailRepository.GetAllByStore(storeId, campaignIds, typeIds, state, 
+        A.CallTo(() => campaignDetailRepository.GetAllByStore(storeId, campaignIds, typeIds, state,
             propertySort, isAsc, search, page, limit)).Returns(pagedResultModel);
         var service = new CampaignDetailService(campaignDetailRepository);
 

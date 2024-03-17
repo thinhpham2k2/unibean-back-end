@@ -8,11 +8,18 @@ namespace Unibean.Repository.Repositories;
 
 public class AdminRepository : IAdminRepository
 {
+    private readonly UnibeanDBContext unibeanDB;
+
+    public AdminRepository(UnibeanDBContext unibeanDB)
+    {
+        this.unibeanDB = unibeanDB;
+    }
+
     public Admin Add(Admin creation)
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             creation = db.Admins.Add(creation).Entity;
             db.SaveChanges();
         }
@@ -27,7 +34,7 @@ public class AdminRepository : IAdminRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var admin = db.Admins.FirstOrDefault(b => b.Id.Equals(id));
             admin.Status = false;
             db.Admins.Update(admin);
@@ -45,7 +52,7 @@ public class AdminRepository : IAdminRepository
         PagedResultModel<Admin> pagedResult = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var query = db.Admins
                 .Where(p => (EF.Functions.Like(p.Id, "%" + search + "%")
                 || EF.Functions.Like(p.FullName, "%" + search + "%")
@@ -85,7 +92,7 @@ public class AdminRepository : IAdminRepository
         Admin admin = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             admin = db.Admins
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(b => b.Account)
@@ -104,7 +111,7 @@ public class AdminRepository : IAdminRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             update = db.Admins.Update(update).Entity;
             db.SaveChanges();
         }

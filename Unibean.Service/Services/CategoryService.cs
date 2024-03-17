@@ -19,7 +19,7 @@ public class CategoryService : ICategoryService
 
     private readonly IFireBaseService fireBaseService;
 
-    public CategoryService(ICategoryRepository categoryRepository, 
+    public CategoryService(ICategoryRepository categoryRepository,
         IFireBaseService fireBaseService)
     {
         var config = new MapperConfiguration(cfg
@@ -67,7 +67,7 @@ public class CategoryService : ICategoryService
         Category entity = categoryRepository.GetById(id);
         if (entity != null)
         {
-            if(entity.Products.Count.Equals(0))
+            if (entity.Products.Count.Equals(0))
             {
                 if (entity.Image != null && entity.FileName != null)
                 {

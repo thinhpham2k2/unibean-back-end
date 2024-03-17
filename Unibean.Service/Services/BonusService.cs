@@ -19,7 +19,7 @@ public class BonusService : IBonusService
 
     private readonly IStoreRepository storeRepository;
 
-    public BonusService(IBonusRepository bonusRepository, 
+    public BonusService(IBonusRepository bonusRepository,
         IStoreRepository storeRepository)
     {
         var config = new MapperConfiguration(cfg
@@ -78,7 +78,7 @@ public class BonusService : IBonusService
         Store store = storeRepository.GetById(id);
         if (store != null)
         {
-            if(store.Brand.Wallets.Where(w => w.Type.Equals(WalletType.Green)).FirstOrDefault().Balance >= creation.Amount)
+            if (store.Brand.Wallets.Where(w => w.Type.Equals(WalletType.Green)).FirstOrDefault().Balance >= creation.Amount)
             {
                 Bonus bonus = mapper.Map<Bonus>(creation);
                 bonus.StoreId = id;

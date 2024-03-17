@@ -80,12 +80,12 @@ public class VoucherServiceTest
                 new()
             }
         };
-        A.CallTo(() => voucherRepository.GetAll(brandIds, typeIds, state, 
+        A.CallTo(() => voucherRepository.GetAll(brandIds, typeIds, state,
             propertySort, isAsc, search, page, limit)).Returns(pagedResultModel);
         var service = new VoucherService(voucherRepository, fireBaseService);
 
         // Act
-        var result = service.GetAll(brandIds, typeIds, state, propertySort, isAsc, 
+        var result = service.GetAll(brandIds, typeIds, state, propertySort, isAsc,
             search, page, limit);
 
         // Assert
@@ -125,9 +125,9 @@ public class VoucherServiceTest
         A.CallTo(() => voucherRepository.GetById(id));
         A.CallTo(() => voucherRepository.Update(A<Voucher>.Ignored))
         .Returns(new()
-            {
-                Id = id,
-                VoucherName = voucherName
+        {
+            Id = id,
+            VoucherName = voucherName
         });
         var service = new VoucherService(voucherRepository, fireBaseService);
 

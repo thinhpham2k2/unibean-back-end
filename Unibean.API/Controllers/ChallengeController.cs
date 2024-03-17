@@ -47,7 +47,7 @@ public class ChallengeController : ControllerBase
         {
             PagedResultModel<ChallengeModel>
                 result = challengeService.GetAll
-                (typeIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                (typeIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"),
                 paging.Search, paging.Page, paging.Limit);
             return StatusCode(StatusCodes.Status200OK, result);
         }

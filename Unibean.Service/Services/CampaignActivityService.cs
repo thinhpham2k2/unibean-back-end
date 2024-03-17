@@ -35,7 +35,7 @@ public class CampaignActivityService : ICampaignActivityService
     }
 
     public PagedResultModel<CampaignActivityModel> GetAll
-        (List<string> campaignIds, List<CampaignState> stateIds, 
+        (List<string> campaignIds, List<CampaignState> stateIds,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<CampaignActivityModel>>(campaignActivityRepository.GetAll

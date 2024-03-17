@@ -127,7 +127,7 @@ public class ProductService : IProductService
     }
 
     public PagedResultModel<ProductModel> GetAll
-        (List<string> categoryIds, bool? state, string propertySort, 
+        (List<string> categoryIds, bool? state, string propertySort,
         bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<ProductModel>>(productRepository.GetAll

@@ -6,13 +6,20 @@ namespace Unibean.Repository.Repositories;
 
 public class BonusTransactionRepository : IBonusTransactionRepository
 {
+    private readonly UnibeanDBContext unibeanDB;
+
+    public BonusTransactionRepository(UnibeanDBContext unibeanDB)
+    {
+        this.unibeanDB = unibeanDB;
+    }
+
     public List<BonusTransaction> GetAll
         (List<string> walletIds, List<string> bonusIds, List<WalletType> walletTypeIds, string search)
     {
         List<BonusTransaction> result;
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             result = db.BonusTransactions
                 .Where(a => (EF.Functions.Like(a.Bonus.Brand.BrandName, "%" + search + "%")
                 || EF.Functions.Like(a.Bonus.Store.StoreName, "%" + search + "%")
@@ -42,7 +49,7 @@ public class BonusTransactionRepository : IBonusTransactionRepository
         decimal result = 0;
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             result = db.Bonuses
                 .Where(o => o.StoreId.Equals(storeId)
                 && DateOnly.FromDateTime(o.DateCreated.Value).Equals(date)

@@ -84,7 +84,7 @@ public class BrandController : ControllerBase
 
         try
         {
-            return StatusCode(StatusCodes.Status200OK, 
+            return StatusCode(StatusCodes.Status200OK,
                 brandService.GetById(id, jwtService.GetJwtRequest(jwtToken.Split(" ")[1])));
         }
         catch (InvalidParameterException e)
@@ -235,7 +235,7 @@ public class BrandController : ControllerBase
 
         try
         {
-            return StatusCode(StatusCodes.Status200OK, 
+            return StatusCode(StatusCodes.Status200OK,
                 chartService.GetColumnChart(id, fromDate, toDate, isAsc, Role.Brand));
         }
         catch (InvalidParameterException e)

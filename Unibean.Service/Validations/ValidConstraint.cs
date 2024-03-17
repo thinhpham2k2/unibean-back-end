@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System.ComponentModel.DataAnnotations;
 using Unibean.Repository.Repositories.Interfaces;
-using Unibean.Repository.Repositories;
 using Unibean.Service.Models.Campaigns;
 using Unibean.Service.Models.Validations;
 
@@ -12,12 +12,10 @@ public class ValidConstraint : ValidationAttribute
 
     private const string ErrorMessage1 = "Danh sách cơ sở phải ở cùng khu vực với danh sách cửa hàng";
 
-    private readonly IStoreRepository storeRepository = new StoreRepository();
-
-    private readonly ICampusRepository campusRepository = new CampusRepository();
-
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
+        var storeRepository = validationContext.GetService<IStoreRepository>();
+        var campusRepository = validationContext.GetService<ICampusRepository>();
         if (validationContext.ObjectInstance is CreateCampaignModel create)
         {
             if (create.CampaignStores != null && create.CampaignCampuses != null)

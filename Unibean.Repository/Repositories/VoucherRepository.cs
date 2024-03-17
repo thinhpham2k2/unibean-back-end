@@ -9,11 +9,18 @@ namespace Unibean.Repository.Repositories;
 
 public class VoucherRepository : IVoucherRepository
 {
+    private readonly UnibeanDBContext unibeanDB;
+
+    public VoucherRepository(UnibeanDBContext unibeanDB)
+    {
+        this.unibeanDB = unibeanDB;
+    }
+
     public Voucher Add(Voucher creation)
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             creation = db.Vouchers.Add(creation).Entity;
             db.SaveChanges();
         }
@@ -28,7 +35,7 @@ public class VoucherRepository : IVoucherRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var voucher = db.Vouchers.FirstOrDefault(b => b.Id.Equals(id));
             voucher.Status = false;
             db.Vouchers.Update(voucher);
@@ -47,7 +54,7 @@ public class VoucherRepository : IVoucherRepository
         PagedResultModel<Voucher> pagedResult = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var query = db.Vouchers
                 .Where(t => (EF.Functions.Like(t.VoucherName, "%" + search + "%")
                 || EF.Functions.Like(t.Brand.BrandName, "%" + search + "%")
@@ -90,7 +97,7 @@ public class VoucherRepository : IVoucherRepository
         Voucher voucher = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             voucher = db.Vouchers
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.Brand)
@@ -122,7 +129,7 @@ public class VoucherRepository : IVoucherRepository
         Voucher voucher = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             voucher = db.Vouchers
             .Where(s => s.Id.Equals(id) && (bool)s.Status
             && s.VoucherItems.Any(v => v.CampaignDetail.CampaignId.Equals(campaignId)))
@@ -147,7 +154,7 @@ public class VoucherRepository : IVoucherRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             update = db.Vouchers.Update(update).Entity;
             db.SaveChanges();
         }

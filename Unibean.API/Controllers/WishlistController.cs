@@ -49,7 +49,7 @@ public class WishlistController : ControllerBase
         {
             PagedResultModel<WishlistModel>
                 result = wishlistService.GetAll
-                (studentIds, brandIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                (studentIds, brandIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"),
                 paging.Search, paging.Page, paging.Limit);
             return StatusCode(StatusCodes.Status200OK, result);
         }

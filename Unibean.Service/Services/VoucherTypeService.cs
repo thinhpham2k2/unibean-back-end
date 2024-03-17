@@ -19,7 +19,7 @@ public class VoucherTypeService : IVoucherTypeService
 
     private readonly IFireBaseService fireBaseService;
 
-    public VoucherTypeService(IVoucherTypeRepository voucherTypeRepository, 
+    public VoucherTypeService(IVoucherTypeRepository voucherTypeRepository,
         IFireBaseService fireBaseService)
     {
         var config = new MapperConfiguration(cfg

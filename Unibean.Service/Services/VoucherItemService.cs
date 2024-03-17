@@ -126,7 +126,7 @@ public class VoucherItemService : IVoucherItemService
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<VoucherItemModel>>(voucherItemRepository.GetAll
-            (campaignIds, campaignDetailIds, voucherIds, brandIds, typeIds, studentIds, isLocked, isBought, 
+            (campaignIds, campaignDetailIds, voucherIds, brandIds, typeIds, studentIds, isLocked, isBought,
             isUsed, state, propertySort, isAsc, search, page, limit));
     }
 

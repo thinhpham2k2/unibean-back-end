@@ -8,11 +8,18 @@ namespace Unibean.Repository.Repositories;
 
 public class BrandRepository : IBrandRepository
 {
+    private readonly UnibeanDBContext unibeanDB;
+
+    public BrandRepository(UnibeanDBContext unibeanDB)
+    {
+        this.unibeanDB = unibeanDB;
+    }
+
     public Brand Add(Brand creation)
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             creation = db.Brands.Add(creation).Entity;
 
             if (creation != null)
@@ -45,7 +52,7 @@ public class BrandRepository : IBrandRepository
         long count = 0;
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             count = db.Brands.Where(c => (bool)c.Status).Count();
         }
         catch (Exception ex)
@@ -59,7 +66,7 @@ public class BrandRepository : IBrandRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var brand = db.Brands.FirstOrDefault(b => b.Id.Equals(id));
             brand.Status = false;
             db.Brands.Update(brand);
@@ -77,7 +84,7 @@ public class BrandRepository : IBrandRepository
         PagedResultModel<Brand> pagedResult = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var query = db.Brands
                 .Where(p => (EF.Functions.Like(p.Id, "%" + search + "%")
                 || EF.Functions.Like(p.BrandName, "%" + search + "%")
@@ -119,7 +126,7 @@ public class BrandRepository : IBrandRepository
         Brand brand = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             brand = db.Brands
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.Account)
@@ -148,7 +155,7 @@ public class BrandRepository : IBrandRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             update = db.Brands.Update(update).Entity;
             db.SaveChanges();
         }

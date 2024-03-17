@@ -9,11 +9,18 @@ namespace Unibean.Repository.Repositories;
 
 public class VoucherItemRepository : IVoucherItemRepository
 {
+    private readonly UnibeanDBContext unibeanDB;
+
+    public VoucherItemRepository(UnibeanDBContext unibeanDB)
+    {
+        this.unibeanDB = unibeanDB;
+    }
+
     public VoucherItem Add(VoucherItem creation)
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             creation = db.VoucherItems.Add(creation).Entity;
             db.SaveChanges();
         }
@@ -28,7 +35,7 @@ public class VoucherItemRepository : IVoucherItemRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             db.VoucherItems.AddRange(creations);
             db.SaveChanges();
         }
@@ -43,7 +50,7 @@ public class VoucherItemRepository : IVoucherItemRepository
         VoucherItem voucher = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             voucher = db.VoucherItems
             .Where(s => s.VoucherCode.Equals(code))
             .FirstOrDefault();
@@ -60,8 +67,8 @@ public class VoucherItemRepository : IVoucherItemRepository
         long count = 0;
         try
         {
-            using var db = new UnibeanDBContext();
-            count = db.VoucherItems.Where(c => (bool)c.Status 
+            var db = unibeanDB;
+            count = db.VoucherItems.Where(c => (bool)c.Status
             && (bool)c.IsLocked && (bool)c.IsBought && (bool)c.IsUsed
             && c.Voucher.BrandId.Equals(brandId)
             && DateOnly.FromDateTime(c.Activities.Where(a => a.Type.Equals(Type.Use))
@@ -78,7 +85,7 @@ public class VoucherItemRepository : IVoucherItemRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var voucher = db.VoucherItems.FirstOrDefault(b => b.Id.Equals(id));
             voucher.Status = false;
             db.VoucherItems.Update(voucher);
@@ -98,7 +105,7 @@ public class VoucherItemRepository : IVoucherItemRepository
         PagedResultModel<VoucherItem> pagedResult = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var query = db.VoucherItems
                 .Where(t => (EF.Functions.Like(t.VoucherCode, "%" + search + "%")
                 || EF.Functions.Like(t.CampaignDetail.Campaign.CampaignName, "%" + search + "%")
@@ -160,7 +167,7 @@ public class VoucherItemRepository : IVoucherItemRepository
         VoucherItem voucher = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             voucher = db.VoucherItems
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.CampaignDetail)
@@ -197,7 +204,7 @@ public class VoucherItemRepository : IVoucherItemRepository
         VoucherItem voucher = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             voucher = db.VoucherItems
             .Where(s => s.VoucherCode.Equals(code) && (bool)s.Status)
             .Include(s => s.CampaignDetail)
@@ -235,7 +242,7 @@ public class VoucherItemRepository : IVoucherItemRepository
 
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
 
             var list = db.VoucherItems.Where(
                 i => i.VoucherId.Equals(voucherId)
@@ -261,7 +268,7 @@ public class VoucherItemRepository : IVoucherItemRepository
         int index;
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             index = db.VoucherItems
             .Where(s => s.VoucherId.Equals(voucherId) && (bool)s.Status)
             .Max(s => s.Index) ?? 0;
@@ -277,7 +284,7 @@ public class VoucherItemRepository : IVoucherItemRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             update = db.VoucherItems.Update(update).Entity;
             db.SaveChanges();
         }
@@ -294,7 +301,7 @@ public class VoucherItemRepository : IVoucherItemRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
 
             var list = db.VoucherItems.Where(
                 i => i.VoucherId.Equals(voucherId)

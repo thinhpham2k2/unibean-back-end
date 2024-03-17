@@ -1,8 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Unibean.Repository.Repositories.Interfaces;
-using Unibean.Repository.Repositories;
-using Unibean.Service.Models.OrderDetails;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System.ComponentModel.DataAnnotations;
 using Unibean.Repository.Entities;
+using Unibean.Repository.Repositories.Interfaces;
+using Unibean.Service.Models.OrderDetails;
 
 namespace Unibean.Service.Validations;
 
@@ -10,10 +10,9 @@ public class ValidQuantity : ValidationAttribute
 {
     private new const string ErrorMessage = "Số lượng không hợp lệ";
 
-    private readonly IProductRepository productRepo = new ProductRepository();
-
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
+        var productRepo = validationContext.GetService<IProductRepository>();
         if (int.TryParse(value.ToString(), out int quantity))
         {
             if (validationContext.ObjectInstance is CreateDetailModel create)

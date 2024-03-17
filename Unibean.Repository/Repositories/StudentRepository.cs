@@ -8,11 +8,18 @@ namespace Unibean.Repository.Repositories;
 
 public class StudentRepository : IStudentRepository
 {
+    private readonly UnibeanDBContext unibeanDB;
+
+    public StudentRepository(UnibeanDBContext unibeanDB)
+    {
+        this.unibeanDB = unibeanDB;
+    }
+
     public Student Add(Student creation)
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
 
             creation = db.Students.Add(creation).Entity;
 
@@ -78,7 +85,7 @@ public class StudentRepository : IStudentRepository
         Student student = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             student = db.Students
                 .Where(a => a.Code.Equals(code)).FirstOrDefault();
         }
@@ -94,9 +101,9 @@ public class StudentRepository : IStudentRepository
         Student student = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             student = db.Students
-                .Where(s => s.Id.Equals(inviteCode) && (bool)s.Status 
+                .Where(s => s.Id.Equals(inviteCode) && (bool)s.Status
                 && s.State.Equals(StudentState.Active)).FirstOrDefault();
         }
         catch (Exception ex)
@@ -111,7 +118,7 @@ public class StudentRepository : IStudentRepository
         Student student = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             student = db.Students
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .FirstOrDefault();
@@ -128,7 +135,7 @@ public class StudentRepository : IStudentRepository
         long count = 0;
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             count = db.Students.Where(c => (bool)c.Status).Count();
         }
         catch (Exception ex)
@@ -143,8 +150,8 @@ public class StudentRepository : IStudentRepository
         long count = 0;
         try
         {
-            using var db = new UnibeanDBContext();
-            count = db.Students.Where(c => (bool)c.Status 
+            var db = unibeanDB;
+            count = db.Students.Where(c => (bool)c.Status
             && DateOnly.FromDateTime(c.DateCreated.Value).Equals(date)).Count();
         }
         catch (Exception ex)
@@ -158,7 +165,7 @@ public class StudentRepository : IStudentRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var student = db.Students.FirstOrDefault(b => b.Id.Equals(id));
             student.Status = false;
             db.Students.Update(student);
@@ -177,7 +184,7 @@ public class StudentRepository : IStudentRepository
         PagedResultModel<Student> pagedResult = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var query = db.Students
                 .Where(s => (EF.Functions.Like(s.Id, "%" + search + "%")
                 || EF.Functions.Like(s.FullName, "%" + search + "%")
@@ -225,7 +232,7 @@ public class StudentRepository : IStudentRepository
         Student student = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             student = db.Students
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(b => b.Major)
@@ -256,7 +263,7 @@ public class StudentRepository : IStudentRepository
         Student student = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             student = db.Students
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .FirstOrDefault();
@@ -273,7 +280,7 @@ public class StudentRepository : IStudentRepository
         List<string> list = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             list.AddRange(db.Students
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.Wallets).FirstOrDefault()
@@ -290,7 +297,7 @@ public class StudentRepository : IStudentRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             update = db.Students.Update(update).Entity;
             db.SaveChanges();
         }

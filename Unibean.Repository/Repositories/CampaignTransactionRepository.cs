@@ -6,11 +6,18 @@ namespace Unibean.Repository.Repositories;
 
 public class CampaignTransactionRepository : ICampaignTransactionRepository
 {
+    private readonly UnibeanDBContext unibeanDB;
+
+    public CampaignTransactionRepository(UnibeanDBContext unibeanDB)
+    {
+        this.unibeanDB = unibeanDB;
+    }
+
     public CampaignTransaction Add(CampaignTransaction creation)
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             creation = db.CampaignTransactions.Add(creation).Entity;
 
             if (creation != null)
@@ -32,13 +39,13 @@ public class CampaignTransactionRepository : ICampaignTransactionRepository
     }
 
     public List<CampaignTransaction> GetAll
-        (List<string> walletIds, List<string> campaignIds, 
+        (List<string> walletIds, List<string> campaignIds,
         List<WalletType> walletTypeIds, string search)
     {
         List<CampaignTransaction> result;
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             result = db.CampaignTransactions
                 .Where(t => (EF.Functions.Like(t.Campaign.CampaignName, "%" + search + "%")
                 || EF.Functions.Like(t.Wallet.Brand.BrandName, "%" + search + "%")
@@ -65,7 +72,7 @@ public class CampaignTransactionRepository : ICampaignTransactionRepository
         CampaignTransaction walletTransaction = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             walletTransaction = db.CampaignTransactions
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.Campaign)
@@ -86,10 +93,10 @@ public class CampaignTransactionRepository : ICampaignTransactionRepository
         decimal result = 0;
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             result = db.CampaignTransactions
                 .Where(o => o.Wallet.Type.Equals(WalletType.Green)
-                && o.Wallet.BrandId.Equals(brandId)  && o.Amount > 0
+                && o.Wallet.BrandId.Equals(brandId) && o.Amount > 0
                 && DateOnly.FromDateTime(o.DateCreated.Value).Equals(date)
                 && (bool)o.Status).Select(o => o.Amount.Value).Sum();
         }
@@ -105,7 +112,7 @@ public class CampaignTransactionRepository : ICampaignTransactionRepository
         decimal result = 0;
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             result = -db.CampaignTransactions
                 .Where(o => o.Wallet.Type.Equals(WalletType.Green)
                 && o.Wallet.BrandId.Equals(brandId) && o.Amount < 0

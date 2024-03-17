@@ -8,11 +8,18 @@ namespace Unibean.Repository.Repositories;
 
 public class UniversityRepository : IUniversityRepository
 {
+    private readonly UnibeanDBContext unibeanDB;
+
+    public UniversityRepository(UnibeanDBContext unibeanDB)
+    {
+        this.unibeanDB = unibeanDB;
+    }
+
     public University Add(University creation)
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             creation = db.Universities.Add(creation).Entity;
             db.SaveChanges();
         }
@@ -27,7 +34,7 @@ public class UniversityRepository : IUniversityRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var university = db.Universities.FirstOrDefault(b => b.Id.Equals(id));
             university.Status = false;
             db.Universities.Update(university);
@@ -45,7 +52,7 @@ public class UniversityRepository : IUniversityRepository
         PagedResultModel<University> pagedResult = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var query = db.Universities
                 .Where(t => (EF.Functions.Like(t.UniversityName, "%" + search + "%")
                 || EF.Functions.Like(t.Phone, "%" + search + "%")
@@ -83,7 +90,7 @@ public class UniversityRepository : IUniversityRepository
         University university = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             university = db.Universities
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.Campuses.Where(c => (bool)c.Status))
@@ -101,7 +108,7 @@ public class UniversityRepository : IUniversityRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             update = db.Universities.Update(update).Entity;
             db.SaveChanges();
         }

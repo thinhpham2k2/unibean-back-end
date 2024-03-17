@@ -51,7 +51,7 @@ public class BonusController : ControllerBase
         {
             PagedResultModel<BonusModel>
                 result = bonusService.GetAll
-                (brandIds, storeIds, studentIds, state, propertySort, 
+                (brandIds, storeIds, studentIds, state, propertySort,
                 paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
             return StatusCode(StatusCodes.Status200OK, result);
         }

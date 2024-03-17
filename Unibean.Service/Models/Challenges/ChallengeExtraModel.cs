@@ -6,7 +6,7 @@ public class ChallengeExtraModel
     public int TypeId { get; set; }
     public string Type { get; set; }
     public string TypeName { get; set; }
-    public string TypeDescription{ get; set; }
+    public string TypeDescription { get; set; }
     public string ChallengeName { get; set; }
     public decimal? Amount { get; set; }
     public decimal? Condition { get; set; }

@@ -45,7 +45,7 @@ public class VoucherItemControllerTest
 
         // Act
         var result = controller.GetList
-            (brandIds, campaignIds, campaignDetailIds, voucherIds, typeIds, 
+            (brandIds, campaignIds, campaignDetailIds, voucherIds, typeIds,
             studentIds, isLocked, isBought, isUsed, state, paging);
 
         // Assert
@@ -111,7 +111,7 @@ public class VoucherItemControllerTest
 
         // Act
         var result = controller.GetList
-            (brandIds, campaignIds, campaignDetailIds, voucherIds, typeIds, 
+            (brandIds, campaignIds, campaignDetailIds, voucherIds, typeIds,
             studentIds, isLocked, isBought, isUsed, state, paging);
 
         // Assert

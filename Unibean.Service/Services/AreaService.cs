@@ -19,7 +19,7 @@ public class AreaService : IAreaService
 
     private readonly IFireBaseService fireBaseService;
 
-    public AreaService(IAreaRepository areaRepository, 
+    public AreaService(IAreaRepository areaRepository,
         IFireBaseService fireBaseService)
     {
         var config = new MapperConfiguration(cfg
@@ -89,7 +89,7 @@ public class AreaService : IAreaService
     }
 
     public PagedResultModel<AreaModel> GetAll
-        (bool? state, string propertySort, bool isAsc, 
+        (bool? state, string propertySort, bool isAsc,
         string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<AreaModel>>(areaRepository.GetAll

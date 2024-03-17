@@ -17,7 +17,7 @@ public interface IStoreService
     void Delete(string id);
 
     PagedResultModel<StoreModel> GetAll
-        (List<string> brandIds, List<string> areaIds, bool? state, 
+        (List<string> brandIds, List<string> areaIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit);
 
     PagedResultModel<StoreModel> GetAllByCampaign
@@ -27,7 +27,7 @@ public interface IStoreService
     StoreExtraModel GetById(string id);
 
     PagedResultModel<StoreTransactionModel> GetHistoryTransactionListByStoreId
-        (string id, List<StoreTransactionType> typeIds, bool? state, string propertySort, 
+        (string id, List<StoreTransactionType> typeIds, bool? state, string propertySort,
         bool isAsc, string search, int page, int limit);
 
     PagedResultModel<CampaignDetailModel> GetCampaignDetailByStoreId
