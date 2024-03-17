@@ -174,12 +174,12 @@ public class ActivityService : IActivityService
 
     public PagedResultModel<ActivityModel> GetAll
         (List<string> brandIds, List<string> storeIds, List<string> studentIds,
-        List<string> campaginIds, List<string> campaginDetailIds, List<string> voucherIds,
+        List<string> campaignIds, List<string> campaignDetailIds, List<string> voucherIds,
         List<string> voucherItemIds, List<Type> typeIds, bool? state, string propertySort,
         bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<ActivityModel>>(activityRepository.GetAll
-            (brandIds, storeIds, studentIds, campaginIds, campaginDetailIds, voucherIds,
+            (brandIds, storeIds, studentIds, campaignIds, campaignDetailIds, voucherIds,
             voucherItemIds, typeIds, state, propertySort, isAsc, search, page, limit));
     }
 

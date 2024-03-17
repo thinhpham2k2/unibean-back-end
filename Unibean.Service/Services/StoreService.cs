@@ -189,7 +189,7 @@ public class StoreService : IStoreService
         if (entity != null)
         {
             if (entity.CampaignStores.All(
-                s => s.Campaign.CampaignActivities.LastOrDefault().State.Equals(CampaignState.Closed)))
+                s => new[] { CampaignState.Closed, CampaignState.Cancelled }.Contains(s.Campaign.CampaignActivities.LastOrDefault().State.Value)))
             {
                 // Avatar
                 if (entity.Account.Avatar != null && entity.Account.Avatar.Length > 0)

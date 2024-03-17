@@ -9,7 +9,6 @@ namespace Unibean.Service.Services;
 
 public class WishlistService : IWishlistService
 {
-
     private readonly Mapper mapper;
 
     private readonly IWishlistRepository wishlistRepository;

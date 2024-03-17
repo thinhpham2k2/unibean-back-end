@@ -25,6 +25,8 @@ public interface IStudentRepository
 
     Student GetById(string id);
 
+    Student GetByIdForValidation(string id);
+
     List<string> GetWalletListById(string id);
 
     Student Update(Student update);

@@ -29,8 +29,8 @@ public class ActivityController : ControllerBase
     /// <param name="brandIds">Filter by brand id.</param>
     /// <param name="storeIds">Filter by store id.</param>
     /// <param name="studentIds">Filter by student id.</param>
-    /// <param name="campaginIds">Filter by campagin id.</param>
-    /// <param name="campaginDetailIds">Filter by campagin detail id.</param>
+    /// <param name="campaignIds">Filter by campaign id.</param>
+    /// <param name="campaignDetailIds">Filter by campaign detail id.</param>
     /// <param name="voucherIds">Filter by voucher id.</param>
     /// <param name="voucherItemIds">Filter by voucher item id.</param>
     /// <param name="typeIds">Filter by type id.</param>
@@ -46,8 +46,8 @@ public class ActivityController : ControllerBase
         [FromQuery] List<string> brandIds,
         [FromQuery] List<string> storeIds,
         [FromQuery] List<string> studentIds,
-        [FromQuery] List<string> campaginIds,
-        [FromQuery] List<string> campaginDetailIds,
+        [FromQuery] List<string> campaignIds,
+        [FromQuery] List<string> campaignDetailIds,
         [FromQuery] List<string> voucherIds,
         [FromQuery] List<string> voucherItemIds,
         [FromQuery] List<Type> typeIds,
@@ -62,7 +62,7 @@ public class ActivityController : ControllerBase
         {
             PagedResultModel<ActivityModel>
                 result = activityService.GetAll
-                (brandIds, storeIds, studentIds, campaginIds, campaginDetailIds, voucherIds,
+                (brandIds, storeIds, studentIds, campaignIds, campaignDetailIds, voucherIds,
                 voucherItemIds, typeIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"),
                 paging.Search, paging.Page, paging.Limit);
             return StatusCode(StatusCodes.Status200OK, result);

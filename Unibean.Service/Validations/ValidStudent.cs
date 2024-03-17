@@ -20,7 +20,7 @@ public class ValidStudent : ValidationAttribute
 
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
-        var student = studentRepo.GetById(value.ToString());
+        var student = studentRepo.GetByIdForValidation(value.ToString());
         if (student != null && states.Contains(student.State.Value))
         {
             return ValidationResult.Success;

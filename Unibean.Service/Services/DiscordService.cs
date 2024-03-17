@@ -12,7 +12,7 @@ namespace Unibean.Service.Services;
 
 public class DiscordService : IDiscordService
 {
-    static bool ValidateUrl(string url)
+    public static bool ValidateUrl(string url)
     {
         return Uri.IsWellFormedUriString(url, UriKind.Absolute);
     }

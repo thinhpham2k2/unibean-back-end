@@ -1,7 +1,6 @@
 ﻿using MailKit.Security;
 using MimeKit;
 using MimeKit.Text;
-using System.Globalization;
 using System.Net.Mail;
 using Unibean.Repository.Entities;
 using Unibean.Service.Models.Exceptions;
