@@ -6,13 +6,20 @@ namespace Unibean.Repository.Repositories;
 
 public class TransactionRepository : ITransactionRepository
 {
+    private readonly UnibeanDBContext unibeanDB;
+
+    public TransactionRepository(UnibeanDBContext unibeanDB)
+    {
+        this.unibeanDB = unibeanDB;
+    }
+
     public List<object> GetAll
         (List<string> walletIds, List<TransactionType> typeIds, string search, Role role)
     {
         List<object> result = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            using var db = unibeanDB;
 
             switch (role)
             {

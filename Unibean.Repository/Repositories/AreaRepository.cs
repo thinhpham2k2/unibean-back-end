@@ -8,11 +8,18 @@ namespace Unibean.Repository.Repositories;
 
 public class AreaRepository : IAreaRepository
 {
+    private readonly UnibeanDBContext unibeanDB;
+
+    public AreaRepository(UnibeanDBContext unibeanDB)
+    {
+        this.unibeanDB = unibeanDB;
+    }
+
     public Area Add(Area creation)
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             creation = db.Areas.Add(creation).Entity;
             db.SaveChanges();
         }
@@ -27,7 +34,7 @@ public class AreaRepository : IAreaRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var area = db.Areas.FirstOrDefault(b => b.Id.Equals(id));
             area.Status = false;
             db.Areas.Update(area);
@@ -40,13 +47,13 @@ public class AreaRepository : IAreaRepository
     }
 
     public PagedResultModel<Area> GetAll
-        (bool? state, string propertySort, bool isAsc, 
+        (bool? state, string propertySort, bool isAsc,
         string search, int page, int limit)
     {
         PagedResultModel<Area> pagedResult = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var query = db.Areas
                 .Where(t => (EF.Functions.Like(t.AreaName, "%" + search + "%")
                 || EF.Functions.Like(t.Address, "%" + search + "%")
@@ -82,7 +89,7 @@ public class AreaRepository : IAreaRepository
         Area area = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             area = db.Areas
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.Campuses.Where(c => (bool)c.Status))
@@ -100,7 +107,7 @@ public class AreaRepository : IAreaRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             update = db.Areas.Update(update).Entity;
             db.SaveChanges();
         }

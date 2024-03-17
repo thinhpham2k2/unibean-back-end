@@ -8,7 +8,7 @@ public class StudentChallengeModel
     public string ChallengeType { get; set; }
     public string ChallengeTypeName { get; set; }
     public string ChallengeName { get; set; }
-    public string ChallengeImage{ get; set; }
+    public string ChallengeImage { get; set; }
     public string StudentId { get; set; }
     public string StudentName { get; set; }
     public decimal? Amount { get; set; }

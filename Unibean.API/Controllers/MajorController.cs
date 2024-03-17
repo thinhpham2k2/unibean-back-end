@@ -45,7 +45,7 @@ public class MajorController : ControllerBase
         {
             PagedResultModel<MajorModel>
                 result = majorService.GetAll
-                (state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                (state, propertySort, paging.Sort.Split(",")[1].Equals("asc"),
                 paging.Search, paging.Page, paging.Limit);
             return StatusCode(StatusCodes.Status200OK, result);
         }

@@ -43,7 +43,7 @@ public class University
     [Column("state", TypeName = "bit(1)")]
     public bool? State { get; set; }
 
-    [Column("status", TypeName = "bit(1)")]  
+    [Column("status", TypeName = "bit(1)")]
     public bool? Status { get; set; }
 
     public virtual ICollection<Campus> Campuses { get; set; }

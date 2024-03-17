@@ -20,7 +20,7 @@ public class CampaignTypeService : ICampaignTypeService
 
     private readonly IFireBaseService fireBaseService;
 
-    public CampaignTypeService(ICampaignTypeRepository campaignTypeRepository, 
+    public CampaignTypeService(ICampaignTypeRepository campaignTypeRepository,
         IFireBaseService fireBaseService)
     {
         var config = new MapperConfiguration(cfg

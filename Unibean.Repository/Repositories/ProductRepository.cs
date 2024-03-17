@@ -8,11 +8,18 @@ namespace Unibean.Repository.Repositories;
 
 public class ProductRepository : IProductRepository
 {
+    private readonly UnibeanDBContext unibeanDB;
+
+    public ProductRepository(UnibeanDBContext unibeanDB)
+    {
+        this.unibeanDB = unibeanDB;
+    }
+
     public Product Add(Product creation)
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             creation = db.Products.Add(creation).Entity;
             db.SaveChanges();
         }
@@ -28,7 +35,7 @@ public class ProductRepository : IProductRepository
         long count = 0;
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             count = db.Products.Where(c => (bool)c.Status).Count();
         }
         catch (Exception ex)
@@ -42,7 +49,7 @@ public class ProductRepository : IProductRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var product = db.Products.FirstOrDefault(b => b.Id.Equals(id));
             product.Status = false;
             db.Products.Update(product);
@@ -61,7 +68,7 @@ public class ProductRepository : IProductRepository
         PagedResultModel<Product> pagedResult = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var query = db.Products
                 .Where(t => (EF.Functions.Like(t.ProductName, "%" + search + "%")
                 || EF.Functions.Like(t.Category.CategoryName, "%" + search + "%")
@@ -100,7 +107,7 @@ public class ProductRepository : IProductRepository
         Product product = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             product = db.Products
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.Category)
@@ -119,7 +126,7 @@ public class ProductRepository : IProductRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             update = db.Products.Update(update).Entity;
             db.SaveChanges();
         }

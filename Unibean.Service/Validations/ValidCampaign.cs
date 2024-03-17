@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Unibean.Repository.Repositories.Interfaces;
-using Unibean.Repository.Repositories;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System.ComponentModel.DataAnnotations;
 using Unibean.Repository.Entities;
+using Unibean.Repository.Repositories.Interfaces;
 
 namespace Unibean.Service.Validations;
 
@@ -14,12 +14,11 @@ public class ValidCampaign : ValidationAttribute
         this.states = states;
     }
 
-    private new const string ErrorMessage = "Chiến dịch không hợp lệ"; 
-    
-    private readonly ICampaignRepository campaignRepo = new CampaignRepository(); 
-    
+    private new const string ErrorMessage = "Chiến dịch không hợp lệ";
+
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
+        var campaignRepo = validationContext.GetService<ICampaignRepository>();
         var cam = campaignRepo.GetById(value.ToString());
         if (cam != null && states.Contains(cam.CampaignActivities.LastOrDefault().State.Value))
         {

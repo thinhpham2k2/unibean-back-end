@@ -8,11 +8,18 @@ namespace Unibean.Repository.Repositories;
 
 public class MajorRepository : IMajorRepository
 {
+    private readonly UnibeanDBContext unibeanDB;
+
+    public MajorRepository(UnibeanDBContext unibeanDB)
+    {
+        this.unibeanDB = unibeanDB;
+    }
+
     public Major Add(Major creation)
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             creation = db.Majors.Add(creation).Entity;
             db.SaveChanges();
         }
@@ -27,7 +34,7 @@ public class MajorRepository : IMajorRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var major = db.Majors.FirstOrDefault(b => b.Id.Equals(id));
             major.Status = false;
             db.Majors.Update(major);
@@ -40,13 +47,13 @@ public class MajorRepository : IMajorRepository
     }
 
     public PagedResultModel<Major> GetAll
-        (bool? state, string propertySort, bool isAsc, 
+        (bool? state, string propertySort, bool isAsc,
         string search, int page, int limit)
     {
         PagedResultModel<Major> pagedResult = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var query = db.Majors
                 .Where(t => (EF.Functions.Like(t.MajorName, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
@@ -77,13 +84,13 @@ public class MajorRepository : IMajorRepository
     }
 
     public PagedResultModel<Major> GetAllByCampaign
-        (List<string> campaignIds, bool? state, string propertySort, 
+        (List<string> campaignIds, bool? state, string propertySort,
         bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<Major> pagedResult = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var query = db.Campaigns
                 .Where(c => (campaignIds.Count == 0 || campaignIds.Contains(c.Id))
                 && (bool)c.Status)
@@ -120,7 +127,7 @@ public class MajorRepository : IMajorRepository
         Major major = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             major = db.Majors
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(m => m.Students.Where(s => (bool)s.Status))
@@ -138,7 +145,7 @@ public class MajorRepository : IMajorRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             update = db.Majors.Update(update).Entity;
             db.SaveChanges();
         }

@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using Unibean.Repository.Paging;
-using Unibean.Service.Models.Parameters;
-using Unibean.Service.Services.Interfaces;
-using Unibean.Service.Models.Stations;
-using Unibean.Service.Models.Exceptions;
 using Unibean.Repository.Entities;
+using Unibean.Repository.Paging;
+using Unibean.Service.Models.Exceptions;
+using Unibean.Service.Models.Parameters;
+using Unibean.Service.Models.Stations;
+using Unibean.Service.Services.Interfaces;
 using Unibean.Service.Validations;
 
 namespace Unibean.API.Controllers;
@@ -46,7 +46,7 @@ public class StationController : ControllerBase
         {
             PagedResultModel<StationModel>
                 result = stationService.GetAll
-                (stateIds, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                (stateIds, propertySort, paging.Sort.Split(",")[1].Equals("asc"),
                 paging.Search, paging.Page, paging.Limit);
             return StatusCode(StatusCodes.Status200OK, result);
         }

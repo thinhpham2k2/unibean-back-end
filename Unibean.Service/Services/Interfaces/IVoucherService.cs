@@ -10,7 +10,7 @@ public interface IVoucherService
     void Delete(string id);
 
     PagedResultModel<VoucherModel> GetAll
-        (List<string> brandIds, List<string> typeIds, bool? state, 
+        (List<string> brandIds, List<string> typeIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit);
 
     VoucherExtraModel GetById(string id);

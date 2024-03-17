@@ -34,7 +34,7 @@ public class TransactionServiceTest
         var service = new TransactionService(transactionRepository);
 
         // Act
-        var result = service.GetAll(walletIds, typeIds, state, propertySort, isAsc, 
+        var result = service.GetAll(walletIds, typeIds, state, propertySort, isAsc,
             search, page, limit, role);
 
         // Assert

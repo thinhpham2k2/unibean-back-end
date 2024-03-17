@@ -8,11 +8,18 @@ namespace Unibean.Repository.Repositories;
 
 public class CampaignTypeRepository : ICampaignTypeRepository
 {
+    private readonly UnibeanDBContext unibeanDB;
+
+    public CampaignTypeRepository(UnibeanDBContext unibeanDB)
+    {
+        this.unibeanDB = unibeanDB;
+    }
+
     public CampaignType Add(CampaignType creation)
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             creation = db.CampaignTypes.Add(creation).Entity;
             db.SaveChanges();
         }
@@ -27,7 +34,7 @@ public class CampaignTypeRepository : ICampaignTypeRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var type = db.CampaignTypes.FirstOrDefault(b => b.Id.Equals(id));
             type.Status = false;
             db.CampaignTypes.Update(type);
@@ -45,7 +52,7 @@ public class CampaignTypeRepository : ICampaignTypeRepository
         PagedResultModel<CampaignType> pagedResult = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var query = db.CampaignTypes
                 .Where(t => (EF.Functions.Like(t.TypeName, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
@@ -80,7 +87,7 @@ public class CampaignTypeRepository : ICampaignTypeRepository
         CampaignType type = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             type = db.CampaignTypes
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(t => t.Campaigns.Where(c => (bool)c.Status))
@@ -97,7 +104,7 @@ public class CampaignTypeRepository : ICampaignTypeRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             update = db.CampaignTypes.Update(update).Entity;
             db.SaveChanges();
         }

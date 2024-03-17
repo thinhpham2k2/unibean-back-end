@@ -249,11 +249,11 @@ public class StoreService : IStoreService
             var query = (typeIds.Contains(StoreTransactionType.ActivityTransaction) || typeIds.Count == 0 ?
                 activityService.GetList
                 (new() { id }, new(), new(), search) : new())
-                
+
                 .Concat(typeIds.Contains(StoreTransactionType.BonusTransaction) || typeIds.Count == 0 ?
                 bonusService.GetList
                 (new(), new() { id }, new(), search) : new())
-                
+
                 .AsQueryable()
                 .Where(t => state == null || state.Equals(t.State))
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));

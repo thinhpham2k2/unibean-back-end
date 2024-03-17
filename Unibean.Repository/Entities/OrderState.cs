@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Unibean.Repository.Entities;
 
@@ -44,7 +44,7 @@ public class OrderState
 
     public Order Order { get; set; }
 
-    [Column("state", 
+    [Column("state",
         TypeName = "enum('Order', 'Confirmation', 'Preparation', 'Arrival', 'Receipt', 'Abort')")]
     public State? State { get; set; }
 

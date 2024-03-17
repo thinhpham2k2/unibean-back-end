@@ -111,12 +111,12 @@ public class MajorServiceTest
                 new()
             }
         };
-        A.CallTo(() => majorRepository.GetAllByCampaign(campaignIds, state, propertySort, 
+        A.CallTo(() => majorRepository.GetAllByCampaign(campaignIds, state, propertySort,
             isAsc, search, page, limit)).Returns(pagedResultModel);
         var service = new MajorService(majorRepository, fireBaseService);
 
         // Act
-        var result = service.GetAllByCampaign(campaignIds, state, propertySort, isAsc, 
+        var result = service.GetAllByCampaign(campaignIds, state, propertySort, isAsc,
             search, page, limit);
 
         // Assert

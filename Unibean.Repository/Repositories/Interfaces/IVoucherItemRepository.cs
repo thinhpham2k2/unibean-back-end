@@ -22,7 +22,7 @@ public interface IVoucherItemRepository
     void Delete(string id);
 
     PagedResultModel<VoucherItem> GetAll
-        (List<string> campaignIds, List<string> campaignDetailIds, List<string> voucherIds, List<string> brandIds, 
+        (List<string> campaignIds, List<string> campaignDetailIds, List<string> voucherIds, List<string> brandIds,
         List<string> typeIds, List<string> studentIds, bool? isLocked, bool? isBought, bool? isUsed, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit);
 
@@ -38,6 +38,6 @@ public interface IVoucherItemRepository
     VoucherItem Update(VoucherItem update);
 
     void UpdateList
-        (string voucherId, string campaignDetailId, 
+        (string voucherId, string campaignDetailId,
         int quantity, DateOnly StartOn, DateOnly EndOn, ItemIndex index);
 }

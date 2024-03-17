@@ -10,11 +10,11 @@ public interface IMajorRepository
     void Delete(string id);
 
     PagedResultModel<Major> GetAll
-        (bool? state, string propertySort, bool isAsc, 
+        (bool? state, string propertySort, bool isAsc,
         string search, int page, int limit);
 
     PagedResultModel<Major> GetAllByCampaign
-        (List<string> campaignIds, bool? state, string propertySort, 
+        (List<string> campaignIds, bool? state, string propertySort,
         bool isAsc, string search, int page, int limit);
 
     Major GetById(string id);

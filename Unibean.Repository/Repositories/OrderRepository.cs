@@ -8,11 +8,18 @@ namespace Unibean.Repository.Repositories;
 
 public class OrderRepository : IOrderRepository
 {
+    private readonly UnibeanDBContext unibeanDB;
+
+    public OrderRepository(UnibeanDBContext unibeanDB)
+    {
+        this.unibeanDB = unibeanDB;
+    }
+
     public Order Add(Order creation)
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
 
             creation.OrderDetails = creation.OrderDetails.Select(
                 o =>
@@ -65,7 +72,7 @@ public class OrderRepository : IOrderRepository
         long count = 0;
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             count = db.Orders.Where(c => (bool)c.Status
             && c.StationId.Equals(stationId)
             && DateOnly.FromDateTime(c.DateCreated.Value).Equals(date)).Count();
@@ -81,7 +88,7 @@ public class OrderRepository : IOrderRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var order = db.Orders.FirstOrDefault(b => b.Id.Equals(id));
             order.Status = false;
             db.Orders.Update(order);
@@ -100,7 +107,7 @@ public class OrderRepository : IOrderRepository
         PagedResultModel<Order> pagedResult = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var query = db.Orders
                 .Where(o => (EF.Functions.Like(o.Student.FullName, "%" + search + "%")
                 || EF.Functions.Like(o.Student.Code, "%" + search + "%")
@@ -147,7 +154,7 @@ public class OrderRepository : IOrderRepository
         Order order = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             order = db.Orders
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(o => o.Student)
@@ -170,7 +177,7 @@ public class OrderRepository : IOrderRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             update = db.Orders.Update(update).Entity;
             db.SaveChanges();
         }

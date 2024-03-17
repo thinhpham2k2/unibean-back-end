@@ -34,7 +34,7 @@ public class Account
     [Column("id", TypeName = "char(26)")]
     public string Id { get; set; }
 
-    [Column("role", 
+    [Column("role",
         TypeName = "enum('Admin', 'Staff', 'Brand', 'Store', 'Student')")]
     public Role? Role { get; set; }
 

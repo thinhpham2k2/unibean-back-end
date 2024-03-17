@@ -6,11 +6,18 @@ namespace Unibean.Repository.Repositories;
 
 public class RequestTransactionRepository : IRequestTransactionRepository
 {
+    private readonly UnibeanDBContext unibeanDB;
+
+    public RequestTransactionRepository(UnibeanDBContext unibeanDB)
+    {
+        this.unibeanDB = unibeanDB;
+    }
+
     public RequestTransaction Add(RequestTransaction creation)
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             creation = db.RequestTransactions.Add(creation).Entity;
 
             if (creation != null)
@@ -37,7 +44,7 @@ public class RequestTransactionRepository : IRequestTransactionRepository
         List<RequestTransaction> result;
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             result = db.RequestTransactions
                 .Where(t => (EF.Functions.Like(t.Request.Admin.FullName, "%" + search + "%")
                 || EF.Functions.Like((string)(object)t.Wallet.Type, "%" + search + "%")
@@ -65,7 +72,7 @@ public class RequestTransactionRepository : IRequestTransactionRepository
         RequestTransaction requestTransaction = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             requestTransaction = db.RequestTransactions
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.Request)
@@ -86,7 +93,7 @@ public class RequestTransactionRepository : IRequestTransactionRepository
         decimal result = 0;
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             result = db.RequestTransactions
                 .Where(o => o.Wallet.Type.Equals(WalletType.Green)
                 && o.Request.BrandId.Equals(brandId)

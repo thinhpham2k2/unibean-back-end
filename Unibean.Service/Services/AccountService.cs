@@ -58,7 +58,7 @@ public class AccountService : IAccountService
                     {
                         Role.Admin => src.Admins?.FirstOrDefault()?.Id,
                         Role.Staff => src.Staffs?.FirstOrDefault()?.Id,
-                        Role.Brand => src.Brands?.FirstOrDefault()?.Id ,
+                        Role.Brand => src.Brands?.FirstOrDefault()?.Id,
                         Role.Store => src.Stores?.FirstOrDefault()?.Id,
                         Role.Student => src.Students?.FirstOrDefault()?.Id,
                         _ => null,
@@ -246,14 +246,14 @@ public class AccountService : IAccountService
                 // Take the challenge
                 studentChallengeService.Update(studentRepository
                     .GetById(student.Id).StudentChallenges
-                    .Where(s => (bool)s.Status 
-                    && s.IsCompleted.Equals(false) 
+                    .Where(s => (bool)s.Status
+                    && s.IsCompleted.Equals(false)
                     && s.Challenge.Type.Equals(ChallengeType.Welcome)), 1);
 
                 studentChallengeService.Update(studentRepository
                     .GetById(creation.InviteCode).StudentChallenges
-                    .Where(s => (bool)s.Status 
-                    && s.IsCompleted.Equals(false) 
+                    .Where(s => (bool)s.Status
+                    && s.IsCompleted.Equals(false)
                     && s.Challenge.Type.Equals(ChallengeType.Spread)), 1);
             }
         }

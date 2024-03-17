@@ -8,11 +8,18 @@ namespace Unibean.Repository.Repositories;
 
 public class StudentChallengeRepository : IStudentChallengeRepository
 {
+    private readonly UnibeanDBContext unibeanDB;
+
+    public StudentChallengeRepository(UnibeanDBContext unibeanDB)
+    {
+        this.unibeanDB = unibeanDB;
+    }
+
     public StudentChallenge Add(StudentChallenge creation)
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             creation = db.StudentChallenges.Add(creation).Entity;
             db.SaveChanges();
         }
@@ -27,7 +34,7 @@ public class StudentChallengeRepository : IStudentChallengeRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var studentChallenge = db.StudentChallenges.FirstOrDefault(b => b.Id.Equals(id));
             studentChallenge.Status = false;
             db.StudentChallenges.Update(studentChallenge);
@@ -40,13 +47,13 @@ public class StudentChallengeRepository : IStudentChallengeRepository
     }
 
     public PagedResultModel<StudentChallenge> GetAll
-        (List<string> studentIds, List<string> challengeIds, List<ChallengeType> typeIds, 
+        (List<string> studentIds, List<string> challengeIds, List<ChallengeType> typeIds,
         bool? state, string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<StudentChallenge> pagedResult = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var query = db.StudentChallenges
                 .Where(t => (EF.Functions.Like(t.Challenge.ChallengeName, "%" + search + "%")
                 || EF.Functions.Like(t.Student.FullName, "%" + search + "%")
@@ -88,7 +95,7 @@ public class StudentChallengeRepository : IStudentChallengeRepository
         StudentChallenge studentChallenge = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             studentChallenge = db.StudentChallenges
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.Student)
@@ -107,7 +114,7 @@ public class StudentChallengeRepository : IStudentChallengeRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             update = db.StudentChallenges.Update(update).Entity;
             db.SaveChanges();
         }

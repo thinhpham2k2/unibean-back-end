@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Unibean.Repository.Repositories.Interfaces;
-using Unibean.Repository.Repositories;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System.ComponentModel.DataAnnotations;
 using Unibean.Repository.Entities;
+using Unibean.Repository.Repositories.Interfaces;
 
 namespace Unibean.Service.Validations;
 
@@ -14,12 +14,11 @@ public class ValidStation : ValidationAttribute
         this.states = states;
     }
 
-    private new const string ErrorMessage = "Trạm không hợp lệ"; 
-    
-    private readonly IStationRepository stationRepo = new StationRepository(); 
-    
+    private new const string ErrorMessage = "Trạm không hợp lệ";
+
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
+        var stationRepo = validationContext.GetService<IStationRepository>();
         var station = stationRepo.GetById(value.ToString());
         if (station != null && states.Contains(station.State.Value))
         {

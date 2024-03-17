@@ -7,11 +7,18 @@ namespace Unibean.Repository.Repositories;
 
 public class ChallengeTransactionRepository : IChallengeTransactionRepository
 {
+    private readonly UnibeanDBContext unibeanDB;
+
+    public ChallengeTransactionRepository(UnibeanDBContext unibeanDB)
+    {
+        this.unibeanDB = unibeanDB;
+    }
+
     public ChallengeTransaction Add(ChallengeTransaction creation)
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             creation = db.ChallengeTransactions.Add(creation).Entity;
 
             if (creation != null)
@@ -38,7 +45,7 @@ public class ChallengeTransactionRepository : IChallengeTransactionRepository
         List<ChallengeTransaction> result;
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             result = db.ChallengeTransactions
                 .Where(t => (EF.Functions.Like(t.Challenge.Challenge.ChallengeName, "%" + search + "%")
                 || EF.Functions.Like((string)(object)t.Wallet.Type, "%" + search + "%")
@@ -63,7 +70,7 @@ public class ChallengeTransactionRepository : IChallengeTransactionRepository
         ChallengeTransaction challengeTransaction = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             challengeTransaction = db.ChallengeTransactions
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.Wallet)

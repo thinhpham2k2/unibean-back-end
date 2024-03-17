@@ -308,7 +308,7 @@ public class StoreServiceTest
             voucherItemRepository, studentRepository, voucherItemService);
 
         // Act
-        var result = service.GetHistoryTransactionListByStoreId(id, typeIds, state, 
+        var result = service.GetHistoryTransactionListByStoreId(id, typeIds, state,
             propertySort, isAsc, search, page, limit);
 
         // Assert
@@ -348,7 +348,7 @@ public class StoreServiceTest
             voucherItemRepository, studentRepository, voucherItemService);
 
         // Act
-        var result = service.GetCampaignDetailByStoreId(id, campaignIds, typeIds, 
+        var result = service.GetCampaignDetailByStoreId(id, campaignIds, typeIds,
             state, propertySort, isAsc, search, page, limit);
 
         // Assert

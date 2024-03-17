@@ -1,17 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System.ComponentModel.DataAnnotations;
 using Unibean.Repository.Repositories.Interfaces;
-using Unibean.Repository.Repositories;
 
 namespace Unibean.Service.Validations;
 
 public class ValidArea : ValidationAttribute
 {
-    private new const string ErrorMessage = "Khu vực không hợp lệ"; 
-    
-    private readonly IAreaRepository areaRepo = new AreaRepository(); 
-    
+    private new const string ErrorMessage = "Khu vực không hợp lệ";
+
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
+        var areaRepo = validationContext.GetService<IAreaRepository>();
         var area = areaRepo.GetById(value.ToString());
         if (area != null && (bool)area.State)
         {

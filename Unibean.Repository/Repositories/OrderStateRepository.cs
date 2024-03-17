@@ -8,11 +8,18 @@ namespace Unibean.Repository.Repositories;
 
 public class OrderStateRepository : IOrderStateRepository
 {
+    private readonly UnibeanDBContext unibeanDB;
+
+    public OrderStateRepository(UnibeanDBContext unibeanDB)
+    {
+        this.unibeanDB = unibeanDB;
+    }
+
     public OrderState Add(OrderState creation)
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             creation = db.OrderStates.Add(creation).Entity;
             db.SaveChanges();
         }
@@ -27,7 +34,7 @@ public class OrderStateRepository : IOrderStateRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             creation = db.OrderStates.Add(creation).Entity;
 
             if (creation != null)
@@ -71,7 +78,7 @@ public class OrderStateRepository : IOrderStateRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var orderState = db.OrderStates.FirstOrDefault(b => b.Id.Equals(id));
             orderState.Status = false;
             db.OrderStates.Update(orderState);
@@ -90,7 +97,7 @@ public class OrderStateRepository : IOrderStateRepository
         PagedResultModel<OrderState> pagedResult = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var query = db.OrderStates
                 .Where(t => (EF.Functions.Like((string)(object)t.State, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
@@ -129,7 +136,7 @@ public class OrderStateRepository : IOrderStateRepository
         OrderState orderState = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             orderState = db.OrderStates
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.Order)
@@ -147,7 +154,7 @@ public class OrderStateRepository : IOrderStateRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             update = db.OrderStates.Update(update).Entity;
             db.SaveChanges();
         }

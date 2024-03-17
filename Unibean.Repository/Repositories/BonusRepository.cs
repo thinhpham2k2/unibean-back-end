@@ -8,11 +8,18 @@ namespace Unibean.Repository.Repositories;
 
 public class BonusRepository : IBonusRepository
 {
+    private readonly UnibeanDBContext unibeanDB;
+
+    public BonusRepository(UnibeanDBContext unibeanDB)
+    {
+        this.unibeanDB = unibeanDB;
+    }
+
     public Bonus Add(Bonus creation)
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
 
             // Get green bean wallet student
             var student = db.Students
@@ -80,7 +87,7 @@ public class BonusRepository : IBonusRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var bonus = db.Bonuses.FirstOrDefault(b => b.Id.Equals(id));
             bonus.Status = false;
             db.Bonuses.Update(bonus);
@@ -99,7 +106,7 @@ public class BonusRepository : IBonusRepository
         PagedResultModel<Bonus> pagedResult = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var query = db.Bonuses
                 .Where(t => (EF.Functions.Like(t.Brand.BrandName, "%" + search + "%")
                 || EF.Functions.Like(t.Store.StoreName, "%" + search + "%")
@@ -145,7 +152,7 @@ public class BonusRepository : IBonusRepository
         Bonus bonus = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             bonus = db.Bonuses
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.BonusTransactions.Where(b => (bool)b.Status))
@@ -171,7 +178,7 @@ public class BonusRepository : IBonusRepository
         List<Bonus> result;
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             result = db.Bonuses
                 .Where(t => (EF.Functions.Like(t.Brand.BrandName, "%" + search + "%")
                 || EF.Functions.Like(t.Store.StoreName, "%" + search + "%")
@@ -199,7 +206,7 @@ public class BonusRepository : IBonusRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             update = db.Bonuses.Update(update).Entity;
             db.SaveChanges();
         }

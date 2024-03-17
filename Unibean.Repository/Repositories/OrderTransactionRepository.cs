@@ -6,11 +6,18 @@ namespace Unibean.Repository.Repositories;
 
 public class OrderTransactionRepository : IOrderTransactionRepository
 {
+    private readonly UnibeanDBContext unibeanDB;
+
+    public OrderTransactionRepository(UnibeanDBContext unibeanDB)
+    {
+        this.unibeanDB = unibeanDB;
+    }
+
     public OrderTransaction Add(OrderTransaction creation)
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             creation = db.OrderTransactions.Add(creation).Entity;
 
             if (creation != null)
@@ -37,7 +44,7 @@ public class OrderTransactionRepository : IOrderTransactionRepository
         List<OrderTransaction> result;
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             result = db.OrderTransactions
                 .Where(o => (EF.Functions.Like("Tạo đơn hàng (" + o.Amount + " đậu)", "%" + search + "%")
                 || EF.Functions.Like((string)(object)o.Wallet.Type, "%" + search + "%")
@@ -61,7 +68,7 @@ public class OrderTransactionRepository : IOrderTransactionRepository
         OrderTransaction orderTransaction = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             orderTransaction = db.OrderTransactions
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.Wallet)
@@ -80,7 +87,7 @@ public class OrderTransactionRepository : IOrderTransactionRepository
         decimal result = 0;
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             result = -db.OrderTransactions
                 .Where(o => o.Wallet.Type.Equals(WalletType.Red)
                 && o.Amount < 0
@@ -99,7 +106,7 @@ public class OrderTransactionRepository : IOrderTransactionRepository
         decimal result = 0;
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             result = -db.OrderTransactions
                 .Where(o => o.Wallet.Type.Equals(WalletType.Red)
                 && o.Amount < 0 && o.Order.StationId.Equals(stationId)
@@ -118,12 +125,12 @@ public class OrderTransactionRepository : IOrderTransactionRepository
         decimal result = 0;
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             result = db.OrderTransactions
                 .Where(o => o.Wallet.Type.Equals(WalletType.Red)
                 && o.Amount > 0 && o.Order.StationId.Equals(stationId)
                 && DateOnly.FromDateTime(o.Order.OrderStates.Where(
-                    o => (bool)o.Status 
+                    o => (bool)o.Status
                     && o.State.Equals(State.Abort)).OrderBy(o => o.Id)
                     .LastOrDefault().DateCreated.Value).Equals(date)
                 && (bool)o.Status).Select(o => o.Amount.Value).Sum();

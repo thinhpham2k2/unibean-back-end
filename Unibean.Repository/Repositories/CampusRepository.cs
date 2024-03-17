@@ -8,11 +8,18 @@ namespace Unibean.Repository.Repositories;
 
 public class CampusRepository : ICampusRepository
 {
+    private readonly UnibeanDBContext unibeanDB;
+
+    public CampusRepository(UnibeanDBContext unibeanDB)
+    {
+        this.unibeanDB = unibeanDB;
+    }
+
     public Campus Add(Campus creation)
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             creation = db.Campuses.Add(creation).Entity;
             db.SaveChanges();
         }
@@ -27,7 +34,7 @@ public class CampusRepository : ICampusRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var campus = db.Campuses.FirstOrDefault(b => b.Id.Equals(id));
             campus.Status = false;
             db.Campuses.Update(campus);
@@ -40,13 +47,13 @@ public class CampusRepository : ICampusRepository
     }
 
     public PagedResultModel<Campus> GetAll
-        (List<string> universityIds, List<string> areaIds, bool? state, 
+        (List<string> universityIds, List<string> areaIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<Campus> pagedResult = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var query = db.Campuses
                 .Where(t => (EF.Functions.Like(t.CampusName, "%" + search + "%")
                 || EF.Functions.Like(t.University.UniversityName, "%" + search + "%")
@@ -92,7 +99,7 @@ public class CampusRepository : ICampusRepository
         PagedResultModel<Campus> pagedResult = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var query = db.Campaigns
                 .Where(c => (campaignIds.Count == 0 || campaignIds.Contains(c.Id))
                 && (bool)c.Status)
@@ -139,7 +146,7 @@ public class CampusRepository : ICampusRepository
         Campus campus = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             campus = db.Campuses
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.University)
@@ -158,7 +165,7 @@ public class CampusRepository : ICampusRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             update = db.Campuses.Update(update).Entity;
             db.SaveChanges();
         }

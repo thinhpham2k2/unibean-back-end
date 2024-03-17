@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Linq;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Repositories.Interfaces;
 using Type = Unibean.Repository.Entities.Type;
@@ -8,11 +7,18 @@ namespace Unibean.Repository.Repositories;
 
 public class ActivityTransactionRepository : IActivityTransactionRepository
 {
+    private readonly UnibeanDBContext unibeanDB;
+
+    public ActivityTransactionRepository(UnibeanDBContext unibeanDB)
+    {
+        this.unibeanDB = unibeanDB;
+    }
+
     public ActivityTransaction Add(ActivityTransaction creation)
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             creation = db.ActivityTransactions.Add(creation).Entity;
 
             if (creation != null)
@@ -39,7 +45,7 @@ public class ActivityTransactionRepository : IActivityTransactionRepository
         List<ActivityTransaction> result;
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             result = db.ActivityTransactions
                 .Where(a => (EF.Functions.Like(a.Activity.VoucherItem.Voucher.VoucherName, "%" + search + "%")
                 || EF.Functions.Like((string)(object)a.Wallet.Type, "%" + search + "%")
@@ -66,7 +72,7 @@ public class ActivityTransactionRepository : IActivityTransactionRepository
         ActivityTransaction activityTransaction = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             activityTransaction = db.ActivityTransactions
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.Wallet)
@@ -88,7 +94,7 @@ public class ActivityTransactionRepository : IActivityTransactionRepository
         decimal result = 0;
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             result = -db.ActivityTransactions
                 .Where(o => o.Wallet.Type.Equals(WalletType.Green)
                 && o.Activity.Type.Equals(Type.Buy)
@@ -107,7 +113,7 @@ public class ActivityTransactionRepository : IActivityTransactionRepository
         decimal result = 0;
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var store = db.Stores.Where(s => s.Id.Equals(storeId));
             result = store.SelectMany(s => s.Activities
             .Where(a => (bool)a.Status && DateOnly.FromDateTime(a.DateCreated.Value).Equals(date))

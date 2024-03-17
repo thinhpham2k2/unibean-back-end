@@ -20,7 +20,7 @@ public class CampaignTransactionService : ICampaignTransactionService
         {
             cfg.CreateMap<CampaignTransaction, TransactionModel>()
             .ForMember(t => t.Name, opt => opt.MapFrom(src
-                => src.Amount > 0 ? 
+                => src.Amount > 0 ?
                 "Chiến dịch " + src.Campaign.CampaignName + " kết thúc" : "Tạo chiến dịch " + src.Campaign.CampaignName))
             .ForMember(t => t.RequestId, opt => opt.MapFrom(src => src.CampaignId))
             .ForMember(t => t.WalletTypeId, opt => opt.MapFrom(src => (int)src.Wallet.Type))
@@ -34,7 +34,7 @@ public class CampaignTransactionService : ICampaignTransactionService
     }
 
     public List<TransactionModel> GetAll
-        (List<string> walletIds, List<string> campaignIds, 
+        (List<string> walletIds, List<string> campaignIds,
         List<WalletType> walletTypeIds, string search)
     {
         return mapper.Map<List<TransactionModel>>(campaignTransactionRepository.GetAll

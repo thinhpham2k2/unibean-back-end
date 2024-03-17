@@ -186,7 +186,7 @@ public class AdminController : ControllerBase
 
         try
         {
-            return StatusCode(StatusCodes.Status200OK, 
+            return StatusCode(StatusCodes.Status200OK,
                 chartService.GetColumnChart(id, fromDate, toDate, isAsc, Role.Admin));
         }
         catch (InvalidParameterException e)
@@ -226,7 +226,7 @@ public class AdminController : ControllerBase
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public IActionResult CreateRequest([ValidAdmin] string id, 
+    public IActionResult CreateRequest([ValidAdmin] string id,
         [FromBody] CreateRequestModel creation)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);

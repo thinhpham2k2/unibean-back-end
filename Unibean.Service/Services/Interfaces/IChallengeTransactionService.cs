@@ -1,5 +1,4 @@
-﻿using Unibean.Repository.Entities;
-using Unibean.Service.Models.ChallengeTransactions;
+﻿using Unibean.Service.Models.ChallengeTransactions;
 using Unibean.Service.Models.Transactions;
 
 namespace Unibean.Service.Services.Interfaces;

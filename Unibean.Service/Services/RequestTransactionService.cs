@@ -33,7 +33,7 @@ public class RequestTransactionService : IRequestTransactionService
     }
 
     public List<TransactionModel> GetAll
-        (List<string> walletIds, List<string> requestIds, 
+        (List<string> walletIds, List<string> requestIds,
         List<WalletType> walletTypeIds, string search)
     {
         return mapper.Map<List<TransactionModel>>(requestTransactionRepository.GetAll

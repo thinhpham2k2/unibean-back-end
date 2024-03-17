@@ -8,11 +8,18 @@ namespace Unibean.Repository.Repositories;
 
 public class WishlistRepository : IWishlistRepository
 {
+    private readonly UnibeanDBContext unibeanDB;
+
+    public WishlistRepository(UnibeanDBContext unibeanDB)
+    {
+        this.unibeanDB = unibeanDB;
+    }
+
     public Wishlist Add(Wishlist creation)
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             creation = db.Wishlists.Add(creation).Entity;
             db.SaveChanges();
         }
@@ -27,7 +34,7 @@ public class WishlistRepository : IWishlistRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var wishlist = db.Wishlists.FirstOrDefault(b => b.Id.Equals(id));
             wishlist.Status = false;
             db.Wishlists.Update(wishlist);
@@ -46,7 +53,7 @@ public class WishlistRepository : IWishlistRepository
         PagedResultModel<Wishlist> pagedResult = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var query = db.Wishlists
                 .Where(t => (EF.Functions.Like(t.Student.FullName, "%" + search + "%")
                 || EF.Functions.Like(t.Brand.BrandName, "%" + search + "%")
@@ -88,7 +95,7 @@ public class WishlistRepository : IWishlistRepository
         Wishlist wishlist = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             wishlist = db.Wishlists
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.Student)
@@ -109,9 +116,9 @@ public class WishlistRepository : IWishlistRepository
         Wishlist wishlist = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             wishlist = db.Wishlists
-            .Where(s => s.StudentId.Equals(studentId) 
+            .Where(s => s.StudentId.Equals(studentId)
             && s.BrandId.Equals(brandId))
             .Include(s => s.Student)
             .Include(s => s.Brand)
@@ -128,7 +135,7 @@ public class WishlistRepository : IWishlistRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             update = db.Wishlists.Update(update).Entity;
             db.SaveChanges();
         }

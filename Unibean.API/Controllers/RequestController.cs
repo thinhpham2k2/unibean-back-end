@@ -49,7 +49,7 @@ public class RequestController : ControllerBase
         {
             PagedResultModel<RequestModel>
                 result = requestService.GetAll
-                (brandIds, adminIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                (brandIds, adminIds, state, propertySort, paging.Sort.Split(",")[1].Equals("asc"),
                 paging.Search, paging.Page, paging.Limit);
             return StatusCode(StatusCodes.Status200OK, result);
         }

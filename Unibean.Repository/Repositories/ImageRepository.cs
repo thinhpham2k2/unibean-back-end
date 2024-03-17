@@ -8,11 +8,18 @@ namespace Unibean.Repository.Repositories;
 
 public class ImageRepository : IImageRepository
 {
+    private readonly UnibeanDBContext unibeanDB;
+
+    public ImageRepository(UnibeanDBContext unibeanDB)
+    {
+        this.unibeanDB = unibeanDB;
+    }
+
     public Image Add(Image creation)
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             creation = db.Images.Add(creation).Entity;
             db.SaveChanges();
         }
@@ -27,7 +34,7 @@ public class ImageRepository : IImageRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var image = db.Images.FirstOrDefault(b => b.Id.Equals(id));
             image.Status = false;
             db.Images.Update(image);
@@ -40,13 +47,13 @@ public class ImageRepository : IImageRepository
     }
 
     public PagedResultModel<Image> GetAll
-        (List<string> productIds, bool? state, string propertySort, 
+        (List<string> productIds, bool? state, string propertySort,
         bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<Image> pagedResult = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var query = db.Images
                 .Where(t => (EF.Functions.Like(t.Product.ProductName, "%" + search + "%")
                 || EF.Functions.Like(t.FileName, "%" + search + "%")
@@ -85,7 +92,7 @@ public class ImageRepository : IImageRepository
         Image image = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             image = db.Images
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.Product)
@@ -103,7 +110,7 @@ public class ImageRepository : IImageRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             update = db.Images.Update(update).Entity;
             db.SaveChanges();
         }

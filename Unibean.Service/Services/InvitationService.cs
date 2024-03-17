@@ -9,7 +9,7 @@ namespace Unibean.Service.Services;
 public class InvitationService : IInvitationService
 {
     private readonly Mapper mapper;
-    
+
     private readonly IInvitationRepository invitationRepository;
 
     public InvitationService(IInvitationRepository invitationRepository)

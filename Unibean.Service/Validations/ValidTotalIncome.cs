@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Unibean.Repository.Repositories;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System.ComponentModel.DataAnnotations;
 using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Service.Models.Campaigns;
 using Unibean.Service.Models.Validations;
@@ -12,12 +12,10 @@ public class ValidTotalIncome : ValidationAttribute
 
     private const string ErrorMessage1 = "Số dư ví xanh của thương hiệu là không đủ";
 
-    private readonly IBrandRepository brandRepo = new BrandRepository();
-
-    private readonly IVoucherRepository voucherRepo = new VoucherRepository();
-
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
+        var brandRepo = validationContext.GetService<IBrandRepository>();
+        var voucherRepo = validationContext.GetService<IVoucherRepository>();
         if (validationContext.ObjectInstance is CreateCampaignModel create)
         {
             if (create.CampaignDetails != null)

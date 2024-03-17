@@ -178,7 +178,7 @@ public class TransactionService : ITransactionService
     }
 
     public PagedResultModel<TransactionModel> GetAll
-        (List<string> walletIds, List<TransactionType> typeIds, bool? state, 
+        (List<string> walletIds, List<TransactionType> typeIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit, Role role)
     {
         var query = mapper.Map<List<TransactionModel>>(transactionRepository

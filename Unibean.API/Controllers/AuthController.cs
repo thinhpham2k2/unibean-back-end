@@ -165,7 +165,7 @@ public class AuthController : ControllerBase
         [FromBody] GoogleTokenModel token)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
-        
+
         try
         {
             var account = await googleService.LoginWithGoogle(token, "Brand");
@@ -207,7 +207,7 @@ public class AuthController : ControllerBase
         try
         {
             var account = await googleService.LoginWithGoogle(token, "Student");
-            if(account == null)
+            if (account == null)
             {
                 return StatusCode(StatusCodes.Status404NotFound, "Tài khoản google không hợp lệ");
             }

@@ -21,7 +21,7 @@ public class VoucherService : IVoucherService
 
     private readonly IFireBaseService fireBaseService;
 
-    public VoucherService(IVoucherRepository voucherRepository, 
+    public VoucherService(IVoucherRepository voucherRepository,
         IFireBaseService fireBaseService)
     {
         var config = new MapperConfiguration(cfg
@@ -117,7 +117,7 @@ public class VoucherService : IVoucherService
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<VoucherModel>>
-            (voucherRepository.GetAll(brandIds, typeIds, state, 
+            (voucherRepository.GetAll(brandIds, typeIds, state,
             propertySort, isAsc, search, page, limit));
     }
 

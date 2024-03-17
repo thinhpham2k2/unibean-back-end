@@ -58,7 +58,7 @@ public class RequestService : IRequestService
     }
 
     public PagedResultModel<RequestModel> GetAll
-        (List<string> brandIds, List<string> adminIds, bool? state, 
+        (List<string> brandIds, List<string> adminIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<RequestModel>>(requestRepository

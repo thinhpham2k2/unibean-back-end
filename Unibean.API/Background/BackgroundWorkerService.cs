@@ -8,24 +8,23 @@ public class BackgroundWorkerService : BackgroundService
 {
     readonly ILogger<BackgroundWorkerService> _logger;
 
-    private readonly ICampaignRepository campaignRepository;
-
-    private readonly ICampaignActivityRepository campaignActivityRepository;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
 
     public BackgroundWorkerService(
         ILogger<BackgroundWorkerService> logger,
-        ICampaignRepository campaignRepository,
-        ICampaignActivityRepository campaignActivityRepository)
+        IServiceScopeFactory serviceScopeFactory)
     {
         _logger = logger;
-        this.campaignRepository = campaignRepository;
-        this.campaignActivityRepository = campaignActivityRepository;
+        this._serviceScopeFactory = serviceScopeFactory; ;
     }
 
     protected async override Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
         {
+            using var scope = _serviceScopeFactory.CreateScope();
+            var campaignRepository = scope.ServiceProvider.GetRequiredService<ICampaignRepository>();
+            var campaignActivityRepository = scope.ServiceProvider.GetRequiredService<ICampaignActivityRepository>();
             _logger.LogInformation("Worker running at: {time}", DateTime.UtcNow);
 
             List<Campaign> campaigns = campaignRepository

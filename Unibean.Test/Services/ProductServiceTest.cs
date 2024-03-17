@@ -83,7 +83,7 @@ public class ProductServiceTest
                 new()
             }
         };
-        A.CallTo(() => productRepository.GetAll(categoryIds, state, propertySort, 
+        A.CallTo(() => productRepository.GetAll(categoryIds, state, propertySort,
             isAsc, search, page, limit)).Returns(pagedResultModel);
         var service = new ProductService
             (productRepository, fireBaseService, imageRepository);
@@ -107,7 +107,7 @@ public class ProductServiceTest
         .Returns(new()
         {
             Id = id
-            });
+        });
         var service = new ProductService
             (productRepository, fireBaseService, imageRepository);
 

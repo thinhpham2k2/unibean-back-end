@@ -20,7 +20,7 @@ public class OrderController : ControllerBase
 
     private readonly IOrderStateService orderStateService;
 
-    public OrderController(IOrderService orderService, 
+    public OrderController(IOrderService orderService,
         IOrderStateService orderStateService)
     {
         this.orderService = orderService;
@@ -57,7 +57,7 @@ public class OrderController : ControllerBase
             PagedResultModel<OrderModel>
                 result = orderService.GetAll
                 (stationIds, studentIds, stateIds, state, propertySort.Equals("StateCurrent")
-                ? "OrderStates.Max(s => s.StateId)" : propertySort, paging.Sort.Split(",")[1].Equals("asc"), 
+                ? "OrderStates.Max(s => s.StateId)" : propertySort, paging.Sort.Split(",")[1].Equals("asc"),
                 paging.Search, paging.Page, paging.Limit);
             return StatusCode(StatusCodes.Status200OK, result);
         }

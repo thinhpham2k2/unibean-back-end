@@ -5,11 +5,18 @@ namespace Unibean.Repository.Repositories;
 
 public class WalletRepository : IWalletRepository
 {
+    private readonly UnibeanDBContext unibeanDB;
+
+    public WalletRepository(UnibeanDBContext unibeanDB)
+    {
+        this.unibeanDB = unibeanDB;
+    }
+
     public Wallet Add(Wallet creation)
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             creation = db.Wallets.Add(creation).Entity;
             db.SaveChanges();
         }

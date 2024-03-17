@@ -1,6 +1,4 @@
-﻿using Unibean.Repository.Entities;
-
-namespace Unibean.Service.Models.Charts;
+﻿namespace Unibean.Service.Models.Charts;
 
 public class TitleStaffModel
 {

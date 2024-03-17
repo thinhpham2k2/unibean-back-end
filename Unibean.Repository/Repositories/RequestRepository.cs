@@ -8,11 +8,18 @@ namespace Unibean.Repository.Repositories;
 
 public class RequestRepository : IRequestRepository
 {
+    private readonly UnibeanDBContext unibeanDB;
+
+    public RequestRepository(UnibeanDBContext unibeanDB)
+    {
+        this.unibeanDB = unibeanDB;
+    }
+
     public Request Add(Request creation)
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
 
             // Get green bean wallet brand
             var brand = db.Brands
@@ -59,7 +66,7 @@ public class RequestRepository : IRequestRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var request = db.Requests.FirstOrDefault(b => b.Id.Equals(id));
             request.Status = false;
             db.Requests.Update(request);
@@ -72,13 +79,13 @@ public class RequestRepository : IRequestRepository
     }
 
     public PagedResultModel<Request> GetAll
-        (List<string> brandIds, List<string> adminIds, bool? state, 
+        (List<string> brandIds, List<string> adminIds, bool? state,
         string propertySort, bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<Request> pagedResult = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var query = db.Requests
                 .Where(t => (EF.Functions.Like(t.Brand.BrandName, "%" + search + "%")
                 || EF.Functions.Like(t.Brand.Acronym, "%" + search + "%")
@@ -121,7 +128,7 @@ public class RequestRepository : IRequestRepository
         Request request = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             request = db.Requests
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.Brand)
@@ -143,7 +150,7 @@ public class RequestRepository : IRequestRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             update = db.Requests.Update(update).Entity;
             db.SaveChanges();
         }

@@ -96,7 +96,7 @@ public class StaffServiceTest
                 new()
             }
         };
-        A.CallTo(() => staffRepository.GetAll(stationIds, state, propertySort, 
+        A.CallTo(() => staffRepository.GetAll(stationIds, state, propertySort,
             isAsc, search, page, limit)).Returns(pagedResultModel);
         var service = new StaffService
             (staffRepository, fireBaseService, accountRepository);
@@ -144,9 +144,9 @@ public class StaffServiceTest
         A.CallTo(() => staffRepository.Update(A<Staff>.Ignored))
         .Returns(new()
         {
-                Id = id,
-                FullName = fullName
-            });
+            Id = id,
+            FullName = fullName
+        });
         var service = new StaffService
             (staffRepository, fireBaseService, accountRepository);
 

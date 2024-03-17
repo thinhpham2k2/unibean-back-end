@@ -63,7 +63,7 @@ public class VoucherItemController : ControllerBase
         {
             PagedResultModel<VoucherItemModel>
                 result = voucherItemService.GetAll
-                (campaignIds, campaignDetailIds, voucherIds, brandIds, typeIds, studentIds, isLocked, isBought, isUsed, 
+                (campaignIds, campaignDetailIds, voucherIds, brandIds, typeIds, studentIds, isLocked, isBought, isUsed,
                 state, propertySort, paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
             return StatusCode(StatusCodes.Status200OK, result);
         }

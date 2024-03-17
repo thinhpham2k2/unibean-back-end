@@ -9,11 +9,18 @@ namespace Unibean.Repository.Repositories;
 
 public class ActivityRepository : IActivityRepository
 {
+    private readonly UnibeanDBContext unibeanDB;
+
+    public ActivityRepository(UnibeanDBContext unibeanDB)
+    {
+        this.unibeanDB = unibeanDB;
+    }
+
     public Activity Add(Activity creation)
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
 
             if (creation.Type.Equals(Type.Buy))
             {
@@ -129,7 +136,7 @@ public class ActivityRepository : IActivityRepository
         long count = 0;
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             count = db.Activities.Where(c => (bool)c.Status
             && c.StoreId.Equals(storeId)
             && DateOnly.FromDateTime(c.DateCreated.Value).Equals(date)).Select(a => a.StudentId)
@@ -146,7 +153,7 @@ public class ActivityRepository : IActivityRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var activity = db.Activities.FirstOrDefault(b => b.Id.Equals(id));
             activity.Status = false;
             db.Activities.Update(activity);
@@ -166,7 +173,7 @@ public class ActivityRepository : IActivityRepository
         PagedResultModel<Activity> pagedResult = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             var query = db.Activities
                 .Where(t => (EF.Functions.Like((string)(object)t.Type, "%" + search + "%")
                 || EF.Functions.Like(t.Store.StoreName, "%" + search + "%")
@@ -221,7 +228,7 @@ public class ActivityRepository : IActivityRepository
         Activity activity = new();
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             activity = db.Activities
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.ActivityTransactions.Where(a => (bool)a.Status))
@@ -255,7 +262,7 @@ public class ActivityRepository : IActivityRepository
         List<Activity> result;
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             result = db.Activities
                 .Where(t => (EF.Functions.Like((string)(object)t.Type, "%" + search + "%")
                 || EF.Functions.Like(t.Store.StoreName, "%" + search + "%")
@@ -285,7 +292,7 @@ public class ActivityRepository : IActivityRepository
     {
         try
         {
-            using var db = new UnibeanDBContext();
+            var db = unibeanDB;
             update = db.Activities.Update(update).Entity;
             db.SaveChanges();
         }

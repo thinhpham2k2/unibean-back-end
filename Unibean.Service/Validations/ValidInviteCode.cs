@@ -1,8 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Text.RegularExpressions;
-using Unibean.Repository.Repositories.Interfaces;
-using Unibean.Repository.Repositories;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using System.ComponentModel.DataAnnotations;
+using Unibean.Repository.Repositories.Interfaces;
 
 namespace Unibean.Service.Validations;
 
@@ -10,10 +9,9 @@ public class ValidInviteCode : ValidationAttribute
 {
     private new const string ErrorMessage = "Mã mời không hợp lệ";
 
-    private readonly IStudentRepository studentRepo = new StudentRepository();
-
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
+        var studentRepo = validationContext.GetService<IStudentRepository>();
         string inviteCode = value?.ToString();
         if (inviteCode.IsNullOrEmpty() || studentRepo.CheckInviteCode(inviteCode))
         {

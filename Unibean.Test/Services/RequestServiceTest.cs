@@ -59,7 +59,7 @@ public class RequestServiceTest
                 new()
             }
         };
-        A.CallTo(() => requestRepository.GetAll(brandIds, adminIds, state, 
+        A.CallTo(() => requestRepository.GetAll(brandIds, adminIds, state,
             propertySort, isAsc, search, page, limit)).Returns(pagedResultModel);
         var service = new RequestService(requestRepository);
 

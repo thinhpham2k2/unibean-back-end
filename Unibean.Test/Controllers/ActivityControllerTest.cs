@@ -33,7 +33,7 @@ public class ActivityControllerTest
         List<string> voucherIds = new();
         List<string> voucherItemIds = new();
         List<Type> typeIds = new();
-        bool ? state = null;
+        bool? state = null;
         PagingModel paging = new()
         {
             Sort = "Id,desc",
@@ -44,7 +44,7 @@ public class ActivityControllerTest
         var controller = new ActivityController(activityService);
 
         // Act
-        var result = controller.GetList(brandIds, storeIds, studentIds, campaignIds, 
+        var result = controller.GetList(brandIds, storeIds, studentIds, campaignIds,
             campaignDetailIds, voucherIds, voucherItemIds, typeIds, state, paging);
 
         // Assert

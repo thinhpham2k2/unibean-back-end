@@ -19,7 +19,7 @@ public class MajorService : IMajorService
 
     private readonly IFireBaseService fireBaseService;
 
-    public MajorService(IMajorRepository majorRepository, 
+    public MajorService(IMajorRepository majorRepository,
         IFireBaseService fireBaseService)
     {
         var config = new MapperConfiguration(cfg
@@ -68,7 +68,7 @@ public class MajorService : IMajorService
         Major entity = majorRepository.GetById(id);
         if (entity != null)
         {
-            if(entity.Students.Count.Equals(0) && entity.CampaignMajors.Count.Equals(0))
+            if (entity.Students.Count.Equals(0) && entity.CampaignMajors.Count.Equals(0))
             {
                 if (entity.Image != null && entity.FileName != null)
                 {
@@ -96,11 +96,11 @@ public class MajorService : IMajorService
     }
 
     public PagedResultModel<MajorModel> GetAllByCampaign
-        (List<string> campaignIds, bool? state, string propertySort, 
+        (List<string> campaignIds, bool? state, string propertySort,
         bool isAsc, string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<MajorModel>>
-            (majorRepository.GetAllByCampaign(campaignIds, state, 
+            (majorRepository.GetAllByCampaign(campaignIds, state,
             propertySort, isAsc, search, page, limit));
     }
 
