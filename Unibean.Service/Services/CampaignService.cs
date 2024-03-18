@@ -148,7 +148,7 @@ public class CampaignService : ICampaignService
             .ReverseMap()
             .ForMember(c => c.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
             .ForMember(c => c.Duration, opt => opt.MapFrom(src
-                => ((DateOnly)src.EndOn).DayNumber - ((DateOnly)src.StartOn).DayNumber))
+                => ((DateOnly)src.EndOn).DayNumber - ((DateOnly)src.StartOn).DayNumber + 1))
             .ForMember(c => c.TotalSpending, opt => opt.MapFrom(src => 0))
             .ForMember(c => c.DateCreated, opt => opt.MapFrom(src => DateTime.Now))
             .ForMember(c => c.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
