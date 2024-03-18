@@ -27,12 +27,12 @@ public class AccountRepositoryTest
                 {
                     Id = i.ToString(),
                     Role = randomRole,
-                    UserName = "username" + i,
+                    UserName = "userName" + i,
                     Password = BCryptNet.HashPassword(i.ToString()),
                     Phone = "phone" + i,
                     Email = "email" + i,
                     Avatar = "avatar" + i,
-                    FileName = "filename" + i,
+                    FileName = "fileName" + i,
                     IsVerify = true,
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
@@ -119,7 +119,7 @@ public class AccountRepositoryTest
     public async void AccountRepository_CheckUsernameDuplicate_ReturnFalse()
     {
         // Arrange
-        string userName = "username1";
+        string userName = "userName1";
         var dbContext = await UnibeanDBContext();
         var repository = new AccountRepository(dbContext);
 
@@ -131,7 +131,7 @@ public class AccountRepositoryTest
     public async void AccountRepository_CheckUsernameDuplicate_ReturnTrue()
     {
         // Arrange
-        string userName = "username";
+        string userName = "userName";
         var dbContext = await UnibeanDBContext();
         var repository = new AccountRepository(dbContext);
 
@@ -196,7 +196,7 @@ public class AccountRepositoryTest
         // Arrange
         string id = "1";
         string email = "email" + id;
-        string userName = "username" + id;
+        string userName = "userName" + id;
         string password = id;
         var dbContext = await UnibeanDBContext();
         var repository = new AccountRepository(dbContext);
