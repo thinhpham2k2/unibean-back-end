@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
@@ -159,11 +160,13 @@ public class ActivityRepositoryTest
     public async void ActivityRepository_Delete()
     {
         // Arrange
+        string id = "1";
         var dbContext = await UnibeanDBContext();
         var repository = new ActivityRepository(dbContext);
 
         // Act & Assert
-        repository.Delete("1");
+        repository.Delete(id);
+        Assert.False((await dbContext.Activities.FindAsync(id)).Status.Value);
     }
 
     [Fact]

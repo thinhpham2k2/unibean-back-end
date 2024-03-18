@@ -32,7 +32,7 @@ public class AccountRepositoryTest
                     Phone = "phone" + i,
                     Email = "email" + i,
                     Avatar = "avatar" + i,
-                    FileName = "fileName" + i,
+                    FileName = "filename" + i,
                     IsVerify = true,
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
@@ -149,6 +149,7 @@ public class AccountRepositoryTest
 
         // Act & Assert
         repository.Delete(id);
+        Assert.False((await dbContext.Accounts.FindAsync(id)).Status.Value);
     }
 
     [Fact]
