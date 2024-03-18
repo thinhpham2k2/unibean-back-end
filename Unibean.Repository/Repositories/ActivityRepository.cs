@@ -31,12 +31,13 @@ public class ActivityRepository : IActivityRepository
                 var studentWallet = student.Wallets.Where(w => w.Type.Equals(WalletType.Green)).FirstOrDefault();
 
                 // Create Activity Transaction List
+                var amount = creation.VoucherItem.CampaignDetail.Price;
                 creation.ActivityTransactions = new List<ActivityTransaction> {
                     new() {
                         Id = Ulid.NewUlid().ToString(),
                         ActivityId = creation.Id,
                         WalletId = studentWallet.Id,
-                        Amount = -creation.VoucherItem.CampaignDetail.Price,
+                        Amount = -amount,
                         Rate = 1,
                         Description = creation.Description,
                         State = creation.State,
@@ -52,8 +53,8 @@ public class ActivityRepository : IActivityRepository
                 if (creation != null)
                 {
                     // Update student wallet balance
-                    student.TotalSpending += creation.VoucherItem.CampaignDetail.Price;
-                    studentWallet.Balance -= creation.VoucherItem.CampaignDetail.Price;
+                    student.TotalSpending += amount;
+                    studentWallet.Balance -= amount;
                     studentWallet.DateUpdated = DateTime.Now;
 
                     db.Students.Update(student);
@@ -175,8 +176,7 @@ public class ActivityRepository : IActivityRepository
         {
             var db = unibeanDB;
             var query = db.Activities
-                .Where(t => (EF.Functions.Like((string)(object)t.Type, "%" + search + "%")
-                || EF.Functions.Like(t.Store.StoreName, "%" + search + "%")
+                .Where(t => (EF.Functions.Like(t.Store.StoreName, "%" + search + "%")
                 || EF.Functions.Like(t.Store.Address, "%" + search + "%")
                 || EF.Functions.Like(t.Student.FullName, "%" + search + "%")
                 || EF.Functions.Like(t.VoucherItem.Voucher.VoucherName, "%" + search + "%")
@@ -264,8 +264,7 @@ public class ActivityRepository : IActivityRepository
         {
             var db = unibeanDB;
             result = db.Activities
-                .Where(t => (EF.Functions.Like((string)(object)t.Type, "%" + search + "%")
-                || EF.Functions.Like(t.Store.StoreName, "%" + search + "%")
+                .Where(t => (EF.Functions.Like(t.Store.StoreName, "%" + search + "%")
                 || EF.Functions.Like(t.Store.Address, "%" + search + "%")
                 || EF.Functions.Like(t.Student.FullName, "%" + search + "%")
                 || EF.Functions.Like(t.VoucherItem.Voucher.VoucherName, "%" + search + "%")
