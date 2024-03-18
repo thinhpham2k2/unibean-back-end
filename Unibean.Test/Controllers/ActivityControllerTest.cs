@@ -115,6 +115,7 @@ public class ActivityControllerTest
         Assert.Equal(StatusCodes.Status400BadRequest,
             result.Result?.GetType().GetProperty("StatusCode")?.GetValue(result.Result));
     }
+
     [Fact]
     public void ActivityController_GetById_ReturnOK()
     {
