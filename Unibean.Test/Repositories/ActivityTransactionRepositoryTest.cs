@@ -112,7 +112,7 @@ public class ActivityTransactionRepositoryTest
     }
 
     [Fact]
-    public async void IncomeOfGreenBean()
+    public async void ActivityTransactionRepository_IncomeOfGreenBean()
     {
         // Arrange
         DateOnly date = DateOnly.FromDateTime(DateTime.Now);
@@ -128,7 +128,7 @@ public class ActivityTransactionRepositoryTest
     }
 
     [Fact]
-    public async void OutcomeOfGreenBean()
+    public async void ActivityTransactionRepository_OutcomeOfGreenBean()
     {
         // Arrange
         string storeId = "1";
