@@ -83,7 +83,7 @@ public class CampaignActivityRepositoryTest
         var repository = new CampaignActivityRepository(dbContext);
 
         // Act
-        var result = repository.GetAll(campaignIds, stateIds, propertySort, 
+        var result = repository.GetAll(campaignIds, stateIds, propertySort,
             isAsc, search, page, limit);
 
         // Assert

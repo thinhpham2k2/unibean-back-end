@@ -75,7 +75,6 @@ public class StaffService : IStaffService
             // Map Update Staff Model
             cfg.CreateMap<Staff, UpdateStaffModel>()
             .ReverseMap()
-            .ForMember(a => a.Station, opt => opt.MapFrom(src => (string)null))
             .ForMember(a => a.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
             .ForPath(a => a.Account.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
             .ForPath(a => a.Account.Description, opt => opt.MapFrom(src => src.Description))

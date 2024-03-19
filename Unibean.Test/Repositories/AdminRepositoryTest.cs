@@ -83,7 +83,7 @@ public class AdminRepositoryTest
         var repository = new AdminRepository(dbContext);
 
         // Act
-        var result = repository.GetAll(state, propertySort, isAsc, 
+        var result = repository.GetAll(state, propertySort, isAsc,
             search, page, limit);
 
         // Assert

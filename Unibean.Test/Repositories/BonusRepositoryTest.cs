@@ -133,7 +133,7 @@ public class BonusRepositoryTest
         var repository = new BonusRepository(dbContext);
 
         // Act
-        var result = repository.GetAll(brandIds, storeIds, studentIds, 
+        var result = repository.GetAll(brandIds, storeIds, studentIds,
             state, propertySort, isAsc, search, page, limit);
 
         // Assert

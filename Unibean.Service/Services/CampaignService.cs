@@ -156,7 +156,6 @@ public class CampaignService : ICampaignService
             // Map Update Campaign Model
             cfg.CreateMap<Campaign, UpdateCampaignModel>()
             .ReverseMap()
-            .ForMember(c => c.Type, opt => opt.MapFrom(src => (string)null))
             .ForMember(c => c.Image, opt => opt.Ignore())
             .ForMember(c => c.ImageName, opt => opt.Ignore())
             .ForMember(c => c.DateUpdated, opt => opt.MapFrom(src => DateTime.Now));

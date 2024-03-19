@@ -100,7 +100,7 @@ public class CampaignRepositoryTest
                                             Student = new()
                                             {
                                                 Id = i.ToString(),
-                                                Account = new() 
+                                                Account = new()
                                                 {
                                                     Id = i.ToString(),
                                                     Email = "email" + i.ToString()

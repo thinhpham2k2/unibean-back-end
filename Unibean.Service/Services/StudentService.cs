@@ -177,8 +177,6 @@ public class StudentService : IStudentService
             // Map Update Student Model
             cfg.CreateMap<Student, UpdateStudentModel>()
             .ReverseMap()
-            .ForMember(s => s.Major, opt => opt.MapFrom(src => (string)null))
-            .ForMember(s => s.Campus, opt => opt.MapFrom(src => (string)null))
             .ForMember(s => s.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
             .ForPath(s => s.Account.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
             .ForPath(s => s.Account.State, opt => opt.MapFrom(src => true));

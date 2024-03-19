@@ -119,7 +119,7 @@ public class CampaignDetailRepositoryTest
         var repository = new CampaignDetailRepository(dbContext);
 
         // Act
-        var result = repository.GetAll(campaignIds, typeIds, state, 
+        var result = repository.GetAll(campaignIds, typeIds, state,
             propertySort, isAsc, search, page, limit);
 
         // Assert
@@ -145,7 +145,7 @@ public class CampaignDetailRepositoryTest
         var repository = new CampaignDetailRepository(dbContext);
 
         // Act
-        var result = repository.GetAllByStore(storeId, campaignIds, typeIds, state, 
+        var result = repository.GetAllByStore(storeId, campaignIds, typeIds, state,
             propertySort, isAsc, search, page, limit);
 
         // Assert

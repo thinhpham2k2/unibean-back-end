@@ -419,7 +419,7 @@ public class CampaignRepository : ICampaignRepository
         {
             var db = unibeanDB;
             var query = db.Campaigns
-                .Where(t 
+                .Where(t
                 => stateIds.Contains(t.CampaignActivities.OrderBy(
                     a => a.Id).LastOrDefault().State.Value)
                 && t.TotalSpending >= t.TotalIncome && (bool)t.Status);

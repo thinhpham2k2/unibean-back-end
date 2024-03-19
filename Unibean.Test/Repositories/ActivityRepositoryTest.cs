@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Office2010.Excel;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
@@ -232,7 +231,7 @@ public class ActivityRepositoryTest
         var repository = new ActivityRepository(dbContext);
 
         // Act
-        var result = repository.GetList(storeIds, studentIds, 
+        var result = repository.GetList(storeIds, studentIds,
             voucherIds, search);
 
         // Assert
