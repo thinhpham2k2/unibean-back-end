@@ -182,7 +182,6 @@ public class VoucherItemServiceTest
     public void VoucherItemService_EntityToExtra()
     {
         // Arrange
-        string code = "code";
         VoucherItem item = A.Fake<VoucherItem>();
         var service = new VoucherItemService(voucherRepository, voucherItemRepository);
 

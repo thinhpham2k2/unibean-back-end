@@ -23,8 +23,8 @@ public class CampaignTransactionRepository : ICampaignTransactionRepository
             if (creation != null)
             {
                 // Update wallet balance
-                var wallet = db.Wallets.Where(w => (bool)w.Status && w.Id.Equals(creation.WalletId))
-                    .FirstOrDefault();
+                var wallet = db.Wallets.Where(w => (bool)w.Status
+                && w.Id.Equals(creation.WalletId)).FirstOrDefault();
                 wallet.Balance += creation.Amount;
                 wallet.DateUpdated = DateTime.Now;
                 db.Wallets.Update(wallet);
