@@ -47,7 +47,6 @@ public class RequestTransactionRepository : IRequestTransactionRepository
             var db = unibeanDB;
             result = db.RequestTransactions
                 .Where(t => (EF.Functions.Like(t.Request.Admin.FullName, "%" + search + "%")
-                || EF.Functions.Like((string)(object)t.Wallet.Type, "%" + search + "%")
                 || EF.Functions.Like(t.Wallet.Brand.BrandName, "%" + search + "%")
                 || EF.Functions.Like("Nạp đậu", "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
