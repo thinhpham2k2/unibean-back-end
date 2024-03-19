@@ -17,8 +17,12 @@ public class StationRepositoryTest
         databaseContext.Database.EnsureCreated();
         if (!await databaseContext.Stations.AnyAsync())
         {
+            Array values = Enum.GetValues(typeof(StationState));
             for (int i = 1; i <= 10; i++)
             {
+                Random random = new();
+                StationState randomState =
+                    (StationState)values.GetValue(random.Next(values.Length));
                 databaseContext.Stations.Add(
                 new Station()
                 {
@@ -30,7 +34,7 @@ public class StationRepositoryTest
                     DateCreated = DateTime.Now,
                     DateUpdated = DateTime.Now,
                     Description = "description" + i,
-                    State = StationState.Active,
+                    State = randomState,
                     Status = true,
                 });
                 await databaseContext.SaveChangesAsync();

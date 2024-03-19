@@ -17,15 +17,19 @@ public class CampaignActivityRepositoryTest
         databaseContext.Database.EnsureCreated();
         if (!await databaseContext.CampaignActivities.AnyAsync())
         {
+            Array values = Enum.GetValues(typeof(CampaignState));
             for (int i = 1; i <= 10; i++)
             {
+                Random random = new();
+                CampaignState randomState = 
+                    (CampaignState)values.GetValue(random.Next(values.Length));
                 databaseContext.CampaignActivities.Add(
                 new CampaignActivity()
                 {
                     Id = i.ToString(),
                     CampaignId = i.ToString(),
                     DateCreated = DateTime.Now,
-                    State = CampaignState.Pending,
+                    State = randomState,
                     Description = "description" + i,
                     Status = true,
                 });

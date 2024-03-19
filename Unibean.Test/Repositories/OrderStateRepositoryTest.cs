@@ -17,8 +17,12 @@ public class OrderStateRepositoryTest
         databaseContext.Database.EnsureCreated();
         if (!await databaseContext.OrderStates.AnyAsync())
         {
+            Array values = Enum.GetValues(typeof(State));
             for (int i = 1; i <= 10; i++)
             {
+                Random random = new();
+                State randomState =
+                    (State)values.GetValue(random.Next(values.Length));
                 databaseContext.OrderStates.Add(
                 new OrderState()
                 {
@@ -44,7 +48,7 @@ public class OrderStateRepositoryTest
                     },
                     DateCreated = DateTime.Now,
                     Description = "description" + i,
-                    State = State.Order,
+                    State = randomState,
                     Status = true,
                 });
                 await databaseContext.SaveChangesAsync();
