@@ -65,7 +65,7 @@ public class ChallengeRepository : IChallengeRepository
         {
             var db = unibeanDB;
             var challenge = db.Challenges.FirstOrDefault(b => b.Id.Equals(id));
-            challenge.Status = false;
+             challenge.Status = false;
             db.Challenges.Update(challenge);
             db.SaveChanges();
         }
