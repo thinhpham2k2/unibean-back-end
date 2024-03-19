@@ -419,8 +419,9 @@ public class CampaignRepository : ICampaignRepository
         {
             var db = unibeanDB;
             var query = db.Campaigns
-                .Where(t =>
-                stateIds.Contains(t.CampaignActivities.OrderBy(a => a.Id).LastOrDefault().State.Value)
+                .Where(t
+                => stateIds.Contains(t.CampaignActivities.OrderBy(
+                    a => a.Id).LastOrDefault().State.Value)
                 && t.TotalSpending >= t.TotalIncome && (bool)t.Status);
 
             result = query
@@ -447,7 +448,8 @@ public class CampaignRepository : ICampaignRepository
             var db = unibeanDB;
             var query = db.Campaigns
                 .Where(t =>
-                stateIds.Contains(t.CampaignActivities.OrderBy(a => a.Id).LastOrDefault().State.Value)
+                stateIds.Contains(t.CampaignActivities.OrderBy(
+                    a => a.Id).LastOrDefault().State.Value)
                 && t.EndOn < date && (bool)t.Status);
 
             result = query
@@ -502,7 +504,8 @@ public class CampaignRepository : ICampaignRepository
         try
         {
             var db = unibeanDB;
-            if (!update.CampaignActivities.LastOrDefault().State.Equals(CampaignState.Pending))
+            if (!update.CampaignActivities.LastOrDefault().State
+                .Equals(CampaignState.Pending))
             {
                 db.CampaignActivities.Add(new CampaignActivity
                 {

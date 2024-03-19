@@ -51,8 +51,6 @@ public class ProductService : IProductService
             .ForMember(p => p.Status, opt => opt.MapFrom(src => true));
             cfg.CreateMap<Product, UpdateProductModel>()
             .ReverseMap()
-            .ForMember(t => t.Category, opt => opt.MapFrom(src => (string)null))
-            .ForMember(p => p.Images, opt => opt.MapFrom(src => (string)null))
             .ForMember(p => p.DateUpdated, opt => opt.MapFrom(src => DateTime.Now));
         });
         mapper = new Mapper(config);

@@ -56,8 +56,6 @@ public class VoucherService : IVoucherService
             .ReverseMap();
             cfg.CreateMap<Voucher, UpdateVoucherModel>()
             .ReverseMap()
-            .ForMember(v => v.Brand, opt => opt.MapFrom(src => (string)null))
-            .ForMember(v => v.Type, opt => opt.MapFrom(src => (string)null))
             .ForMember(v => v.Image, opt => opt.Ignore())
             .ForMember(v => v.ImageName, opt => opt.Ignore())
             .ForMember(v => v.DateUpdated, opt => opt.MapFrom(src => DateTime.Now));

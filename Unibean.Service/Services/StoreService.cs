@@ -104,7 +104,6 @@ public class StoreService : IStoreService
             .ForMember(s => s.Status, opt => opt.MapFrom(src => true));
             cfg.CreateMap<Store, UpdateStoreModel>()
             .ReverseMap()
-            .ForMember(s => s.Area, opt => opt.MapFrom(src => (string)null))
             .ForMember(s => s.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
             .ForPath(s => s.Account.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
             .ForPath(s => s.Account.Description, opt => opt.MapFrom(src => src.Description))

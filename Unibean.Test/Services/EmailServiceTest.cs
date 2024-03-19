@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using Unibean.Repository.Entities;
 using Unibean.Service.Services;
 
 namespace Unibean.Test.Services;
@@ -149,5 +150,127 @@ public class EmailServiceTest
         // Assert
         result.Should().NotBeNull();
         result.Should().BeOfType(typeof(string));
+    }
+
+    [Fact]
+    public void EmailService_SendEmailAbortOrder_ReturnFalse()
+    {
+        // Arrange
+        string receiver = "receiver";
+        string orderId = "01HQJE16SX45YXF9SM2GNAENS9";
+        var service = new EmailService();
+
+        // Act
+        var result = service.SendEmailAbortOrder(receiver, orderId);
+
+        // Assert
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void EmailService_SendEmailAbortOrder_ReturnTrue()
+    {
+        // Arrange
+        string receiver = "receiver@gmail.com";
+        string orderId = "01HQJE16SX45YXF9SM2GNAENS9";
+        var service = new EmailService();
+
+        // Act
+        var result = service.SendEmailAbortOrder(receiver, orderId);
+
+        // Assert
+        Assert.True(result);
+    }
+
+    [Fact]
+    public void EmailService_SendEmailCreateOrder_ReturnFalse()
+    {
+        // Arrange
+        string receiver = "receiver";
+        string studentCode = "123";
+        Order order = new()
+        {
+            Id = "01HQJE16SX45YXF9SM2GNAENS9",
+            Amount = 120000,
+            Station = new()
+            {
+                StationName = "Sảnh gương (Đối diện phòng 117)",
+                Address = "Địa chỉ: Lô E2a-7, Đường D1 Khu Công nghệ cao, P. Long Thạnh Mỹ, TP. Thủ Đức, TP. Hồ Chí Minh"
+            },
+            OrderDetails = new List<OrderDetail>()
+            {
+                new()
+                {
+                    Product = new()
+                    {
+                        ProductName = "Unibean Logo",
+                        Price = 30000,
+                        Images = new List<Image>()
+                        {
+                            new()
+                            {
+                                IsCover = true,
+                                Url = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/assets%2FlogoUB.png?alt=media&token=cc25afda-8384-43c8-b0de-a69cab2c86c2"
+                            }
+                        }
+                    },
+                    Quantity = 4,
+                    Amount = 120000
+                }
+            }
+        };
+        var service = new EmailService();
+
+        // Act
+        var result = service.SendEmailCreateOrder(receiver, studentCode, order);
+
+        // Assert
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void EmailService_SendEmailCreateOrder_ReturnTrue()
+    {
+        // Arrange
+        string receiver = "receiver@gmail.com";
+        string studentCode = "123";
+        Order order = new()
+        {
+            Id = "01HQJE16SX45YXF9SM2GNAENS9",
+            Amount = 120000,
+            Station = new()
+            {
+                StationName = "Sảnh gương (Đối diện phòng 117)",
+                Address = "Địa chỉ: Lô E2a-7, Đường D1 Khu Công nghệ cao, P. Long Thạnh Mỹ, TP. Thủ Đức, TP. Hồ Chí Minh"
+            },
+            OrderDetails = new List<OrderDetail>()
+            {
+                new()
+                {
+                    Product = new()
+                    {
+                        ProductName = "Unibean Logo",
+                        Price = 30000,
+                        Images = new List<Image>()
+                        {
+                            new()
+                            {
+                                IsCover = true,
+                                Url = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/assets%2FlogoUB.png?alt=media&token=cc25afda-8384-43c8-b0de-a69cab2c86c2"
+                            }
+                        }
+                    },
+                    Quantity = 4,
+                    Amount = 120000
+                }
+            }
+        };
+        var service = new EmailService();
+
+        // Act
+        var result = service.SendEmailCreateOrder(receiver, studentCode, order);
+
+        // Assert
+        Assert.True(result);
     }
 }

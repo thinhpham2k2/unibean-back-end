@@ -148,7 +148,7 @@ public class CampaignService : ICampaignService
             .ReverseMap()
             .ForMember(c => c.Id, opt => opt.MapFrom(src => Ulid.NewUlid()))
             .ForMember(c => c.Duration, opt => opt.MapFrom(src
-                => ((DateOnly)src.EndOn).DayNumber - ((DateOnly)src.StartOn).DayNumber))
+                => ((DateOnly)src.EndOn).DayNumber - ((DateOnly)src.StartOn).DayNumber + 1))
             .ForMember(c => c.TotalSpending, opt => opt.MapFrom(src => 0))
             .ForMember(c => c.DateCreated, opt => opt.MapFrom(src => DateTime.Now))
             .ForMember(c => c.DateUpdated, opt => opt.MapFrom(src => DateTime.Now))
@@ -156,7 +156,6 @@ public class CampaignService : ICampaignService
             // Map Update Campaign Model
             cfg.CreateMap<Campaign, UpdateCampaignModel>()
             .ReverseMap()
-            .ForMember(c => c.Type, opt => opt.MapFrom(src => (string)null))
             .ForMember(c => c.Image, opt => opt.Ignore())
             .ForMember(c => c.ImageName, opt => opt.Ignore())
             .ForMember(c => c.DateUpdated, opt => opt.MapFrom(src => DateTime.Now));

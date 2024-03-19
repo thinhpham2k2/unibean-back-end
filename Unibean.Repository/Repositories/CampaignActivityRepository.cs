@@ -55,8 +55,7 @@ public class CampaignActivityRepository : ICampaignActivityRepository
         {
             var db = unibeanDB;
             var query = db.CampaignActivities
-                .Where(t => (EF.Functions.Like((string)(object)t.State, "%" + search + "%")
-                || EF.Functions.Like(t.Campaign.CampaignName, "%" + search + "%")
+                .Where(t => (EF.Functions.Like(t.Campaign.CampaignName, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
                 && (campaignIds.Count == 0 || campaignIds.Contains(t.CampaignId))
                 && (stateIds.Count == 0 || stateIds.Contains(t.State.Value))
