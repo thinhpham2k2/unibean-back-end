@@ -56,7 +56,6 @@ public class TransactionRepository : ITransactionRepository
                     // Request transactions
                     result.AddRange(db.RequestTransactions
                         .Where(t => (EF.Functions.Like(t.Request.Admin.FullName, "%" + search + "%")
-                        || EF.Functions.Like((string)(object)t.Wallet.Type, "%" + search + "%")
                         || EF.Functions.Like(t.Wallet.Brand.BrandName, "%" + search + "%")
                         || EF.Functions.Like("Nạp đậu", "%" + search + "%")
                         || EF.Functions.Like(t.Description, "%" + search + "%"))
@@ -74,7 +73,6 @@ public class TransactionRepository : ITransactionRepository
                         // Challenge transactions
                         result.AddRange(db.ChallengeTransactions
                             .Where(t => (EF.Functions.Like(t.Challenge.Challenge.ChallengeName, "%" + search + "%")
-                            || EF.Functions.Like((string)(object)t.Wallet.Type, "%" + search + "%")
                             || EF.Functions.Like("Thử thách", "%" + search + "%")
                             || EF.Functions.Like(t.Description, "%" + search + "%"))
                             && (walletIds.Count == 0 || walletIds.Contains(t.WalletId))
@@ -89,7 +87,6 @@ public class TransactionRepository : ITransactionRepository
                         // Order transactions
                         result.AddRange(db.OrderTransactions
                         .Where(o => (EF.Functions.Like("Tạo đơn hàng (" + o.Amount + " đậu)", "%" + search + "%")
-                        || EF.Functions.Like((string)(object)o.Wallet.Type, "%" + search + "%")
                         || EF.Functions.Like("Đổi quà", "%" + search + "%")
                         || EF.Functions.Like(o.Description, "%" + search + "%"))
                         && (walletIds.Count == 0 || walletIds.Contains(o.WalletId))
@@ -122,8 +119,6 @@ public class TransactionRepository : ITransactionRepository
                         // Activity transactions
                         result.AddRange(db.ActivityTransactions
                         .Where(a => (EF.Functions.Like(a.Activity.VoucherItem.Voucher.VoucherName, "%" + search + "%")
-                        || EF.Functions.Like((string)(object)a.Wallet.Type, "%" + search + "%")
-                        || EF.Functions.Like((string)(object)a.Activity.Type, "%" + search + "%")
                         || EF.Functions.Like(a.Description, "%" + search + "%"))
                         && (walletIds.Count == 0 || walletIds.Contains(a.WalletId))
                         && (bool)a.Status)
