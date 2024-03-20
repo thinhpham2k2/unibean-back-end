@@ -85,7 +85,7 @@ public class StaffRepositoryTest
         var repository = new StaffRepository(dbContext);
 
         // Act
-        var result = repository.GetAll(stationIds, state, 
+        var result = repository.GetAll(stationIds, state,
             propertySort, isAsc, search, page, limit);
 
         // Assert

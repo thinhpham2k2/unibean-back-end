@@ -145,7 +145,7 @@ public class TransactionRepositoryTest
                 {
                     Id = i.ToString(),
                     BrandId = i.ToString(),
-                    CampaignName = "campaignName" +  i.ToString(),
+                    CampaignName = "campaignName" + i.ToString(),
                     DateCreated = DateTime.Now,
                     Status = true,
                 },

@@ -86,7 +86,7 @@ public class ImageRepositoryTest
         var repository = new ImageRepository(dbContext);
 
         // Act
-        var result = repository.GetAll(productIds, state, propertySort, 
+        var result = repository.GetAll(productIds, state, propertySort,
             isAsc, search, page, limit);
 
         // Assert

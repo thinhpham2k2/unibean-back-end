@@ -91,7 +91,7 @@ public class OrderStateRepository : IOrderStateRepository
     }
 
     public PagedResultModel<OrderState> GetAll
-        (List<string> orderIds, List<State> stateIds, string propertySort, 
+        (List<string> orderIds, List<State> stateIds, string propertySort,
         bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<OrderState> pagedResult = new();

@@ -140,7 +140,7 @@ public class OrderRepositoryTest
         var repository = new OrderRepository(dbContext);
 
         // Act
-        var result = repository.GetAll(stationIds, studentIds, stateIds, 
+        var result = repository.GetAll(stationIds, studentIds, stateIds,
             state, propertySort, isAsc, search, page, limit);
 
         // Assert

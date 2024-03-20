@@ -97,7 +97,7 @@ public class MajorRepositoryTest
         var repository = new MajorRepository(dbContext);
 
         // Act
-        var result = repository.GetAll(state, propertySort, 
+        var result = repository.GetAll(state, propertySort,
             isAsc, search, page, limit);
 
         // Assert
@@ -124,7 +124,7 @@ public class MajorRepositoryTest
         var repository = new MajorRepository(dbContext);
 
         // Act
-        var result = repository.GetAllByCampaign(campaignIds, state, 
+        var result = repository.GetAllByCampaign(campaignIds, state,
             propertySort, isAsc, search, page, limit);
 
         // Assert

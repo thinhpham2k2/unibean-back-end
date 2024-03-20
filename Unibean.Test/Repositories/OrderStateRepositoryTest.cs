@@ -127,7 +127,7 @@ public class OrderStateRepositoryTest
         var repository = new OrderStateRepository(dbContext);
 
         // Act
-        var result = repository.GetAll(orderIds, stateIds, propertySort, 
+        var result = repository.GetAll(orderIds, stateIds, propertySort,
             isAsc, search, page, limit);
 
         // Assert
