@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Enable.EnumDisplayName;
+using Microsoft.IdentityModel.Tokens;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
@@ -31,6 +33,9 @@ public class VoucherService : IVoucherService
             .ForMember(v => v.BrandName, opt => opt.MapFrom(src => src.Brand.BrandName))
             .ForMember(v => v.TypeName, opt => opt.MapFrom(src => src.Type.TypeName))
             .ForMember(v => v.NumberOfItems, opt => opt.MapFrom(src => src.VoucherItems.Count))
+            .ForMember(v => v.NumberOfItemsAvailable, opt => opt.MapFrom(
+                src => src.VoucherItems.Where(
+                    i => !(bool)i.IsLocked && !(bool)i.IsBought && !(bool)i.IsUsed && i.CampaignDetailId.IsNullOrEmpty()).Count()))
             .ReverseMap();
             cfg.CreateMap<PagedResultModel<Voucher>, PagedResultModel<VoucherModel>>()
             .ReverseMap();
@@ -39,6 +44,9 @@ public class VoucherService : IVoucherService
             .ForMember(v => v.BrandImage, opt => opt.MapFrom(src => src.Brand.Account.Avatar))
             .ForMember(v => v.TypeName, opt => opt.MapFrom(src => src.Type.TypeName))
             .ForMember(v => v.NumberOfItems, opt => opt.MapFrom(src => src.VoucherItems.Count))
+            .ForMember(v => v.NumberOfItemsAvailable, opt => opt.MapFrom(
+                src => src.VoucherItems.Where(
+                    i => !(bool)i.IsLocked && !(bool)i.IsBought && !(bool)i.IsUsed && i.CampaignDetailId.IsNullOrEmpty()).Count()))
             .ForMember(v => v.Campaigns, opt => opt.MapFrom(
                 src => src.VoucherItems.Where(v => v.CampaignDetail != null)
                 .Select(v => v.CampaignDetail.Campaign).Distinct()))
