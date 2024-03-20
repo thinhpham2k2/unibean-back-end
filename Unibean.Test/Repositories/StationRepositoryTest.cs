@@ -6,7 +6,7 @@ using Unibean.Repository.Repositories;
 
 namespace Unibean.Test.Repositories;
 
-public class CampaignActivityRepositoryTest
+public class StationRepositoryTest
 {
     private static async Task<UnibeanDBContext> UnibeanDBContext()
     {
@@ -15,22 +15,26 @@ public class CampaignActivityRepositoryTest
             .Options;
         var databaseContext = new UnibeanDBContext(options);
         databaseContext.Database.EnsureCreated();
-        if (!await databaseContext.CampaignActivities.AnyAsync())
+        if (!await databaseContext.Stations.AnyAsync())
         {
-            Array values = Enum.GetValues(typeof(CampaignState));
+            Array values = Enum.GetValues(typeof(StationState));
             for (int i = 1; i <= 10; i++)
             {
                 Random random = new();
-                CampaignState randomState =
-                    (CampaignState)values.GetValue(random.Next(values.Length));
-                databaseContext.CampaignActivities.Add(
-                new CampaignActivity()
+                StationState randomState =
+                    (StationState)values.GetValue(random.Next(values.Length));
+                databaseContext.Stations.Add(
+                new Station()
                 {
                     Id = i.ToString(),
-                    CampaignId = i.ToString(),
+                    StationName = "areaName" + i,
+                    Image = "image" + i,
+                    FileName = "fileName" + i,
+                    Address = "address" + i,
                     DateCreated = DateTime.Now,
-                    State = randomState,
+                    DateUpdated = DateTime.Now,
                     Description = "description" + i,
+                    State = randomState,
                     Status = true,
                 });
                 await databaseContext.SaveChangesAsync();
@@ -40,12 +44,12 @@ public class CampaignActivityRepositoryTest
     }
 
     [Fact]
-    public async void CampaignActivityRepository_Add()
+    public async void StationRepository_Add()
     {
         // Arrange
         string id = Ulid.NewUlid().ToString();
         var dbContext = await UnibeanDBContext();
-        var repository = new CampaignActivityRepository(dbContext);
+        var repository = new StationRepository(dbContext);
 
         // Act
         var result = repository.Add(new()
@@ -55,83 +59,81 @@ public class CampaignActivityRepositoryTest
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().BeOfType<CampaignActivity>();
+        result.Should().BeOfType<Station>();
         Assert.Equal(id, result.Id);
     }
 
     [Fact]
-    public async void CampaignActivityRepository_Delete()
+    public async void StationRepository_Delete()
     {
         // Arrange
         string id = "1";
         var dbContext = await UnibeanDBContext();
-        var repository = new CampaignActivityRepository(dbContext);
+        var repository = new StationRepository(dbContext);
 
         // Act & Assert
         repository.Delete(id);
-        Assert.False((await dbContext.CampaignActivities.FindAsync(id)).Status.Value);
+        Assert.False((await dbContext.Stations.FindAsync(id)).Status.Value);
     }
 
     [Fact]
-    public async void CampaignActivityRepository_GetAll()
+    public async void StationRepository_GetAll()
     {
         // Arrange
-        List<string> campaignIds = new();
-        List<CampaignState> stateIds = new();
+        List<StationState> stateIds = new();
         string propertySort = "Id";
         bool isAsc = true;
         string search = "";
         int page = 1;
         int limit = 10;
         var dbContext = await UnibeanDBContext();
-        var repository = new CampaignActivityRepository(dbContext);
+        var repository = new StationRepository(dbContext);
 
         // Act
-        var result = repository.GetAll(campaignIds, stateIds, propertySort,
-            isAsc, search, page, limit);
+        var result = repository.GetAll(stateIds, propertySort, isAsc,
+            search, page, limit);
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().BeOfType<PagedResultModel<CampaignActivity>>();
+        result.Should().BeOfType<PagedResultModel<Station>>();
         Assert.Equal(10, result.RowCount);
     }
 
     [Fact]
-    public async void CampaignActivityRepository_GetById()
+    public async void StationRepository_GetById()
     {
         // Arrange
         string id = "1";
         var dbContext = await UnibeanDBContext();
-        var repository = new CampaignActivityRepository(dbContext);
+        var repository = new StationRepository(dbContext);
 
         // Act
         var result = repository.GetById(id);
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().BeOfType<CampaignActivity>();
+        result.Should().BeOfType<Station>();
         Assert.Equal(id, result.Id);
-        Assert.Equal(id, result.CampaignId);
     }
 
     [Fact]
-    public async void CampaignActivityRepository_Update()
+    public async void StationRepository_Update()
     {
         // Arrange
         string id = "1";
-        string description = "description";
+        string areaName = "areaName";
         var dbContext = await UnibeanDBContext();
-        var repository = new CampaignActivityRepository(dbContext);
+        var repository = new StationRepository(dbContext);
 
         // Act
-        var existingAccount = await dbContext.CampaignActivities.FindAsync(id);
-        existingAccount.Description = description;
+        var existingAccount = await dbContext.Stations.FindAsync(id);
+        existingAccount.StationName = areaName;
         var result = repository.Update(existingAccount);
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().BeOfType<CampaignActivity>();
+        result.Should().BeOfType<Station>();
         Assert.Equal(id, result.Id);
-        Assert.Equal(description, result.Description);
+        Assert.Equal(areaName, result.StationName);
     }
 }

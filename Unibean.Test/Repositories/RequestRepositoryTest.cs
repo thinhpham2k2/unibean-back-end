@@ -6,7 +6,7 @@ using Unibean.Repository.Repositories;
 
 namespace Unibean.Test.Repositories;
 
-public class CampaignActivityRepositoryTest
+public class RequestRepositoryTest
 {
     private static async Task<UnibeanDBContext> UnibeanDBContext()
     {
@@ -15,22 +15,36 @@ public class CampaignActivityRepositoryTest
             .Options;
         var databaseContext = new UnibeanDBContext(options);
         databaseContext.Database.EnsureCreated();
-        if (!await databaseContext.CampaignActivities.AnyAsync())
+        if (!await databaseContext.Requests.AnyAsync())
         {
-            Array values = Enum.GetValues(typeof(CampaignState));
             for (int i = 1; i <= 10; i++)
             {
-                Random random = new();
-                CampaignState randomState =
-                    (CampaignState)values.GetValue(random.Next(values.Length));
-                databaseContext.CampaignActivities.Add(
-                new CampaignActivity()
+                databaseContext.Requests.Add(
+                new Request()
                 {
                     Id = i.ToString(),
-                    CampaignId = i.ToString(),
+                    BrandId = i.ToString(),
+                    Brand = new()
+                    {
+                        Id = i.ToString(),
+                        Status = true,
+                        Wallets = new List<Wallet>()
+                        {
+                            new()
+                            {
+                                Id = i.ToString(),
+                                Type = WalletType.Green,
+                                Balance = 100,
+                                Status = true,
+                            }
+                        }
+                    },
+                    AdminId = i.ToString(),
+                    Amount = 100,
                     DateCreated = DateTime.Now,
-                    State = randomState,
+                    DateUpdated = DateTime.Now,
                     Description = "description" + i,
+                    State = true,
                     Status = true,
                 });
                 await databaseContext.SaveChangesAsync();
@@ -40,97 +54,102 @@ public class CampaignActivityRepositoryTest
     }
 
     [Fact]
-    public async void CampaignActivityRepository_Add()
+    public async void RequestRepository_Add()
     {
         // Arrange
         string id = Ulid.NewUlid().ToString();
         var dbContext = await UnibeanDBContext();
-        var repository = new CampaignActivityRepository(dbContext);
+        var repository = new RequestRepository(dbContext);
 
         // Act
         var result = repository.Add(new()
         {
-            Id = id
+            Id = id,
+            BrandId = "1",
+            Amount = 100,
+            Description = "description" + id,
+            State = true,
+            Status = true,
         });
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().BeOfType<CampaignActivity>();
+        result.Should().BeOfType<Request>();
         Assert.Equal(id, result.Id);
     }
 
     [Fact]
-    public async void CampaignActivityRepository_Delete()
+    public async void RequestRepository_Delete()
     {
         // Arrange
         string id = "1";
         var dbContext = await UnibeanDBContext();
-        var repository = new CampaignActivityRepository(dbContext);
+        var repository = new RequestRepository(dbContext);
 
         // Act & Assert
         repository.Delete(id);
-        Assert.False((await dbContext.CampaignActivities.FindAsync(id)).Status.Value);
+        Assert.False((await dbContext.Requests.FindAsync(id)).Status.Value);
     }
 
     [Fact]
-    public async void CampaignActivityRepository_GetAll()
+    public async void RequestRepository_GetAll()
     {
         // Arrange
-        List<string> campaignIds = new();
-        List<CampaignState> stateIds = new();
+        List<string> brandIds = new();
+        List<string> adminIds = new();
+        bool? state = null;
         string propertySort = "Id";
         bool isAsc = true;
         string search = "";
         int page = 1;
         int limit = 10;
         var dbContext = await UnibeanDBContext();
-        var repository = new CampaignActivityRepository(dbContext);
+        var repository = new RequestRepository(dbContext);
 
         // Act
-        var result = repository.GetAll(campaignIds, stateIds, propertySort,
-            isAsc, search, page, limit);
+        var result = repository.GetAll(brandIds, adminIds, state,
+            propertySort, isAsc, search, page, limit);
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().BeOfType<PagedResultModel<CampaignActivity>>();
+        result.Should().BeOfType<PagedResultModel<Request>>();
         Assert.Equal(10, result.RowCount);
     }
 
     [Fact]
-    public async void CampaignActivityRepository_GetById()
+    public async void RequestRepository_GetById()
     {
         // Arrange
         string id = "1";
         var dbContext = await UnibeanDBContext();
-        var repository = new CampaignActivityRepository(dbContext);
+        var repository = new RequestRepository(dbContext);
 
         // Act
         var result = repository.GetById(id);
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().BeOfType<CampaignActivity>();
+        result.Should().BeOfType<Request>();
         Assert.Equal(id, result.Id);
-        Assert.Equal(id, result.CampaignId);
     }
 
     [Fact]
-    public async void CampaignActivityRepository_Update()
+    public async void RequestRepository_Update()
     {
         // Arrange
         string id = "1";
         string description = "description";
         var dbContext = await UnibeanDBContext();
-        var repository = new CampaignActivityRepository(dbContext);
+        var repository = new RequestRepository(dbContext);
 
         // Act
-        var existingAccount = await dbContext.CampaignActivities.FindAsync(id);
+        var existingAccount = await dbContext.Requests.FindAsync(id);
         existingAccount.Description = description;
         var result = repository.Update(existingAccount);
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().BeOfType<CampaignActivity>();
+        result.Should().BeOfType<Request>();
         Assert.Equal(id, result.Id);
         Assert.Equal(description, result.Description);
     }

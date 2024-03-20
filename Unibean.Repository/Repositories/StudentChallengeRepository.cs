@@ -35,7 +35,8 @@ public class StudentChallengeRepository : IStudentChallengeRepository
         try
         {
             var db = unibeanDB;
-            var studentChallenge = db.StudentChallenges.FirstOrDefault(b => b.Id.Equals(id));
+            var studentChallenge = db.StudentChallenges
+                .FirstOrDefault(b => b.Id.Equals(id));
             studentChallenge.Status = false;
             db.StudentChallenges.Update(studentChallenge);
             db.SaveChanges();

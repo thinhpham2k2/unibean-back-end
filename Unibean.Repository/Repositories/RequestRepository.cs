@@ -28,18 +28,20 @@ public class RequestRepository : IRequestRepository
             var wallet = brand.Wallets.Where(w => w.Type.Equals(WalletType.Green)).FirstOrDefault();
 
             // Create request transactions
-            creation.RequestTransactions = new List<RequestTransaction>() {
-                new RequestTransaction
+            creation.RequestTransactions = new List<RequestTransaction>()
             {
-                Id = Ulid.NewUlid().ToString(),
-                RequestId = creation.Id,
-                WalletId = wallet.Id,
-                Amount = creation.Amount,
-                Rate = 1,
-                Description = creation.Description,
-                State = creation.State,
-                Status = creation.Status,
-            }};
+                new()
+                {
+                    Id = Ulid.NewUlid().ToString(),
+                    RequestId = creation.Id,
+                    WalletId = wallet.Id,
+                    Amount = creation.Amount,
+                    Rate = 1,
+                    Description = creation.Description,
+                    State = creation.State,
+                    Status = creation.Status,
+                }
+            };
 
             creation = db.Requests.Add(creation).Entity;
 

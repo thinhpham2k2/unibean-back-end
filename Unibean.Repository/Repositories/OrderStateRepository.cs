@@ -91,19 +91,17 @@ public class OrderStateRepository : IOrderStateRepository
     }
 
     public PagedResultModel<OrderState> GetAll
-        (List<string> orderIds, List<State> stateIds, bool? state,
-        string propertySort, bool isAsc, string search, int page, int limit)
+        (List<string> orderIds, List<State> stateIds, string propertySort,
+        bool isAsc, string search, int page, int limit)
     {
         PagedResultModel<OrderState> pagedResult = new();
         try
         {
             var db = unibeanDB;
             var query = db.OrderStates
-                .Where(t => (EF.Functions.Like((string)(object)t.State, "%" + search + "%")
-                || EF.Functions.Like(t.Description, "%" + search + "%"))
+                .Where(t => (EF.Functions.Like(t.Description, "%" + search + "%"))
                 && (orderIds.Count == 0 || orderIds.Contains(t.OrderId))
                 && (stateIds.Count == 0 || stateIds.Contains(t.State.Value))
-                && (state == null || state.Equals(t.State))
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 
@@ -111,7 +109,6 @@ public class OrderStateRepository : IOrderStateRepository
                .Skip((page - 1) * limit)
                .Take(limit)
                .Include(s => s.Order)
-               .Include(s => s.State)
                .ToList();
 
             pagedResult = new PagedResultModel<OrderState>
@@ -140,7 +137,6 @@ public class OrderStateRepository : IOrderStateRepository
             orderState = db.OrderStates
             .Where(s => s.Id.Equals(id) && (bool)s.Status)
             .Include(s => s.Order)
-            .Include(s => s.State)
             .FirstOrDefault();
         }
         catch (Exception ex)
