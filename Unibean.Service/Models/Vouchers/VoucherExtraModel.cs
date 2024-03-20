@@ -24,5 +24,6 @@ public class VoucherExtraModel
     public bool? State { get; set; }
     public bool? Status { get; set; }
     public int? NumberOfItems { get; set; }
+    public int? NumberOfItemsAvailable { get; set; }
     public virtual ICollection<CampaignModel> Campaigns { get; set; }
 }

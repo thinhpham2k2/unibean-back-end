@@ -44,10 +44,8 @@ public class ActivityRepository : IActivityRepository
                         Status = creation.Status,
                     }};
 
-                creation.VoucherItem.Activities = null;
                 creation.VoucherItem.IsBought = true;
                 db.VoucherItems.Update(creation.VoucherItem);
-                creation.VoucherItem = null;
                 creation = db.Activities.Add(creation).Entity;
 
                 if (creation != null)
@@ -98,12 +96,8 @@ public class ActivityRepository : IActivityRepository
                         State = creation.State,
                         Status = creation.Status,
                     }};
-                creation.VoucherItem.Voucher = null;
-                creation.VoucherItem.CampaignDetail = null;
-                creation.VoucherItem.Activities = null;
                 creation.VoucherItem.IsUsed = true;
                 db.VoucherItems.Update(creation.VoucherItem);
-                creation.VoucherItem = null;
                 creation = db.Activities.Add(creation).Entity;
 
                 if (creation != null)

@@ -21,4 +21,5 @@ public class VoucherModel
     public bool? State { get; set; }
     public bool? Status { get; set; }
     public int? NumberOfItems { get; set; }
+    public int? NumberOfItemsAvailable { get; set; }
 }
