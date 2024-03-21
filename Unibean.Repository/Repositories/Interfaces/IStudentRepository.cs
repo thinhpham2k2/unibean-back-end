@@ -27,6 +27,8 @@ public interface IStudentRepository
 
     Student GetByIdForValidation(string id);
 
+    List<Student> GetRanking(int limit);
+
     List<string> GetWalletListById(string id);
 
     Student Update(Student update);

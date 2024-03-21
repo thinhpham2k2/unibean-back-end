@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MoreLinq;
 using System.Linq.Dynamic.Core;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Unibean.Repository.Repositories;
 
@@ -149,6 +151,24 @@ public class BrandRepository : IBrandRepository
             throw new Exception(ex.Message);
         }
         return brand;
+    }
+
+    public List<Brand> GetRanking(int limit)
+    {
+        List<Brand> result = new();
+        try
+        {
+            var db = unibeanDB;
+            result.AddRange(db.Brands.Where(
+                b => (bool)b.Status).OrderByDescending(
+                b => b.TotalSpending).Take(limit).Include(b => b.Account));
+            db.SaveChanges();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return result;
     }
 
     public Brand Update(Brand update)

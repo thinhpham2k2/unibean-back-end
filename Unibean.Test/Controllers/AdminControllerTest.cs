@@ -336,20 +336,17 @@ public class AdminControllerTest
     }
 
     [Fact]
-    public void AdminController_GetColumnChartByAdminId_ReturnOK()
+    public void AdminController_GetBrandRankingByAdminId_ReturnOK()
     {
         // Arrange
         string id = "";
-        DateOnly fromDate = DateOnly.FromDateTime(DateTime.Now);
-        DateOnly toDate = DateOnly.FromDateTime(DateTime.Now);
-        bool? isAsc = null;
-        A.CallTo(() => chartService.GetColumnChart
-        (id, fromDate, toDate, isAsc, Role.Admin)).Returns(new());
+        A.CallTo(() => chartService.GetRankingChart
+        (id, typeof(Brand), Role.Admin)).Returns(new());
         var controller = new AdminController
             (adminService, chartService, requestService, fireBaseService);
 
         // Act
-        var result = controller.GetColumnChartByAdminId(id, fromDate, toDate, isAsc);
+        var result = controller.GetBrandRankingByAdminId(id);
 
         // Assert
         result.Should().NotBeNull();
@@ -359,21 +356,18 @@ public class AdminControllerTest
     }
 
     [Fact]
-    public void AdminController_GetColumnChartByAdminId_ReturnBadRequest()
+    public void AdminController_GetBrandRankingByAdminId_ReturnBadRequest()
     {
         // Arrange
         string id = "";
-        DateOnly fromDate = DateOnly.FromDateTime(DateTime.Now);
-        DateOnly toDate = DateOnly.FromDateTime(DateTime.Now);
-        bool? isAsc = null;
-        A.CallTo(() => chartService.GetColumnChart
-        (id, fromDate, toDate, isAsc, Role.Admin))
+        A.CallTo(() => chartService.GetRankingChart
+        (id, typeof(Brand), Role.Admin))
             .Throws(new InvalidParameterException());
         var controller = new AdminController
             (adminService, chartService, requestService, fireBaseService);
 
         // Act
-        var result = controller.GetColumnChartByAdminId(id, fromDate, toDate, isAsc);
+        var result = controller.GetBrandRankingByAdminId(id);
 
         // Assert
         result.Should().NotBeNull();
@@ -383,16 +377,17 @@ public class AdminControllerTest
     }
 
     [Fact]
-    public void AdminController_GetLineChartByAdminId_ReturnOK()
+    public void AdminController_GetStudentRankingByAdminId_ReturnOK()
     {
         // Arrange
         string id = "";
-        A.CallTo(() => chartService.GetLineChart(id, Role.Admin)).Returns(new());
+        A.CallTo(() => chartService.GetRankingChart
+        (id, typeof(Student), Role.Admin)).Returns(new());
         var controller = new AdminController
             (adminService, chartService, requestService, fireBaseService);
 
         // Act
-        var result = controller.GetLineChartByAdminId(id);
+        var result = controller.GetStudentRankingByAdminId(id);
 
         // Assert
         result.Should().NotBeNull();
@@ -402,17 +397,18 @@ public class AdminControllerTest
     }
 
     [Fact]
-    public void AdminController_GetLineChartByAdminId_ReturnBadRequest()
+    public void AdminController_GetStudentRankingByAdminId_ReturnBadRequest()
     {
         // Arrange
         string id = "";
-        A.CallTo(() => chartService.GetLineChart(id, Role.Admin))
+        A.CallTo(() => chartService.GetRankingChart
+        (id, typeof(Student), Role.Admin))
             .Throws(new InvalidParameterException());
         var controller = new AdminController
             (adminService, chartService, requestService, fireBaseService);
 
         // Act
-        var result = controller.GetLineChartByAdminId(id);
+        var result = controller.GetStudentRankingByAdminId(id);
 
         // Assert
         result.Should().NotBeNull();

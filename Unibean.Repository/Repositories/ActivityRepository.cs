@@ -111,7 +111,6 @@ public class ActivityRepository : IActivityRepository
                     campaignWallet.Balance -= amount;
                     campaignWallet.DateUpdated = DateTime.Now;
 
-                    db.Students.Update(student);
                     db.Campaigns.Update(campaign);
                     db.Wallets.UpdateRange(studentWallet, campaignWallet);
                 }

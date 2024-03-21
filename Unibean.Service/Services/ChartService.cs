@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Enable.EnumDisplayName;
+using MoreLinq;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Service.Models.Charts;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Services.Interfaces;
+using Type = System.Type;
 
 namespace Unibean.Service.Services;
 
@@ -291,6 +293,70 @@ public class ChartService : IChartService
                             Date = d,
                         });
                     }
+                    return result;
+                }
+                throw new InvalidParameterException("Không tìm thấy cửa hàng");
+            default:
+                throw new InvalidParameterException("Xác thực không hợp lệ");
+        }
+    }
+
+    public List<RankingModel> GetRankingChart(string id, Type type, Role role)
+    {
+        List<RankingModel> result = new();
+        switch (role)
+        {
+            case Role.Admin:
+                Admin admin = adminRepository.GetById(id);
+                if (admin != null)
+                {
+                    if (type.Equals(typeof(Brand)))
+                    {
+                        // Danh sách 10 thương hiệu tiêu nhiều đậu xanh nhất
+                        var source = brandRepository.GetRanking(10);
+                        var num = source.GroupBy(r => r.TotalSpending).Select((r, index) => (r , index + 1));
+                        result.AddRange(source.Select((r, index) => new RankingModel()
+                        {
+                            Rank = num.First(n => n.r.Key.Equals(r.TotalSpending)).Item2,
+                            Name = r.BrandName,
+                            Image = r.Account.Avatar,
+                            Value = r.TotalSpending
+                        }));
+                    }
+                    else if (type.Equals(typeof(Student)))
+                    {
+                        // Danh sách 10 sinh viên tiêu nhiều đậu xanh nhất
+                        var source = studentRepository.GetRanking(10);
+                        var num = source.GroupBy(r => r.TotalSpending).Select((r, index) => (r, index + 1));
+                        result.AddRange(source.Select((r, index) => new RankingModel()
+                        {
+                            Rank = num.First(n => n.r.Key.Equals(r.TotalSpending)).Item2,
+                            Name = r.FullName,
+                            Image = r.Account.Avatar,
+                            Value = r.TotalSpending
+                        }));
+                    }
+                    return result;
+                }
+                throw new InvalidParameterException("Không tìm thấy quản trị viên");
+            case Role.Brand:
+                Brand brand = brandRepository.GetById(id);
+                if (brand != null)
+                {
+                    return result;
+                }
+                throw new InvalidParameterException("Không tìm thấy thương hiệu");
+            case Role.Staff:
+                Staff staff = staffRepository.GetById(id);
+                if (staff != null)
+                {
+                    return result;
+                }
+                throw new InvalidParameterException("Không tìm thấy nhân viên");
+            case Role.Store:
+                Store store = storeRepository.GetById(id);
+                if (store != null)
+                {
                     return result;
                 }
                 throw new InvalidParameterException("Không tìm thấy cửa hàng");

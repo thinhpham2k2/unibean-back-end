@@ -275,6 +275,24 @@ public class StudentRepository : IStudentRepository
         return student;
     }
 
+    public List<Student> GetRanking(int limit)
+    {
+        List<Student> result = new();
+        try
+        {
+            var db = unibeanDB;
+            result.AddRange(db.Students.Where(
+                s => (bool)s.Status).OrderByDescending(
+                s => s.TotalSpending).Take(limit).Include(s => s.Account));
+            db.SaveChanges();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return result;
+    }
+
     public List<string> GetWalletListById(string id)
     {
         List<string> list = new();

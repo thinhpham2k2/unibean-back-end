@@ -16,5 +16,7 @@ public interface IBrandRepository
 
     Brand GetById(string id);
 
+    List<Brand> GetRanking(int limit);
+
     Brand Update(Brand update);
 }
