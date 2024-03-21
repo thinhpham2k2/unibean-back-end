@@ -169,6 +169,29 @@ public class AdminController : ControllerBase
     }
 
     /// <summary>
+    /// Get brand rankings by admin id
+    /// </summary>
+    [HttpGet("{id}/brand-ranking")]
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType(typeof(List<RankingModel>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public IActionResult GetBrandRankingByAdminId(string id)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            return StatusCode(StatusCodes.Status200OK,
+                chartService.GetRankingChart(id, typeof(Brand), Role.Admin));
+        }
+        catch (InvalidParameterException e)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+        }
+    }
+
+    /// <summary>
     /// Get column chart by admin id
     /// </summary>
     [HttpGet("{id}/column-chart")]
@@ -239,6 +262,29 @@ public class AdminController : ControllerBase
                 return StatusCode(StatusCodes.Status201Created, request);
             }
             return StatusCode(StatusCodes.Status404NotFound, "Tạo thất bại");
+        }
+        catch (InvalidParameterException e)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Get student rankings by admin id
+    /// </summary>
+    [HttpGet("{id}/student-ranking")]
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType(typeof(List<RankingModel>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public IActionResult GetStudentRankingByAdminId(string id)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            return StatusCode(StatusCodes.Status200OK,
+                chartService.GetRankingChart(id, typeof(Student), Role.Admin));
         }
         catch (InvalidParameterException e)
         {

@@ -455,6 +455,46 @@ public class BrandControllerTest
     }
 
     [Fact]
+    public void BrandController_GetCampaignRankingByBrandId_ReturnOK()
+    {
+        // Arrange
+        string id = "";
+        A.CallTo(() => chartService
+        .GetRankingChart(id, typeof(Campaign), Role.Brand))
+            .Returns(new());
+        var controller = new BrandController(brandService, jwtService, chartService);
+
+        // Act
+        var result = controller.GetCampaignRankingByBrandId(id);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(ObjectResult));
+        Assert.Equal(StatusCodes.Status200OK,
+            result.GetType().GetProperty("StatusCode")?.GetValue(result));
+    }
+
+    [Fact]
+    public void BrandController_GetCampaignRankingByBrandId_ReturnBadRequest()
+    {
+        // Arrange
+        string id = "";
+        A.CallTo(() => chartService
+        .GetRankingChart(id, typeof(Campaign), Role.Brand))
+            .Throws(new InvalidParameterException());
+        var controller = new BrandController(brandService, jwtService, chartService);
+
+        // Act
+        var result = controller.GetCampaignRankingByBrandId(id);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(ObjectResult));
+        Assert.Equal(StatusCodes.Status400BadRequest,
+            result.GetType().GetProperty("StatusCode")?.GetValue(result));
+    }
+
+    [Fact]
     public void BrandController_GetColumnChartByBrandId_ReturnOK()
     {
         // Arrange
@@ -606,6 +646,44 @@ public class BrandControllerTest
 
         // Act
         var result = controller.GetLineChartByBrandId(id);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(ObjectResult));
+        Assert.Equal(StatusCodes.Status400BadRequest,
+            result.GetType().GetProperty("StatusCode")?.GetValue(result));
+    }
+
+    [Fact]
+    public void BrandController_GetStudentRankingByBrandId_ReturnOK()
+    {
+        // Arrange
+        string id = "";
+        A.CallTo(() => chartService.GetRankingChart(id, typeof(Student), Role.Brand))
+            .Returns(new());
+        var controller = new BrandController(brandService, jwtService, chartService);
+
+        // Act
+        var result = controller.GetStudentRankingByBrandId(id);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(ObjectResult));
+        Assert.Equal(StatusCodes.Status200OK,
+            result.GetType().GetProperty("StatusCode")?.GetValue(result));
+    }
+
+    [Fact]
+    public void BrandController_GetStudentRankingByBrandId_ReturnBadRequest()
+    {
+        // Arrange
+        string id = "";
+        A.CallTo(() => chartService.GetRankingChart(id, typeof(Student), Role.Brand))
+            .Throws(new InvalidParameterException());
+        var controller = new BrandController(brandService, jwtService, chartService);
+
+        // Act
+        var result = controller.GetStudentRankingByBrandId(id);
 
         // Assert
         result.Should().NotBeNull();

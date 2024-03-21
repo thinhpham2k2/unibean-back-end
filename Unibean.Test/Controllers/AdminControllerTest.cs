@@ -336,6 +336,88 @@ public class AdminControllerTest
     }
 
     [Fact]
+    public void AdminController_GetBrandRankingByAdminId_ReturnOK()
+    {
+        // Arrange
+        string id = "";
+        A.CallTo(() => chartService.GetRankingChart
+        (id, typeof(Brand), Role.Admin)).Returns(new());
+        var controller = new AdminController
+            (adminService, chartService, requestService, fireBaseService);
+
+        // Act
+        var result = controller.GetBrandRankingByAdminId(id);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(ObjectResult));
+        Assert.Equal(StatusCodes.Status200OK,
+            result.GetType().GetProperty("StatusCode")?.GetValue(result));
+    }
+
+    [Fact]
+    public void AdminController_GetBrandRankingByAdminId_ReturnBadRequest()
+    {
+        // Arrange
+        string id = "";
+        A.CallTo(() => chartService.GetRankingChart
+        (id, typeof(Brand), Role.Admin))
+            .Throws(new InvalidParameterException());
+        var controller = new AdminController
+            (adminService, chartService, requestService, fireBaseService);
+
+        // Act
+        var result = controller.GetBrandRankingByAdminId(id);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(ObjectResult));
+        Assert.Equal(StatusCodes.Status400BadRequest,
+            result.GetType().GetProperty("StatusCode")?.GetValue(result));
+    }
+
+    [Fact]
+    public void AdminController_GetStudentRankingByAdminId_ReturnOK()
+    {
+        // Arrange
+        string id = "";
+        A.CallTo(() => chartService.GetRankingChart
+        (id, typeof(Student), Role.Admin)).Returns(new());
+        var controller = new AdminController
+            (adminService, chartService, requestService, fireBaseService);
+
+        // Act
+        var result = controller.GetStudentRankingByAdminId(id);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(ObjectResult));
+        Assert.Equal(StatusCodes.Status200OK,
+            result.GetType().GetProperty("StatusCode")?.GetValue(result));
+    }
+
+    [Fact]
+    public void AdminController_GetStudentRankingByAdminId_ReturnBadRequest()
+    {
+        // Arrange
+        string id = "";
+        A.CallTo(() => chartService.GetRankingChart
+        (id, typeof(Student), Role.Admin))
+            .Throws(new InvalidParameterException());
+        var controller = new AdminController
+            (adminService, chartService, requestService, fireBaseService);
+
+        // Act
+        var result = controller.GetStudentRankingByAdminId(id);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(ObjectResult));
+        Assert.Equal(StatusCodes.Status400BadRequest,
+            result.GetType().GetProperty("StatusCode")?.GetValue(result));
+    }
+
+    [Fact]
     public void AdminController_GetColumnChartByAdminId_ReturnOK()
     {
         // Arrange

@@ -499,6 +499,24 @@ public class CampaignRepository : ICampaignRepository
         return campaign;
     }
 
+    public List<Campaign> GetRanking(string brandId, int limit)
+    {
+        List<Campaign> result = new();
+        try
+        {
+            var db = unibeanDB;
+            result.AddRange(db.Campaigns.Where(
+                c => c.BrandId.Equals(brandId) & (bool)c.Status).OrderByDescending(
+                c => c.TotalSpending).Take(limit));
+            db.SaveChanges();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return result;
+    }
+
     public Campaign Update(Campaign update)
     {
         try

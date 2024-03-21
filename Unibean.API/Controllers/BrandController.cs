@@ -218,6 +218,29 @@ public class BrandController : ControllerBase
     }
 
     /// <summary>
+    /// Get campaign rankings by brand id
+    /// </summary>
+    [HttpGet("{id}/campaign-ranking")]
+    [Authorize(Roles = "Admin, Brand")]
+    [ProducesResponseType(typeof(List<RankingModel>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public IActionResult GetCampaignRankingByBrandId(string id)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            return StatusCode(StatusCodes.Status200OK,
+                chartService.GetRankingChart(id, typeof(Campaign), Role.Brand));
+        }
+        catch (InvalidParameterException e)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+        }
+    }
+
+    /// <summary>
     /// Get column chart by brand id
     /// </summary>
     [HttpGet("{id}/column-chart")]
@@ -336,6 +359,29 @@ public class BrandController : ControllerBase
                 return StatusCode(StatusCodes.Status200OK, result);
             }
             return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của cửa hàng");
+        }
+        catch (InvalidParameterException e)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Get student rankings by brand id
+    /// </summary>
+    [HttpGet("{id}/student-ranking")]
+    [Authorize(Roles = "Admin, Brand")]
+    [ProducesResponseType(typeof(List<RankingModel>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public IActionResult GetStudentRankingByBrandId(string id)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            return StatusCode(StatusCodes.Status200OK,
+                chartService.GetRankingChart(id, typeof(Student), Role.Brand));
         }
         catch (InvalidParameterException e)
         {

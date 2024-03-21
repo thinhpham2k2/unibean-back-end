@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Enable.EnumDisplayName;
+using MoreLinq;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Service.Models.Charts;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Services.Interfaces;
+using Type = System.Type;
 
 namespace Unibean.Service.Services;
 
@@ -290,6 +292,147 @@ public class ChartService : IChartService
                             // Ngày diễn ra
                             Date = d,
                         });
+                    }
+                    return result;
+                }
+                throw new InvalidParameterException("Không tìm thấy cửa hàng");
+            default:
+                throw new InvalidParameterException("Xác thực không hợp lệ");
+        }
+    }
+
+    public List<RankingModel> GetRankingChart(string id, Type type, Role role)
+    {
+        List<RankingModel> result = new();
+        switch (role)
+        {
+            case Role.Admin:
+                Admin admin = adminRepository.GetById(id);
+                if (admin != null)
+                {
+                    if (type.Equals(typeof(Brand)))
+                    {
+                        // Danh sách 10 thương hiệu tiêu nhiều đậu xanh nhất
+                        var source = brandRepository.GetRanking(10);
+                        var num = source.GroupBy(r => r.TotalSpending).Select((r, index) => (r, index + 1));
+                        result.AddRange(source.Select((r, index) => new RankingModel()
+                        {
+                            Rank = num.First(n => n.r.Key.Equals(r.TotalSpending)).Item2,
+                            Name = r.BrandName,
+                            Image = r.Account.Avatar,
+                            Value = r.TotalSpending
+                        }));
+                    }
+                    else if (type.Equals(typeof(Student)))
+                    {
+                        // Danh sách 10 sinh viên tiêu nhiều đậu xanh nhất
+                        var source = studentRepository.GetRanking(10);
+                        var num = source.GroupBy(r => r.TotalSpending).Select((r, index) => (r, index + 1));
+                        result.AddRange(source.Select((r, index) => new RankingModel()
+                        {
+                            Rank = num.First(n => n.r.Key.Equals(r.TotalSpending)).Item2,
+                            Name = r.FullName,
+                            Image = r.Account.Avatar,
+                            Value = r.TotalSpending
+                        }));
+                    }
+                    return result;
+                }
+                throw new InvalidParameterException("Không tìm thấy quản trị viên");
+            case Role.Brand:
+                if (brandRepository.CheckBrandId(id))
+                {
+                    if (type.Equals(typeof(Campaign)))
+                    {
+                        // Danh sách 10 chiến dịch tiêu nhiều đậu xanh nhất thuộc thương hiệu
+                        var source = campaignRepository.GetRanking(id, 10);
+                        var num = source.GroupBy(r => r.TotalSpending).Select((r, index) => (r, index + 1));
+                        result.AddRange(source.Select((r, index) => new RankingModel()
+                        {
+                            Rank = num.First(n => n.r.Key.Equals(r.TotalSpending)).Item2,
+                            Name = r.CampaignName,
+                            Image = r.Image,
+                            Value = r.TotalSpending
+                        }));
+                    }
+                    else if (type.Equals(typeof(Student)))
+                    {
+                        // Danh sách 10 sinh viên tiêu nhiều đậu xanh nhất đối với thương hiệu
+                        var source = studentRepository.GetRankingByBrand(id, 10);
+                        var num = source.GroupBy(r => r.TotalSpending).Select((r, index) => (r, index + 1));
+                        result.AddRange(source.Select((r, index) => new RankingModel()
+                        {
+                            Rank = num.First(n => n.r.Key.Equals(r.TotalSpending)).Item2,
+                            Name = r.Name,
+                            Image = r.Image,
+                            Value = r.TotalSpending
+                        }));
+                    }
+                    return result;
+                }
+                throw new InvalidParameterException("Không tìm thấy thương hiệu");
+            case Role.Staff:
+                Staff staff = staffRepository.GetById(id);
+                if (staff != null)
+                {
+                    if (type.Equals(typeof(Product)))
+                    {
+                        // Danh sách 10 sản phẩm được đổi nhiều nhất ở trạm
+                        var source = productRepository.GetRankingByStation(staff.StationId, 10);
+                        var num = source.GroupBy(r => r.Total).Select((r, index) => (r, index + 1));
+                        result.AddRange(source.Select((r, index) => new RankingModel()
+                        {
+                            Rank = num.First(n => n.r.Key.Equals(r.Total)).Item2,
+                            Name = r.Name,
+                            Image = r.Image,
+                            Value = r.Total
+                        }));
+                    }
+                    else if (type.Equals(typeof(Student)))
+                    {
+                        // Danh sách 10 sinh viên tiêu nhiều đậu đỏ nhất đối với trạm
+                        var source = studentRepository.GetRankingByStation(staff.StationId, 10);
+                        var num = source.GroupBy(r => r.TotalSpending).Select((r, index) => (r, index + 1));
+                        result.AddRange(source.Select((r, index) => new RankingModel()
+                        {
+                            Rank = num.First(n => n.r.Key.Equals(r.TotalSpending)).Item2,
+                            Name = r.Name,
+                            Image = r.Image,
+                            Value = r.TotalSpending
+                        }));
+                    }
+                    return result;
+                }
+                throw new InvalidParameterException("Không tìm thấy nhân viên");
+            case Role.Store:
+                Store store = storeRepository.GetById(id);
+                if (store != null)
+                {
+                    if (type.Equals(typeof(Campaign)))
+                    {
+                        // Danh sách 10 chiến dịch tiêu nhiều đậu xanh nhất thuộc thương hiệu
+                        var source = campaignRepository.GetRanking(store.BrandId, 10);
+                        var num = source.GroupBy(r => r.TotalSpending).Select((r, index) => (r, index + 1));
+                        result.AddRange(source.Select((r, index) => new RankingModel()
+                        {
+                            Rank = num.First(n => n.r.Key.Equals(r.TotalSpending)).Item2,
+                            Name = r.CampaignName,
+                            Image = r.Image,
+                            Value = r.TotalSpending
+                        }));
+                    }
+                    else if (type.Equals(typeof(Student)))
+                    {
+                        // Danh sách 10 sinh viên nhận thưởng nhiều xanh nhất tại cửa hàng
+                        var source = studentRepository.GetRankingByStore(store.Id, 10);
+                        var num = source.GroupBy(r => r.TotalSpending).Select((r, index) => (r, index + 1));
+                        result.AddRange(source.Select((r, index) => new RankingModel()
+                        {
+                            Rank = num.First(n => n.r.Key.Equals(r.TotalSpending)).Item2,
+                            Name = r.Name,
+                            Image = r.Image,
+                            Value = r.TotalSpending
+                        }));
                     }
                     return result;
                 }

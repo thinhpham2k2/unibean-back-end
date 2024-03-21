@@ -26,5 +26,7 @@ public interface ICampaignRepository
 
     Campaign GetById(string id);
 
+    List<Campaign> GetRanking(string brandId, int limit);
+
     Campaign Update(Campaign update);
 }

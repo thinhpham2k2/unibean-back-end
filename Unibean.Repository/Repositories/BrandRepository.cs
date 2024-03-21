@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MoreLinq;
 using System.Linq.Dynamic.Core;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
@@ -45,6 +46,23 @@ public class BrandRepository : IBrandRepository
             throw new Exception(ex.Message);
         }
         return creation;
+    }
+
+    public bool CheckBrandId(string id)
+    {
+        Brand brand = new();
+        try
+        {
+            var db = unibeanDB;
+            brand = db.Brands
+            .Where(s => s.Id.Equals(id) && (bool)s.Status)
+            .FirstOrDefault();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return brand != null;
     }
 
     public long CountBrand()
@@ -149,6 +167,24 @@ public class BrandRepository : IBrandRepository
             throw new Exception(ex.Message);
         }
         return brand;
+    }
+
+    public List<Brand> GetRanking(int limit)
+    {
+        List<Brand> result = new();
+        try
+        {
+            var db = unibeanDB;
+            result.AddRange(db.Brands.Where(
+                b => (bool)b.Status).OrderByDescending(
+                b => b.TotalSpending).Take(limit).Include(b => b.Account));
+            db.SaveChanges();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return result;
     }
 
     public Brand Update(Brand update)

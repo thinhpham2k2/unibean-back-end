@@ -122,6 +122,36 @@ public class ProductRepository : IProductRepository
         return product;
     }
 
+    public List<ProductRanking> GetRankingByStation(string stationId, int limit)
+    {
+        List<ProductRanking> result = new();
+        try
+        {
+            var db = unibeanDB;
+            result.AddRange(db.Products.Where(
+                s => s.OrderDetails.Any(a => (bool)a.Status
+                & a.Order.StationId.Equals(stationId))
+                & (bool)s.Status)
+                .Include(s => s.Images)
+                .Include(s => s.OrderDetails.Where(a => (bool)a.Status
+                    & a.Order.StationId.Equals(stationId)))
+                .ToList()
+                .Select((s, index) => new ProductRanking()
+                {
+                    Name = s.ProductName,
+                    Image = s.Images.FirstOrDefault(i => (bool)i.IsCover & (bool)i.Status).Url,
+                    Total = s.OrderDetails.Select(a => a.Quantity).Sum(),
+                }).OrderByDescending(
+                a => a.Total).Take(limit));
+            db.SaveChanges();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return result;
+    }
+
     public Product Update(Product update)
     {
         try

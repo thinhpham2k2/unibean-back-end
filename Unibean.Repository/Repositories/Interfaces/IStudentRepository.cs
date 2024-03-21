@@ -3,6 +3,13 @@ using Unibean.Repository.Paging;
 
 namespace Unibean.Repository.Repositories.Interfaces;
 
+public record StudentRanking
+{
+    public string Name { get; set; }
+    public string Image { get; set; }
+    public decimal? TotalSpending { get; set; }
+}
+
 public interface IStudentRepository
 {
     Student Add(Student creation);
@@ -26,6 +33,14 @@ public interface IStudentRepository
     Student GetById(string id);
 
     Student GetByIdForValidation(string id);
+
+    List<Student> GetRanking(int limit);
+
+    List<StudentRanking> GetRankingByBrand(string brandId, int limit);
+
+    List<StudentRanking> GetRankingByStation(string stationId, int limit);
+
+    List<StudentRanking> GetRankingByStore(string storeId, int limit);
 
     List<string> GetWalletListById(string id);
 

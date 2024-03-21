@@ -3,6 +3,7 @@ using System.Linq.Dynamic.Core;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
+using Type = Unibean.Repository.Entities.Type;
 
 namespace Unibean.Repository.Repositories;
 
@@ -273,6 +274,116 @@ public class StudentRepository : IStudentRepository
             throw new Exception(ex.Message);
         }
         return student;
+    }
+
+    public List<Student> GetRanking(int limit)
+    {
+        List<Student> result = new();
+        try
+        {
+            var db = unibeanDB;
+            result.AddRange(db.Students.Where(
+                s => (bool)s.Status).OrderByDescending(
+                s => s.TotalSpending).Take(limit).Include(s => s.Account));
+            db.SaveChanges();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return result;
+    }
+
+    public List<StudentRanking> GetRankingByBrand(string brandId, int limit)
+    {
+        List<StudentRanking> result = new();
+        try
+        {
+            var db = unibeanDB;
+            result.AddRange(db.Students.Where(
+                s => s.Activities.Any(a => (bool)a.Status
+                & a.Type.Equals(Type.Buy)
+                & a.VoucherItem.Voucher.BrandId.Equals(brandId))
+                & (bool)s.Status)
+                .Include(s => s.Account)
+                .Include(s => s.Activities.Where(a => (bool)a.Status
+                    & a.Type.Equals(Type.Buy) & a.VoucherItem.Voucher.BrandId.Equals(brandId)))
+                    .ThenInclude(a => a.VoucherItem.CampaignDetail)
+                .ToList()
+                .Select((s, index) => new StudentRanking()
+                {
+                    Name = s.FullName,
+                    Image = s.Account.Avatar,
+                    TotalSpending = s.Activities.Select(a => a.VoucherItem.CampaignDetail.Price).Sum(),
+                }).OrderByDescending(
+                a => a.TotalSpending).Take(limit));
+            db.SaveChanges();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return result;
+    }
+
+    public List<StudentRanking> GetRankingByStation(string stationId, int limit)
+    {
+        List<StudentRanking> result = new();
+        try
+        {
+            var db = unibeanDB;
+            result.AddRange(db.Students.Where(
+                s => s.Orders.Any(a => (bool)a.Status
+                & a.StationId.Equals(stationId))
+                & (bool)s.Status)
+                .Include(s => s.Account)
+                .Include(s => s.Orders.Where(a => (bool)a.Status
+                    & a.StationId.Equals(stationId)))
+                .ToList()
+                .Select((s, index) => new StudentRanking()
+                {
+                    Name = s.FullName,
+                    Image = s.Account.Avatar,
+                    TotalSpending = s.Orders.Select(a => a.Amount).Sum(),
+                }).OrderByDescending(
+                a => a.TotalSpending).Take(limit));
+            db.SaveChanges();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return result;
+    }
+
+    public List<StudentRanking> GetRankingByStore(string storeId, int limit)
+    {
+        List<StudentRanking> result = new();
+        try
+        {
+            var db = unibeanDB;
+            result.AddRange(db.Students.Where(
+                s => s.Bonuses.Any(b => (bool)b.Status
+                & b.StoreId.Equals(storeId))
+                & (bool)s.Status)
+                .Include(s => s.Account)
+                .Include(s => s.Bonuses.Where(b => (bool)b.Status
+                    & b.StoreId.Equals(storeId)))
+                .ToList()
+                .Select((s, index) => new StudentRanking()
+                {
+                    Name = s.FullName,
+                    Image = s.Account.Avatar,
+                    TotalSpending = s.Bonuses.Select(a => a.Amount).Sum(),
+                }).OrderByDescending(
+                a => a.TotalSpending).Take(limit));
+            db.SaveChanges();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return result;
     }
 
     public List<string> GetWalletListById(string id)
