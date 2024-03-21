@@ -330,6 +330,29 @@ public class StoreController : ControllerBase
     }
 
     /// <summary>
+    /// Get campaign rankings by store id
+    /// </summary>
+    [HttpGet("{id}/campaign-ranking")]
+    [Authorize(Roles = "Admin, Brand, Store")]
+    [ProducesResponseType(typeof(List<RankingModel>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public IActionResult GetCampaignRankingByStoreId(string id)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            return StatusCode(StatusCodes.Status200OK,
+                chartService.GetRankingChart(id, typeof(Campaign), Role.Store));
+        }
+        catch (InvalidParameterException e)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+        }
+    }
+
+    /// <summary>
     /// Get column chart by store id
     /// </summary>
     [HttpGet("{id}/column-chart")]
@@ -410,6 +433,29 @@ public class StoreController : ControllerBase
         try
         {
             return StatusCode(StatusCodes.Status200OK, chartService.GetLineChart(id, Role.Store));
+        }
+        catch (InvalidParameterException e)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Get student rankings by store id
+    /// </summary>
+    [HttpGet("{id}/student-ranking")]
+    [Authorize(Roles = "Admin, Brand, Store")]
+    [ProducesResponseType(typeof(List<RankingModel>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public IActionResult GetStudentRankingByStoreId(string id)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            return StatusCode(StatusCodes.Status200OK,
+                chartService.GetRankingChart(id, typeof(Student), Role.Store));
         }
         catch (InvalidParameterException e)
         {

@@ -728,6 +728,88 @@ public class StoreControllerTest
     }
 
     [Fact]
+    public void StoreController_GetCampaignRankingByStoreId_ReturnOK()
+    {
+        // Arrange
+        string id = "";
+        A.CallTo(() => chartService.GetRankingChart
+        (id, typeof(Campaign), Role.Store)).Returns(new());
+        var controller = new StoreController
+            (storeService, bonusService, chartService);
+
+        // Act
+        var result = controller.GetCampaignRankingByStoreId(id);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(ObjectResult));
+        Assert.Equal(StatusCodes.Status200OK,
+            result.GetType().GetProperty("StatusCode")?.GetValue(result));
+    }
+
+    [Fact]
+    public void StoreController_GetCampaignRankingByStoreId_ReturnBadRequest()
+    {
+        // Arrange
+        string id = "";
+        A.CallTo(() => chartService.GetRankingChart
+        (id, typeof(Campaign), Role.Store))
+            .Throws(new InvalidParameterException());
+        var controller = new StoreController
+            (storeService, bonusService, chartService);
+
+        // Act
+        var result = controller.GetCampaignRankingByStoreId(id);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(ObjectResult));
+        Assert.Equal(StatusCodes.Status400BadRequest,
+            result.GetType().GetProperty("StatusCode")?.GetValue(result));
+    }
+
+    [Fact]
+    public void StoreController_GetStudentRankingByStoreId_ReturnOK()
+    {
+        // Arrange
+        string id = "";
+        A.CallTo(() => chartService.GetRankingChart
+        (id, typeof(Student), Role.Store)).Returns(new());
+        var controller = new StoreController
+            (storeService, bonusService, chartService);
+
+        // Act
+        var result = controller.GetStudentRankingByStoreId(id);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(ObjectResult));
+        Assert.Equal(StatusCodes.Status200OK,
+            result.GetType().GetProperty("StatusCode")?.GetValue(result));
+    }
+
+    [Fact]
+    public void StoreController_GetStudentRankingByStoreId_ReturnBadRequest()
+    {
+        // Arrange
+        string id = "";
+        A.CallTo(() => chartService.GetRankingChart
+        (id, typeof(Student), Role.Store))
+            .Throws(new InvalidParameterException());
+        var controller = new StoreController
+            (storeService, bonusService, chartService);
+
+        // Act
+        var result = controller.GetStudentRankingByStoreId(id);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(ObjectResult));
+        Assert.Equal(StatusCodes.Status400BadRequest,
+            result.GetType().GetProperty("StatusCode")?.GetValue(result));
+    }
+
+    [Fact]
     public void StoreController_GetHistoryTransactionByStoreId_ReturnOK()
     {
         // Arrange

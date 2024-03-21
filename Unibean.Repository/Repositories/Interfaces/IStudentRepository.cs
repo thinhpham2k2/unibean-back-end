@@ -40,6 +40,8 @@ public interface IStudentRepository
 
     List<StudentRanking> GetRankingByStation(string stationId, int limit);
 
+    List<StudentRanking> GetRankingByStore(string storeId, int limit);
+
     List<string> GetWalletListById(string id);
 
     Student Update(Student update);

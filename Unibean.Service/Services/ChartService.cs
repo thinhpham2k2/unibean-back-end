@@ -314,7 +314,7 @@ public class ChartService : IChartService
                     {
                         // Danh sách 10 thương hiệu tiêu nhiều đậu xanh nhất
                         var source = brandRepository.GetRanking(10);
-                        var num = source.GroupBy(r => r.TotalSpending).Select((r, index) => (r , index + 1));
+                        var num = source.GroupBy(r => r.TotalSpending).Select((r, index) => (r, index + 1));
                         result.AddRange(source.Select((r, index) => new RankingModel()
                         {
                             Rank = num.First(n => n.r.Key.Equals(r.TotalSpending)).Item2,
@@ -417,6 +417,19 @@ public class ChartService : IChartService
                         {
                             Rank = num.First(n => n.r.Key.Equals(r.TotalSpending)).Item2,
                             Name = r.CampaignName,
+                            Image = r.Image,
+                            Value = r.TotalSpending
+                        }));
+                    }
+                    else if (type.Equals(typeof(Student)))
+                    {
+                        // Danh sách 10 sinh viên nhận thưởng nhiều xanh nhất tại cửa hàng
+                        var source = studentRepository.GetRankingByStore(store.Id, 10);
+                        var num = source.GroupBy(r => r.TotalSpending).Select((r, index) => (r, index + 1));
+                        result.AddRange(source.Select((r, index) => new RankingModel()
+                        {
+                            Rank = num.First(n => n.r.Key.Equals(r.TotalSpending)).Item2,
+                            Name = r.Name,
                             Image = r.Image,
                             Value = r.TotalSpending
                         }));

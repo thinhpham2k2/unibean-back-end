@@ -7,4 +7,3 @@ public class RankingModel
     public string Image { get; set; }
     public decimal? Value { get; set; }
 }
-    
