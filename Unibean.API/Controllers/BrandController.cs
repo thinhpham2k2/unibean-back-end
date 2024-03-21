@@ -218,25 +218,21 @@ public class BrandController : ControllerBase
     }
 
     /// <summary>
-    /// Get column chart by brand id
+    /// Get campaign rankings by brand id
     /// </summary>
-    [HttpGet("{id}/column-chart")]
+    [HttpGet("{id}/campaign-ranking")]
     [Authorize(Roles = "Admin, Brand")]
-    [ProducesResponseType(typeof(List<ColumnChartModel>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<RankingModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public IActionResult GetColumnChartByBrandId(
-        string id,
-        [FromQuery] DateOnly fromDate,
-        [FromQuery] DateOnly toDate,
-        [FromQuery] bool? isAsc)
+    public IActionResult GetCampaignRankingByBrandId(string id)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         try
         {
             return StatusCode(StatusCodes.Status200OK,
-                chartService.GetColumnChart(id, fromDate, toDate, isAsc, Role.Brand));
+                chartService.GetRankingChart(id, typeof(Campaign), Role.Brand));
         }
         catch (InvalidParameterException e)
         {
@@ -283,28 +279,6 @@ public class BrandController : ControllerBase
     }
 
     /// <summary>
-    /// Get line chart by brand id
-    /// </summary>
-    [HttpGet("{id}/line-chart")]
-    [Authorize(Roles = "Admin, Brand")]
-    [ProducesResponseType(typeof(List<LineChartModel>), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public IActionResult GetLineChartByBrandId(string id)
-    {
-        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
-
-        try
-        {
-            return StatusCode(StatusCodes.Status200OK, chartService.GetLineChart(id, Role.Brand));
-        }
-        catch (InvalidParameterException e)
-        {
-            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
-        }
-    }
-
-    /// <summary>
     /// Get store list by brand id
     /// </summary>
     /// <param name="id">Brand id.</param>
@@ -336,6 +310,29 @@ public class BrandController : ControllerBase
                 return StatusCode(StatusCodes.Status200OK, result);
             }
             return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của cửa hàng");
+        }
+        catch (InvalidParameterException e)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Get student rankings by brand id
+    /// </summary>
+    [HttpGet("{id}/student-ranking")]
+    [Authorize(Roles = "Admin, Brand")]
+    [ProducesResponseType(typeof(List<RankingModel>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public IActionResult GetStudentRankingByBrandId(string id)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            return StatusCode(StatusCodes.Status200OK,
+                chartService.GetRankingChart(id, typeof(Student), Role.Brand));
         }
         catch (InvalidParameterException e)
         {

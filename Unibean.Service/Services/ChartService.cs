@@ -340,9 +340,34 @@ public class ChartService : IChartService
                 }
                 throw new InvalidParameterException("Không tìm thấy quản trị viên");
             case Role.Brand:
-                Brand brand = brandRepository.GetById(id);
-                if (brand != null)
+                if (brandRepository.CheckBrandId(id))
                 {
+                    if (type.Equals(typeof(Campaign)))
+                    {
+                        // Danh sách 10 chiến dịch tiêu nhiều đậu xanh nhất thuộc thương hiệu
+                        var source = campaignRepository.GetRanking(id, 10);
+                        var num = source.GroupBy(r => r.TotalSpending).Select((r, index) => (r, index + 1));
+                        result.AddRange(source.Select((r, index) => new RankingModel()
+                        {
+                            Rank = num.First(n => n.r.Key.Equals(r.TotalSpending)).Item2,
+                            Name = r.CampaignName,
+                            Image = r.Image,
+                            Value = r.TotalSpending
+                        }));
+                    }
+                    else if (type.Equals(typeof(Student)))
+                    {
+                        // Danh sách 10 sinh viên tiêu nhiều đậu xanh nhất đối với thương hiệu
+                        var source = studentRepository.GetRankingByBrand(id, 10);
+                        var num = source.GroupBy(r => r.TotalSpending).Select((r, index) => (r, index + 1));
+                        result.AddRange(source.Select((r, index) => new RankingModel()
+                        {
+                            Rank = num.First(n => n.r.Key.Equals(r.TotalSpending)).Item2,
+                            Name = r.Name,
+                            Image = r.Image,
+                            Value = r.TotalSpending
+                        }));
+                    }
                     return result;
                 }
                 throw new InvalidParameterException("Không tìm thấy thương hiệu");
@@ -357,6 +382,19 @@ public class ChartService : IChartService
                 Store store = storeRepository.GetById(id);
                 if (store != null)
                 {
+                    if (type.Equals(typeof(Campaign)))
+                    {
+                        // Danh sách 10 chiến dịch tiêu nhiều đậu xanh nhất thuộc thương hiệu
+                        var source = campaignRepository.GetRanking(store.BrandId, 10);
+                        var num = source.GroupBy(r => r.TotalSpending).Select((r, index) => (r, index + 1));
+                        result.AddRange(source.Select((r, index) => new RankingModel()
+                        {
+                            Rank = num.First(n => n.r.Key.Equals(r.TotalSpending)).Item2,
+                            Name = r.CampaignName,
+                            Image = r.Image,
+                            Value = r.TotalSpending
+                        }));
+                    }
                     return result;
                 }
                 throw new InvalidParameterException("Không tìm thấy cửa hàng");

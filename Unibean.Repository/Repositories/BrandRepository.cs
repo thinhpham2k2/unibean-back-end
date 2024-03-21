@@ -4,7 +4,6 @@ using System.Linq.Dynamic.Core;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Unibean.Repository.Repositories;
 
@@ -47,6 +46,23 @@ public class BrandRepository : IBrandRepository
             throw new Exception(ex.Message);
         }
         return creation;
+    }
+
+    public bool CheckBrandId(string id)
+    {
+        Brand brand = new();
+        try
+        {
+            var db = unibeanDB;
+            brand = db.Brands
+            .Where(s => s.Id.Equals(id) && (bool)s.Status)
+            .FirstOrDefault();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return brand != null;
     }
 
     public long CountBrand()

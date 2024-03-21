@@ -7,6 +7,8 @@ public interface IBrandRepository
 {
     Brand Add(Brand creation);
 
+    bool CheckBrandId(string id);
+
     long CountBrand();
 
     void Delete(string id);
