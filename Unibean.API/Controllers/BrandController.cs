@@ -241,6 +241,33 @@ public class BrandController : ControllerBase
     }
 
     /// <summary>
+    /// Get column chart by brand id
+    /// </summary>
+    [HttpGet("{id}/column-chart")]
+    [Authorize(Roles = "Admin, Brand")]
+    [ProducesResponseType(typeof(List<ColumnChartModel>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public IActionResult GetColumnChartByBrandId(
+        string id,
+        [FromQuery] DateOnly fromDate,
+        [FromQuery] DateOnly toDate,
+        [FromQuery] bool? isAsc)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            return StatusCode(StatusCodes.Status200OK,
+                chartService.GetColumnChart(id, fromDate, toDate, isAsc, Role.Brand));
+        }
+        catch (InvalidParameterException e)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+        }
+    }
+
+    /// <summary>
     /// Get history transaction by brand id
     /// </summary>
     /// <param name="id">Brand id.</param>
@@ -271,6 +298,28 @@ public class BrandController : ControllerBase
                 return StatusCode(StatusCodes.Status200OK, result);
             }
             return StatusCode(StatusCodes.Status400BadRequest, "Thuộc tính không hợp lệ của lịch sử giao dịch");
+        }
+        catch (InvalidParameterException e)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Get line chart by brand id
+    /// </summary>
+    [HttpGet("{id}/line-chart")]
+    [Authorize(Roles = "Admin, Brand")]
+    [ProducesResponseType(typeof(List<LineChartModel>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public IActionResult GetLineChartByBrandId(string id)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            return StatusCode(StatusCodes.Status200OK, chartService.GetLineChart(id, Role.Brand));
         }
         catch (InvalidParameterException e)
         {

@@ -375,6 +375,32 @@ public class ChartService : IChartService
                 Staff staff = staffRepository.GetById(id);
                 if (staff != null)
                 {
+                    if (type.Equals(typeof(Product)))
+                    {
+                        // Danh sách 10 sản phẩm được đổi nhiều nhất ở trạm
+                        var source = productRepository.GetRankingByStation(staff.StationId, 10);
+                        var num = source.GroupBy(r => r.Total).Select((r, index) => (r, index + 1));
+                        result.AddRange(source.Select((r, index) => new RankingModel()
+                        {
+                            Rank = num.First(n => n.r.Key.Equals(r.Total)).Item2,
+                            Name = r.Name,
+                            Image = r.Image,
+                            Value = r.Total
+                        }));
+                    }
+                    else if (type.Equals(typeof(Student)))
+                    {
+                        // Danh sách 10 sinh viên tiêu nhiều đậu đỏ nhất đối với trạm
+                        var source = studentRepository.GetRankingByStation(staff.StationId, 10);
+                        var num = source.GroupBy(r => r.TotalSpending).Select((r, index) => (r, index + 1));
+                        result.AddRange(source.Select((r, index) => new RankingModel()
+                        {
+                            Rank = num.First(n => n.r.Key.Equals(r.TotalSpending)).Item2,
+                            Name = r.Name,
+                            Image = r.Image,
+                            Value = r.TotalSpending
+                        }));
+                    }
                     return result;
                 }
                 throw new InvalidParameterException("Không tìm thấy nhân viên");

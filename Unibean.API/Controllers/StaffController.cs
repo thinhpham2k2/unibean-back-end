@@ -210,6 +210,52 @@ public class StaffController : ControllerBase
     }
 
     /// <summary>
+    /// Get product rankings by staff id
+    /// </summary>
+    [HttpGet("{id}/product-ranking")]
+    [Authorize(Roles = "Admin, Staff")]
+    [ProducesResponseType(typeof(List<RankingModel>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public IActionResult GetProductRankingByStaffId(string id)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            return StatusCode(StatusCodes.Status200OK,
+                chartService.GetRankingChart(id, typeof(Product), Role.Staff));
+        }
+        catch (InvalidParameterException e)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Get student rankings by staff id
+    /// </summary>
+    [HttpGet("{id}/student-ranking")]
+    [Authorize(Roles = "Admin, Staff")]
+    [ProducesResponseType(typeof(List<RankingModel>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public IActionResult GetStudentRankingByStaffId(string id)
+    {
+        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
+
+        try
+        {
+            return StatusCode(StatusCodes.Status200OK,
+                chartService.GetRankingChart(id, typeof(Student), Role.Staff));
+        }
+        catch (InvalidParameterException e)
+        {
+            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+        }
+    }
+
+    /// <summary>
     /// Get title by staff id
     /// </summary>
     [HttpGet("{id}/title")]

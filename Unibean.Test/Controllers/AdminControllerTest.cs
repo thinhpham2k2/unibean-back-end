@@ -418,6 +418,92 @@ public class AdminControllerTest
     }
 
     [Fact]
+    public void AdminController_GetColumnChartByAdminId_ReturnOK()
+    {
+        // Arrange
+        string id = "";
+        DateOnly fromDate = DateOnly.FromDateTime(DateTime.Now);
+        DateOnly toDate = DateOnly.FromDateTime(DateTime.Now);
+        bool? isAsc = null;
+        A.CallTo(() => chartService.GetColumnChart
+        (id, fromDate, toDate, isAsc, Role.Admin)).Returns(new());
+        var controller = new AdminController
+            (adminService, chartService, requestService, fireBaseService);
+
+        // Act
+        var result = controller.GetColumnChartByAdminId(id, fromDate, toDate, isAsc);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(ObjectResult));
+        Assert.Equal(StatusCodes.Status200OK,
+            result.GetType().GetProperty("StatusCode")?.GetValue(result));
+    }
+
+    [Fact]
+    public void AdminController_GetColumnChartByAdminId_ReturnBadRequest()
+    {
+        // Arrange
+        string id = "";
+        DateOnly fromDate = DateOnly.FromDateTime(DateTime.Now);
+        DateOnly toDate = DateOnly.FromDateTime(DateTime.Now);
+        bool? isAsc = null;
+        A.CallTo(() => chartService.GetColumnChart
+        (id, fromDate, toDate, isAsc, Role.Admin))
+            .Throws(new InvalidParameterException());
+        var controller = new AdminController
+            (adminService, chartService, requestService, fireBaseService);
+
+        // Act
+        var result = controller.GetColumnChartByAdminId(id, fromDate, toDate, isAsc);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(ObjectResult));
+        Assert.Equal(StatusCodes.Status400BadRequest,
+            result.GetType().GetProperty("StatusCode")?.GetValue(result));
+    }
+
+    [Fact]
+    public void AdminController_GetLineChartByAdminId_ReturnOK()
+    {
+        // Arrange
+        string id = "";
+        A.CallTo(() => chartService.GetLineChart(id, Role.Admin)).Returns(new());
+        var controller = new AdminController
+            (adminService, chartService, requestService, fireBaseService);
+
+        // Act
+        var result = controller.GetLineChartByAdminId(id);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(ObjectResult));
+        Assert.Equal(StatusCodes.Status200OK,
+            result.GetType().GetProperty("StatusCode")?.GetValue(result));
+    }
+
+    [Fact]
+    public void AdminController_GetLineChartByAdminId_ReturnBadRequest()
+    {
+        // Arrange
+        string id = "";
+        A.CallTo(() => chartService.GetLineChart(id, Role.Admin))
+            .Throws(new InvalidParameterException());
+        var controller = new AdminController
+            (adminService, chartService, requestService, fireBaseService);
+
+        // Act
+        var result = controller.GetLineChartByAdminId(id);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(ObjectResult));
+        Assert.Equal(StatusCodes.Status400BadRequest,
+            result.GetType().GetProperty("StatusCode")?.GetValue(result));
+    }
+
+    [Fact]
     public void AdminController_CreateRequest_ReturnCreated()
     {
         // Arrange

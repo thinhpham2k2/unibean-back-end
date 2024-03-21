@@ -362,6 +362,84 @@ public class StaffControllerTest
     }
 
     [Fact]
+    public void StaffController_GetProductRankingByStaffId_ReturnOK()
+    {
+        // Arrange
+        string id = "";
+        A.CallTo(() => chartService.GetRankingChart
+        (id, typeof(Product), Role.Staff)).Returns(new());
+        var controller = new StaffController(chartService, staffService);
+
+        // Act
+        var result = controller.GetProductRankingByStaffId(id);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(ObjectResult));
+        Assert.Equal(StatusCodes.Status200OK,
+            result.GetType().GetProperty("StatusCode")?.GetValue(result));
+    }
+
+    [Fact]
+    public void StaffController_GetProductRankingByStaffId_ReturnBadRequest()
+    {
+        // Arrange
+        string id = "";
+        A.CallTo(() => chartService.GetRankingChart
+        (id, typeof(Product), Role.Staff))
+            .Throws(new InvalidParameterException());
+        var controller = new StaffController(chartService, staffService);
+
+        // Act
+        var result = controller.GetProductRankingByStaffId(id);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(ObjectResult));
+        Assert.Equal(StatusCodes.Status400BadRequest,
+            result.GetType().GetProperty("StatusCode")?.GetValue(result));
+    }
+
+    [Fact]
+    public void StaffController_GetStudentRankingByStaffId_ReturnOK()
+    {
+        // Arrange
+        string id = "";
+        A.CallTo(() => chartService.GetRankingChart
+        (id, typeof(Student), Role.Staff)).Returns(new());
+        var controller = new StaffController(chartService, staffService);
+
+        // Act
+        var result = controller.GetStudentRankingByStaffId(id);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(ObjectResult));
+        Assert.Equal(StatusCodes.Status200OK,
+            result.GetType().GetProperty("StatusCode")?.GetValue(result));
+    }
+
+    [Fact]
+    public void StaffController_GetStudentRankingByStaffId_ReturnBadRequest()
+    {
+        // Arrange
+        string id = "";
+        A.CallTo(() => chartService.GetRankingChart
+        (id, typeof(Student), Role.Staff))
+            .Throws(new InvalidParameterException());
+        var controller = new StaffController(chartService, staffService);
+
+        // Act
+        var result = controller.GetStudentRankingByStaffId(id);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(ObjectResult));
+        Assert.Equal(StatusCodes.Status400BadRequest,
+            result.GetType().GetProperty("StatusCode")?.GetValue(result));
+    }
+
+    [Fact]
     public void StaffController_GetLineChartByStaffId_ReturnOK()
     {
         // Arrange

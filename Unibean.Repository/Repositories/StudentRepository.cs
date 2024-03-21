@@ -326,6 +326,36 @@ public class StudentRepository : IStudentRepository
         return result;
     }
 
+    public List<StudentRanking> GetRankingByStation(string stationId, int limit)
+    {
+        List<StudentRanking> result = new();
+        try
+        {
+            var db = unibeanDB;
+            result.AddRange(db.Students.Where(
+                s => s.Orders.Any(a => (bool)a.Status
+                & a.StationId.Equals(stationId))
+                & (bool)s.Status)
+                .Include(s => s.Account)
+                .Include(s => s.Orders.Where(a => (bool)a.Status
+                    & a.StationId.Equals(stationId)))
+                .ToList()
+                .Select((s, index) => new StudentRanking()
+                {
+                    Name = s.FullName,
+                    Image = s.Account.Avatar,
+                    TotalSpending = s.Orders.Select(a => a.Amount).Sum(),
+                }).OrderByDescending(
+                a => a.TotalSpending).Take(limit));
+            db.SaveChanges();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return result;
+    }
+
     public List<string> GetWalletListById(string id)
     {
         List<string> list = new();
