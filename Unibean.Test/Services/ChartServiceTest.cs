@@ -5,6 +5,7 @@ using Unibean.Repository.Entities;
 using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Service.Models.Charts;
 using Unibean.Service.Services;
+using Type = System.Type;
 
 namespace Unibean.Test.Services;
 
@@ -113,6 +114,63 @@ public class ChartServiceTest
         Assert.Equal(7, result.Count);
         Assert.Equal(7, result.Sum(r => r.Green));
         Assert.Equal(14, result.Sum(r => r.Red));
+    }
+
+    [Fact]
+    public void ChartService_GetRankingChart()
+    {
+        // Arrange
+        string id = "id";
+        Type type = typeof(Brand);
+        Role role = Role.Admin;
+        A.CallTo(() => adminRepository.GetById(id))
+            .Returns(new());
+        A.CallTo(() => brandRepository.GetRanking(10))
+            .Returns(new()
+            {
+                new()
+                {
+                    BrandName = "name1",
+                    Account = new()
+                    {
+                        Avatar = "avatar1"
+                    },
+                    TotalSpending = 100,
+                },
+                new()
+                {
+                    BrandName = "name2",
+                    Account = new()
+                    {
+                        Avatar = "avatar2"
+                    },
+                    TotalSpending = 200,
+                },
+                new()
+                {
+                    BrandName = "name3",
+                    Account = new()
+                    {
+                        Avatar = "avatar3"
+                    },
+                    TotalSpending = 200,
+                },
+            });
+        var service = new ChartService
+            (adminRepository, brandRepository, campaignRepository,
+            productRepository, staffRepository, storeRepository,
+            orderRepository, studentRepository, activityRepository,
+            voucherItemRepository, orderTransactionRepository, activityTransactionRepository,
+            requestTransactionRepository, campaignTransactionRepository, bonusTransactionRepository);
+
+        // Act
+        var result = service.GetRankingChart(id, type, role);
+
+        //Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType(typeof(List<RankingModel>));
+        Assert.Equal(3, result.Count);
+        Assert.Equal(2, result.Max(r => r.Rank));
     }
 
     [Fact]
