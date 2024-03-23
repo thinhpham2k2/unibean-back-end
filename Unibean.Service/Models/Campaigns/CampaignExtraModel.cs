@@ -29,7 +29,7 @@ public class CampaignExtraModel
     public string CurrentState { get; set; }
     public string CurrentStateName { get; set; }
     public bool? Status { get; set; }
-    public int? NumberOfParticipants { get; set; }
+    public int? NumberOfItemsUsed { get; set; }
     public decimal? UsageCost { get; set; }
     public decimal? TotalCost { get; set; }
 }

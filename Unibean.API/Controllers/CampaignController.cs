@@ -79,7 +79,7 @@ public class CampaignController : ControllerBase
     /// </summary>
     [HttpGet("{id}")]
     [Authorize(Roles = "Admin, Brand, Store, Student")]
-    [ProducesResponseType(typeof(CampaignModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(CampaignExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public IActionResult GetById(string id)
