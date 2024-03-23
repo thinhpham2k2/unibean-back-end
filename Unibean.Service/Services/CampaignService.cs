@@ -106,12 +106,13 @@ public class CampaignService : ICampaignService
                 src => src.CampaignActivities.LastOrDefault().State))
             .ForMember(c => c.CurrentStateName, opt => opt.MapFrom(
                 src => src.CampaignActivities.LastOrDefault().State.GetDisplayName()))
-            .ForMember(c => c.NumberOfParticipants, opt => opt.MapFrom((src, dest) =>
+            .ForMember(c => c.NumberOfItemsUsed, opt => opt.MapFrom((src, dest) =>
             {
                 try
                 {
                     var i = src.CampaignDetails?.SelectMany(c => c.VoucherItems);
-                    return i.IsNullOrEmpty() ? 0 : i.Where(v => (bool)v.IsUsed).Count();
+                    return i.IsNullOrEmpty() ? 0 : i.Where(
+                        v => (bool)v.IsLocked & (bool)v.IsBought & (bool)v.IsUsed).Count();
                 }
                 catch
                 {
