@@ -301,7 +301,6 @@ public class VoucherItemService : IVoucherItemService
         if (insert.Template != null && insert.Template.Length > 0)
         {
             var upload = $"{Directory.GetCurrentDirectory()}/wwwroot/upload/" + Ulid.NewUlid() + "/";
-            Console.WriteLine(upload);
             if (!Directory.Exists(upload))
             {
                 Directory.CreateDirectory(upload);
