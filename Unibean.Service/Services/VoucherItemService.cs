@@ -300,6 +300,7 @@ public class VoucherItemService : IVoucherItemService
     {
         if (insert.Template != null && insert.Template.Length > 0)
         {
+            //var upload = $"{Directory.GetCurrentDirectory()}/wwwroot/upload/" + Ulid.NewUlid() + "/";
             var upload = $"{Directory.GetCurrentDirectory()}/wwwroot/upload/" + Ulid.NewUlid() + "/";
             if (!Directory.Exists(upload))
             {
