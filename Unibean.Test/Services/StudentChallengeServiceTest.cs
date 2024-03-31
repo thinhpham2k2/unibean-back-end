@@ -1,7 +1,6 @@
 ﻿using FakeItEasy;
 using FluentAssertions;
 using Unibean.Repository.Entities;
-using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Service.Models.StudentChallenges;
 using Unibean.Service.Services;
@@ -66,29 +65,24 @@ public class StudentChallengeServiceTest
         string propertySort = "";
         bool isAsc = true;
         string search = "";
-        int page = 1;
-        int limit = 10;
-        PagedResultModel<StudentChallenge> pagedResultModel = new()
+        List<StudentChallenge> pagedResultModel = new()
         {
-            Result = new()
-            {
-                new(),
-                new(),
-                new()
-            }
+            new(),
+            new(),
+            new()
         };
         A.CallTo(() => studentChallengeRepository.GetAll(studentIds, challengeIds, typeIds, state,
-            propertySort, isAsc, search, page, limit)).Returns(pagedResultModel);
+            propertySort, isAsc, search)).Returns(pagedResultModel);
         var service = new StudentChallengeService(studentChallengeRepository);
 
         // Act
         var result = service.GetAll(studentIds, challengeIds, typeIds, state,
-            propertySort, isAsc, search, page, limit);
+            propertySort, isAsc, search);
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().BeOfType(typeof(PagedResultModel<StudentChallengeModel>));
-        Assert.Equal(pagedResultModel.Result.Count, result.Result.Count);
+        result.Should().BeOfType(typeof(List<StudentChallengeModel>));
+        Assert.Equal(pagedResultModel.Count, result.Count);
     }
 
     [Fact]

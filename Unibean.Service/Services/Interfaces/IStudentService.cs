@@ -29,7 +29,7 @@ public interface IStudentService
     OrderExtraModel GetOrderByOrderId(string id, string orderId);
 
     PagedResultModel<StudentChallengeModel> GetChallengeListByStudentId
-        (List<ChallengeType> typeIds, string id, bool? isCompleted, bool? state, bool? isClaimed, string propertySort,
+        (List<ChallengeType> typeIds, string id, bool? state, bool? isCompleted, bool? isClaimed, string propertySort,
         bool isAsc, string search, int page, int limit);
 
     PagedResultModel<TransactionModel> GetHistoryTransactionListByStudentId

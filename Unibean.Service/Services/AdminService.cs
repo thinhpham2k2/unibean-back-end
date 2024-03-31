@@ -119,7 +119,7 @@ public class AdminService : IAdminService
             }
             else
             {
-                throw new InvalidParameterException("Không thể xóa quản trị viên");
+                throw new InvalidParameterException("Không thể xóa quản trị viên do tồn tại yêu cầu nạp bởi tài khoản này");
             }
         }
         else
