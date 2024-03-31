@@ -286,18 +286,15 @@ public class StudentServiceTest
         string search = "";
         int page = 1;
         int limit = 10;
-        PagedResultModel<StudentChallengeModel> pagedResultModel = new()
+        List<StudentChallengeModel> pagedResultModel = new()
         {
-            Result = new()
-            {
-                new(),
-                new(),
-                new()
-            }
+            new(),
+            new(),
+            new()
         };
         A.CallTo(() => studentRepository.CheckStudentId(id)).Returns(true);
         A.CallTo(() => studentChallengeService.GetAll(new() { id }, new(),
-            typeIds, state, propertySort, isAsc, search, page, limit)).Returns(pagedResultModel);
+            typeIds, state, propertySort, isAsc, search)).Returns(pagedResultModel);
         var service = new StudentService(studentRepository, fireBaseService, accountRepository,
             invitationService, studentChallengeService, challengeTransactionService, orderService,
             voucherItemService, emailService, transactionService);
@@ -309,7 +306,7 @@ public class StudentServiceTest
         // Assert
         result.Should().NotBeNull();
         result.Should().BeOfType(typeof(PagedResultModel<StudentChallengeModel>));
-        Assert.Equal(pagedResultModel.Result.Count, result.Result.Count);
+        Assert.Equal(pagedResultModel.Count, result.Result.Count);
     }
 
     [Fact]

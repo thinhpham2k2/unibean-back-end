@@ -456,19 +456,32 @@ public class StudentService : IStudentService
     }
 
     public PagedResultModel<StudentChallengeModel> GetChallengeListByStudentId
-        (List<ChallengeType> typeIds, string id, bool? isCompleted, bool? state,
+        (List<ChallengeType> typeIds, string id, bool? state, bool? isCompleted,
         bool? isClaimed, string propertySort, bool isAsc, string search, int page, int limit)
     {
         if (studentRepository.CheckStudentId(id))
         {
-            PagedResultModel<StudentChallengeModel> result = studentChallengeService.GetAll
-                (new() { id }, new(), typeIds, state, propertySort, isAsc, search, page, limit);
+            List<StudentChallengeModel> result = studentChallengeService.GetAll
+                (new() { id }, new(), typeIds, state, propertySort, isAsc, search);
 
-            result.Result = result.Result
+            result = result
                 .Where(c => (isCompleted == null || c.IsCompleted.Equals(isCompleted))
                 && (isClaimed == null || c.IsClaimed.Equals(isClaimed))).ToList();
 
-            return result;
+            var r = result
+                .Skip((page - 1) * limit)
+                .Take(limit)
+                .ToList();
+
+            return new()
+            {
+                CurrentPage = page,
+                PageSize = limit,
+                PageCount = (int)Math.Ceiling((double)result.Count / limit),
+                Result = r,
+                RowCount = r.Count,
+                TotalCount = result.Count
+            };
         }
         throw new InvalidParameterException("Không tìm thấy sinh viên");
     }

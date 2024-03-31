@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
 using Unibean.Repository.Entities;
-using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
 
 namespace Unibean.Repository.Repositories;
@@ -47,15 +46,15 @@ public class StudentChallengeRepository : IStudentChallengeRepository
         }
     }
 
-    public PagedResultModel<StudentChallenge> GetAll
+    public List<StudentChallenge> GetAll
         (List<string> studentIds, List<string> challengeIds, List<ChallengeType> typeIds,
-        bool? state, string propertySort, bool isAsc, string search, int page, int limit)
+        bool? state, string propertySort, bool isAsc, string search)
     {
-        PagedResultModel<StudentChallenge> pagedResult = new();
+        List<StudentChallenge> pagedResult = new();
         try
         {
             var db = unibeanDB;
-            var query = db.StudentChallenges
+            pagedResult = db.StudentChallenges
                 .Where(t => (EF.Functions.Like(t.Challenge.ChallengeName, "%" + search + "%")
                 || EF.Functions.Like(t.Student.FullName, "%" + search + "%")
                 || EF.Functions.Like(t.Description, "%" + search + "%"))
@@ -64,25 +63,11 @@ public class StudentChallengeRepository : IStudentChallengeRepository
                 && (typeIds.Count == 0 || typeIds.Contains(t.Challenge.Type.Value))
                 && (state == null || state.Equals(t.State))
                 && (bool)t.Status)
-                .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
-
-            var result = query
-               .Skip((page - 1) * limit)
-               .Take(limit)
-               .Include(s => s.Student)
-               .Include(s => s.Challenge)
-               .Include(s => s.ChallengeTransactions.Where(c => (bool)c.Status))
-               .ToList();
-
-            pagedResult = new PagedResultModel<StudentChallenge>
-            {
-                CurrentPage = page,
-                PageSize = limit,
-                PageCount = (int)Math.Ceiling((double)query.Count() / limit),
-                Result = result,
-                RowCount = result.Count,
-                TotalCount = query.Count()
-            };
+                .OrderBy(propertySort + (isAsc ? " ascending" : " descending"))
+                .Include(s => s.Student)
+                .Include(s => s.Challenge)
+                .Include(s => s.ChallengeTransactions.Where(c => (bool)c.Status))
+                .ToList();
         }
         catch (Exception ex)
         {

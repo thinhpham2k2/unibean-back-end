@@ -1,5 +1,4 @@
 ﻿using Unibean.Repository.Entities;
-using Unibean.Repository.Paging;
 using Unibean.Service.Models.StudentChallenges;
 
 namespace Unibean.Service.Services.Interfaces;
@@ -10,9 +9,9 @@ public interface IStudentChallengeService
 
     void Delete(string id);
 
-    PagedResultModel<StudentChallengeModel> GetAll
+    List<StudentChallengeModel> GetAll
         (List<string> studentIds, List<string> challengeIds, List<ChallengeType> typeIds,
-        bool? state, string propertySort, bool isAsc, string search, int page, int limit);
+        bool? state, string propertySort, bool isAsc, string search);
 
     StudentChallengeModel GetById(string id);
 

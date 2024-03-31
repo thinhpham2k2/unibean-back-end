@@ -168,7 +168,9 @@ public class BrandService : IBrandService
         Brand entity = brandRepository.GetById(id);
         if (entity != null)
         {
-            if (entity.Campaigns.All(c => c.CampaignActivities.LastOrDefault().State.Equals(CampaignState.Closed)))
+            if (entity.Campaigns.All(
+                c => c.CampaignActivities.LastOrDefault().State.Equals(CampaignState.Closed)
+                || c.CampaignActivities.LastOrDefault().State.Equals(CampaignState.Cancelled)))
             {
                 // Cover photo
                 if (entity.CoverPhoto != null && entity.CoverPhoto.Length > 0)
