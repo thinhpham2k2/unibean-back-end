@@ -54,6 +54,10 @@ public class OrderService : IOrderService
             .ForMember(o => o.StudentImage, opt => opt.MapFrom(src => src.Student.Account.Avatar))
             .ForMember(o => o.StationName, opt => opt.MapFrom(src => src.Station.StationName))
             .ForMember(o => o.StationImage, opt => opt.MapFrom(src => src.Station.Image))
+            .ForMember(o => o.StationAdress, opt => opt.MapFrom(src => src.Station.Address))
+            .ForMember(o => o.StationPhone, opt => opt.MapFrom(src => src.Station.Phone))
+            .ForMember(o => o.StationOpeningHours, opt => opt.MapFrom(src => src.Station.OpeningHours))
+            .ForMember(o => o.StationClosingHours, opt => opt.MapFrom(src => src.Station.ClosingHours))
             .ForMember(o => o.CurrentStateId, opt => opt.MapFrom(
                 src => (int)src.OrderStates.LastOrDefault().State))
             .ForMember(o => o.CurrentState, opt => opt.MapFrom(

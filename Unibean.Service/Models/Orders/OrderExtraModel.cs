@@ -13,6 +13,10 @@ public class OrderExtraModel
     public string StationId { get; set; }
     public string StationName { get; set; }
     public string StationImage { get; set; }
+    public string StationAdress { get; set; }
+    public string StationPhone { get; set; }
+    public TimeOnly? StationOpeningHours { get; set; }
+    public TimeOnly? StationClosingHours { get; set; }
     public decimal? Amount { get; set; }
     public DateTime? DateCreated { get; set; }
     public string Description { get; set; }
