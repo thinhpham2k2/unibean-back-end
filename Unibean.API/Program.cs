@@ -7,7 +7,7 @@ using MoreLinq;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
 using System.Text;
-using Unibean.API.Background;
+using Unibean.API.Backgrounds;
 using Unibean.API.Filters;
 using Unibean.API.Swaggers;
 using Unibean.Repository.Entities;
