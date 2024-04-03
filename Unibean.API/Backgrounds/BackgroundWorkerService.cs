@@ -2,7 +2,7 @@
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
 
-namespace Unibean.API.Background;
+namespace Unibean.API.Backgrounds;
 
 public class BackgroundWorkerService : BackgroundService
 {

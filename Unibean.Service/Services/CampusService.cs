@@ -82,7 +82,7 @@ public class CampusService : ICampusService
             }
             else
             {
-                throw new InvalidParameterException("Xóa thất bại do tồn tại tài khoản ở cơ sở");
+                throw new InvalidParameterException("Xóa thất bại do tồn tại sinh viên ở cơ sở");
             }
         }
         else
