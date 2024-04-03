@@ -125,7 +125,7 @@ public class BrandController : ControllerBase
     /// Update brand
     /// </summary>
     [HttpPut("{id}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType(typeof(BrandExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
