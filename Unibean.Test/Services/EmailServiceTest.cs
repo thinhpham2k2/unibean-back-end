@@ -188,6 +188,7 @@ public class EmailServiceTest
         // Arrange
         string receiver = "receiver";
         string studentCode = "123";
+        string studentName = "Phạm Quốc Thịnh";
         Order order = new()
         {
             Id = "01HQJE16SX45YXF9SM2GNAENS9",
@@ -222,7 +223,7 @@ public class EmailServiceTest
         var service = new EmailService();
 
         // Act
-        var result = service.SendEmailCreateOrder(receiver, studentCode, order);
+        var result = service.SendEmailCreateOrder(receiver, studentCode, studentName, order);
 
         // Assert
         Assert.False(result);
@@ -234,6 +235,7 @@ public class EmailServiceTest
         // Arrange
         string receiver = "receiver@gmail.com";
         string studentCode = "123";
+        string studentName = "Phạm Quốc Thịnh";
         Order order = new()
         {
             Id = "01HQJE16SX45YXF9SM2GNAENS9",
@@ -268,7 +270,7 @@ public class EmailServiceTest
         var service = new EmailService();
 
         // Act
-        var result = service.SendEmailCreateOrder(receiver, studentCode, order);
+        var result = service.SendEmailCreateOrder(receiver, studentCode, studentName, order);
 
         // Assert
         Assert.True(result);
