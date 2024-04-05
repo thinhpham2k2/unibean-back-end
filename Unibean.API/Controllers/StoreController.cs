@@ -127,7 +127,7 @@ public class StoreController : ControllerBase
     /// Update store
     /// </summary>
     [HttpPut("{id}")]
-    [Authorize(Roles = "Admin, Brand")]
+    [Authorize(Roles = "Admin, Brand, Store")]
     [ProducesResponseType(typeof(StoreExtraModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
