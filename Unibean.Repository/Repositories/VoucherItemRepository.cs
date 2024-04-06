@@ -117,7 +117,7 @@ public class VoucherItemRepository : IVoucherItemRepository
                 && (campaignIds.Count == 0 || campaignIds.Contains(t.CampaignDetail.CampaignId))
                 && (campaignDetailIds.Count == 0 || campaignDetailIds.Contains(t.CampaignDetailId))
                 && (voucherIds.Count == 0 || voucherIds.Contains(t.VoucherId))
-                && (brandIds.Count == 0 || brandIds.Contains(t.CampaignDetail.Campaign.BrandId))
+                && (brandIds.Count == 0 || brandIds.Contains(t.Voucher.BrandId))
                 && (typeIds.Count == 0 || typeIds.Contains(t.Voucher.TypeId))
                 && (studentIds.Count == 0 || studentIds.Contains(t.Activities.FirstOrDefault(a
                     => (bool)a.Status).StudentId))
