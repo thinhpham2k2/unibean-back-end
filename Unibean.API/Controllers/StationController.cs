@@ -29,7 +29,7 @@ public class StationController : ControllerBase
     /// <param name="stateIds">Filter by station state id --- Active = 1, Inactive = 2, Closed = 3</param>
     /// <param name="paging">Paging parameter.</param>
     [HttpGet]
-    [Authorize(Roles = "Admin, Brand, Store, Student")]
+    [Authorize(Roles = "Admin, Staff, Brand, Store, Student")]
     [ProducesResponseType(typeof(PagedResultModel<StationModel>),
         (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
@@ -57,7 +57,7 @@ public class StationController : ControllerBase
     /// Get station by id
     /// </summary>
     [HttpGet("{id}")]
-    [Authorize(Roles = "Admin, Brand, Store, Student")]
+    [Authorize(Roles = "Admin, Staff, Brand, Store, Student")]
     [ProducesResponseType(typeof(StationModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
@@ -107,7 +107,7 @@ public class StationController : ControllerBase
     /// Update station
     /// </summary>
     [HttpPut("{id}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, Staff")]
     [ProducesResponseType(typeof(StationModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
