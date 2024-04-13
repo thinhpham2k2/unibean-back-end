@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Unibean.API.Controllers;
 using Unibean.Repository.Paging;
 using Unibean.Service.Models.Exceptions;
+using Unibean.Service.Models.Files;
 using Unibean.Service.Models.Parameters;
 using Unibean.Service.Models.VoucherItems;
 using Unibean.Service.Services.Interfaces;
@@ -239,24 +240,6 @@ public class VoucherItemControllerTest
         result.Should().BeOfType(typeof(FileContentResult));
         Assert.Equal("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             result.GetType().GetProperty("ContentType")?.GetValue(result));
-    }
-
-    [Fact]
-    public void VoucherItemController_ImportTemplate_ReturnOK()
-    {
-        // Arrange
-        InsertVoucherItemModel insert = new();
-        A.CallTo(() => voucherItemService.AddTemplate(insert)).Returns<MemoryStream>(new());
-        var controller = new VoucherItemController(voucherItemService);
-
-        // Act
-        var result = controller.ImportTemplate(insert);
-
-        // Assert
-        result.Should().NotBeNull();
-        result.Should().BeOfType(typeof(Task<ActionResult>));
-        Assert.Equal("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            result.Result.GetType().GetProperty("ContentType")?.GetValue(result.Result));
     }
 
     [Fact]

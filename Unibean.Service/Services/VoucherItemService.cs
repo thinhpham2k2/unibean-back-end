@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
+using Unibean.Service.Models.Files;
 using Unibean.Service.Models.VoucherItems;
 using Unibean.Service.Services.Interfaces;
 using InvalidParameterException = Unibean.Service.Models.Exceptions.InvalidParameterException;
@@ -240,7 +241,6 @@ public class VoucherItemService : IVoucherItemService
         var dt = new DataTable();
         dt.Columns.Add("Stt", typeof(string));
         dt.Columns.Add("Code", typeof(string));
-        dt.Columns.Add("Quantity", typeof(string));
         dt.Rows.Add("0", "Ví dụ: '01HQJE9MKJ8SNT5XH2Q3YCGCY4' *Độ dài phải có độ dài từ 3 - 50 kí tự và không chứa khoảng trắng");
 
         for (int i = 1; i <= 1000; i++)
@@ -255,9 +255,9 @@ public class VoucherItemService : IVoucherItemService
 
         // Set style for cell
         sheet.Cells("B3").Style.Font.Italic = true;
-        sheet.Cells("C3").FormulaA1 = "\"Số lượng khuyến mãi: \" & COUNTIF(B4:B1003,\"<>\") - COUNTIF(B4:B1003,\"* *\") & \" / 1000\"";
-        sheet.Cells("C3").Style.Font.FontColor = XLColor.Red;
-        sheet.Cells("C3").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+        sheet.Cells("C1").FormulaA1 = "\"Số lượng khuyến mãi đã thêm:\r\n     \" & COUNTIF(B4:B1003,\"<>\") - COUNTIF(B4:B1003,\"* *\") & \" / 1000\"";
+        sheet.Cells("C1").Style.Font.FontColor = XLColor.Red;
+        sheet.Cells("C1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
         sheet.Cell("A1").Value = "          *Lưu ý\r\n     - Stt: Số thứ tự của khuyến mãi.\r\n     - Code: Mã quét của khuyến mãi.\r\n     - Quantity: Số lượng của khuyến mãi.";
 
         // Set style for first row
@@ -285,22 +285,25 @@ public class VoucherItemService : IVoucherItemService
         sheet.Range("B4:B1003").GetDataValidation().ErrorStyle = XLErrorStyle.Information;
         sheet.Range("B4:B1003").GetDataValidation().ErrorTitle = "Mã khuyến mãi không hợp lệ";
         sheet.Range("B4:B1003").GetDataValidation().ErrorMessage = "Mã khuyến mãi phải có độ dài từ 3 - 50 kí tự và không chứa khoảng trắng";
-        sheet.Range("A1:C1").Merge();
-        sheet.Range("A1:C1").Style.Font.Bold = true;
-        sheet.Range("A1:C1").Style.Font.Italic = true;
-        sheet.Range("A1:C1").Style.Font.FontColor = XLColor.DavysGrey;
+        sheet.Range("A1:B1").Merge();
+        sheet.Range("A1:B1").Style.Font.Bold = true;
+        sheet.Range("A1:B1").Style.Font.Italic = true;
+        sheet.Range("A1:B1").Style.Font.FontColor = XLColor.DavysGrey;
 
-        using MemoryStream ms = new();
+        using MemoryStream ms = new()
+        {
+            
+        };
         wb.SaveAs(ms);
+        wb.Dispose();
 
         return ms;
     }
 
-    public async Task<MemoryStream> AddTemplate(InsertVoucherItemModel insert)
+    public async Task<MemoryStreamModel> AddTemplate(InsertVoucherItemModel insert)
     {
         if (insert.Template != null && insert.Template.Length > 0)
         {
-            //var upload = $"{Directory.GetCurrentDirectory()}/wwwroot/upload/" + Ulid.NewUlid() + "/";
             var upload = $"{Directory.GetCurrentDirectory()}/wwwroot/upload/" + Ulid.NewUlid() + "/";
             if (!Directory.Exists(upload))
             {
@@ -320,22 +323,39 @@ public class VoucherItemService : IVoucherItemService
                 throw new InvalidParameterException("Mẫu tạo khuyến mãi không hợp lệ");
             }
 
+            sheet.Cell("C2").Value = "Chú thích";
+            sheet.Cell("C2").Style.Font.FontSize = 23;
+            sheet.Cell("C3").Value = "Khuyến mãi không hợp lệ";
+            sheet.Cell("C3").Style.Fill.BackgroundColor = XLColor.Red;
+            sheet.Cell("C4").Value = "Khuyến mãi trùng lặp";
+            sheet.Cell("C4").Style.Fill.BackgroundColor = XLColor.Orange;
+            sheet.Cell("C5").Value = "Khuyến mãi đã được sử dụng";
+            sheet.Cell("C5").Style.Fill.BackgroundColor = XLColor.Yellow;
             var cells = sheet.Cells("B4:B1003").Where(c => !c.Value.IsBlank).ToList();
             var index = voucherItemRepository.GetMaxIndex(insert.VoucherId);
             List<VoucherItem> list = new();
-            List<string> errorListValid = new();
-            List<string> errorListDuplicate = new();
+            int errorListValid = 0;
+            int errorListDuplicate = 0;
+            List<string> l = cells.Select(c => c.GetValue<string>()).ToList();
+            var duplicateCodes = l.Select(i => i).GroupBy(x => x).Where(c => c.Count() > 1)
+                .Select(c => c.Key);
             foreach (var cell in cells)
             {
                 var data = cell.GetValue<string>();
 
                 if (!Regex.IsMatch(data, @"^[^\s]{3,50}$"))
                 {
-                    errorListValid.Add(cell.Address.ToString());
+                    cell.Style.Fill.BackgroundColor = XLColor.Red;
+                    errorListValid++;
+                }
+                else if (duplicateCodes.Contains(data))
+                {
+                    cell.Style.Fill.BackgroundColor = XLColor.Orange;
                 }
                 else if (voucherItemRepository.CheckVoucherCode(data))
                 {
-                    errorListDuplicate.Add(cell.Address.ToString());
+                    cell.Style.Fill.BackgroundColor = XLColor.Yellow;
+                    errorListDuplicate++;
                 }
 
                 Thread.Sleep(1);
@@ -353,26 +373,25 @@ public class VoucherItemService : IVoucherItemService
                     Status = true,
                 });
             }
+            using MemoryStream ms = new();
+            wb.SaveAs(ms);
             wb.Dispose();
             RemoveFile(upload);
-
-            if (errorListValid.Count > 0)
-                throw new InvalidParameterException
-                    ("Danh sách chứa mã khuyến mãi không hợp lệ ở địa chỉ: " + string.Join(", ", errorListValid));
-
-            if (errorListDuplicate.Count > 0)
-                throw new InvalidParameterException
-                    ("Danh sách chứa mã khuyến mãi đã được sử dụng ở địa chỉ: " + string.Join(", ", errorListDuplicate));
-
-            var duplicateCodes = list.Select(i => i.VoucherCode).GroupBy(x => x).Where(c => c.Count() > 1)
-                .Select(c => c.Key).ToList();
-
-            if (duplicateCodes.Count > 0)
-                throw new InvalidParameterException
-                    ("Danh sách chứa mã khuyến mãi trùng lặp bao gồm: " + string.Join(", ", duplicateCodes));
+            if (errorListValid > 0 || errorListDuplicate > 0 || duplicateCodes.Any())
+            {
+                return new()
+                {
+                    IsValid = false,
+                    Ms = ms,
+                };
+            }
 
             voucherItemRepository.AddList(list);
-            return CreateResult(GetEmpdata(list, voucherRepository.GetById(insert.VoucherId).VoucherName));
+            return new()
+            {
+                IsValid = true,
+                Ms = CreateResult(GetEmpdata(list, voucherRepository.GetById(insert.VoucherId).VoucherName)),
+            };
         }
         throw new InvalidParameterException("Tệp không hợp lệ");
     }
