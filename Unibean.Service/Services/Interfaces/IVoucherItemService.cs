@@ -1,5 +1,6 @@
 ﻿using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
+using Unibean.Service.Models.Files;
 using Unibean.Service.Models.VoucherItems;
 
 namespace Unibean.Service.Services.Interfaces;
@@ -8,7 +9,7 @@ public interface IVoucherItemService
 {
     MemoryStream Add(CreateVoucherItemModel creation);
 
-    Task<MemoryStream> AddTemplate(InsertVoucherItemModel insert);
+    Task<MemoryStreamModel> AddTemplate(InsertVoucherItemModel insert);
 
     void Delete(string id);
 

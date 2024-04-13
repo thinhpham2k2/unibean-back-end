@@ -4,6 +4,7 @@ using System.Net;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Service.Models.Exceptions;
+using Unibean.Service.Models.Files;
 using Unibean.Service.Models.Parameters;
 using Unibean.Service.Models.VoucherItems;
 using Unibean.Service.Services.Interfaces;
@@ -176,9 +177,11 @@ public class VoucherItemController : ControllerBase
 
         try
         {
-            return File((await voucherItemService.AddTemplate(insert)).ToArray(),
+            MemoryStreamModel result = await voucherItemService.AddTemplate(insert);
+            return File(result.Ms.ToArray(),
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                "Result(" + DateTime.UtcNow.ToString("R") + ").xlsx");
+                result.IsValid ?
+                "Result(" + DateTime.UtcNow.ToString("R") + ").xlsx" : "Exception");
         }
         catch (InvalidParameterException e)
         {

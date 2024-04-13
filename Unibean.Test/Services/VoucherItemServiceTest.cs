@@ -3,6 +3,7 @@ using FluentAssertions;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
+using Unibean.Service.Models.Files;
 using Unibean.Service.Models.VoucherItems;
 using Unibean.Service.Services;
 
@@ -154,7 +155,7 @@ public class VoucherItemServiceTest
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().BeOfType(typeof(Task<MemoryStream>));
+        result.Should().BeOfType(typeof(Task<MemoryStreamModel>));
     }
 
     [Fact]
