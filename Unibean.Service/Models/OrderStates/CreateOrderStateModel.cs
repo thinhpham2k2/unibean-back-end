@@ -12,5 +12,5 @@ public class CreateOrderStateModel
     [Required(ErrorMessage = "Trạng thái là bắt buộc")]
     public int? State { get; set; }
 
-    public string Description { get; set; }
+    public string Note { get; set; }
 }

@@ -481,7 +481,7 @@ public class CampaignService : ICampaignService
         throw new InvalidParameterException("Không tìm thấy chiến dịch");
     }
 
-    public bool UpdateState(string id, CampaignState stateId, JwtRequestModel request)
+    public bool UpdateState(string id, CampaignState stateId, string note, JwtRequestModel request)
     {
         if (!new[] { CampaignState.Pending, CampaignState.Finished }.Contains(stateId))
         {
@@ -561,7 +561,7 @@ public class CampaignService : ICampaignService
                         CampaignId = entity.Id,
                         State = stateId,
                         DateCreated = DateTime.Now,
-                        Description = stateId.GetEnumDescription(),
+                        Description = note.IsNullOrEmpty() ? stateId.GetEnumDescription() : note,
                         Status = true,
                     }) != null;
                 }

@@ -157,6 +157,7 @@ public class CampaignController : ControllerBase
     /// </summary>
     /// <param name="id">Campaign id.</param>
     /// <param name="stateId">Campaign state id --- Rejected = 2, Active = 3, Inactive = 4, Closed = 6, Cancelled = 7</param>
+    /// <param name="note">Note for state</param>
     [HttpPut("{id}/states/{stateId}")]
     [Authorize(Roles = "Admin, Brand")]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
@@ -169,7 +170,8 @@ public class CampaignController : ControllerBase
             CampaignState.Rejected,
             CampaignState.Active,
             CampaignState.Inactive })] string id,
-        CampaignState stateId)
+        CampaignState stateId,
+        [FromBody] string note)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
@@ -178,7 +180,7 @@ public class CampaignController : ControllerBase
         try
         {
             if (campaignService.UpdateState
-                (id, stateId, jwtService.GetJwtRequest(jwtToken.Split(" ")[1])))
+                (id, stateId, note, jwtService.GetJwtRequest(jwtToken.Split(" ")[1])))
             {
                 return StatusCode(StatusCodes.Status200OK, "Cập nhật trạng thái thành công");
             }

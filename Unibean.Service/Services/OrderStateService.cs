@@ -43,7 +43,7 @@ public class OrderStateService : IOrderStateService
                             OrderId = id,
                             State = State.Abort,
                             DateCreated = DateTime.Now,
-                            Description = creation.Description,
+                            Description = creation.Note,
                             Status = true,
                         });
 
@@ -63,7 +63,7 @@ public class OrderStateService : IOrderStateService
                                 OrderId = id,
                                 State = s,
                                 DateCreated = DateTime.Now,
-                                Description = creation.Description,
+                                Description = creation.Note,
                                 Status = true,
                             });
                         });
@@ -95,7 +95,7 @@ public class OrderStateService : IOrderStateService
                             OrderId = id,
                             State = s,
                             DateCreated = DateTime.Now,
-                            Description = creation.Description,
+                            Description = creation.Note,
                             Status = true,
                         });
                     });
