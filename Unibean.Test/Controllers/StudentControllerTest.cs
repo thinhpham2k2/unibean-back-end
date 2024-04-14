@@ -452,13 +452,14 @@ public class StudentControllerTest
     {
         // Arrange
         string id = "";
+        string note = "note";
         StudentState stateId = new();
-        A.CallTo(() => studentService.UpdateState(id, stateId))
+        A.CallTo(() => studentService.UpdateState(id, stateId, note))
             .Returns(true);
         var controller = new StudentController(studentService, orderService);
 
         // Act
-        var result = controller.UpdateState(id, stateId);
+        var result = controller.UpdateState(id, stateId, note);
 
         // Assert
         result.Should().NotBeNull();
@@ -472,13 +473,14 @@ public class StudentControllerTest
     {
         // Arrange
         string id = "";
+        string note = "note";
         StudentState stateId = new();
         var controller = new StudentController(studentService, orderService);
         controller.ModelState.AddModelError("SessionName", "Required");
 
         // Act & Assert
         Assert.Throws<InvalidParameterException>(
-            () => controller.UpdateState(id, stateId));
+            () => controller.UpdateState(id, stateId, note));
     }
 
     [Fact]
@@ -486,13 +488,14 @@ public class StudentControllerTest
     {
         // Arrange
         string id = "";
+        string note = "note";
         StudentState stateId = new();
-        A.CallTo(() => studentService.UpdateState(id, stateId))
+        A.CallTo(() => studentService.UpdateState(id, stateId, note))
             .Throws(new InvalidParameterException());
         var controller = new StudentController(studentService, orderService);
 
         // Act
-        var result = controller.UpdateState(id, stateId);
+        var result = controller.UpdateState(id, stateId, note);
 
         // Assert
         result.Should().NotBeNull();
@@ -506,13 +509,14 @@ public class StudentControllerTest
     {
         // Arrange
         string id = "";
+        string note = "note";
         StudentState stateId = new();
-        A.CallTo(() => studentService.UpdateState(id, stateId))
+        A.CallTo(() => studentService.UpdateState(id, stateId, note))
             .Returns(false);
         var controller = new StudentController(studentService, orderService);
 
         // Act
-        var result = controller.UpdateState(id, stateId);
+        var result = controller.UpdateState(id, stateId, note);
 
         // Assert
         result.Should().NotBeNull();

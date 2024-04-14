@@ -211,6 +211,7 @@ public class StudentController : ControllerBase
     /// </summary>
     /// <param name="id">Student id.</param>
     /// <param name="stateId">Student state id --- Active = 2, Inactive = 3, Rejected = 4</param>
+    /// <param name="note">Note for state</param>
     [HttpPut("{id}/states/{stateId}")]
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
@@ -222,13 +223,14 @@ public class StudentController : ControllerBase
             StudentState.Pending,
             StudentState.Active,
             StudentState.Inactive })] string id,
-        StudentState stateId)
+        StudentState stateId,
+        [FromBody] string note)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
         try
         {
-            if (studentService.UpdateState(id, stateId))
+            if (studentService.UpdateState(id, stateId, note))
             {
                 return StatusCode(StatusCodes.Status200OK, "Cập nhật trạng thái sinh viên thành công");
             }

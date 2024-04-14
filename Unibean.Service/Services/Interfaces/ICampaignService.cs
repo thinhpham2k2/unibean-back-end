@@ -50,5 +50,5 @@ public interface ICampaignService
 
     Task<CampaignExtraModel> Update(string id, UpdateCampaignModel update);
 
-    bool UpdateState(string id, CampaignState stateId, JwtRequestModel request);
+    bool UpdateState(string id, CampaignState stateId, string note, JwtRequestModel request);
 }

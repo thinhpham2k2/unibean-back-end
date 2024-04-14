@@ -551,6 +551,7 @@ public class CampaignServiceTest
     {
         // Arrange
         string id = "id";
+        string note = "note";
         CampaignState stateId = CampaignState.Inactive;
         JwtRequestModel request = A.Fake<JwtRequestModel>();
         A.CallTo(() => campaignRepository.GetById(id)).Returns(new()
@@ -575,6 +576,6 @@ public class CampaignServiceTest
              campaignActivityService, campaignActivityRepository, studentChallengeService, emailService);
 
         // Act & Assert
-        var result = service.UpdateState(id, stateId, request);
+        var result = service.UpdateState(id, stateId, note, request);
     }
 }

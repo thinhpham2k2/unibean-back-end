@@ -621,7 +621,7 @@ public class StudentService : IStudentService
         throw new InvalidParameterException("Không tìm thấy sinh viên");
     }
 
-    public bool UpdateState(string id, StudentState stateId)
+    public bool UpdateState(string id, StudentState stateId, string note)
     {
         if (!new[] { StudentState.Pending }.Contains(stateId))
         {
@@ -644,6 +644,7 @@ public class StudentService : IStudentService
 
                         if (stateId.Equals(StudentState.Active))
                         {
+                            entity.Account.DateVerified = DateTime.Now;
                             // Take the challenge
                             studentChallengeService.Update(
                                 entity.StudentChallenges
@@ -659,6 +660,7 @@ public class StudentService : IStudentService
                         }
 
                         entity.Account.IsVerify = true;
+                        entity.Account.Description = note;
                         break;
                 }
 

@@ -313,10 +313,11 @@ public class CampaignControllerTest
     {
         // Arrange
         string id = "";
+        string note = "note";
         JwtRequestModel jwt = new();
         CampaignState stateId = new();
         A.CallTo(() => jwtService.GetJwtRequest("TOKEN")).Returns(jwt);
-        A.CallTo(() => campaignService.UpdateState(id, stateId, jwt))
+        A.CallTo(() => campaignService.UpdateState(id, stateId, note, jwt))
             .Returns(true);
         var httpContext = new DefaultHttpContext();
         httpContext.Request.Headers["Authorization"] = "Bearer TOKEN";
@@ -329,7 +330,7 @@ public class CampaignControllerTest
         };
 
         // Act
-        var result = controller.UpdateState(id, stateId);
+        var result = controller.UpdateState(id, stateId, note);
 
         // Assert
         result.Should().NotBeNull();
@@ -343,10 +344,11 @@ public class CampaignControllerTest
     {
         // Arrange
         string id = "";
+        string note = "note";
         JwtRequestModel jwt = new();
         CampaignState stateId = new();
         A.CallTo(() => jwtService.GetJwtRequest("TOKEN")).Returns(jwt);
-        A.CallTo(() => campaignService.UpdateState(id, stateId, jwt))
+        A.CallTo(() => campaignService.UpdateState(id, stateId, note, jwt))
             .Throws(new InvalidParameterException());
         var httpContext = new DefaultHttpContext();
         httpContext.Request.Headers["Authorization"] = "Bearer TOKEN";
@@ -361,7 +363,7 @@ public class CampaignControllerTest
 
         // Act & Assert
         Assert.Throws<InvalidParameterException>(
-            () => controller.UpdateState(id, stateId));
+            () => controller.UpdateState(id, stateId, note));
     }
 
     [Fact]
@@ -369,10 +371,11 @@ public class CampaignControllerTest
     {
         // Arrange
         string id = "";
+        string note = "note";
         JwtRequestModel jwt = new();
         CampaignState stateId = new();
         A.CallTo(() => jwtService.GetJwtRequest("TOKEN")).Returns(jwt);
-        A.CallTo(() => campaignService.UpdateState(id, stateId, jwt))
+        A.CallTo(() => campaignService.UpdateState(id, stateId, note, jwt))
             .Throws(new InvalidParameterException());
         var httpContext = new DefaultHttpContext();
         httpContext.Request.Headers["Authorization"] = "Bearer TOKEN";
@@ -385,7 +388,7 @@ public class CampaignControllerTest
         };
 
         // Act
-        var result = controller.UpdateState(id, stateId);
+        var result = controller.UpdateState(id, stateId, note);
 
         // Assert
         result.Should().NotBeNull();
@@ -399,10 +402,11 @@ public class CampaignControllerTest
     {
         // Arrange
         string id = "";
+        string note = "note";
         JwtRequestModel jwt = new();
         CampaignState stateId = new();
         A.CallTo(() => jwtService.GetJwtRequest("TOKEN")).Returns(jwt);
-        A.CallTo(() => campaignService.UpdateState(id, stateId, jwt))
+        A.CallTo(() => campaignService.UpdateState(id, stateId, note, jwt))
             .Returns(false);
         var httpContext = new DefaultHttpContext();
         httpContext.Request.Headers["Authorization"] = "Bearer TOKEN";
@@ -415,7 +419,7 @@ public class CampaignControllerTest
         };
 
         // Act
-        var result = controller.UpdateState(id, stateId);
+        var result = controller.UpdateState(id, stateId, note);
 
         // Assert
         result.Should().NotBeNull();

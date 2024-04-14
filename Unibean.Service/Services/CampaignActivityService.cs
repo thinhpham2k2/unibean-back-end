@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Enable.EnumDisplayName;
+using Microsoft.IdentityModel.Tokens;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
@@ -25,7 +26,7 @@ public class CampaignActivityService : ICampaignActivityService
             .ForMember(c => c.CampaignName, opt => opt.MapFrom(src => src.Campaign.CampaignName))
             .ForMember(c => c.StateId, opt => opt.MapFrom(src => src.State))
             .ForMember(c => c.StateName, opt => opt.MapFrom(src => src.State.GetDisplayName()))
-            .ForMember(c => c.StateDescription, opt => opt.MapFrom(src => src.State.GetEnumDescription()))
+            .ForMember(c => c.StateDescription, opt => opt.MapFrom(src => src.Description))
             .ReverseMap();
             cfg.CreateMap<PagedResultModel<CampaignActivity>, PagedResultModel<CampaignActivityModel>>()
             .ReverseMap();

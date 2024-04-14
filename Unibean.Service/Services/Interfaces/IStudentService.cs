@@ -52,7 +52,7 @@ public interface IStudentService
 
     bool UpdateInviteCode(string id, string code);
 
-    bool UpdateState(string id, StudentState stateId);
+    bool UpdateState(string id, StudentState stateId, string note);
 
     Task<StudentExtraModel> UpdateVerification(string id, UpdateStudentVerifyModel update);
 }

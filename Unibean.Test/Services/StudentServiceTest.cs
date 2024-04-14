@@ -564,6 +564,7 @@ public class StudentServiceTest
     {
         // Arrange
         string id = "id";
+        string note = "note";
         StudentState stateId = StudentState.Active;
         A.CallTo(() => studentRepository.GetById(id)).Returns(new()
         {
@@ -582,7 +583,7 @@ public class StudentServiceTest
             voucherItemService, emailService, transactionService);
 
         // Act & Assert
-        Assert.True(service.UpdateState(id, stateId));
+        Assert.True(service.UpdateState(id, stateId, note));
     }
 
     [Fact]
