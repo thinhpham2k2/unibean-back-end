@@ -1,5 +1,6 @@
 ﻿using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
+using Unibean.Service.Models.Authens;
 using Unibean.Service.Models.Files;
 using Unibean.Service.Models.VoucherItems;
 
@@ -9,7 +10,8 @@ public interface IVoucherItemService
 {
     MemoryStream Add(CreateVoucherItemModel creation);
 
-    Task<MemoryStreamModel> AddTemplate(InsertVoucherItemModel insert);
+    Task<MemoryStreamModel> AddTemplate
+        (InsertVoucherItemModel insert, JwtRequestModel request);
 
     void Delete(string id);
 
@@ -22,7 +24,7 @@ public interface IVoucherItemService
 
     VoucherItemExtraModel GetById(string id);
 
-    VoucherItemExtraModel GetByCode(string code);
+    VoucherItemExtraModel GetByCode(string code, string brandId);
 
     VoucherItemExtraModel EntityToExtra(VoucherItem item);
 }

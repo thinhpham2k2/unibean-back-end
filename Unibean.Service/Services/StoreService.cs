@@ -147,7 +147,8 @@ public class StoreService : IStoreService
         (string id, string code, CreateUseActivityModel creation)
     {
         DateOnly today = DateOnly.FromDateTime(DateTime.Now);
-        var item = voucherItemRepository.GetByVoucherCode(code);
+        var item = voucherItemRepository.GetByVoucherCode(code, storeRepository.GetById(id).BrandId)
+            ?? throw new InvalidParameterException("Không tìm thấy khuyến mãi");
         if (new[] { CampaignState.Active, CampaignState.Inactive }.Contains
             (item.CampaignDetail.Campaign.CampaignActivities.LastOrDefault().State.Value))
         {
@@ -325,7 +326,9 @@ public class StoreService : IStoreService
     public VoucherItemExtraModel GetVoucherItemByCode(string id, string code)
     {
         DateOnly today = DateOnly.FromDateTime(DateTime.Now);
-        var item = voucherItemRepository.GetByVoucherCode(code);
+
+        var item = voucherItemRepository.GetByVoucherCode(code, storeRepository.GetById(id).BrandId)
+            ?? throw new InvalidParameterException("Không tìm thấy khuyến mãi");
         if (item.ValidOn <= today && today <= item.ExpireOn)
         {
             if (item.CampaignDetail.Campaign.CampaignStores.Any(c => c.StoreId.Equals(id)))

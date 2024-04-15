@@ -17,7 +17,7 @@ public interface IVoucherItemRepository
 
     long CountVoucherItemToday(string brandId, DateOnly date);
 
-    bool CheckVoucherCode(string code);
+    bool CheckVoucherCode(string code, string brandId);
 
     void Delete(string id);
 
@@ -28,7 +28,7 @@ public interface IVoucherItemRepository
 
     VoucherItem GetById(string id);
 
-    VoucherItem GetByVoucherCode(string code);
+    VoucherItem GetByVoucherCode(string code, string brandId);
 
     ItemIndex GetIndex
         (string voucherId, int quantity, int fromIndex);

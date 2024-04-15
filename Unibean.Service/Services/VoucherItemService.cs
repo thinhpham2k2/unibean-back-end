@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
+using Unibean.Service.Models.Authens;
 using Unibean.Service.Models.Files;
 using Unibean.Service.Models.VoucherItems;
 using Unibean.Service.Services.Interfaces;
@@ -300,8 +301,13 @@ public class VoucherItemService : IVoucherItemService
         return ms;
     }
 
-    public async Task<MemoryStreamModel> AddTemplate(InsertVoucherItemModel insert)
+    public async Task<MemoryStreamModel> AddTemplate
+        (InsertVoucherItemModel insert, JwtRequestModel request)
     {
+        if (!request.Role.Equals("Brand"))
+        {
+            throw new InvalidParameterException("Chỉ thương hiệu thực hiện được chức năng này");
+        }
         if (insert.Template != null && insert.Template.Length > 0)
         {
             var upload = $"{Directory.GetCurrentDirectory()}/wwwroot/upload/" + Ulid.NewUlid() + "/";
@@ -352,7 +358,7 @@ public class VoucherItemService : IVoucherItemService
                 {
                     cell.Style.Fill.BackgroundColor = XLColor.Orange;
                 }
-                else if (voucherItemRepository.CheckVoucherCode(data))
+                else if (voucherItemRepository.CheckVoucherCode(data, request.UserId))
                 {
                     cell.Style.Fill.BackgroundColor = XLColor.Yellow;
                     errorListDuplicate++;
@@ -396,9 +402,9 @@ public class VoucherItemService : IVoucherItemService
         throw new InvalidParameterException("Tệp không hợp lệ");
     }
 
-    public VoucherItemExtraModel GetByCode(string code)
+    public VoucherItemExtraModel GetByCode(string code, string brandId)
     {
-        VoucherItem entity = voucherItemRepository.GetByVoucherCode(code);
+        VoucherItem entity = voucherItemRepository.GetByVoucherCode(code, brandId);
         if (entity != null)
         {
             return mapper.Map<VoucherItemExtraModel>(entity);

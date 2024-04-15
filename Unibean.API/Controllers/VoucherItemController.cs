@@ -18,9 +18,13 @@ public class VoucherItemController : ControllerBase
 {
     private readonly IVoucherItemService voucherItemService;
 
-    public VoucherItemController(IVoucherItemService voucherItemService)
+    private readonly IJwtService jwtService;
+
+    public VoucherItemController
+        (IVoucherItemService voucherItemService, IJwtService jwtService)
     {
         this.voucherItemService = voucherItemService;
+        this.jwtService = jwtService;
     }
 
     /// <summary>
@@ -167,7 +171,7 @@ public class VoucherItemController : ControllerBase
     /// Import voucher item template
     /// </summary>
     [HttpPost("template")]
-    [Authorize(Roles = "Admin, Brand")]
+    [Authorize(Roles = "Brand")]
     [ProducesResponseType(typeof(FileContentResult), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
@@ -175,9 +179,12 @@ public class VoucherItemController : ControllerBase
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
+        string jwtToken = HttpContext.Request.Headers["Authorization"];
+
         try
         {
-            MemoryStreamModel result = await voucherItemService.AddTemplate(insert);
+            MemoryStreamModel result = await voucherItemService.AddTemplate
+                (insert, jwtService.GetJwtRequest(jwtToken.Split(" ")[1]));
             return File(result.Ms.ToArray(),
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 result.IsValid ?

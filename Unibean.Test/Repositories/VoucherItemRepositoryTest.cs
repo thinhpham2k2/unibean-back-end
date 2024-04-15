@@ -25,7 +25,12 @@ public class VoucherItemRepositoryTest
                 new VoucherItem()
                 {
                     Id = i.ToString(),
-                    VoucherId = "1",
+                    VoucherId = i.ToString(),
+                    Voucher = new()
+                    {
+                        Id = i.ToString(),
+                        BrandId = "brand" + i.ToString()
+                    },
                     CampaignDetailId = i > 3 ? i.ToString() : null,
                     VoucherCode = "voucherCode" + i,
                     Index = i,
@@ -97,11 +102,12 @@ public class VoucherItemRepositoryTest
     {
         // Arrange
         string code = "voucherCode";
+        string brandId = "brandId";
         var dbContext = await UnibeanDBContext();
         var repository = new VoucherItemRepository(dbContext);
 
         // Act & Assert
-        Assert.False(repository.CheckVoucherCode(code));
+        Assert.False(repository.CheckVoucherCode(code, brandId));
     }
 
     [Fact]
@@ -109,11 +115,12 @@ public class VoucherItemRepositoryTest
     {
         // Arrange
         string code = "voucherCode1";
+        string brandId = "brand1";
         var dbContext = await UnibeanDBContext();
         var repository = new VoucherItemRepository(dbContext);
 
         // Act & Assert
-        Assert.True(repository.CheckVoucherCode(code));
+        Assert.True(repository.CheckVoucherCode(code, brandId));
     }
 
     [Fact]
@@ -200,12 +207,13 @@ public class VoucherItemRepositoryTest
     {
         // Arrange
         string id = "1";
+        string brandId = "brand1";
         string voucherCode = "voucherCode" + id;
         var dbContext = await UnibeanDBContext();
         var repository = new VoucherItemRepository(dbContext);
 
         // Act
-        var result = repository.GetByVoucherCode(voucherCode);
+        var result = repository.GetByVoucherCode(voucherCode, brandId);
 
         // Assert
         result.Should().NotBeNull();
