@@ -19,4 +19,7 @@ public interface IEmailService
     bool SendEmailAbortOrder(string receiver, string orderId);
 
     bool SendEmailCreateOrder(string receiver, string studentCode, string studentName, Order order);
+
+    bool SendEmailCamapaign(CampaignState state, string receiver,
+        string brandName, string campaignName, string note);
 }

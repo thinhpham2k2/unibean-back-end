@@ -292,7 +292,7 @@ public class VoucherItemService : IVoucherItemService
 
         using MemoryStream ms = new()
         {
-            
+
         };
         wb.SaveAs(ms);
         wb.Dispose();

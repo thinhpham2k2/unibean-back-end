@@ -123,7 +123,7 @@ public class OrderService : IOrderService
                         });
 
                         // Send mail
-                        emailService.SendEmailCreateOrder(student.Account.Email, student.Code, 
+                        emailService.SendEmailCreateOrder(student.Account.Email, student.Code,
                             student.FullName, orderRepository.GetById(order.Id));
 
                         return mapper.Map<OrderModel>(order);

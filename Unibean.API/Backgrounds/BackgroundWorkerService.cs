@@ -1,6 +1,7 @@
 ﻿using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
+using Unibean.Service.Services.Interfaces;
 
 namespace Unibean.API.Backgrounds;
 
@@ -23,6 +24,7 @@ public class BackgroundWorkerService : BackgroundService
         while (!stoppingToken.IsCancellationRequested)
         {
             using var scope = _serviceScopeFactory.CreateScope();
+            var emailService = scope.ServiceProvider.GetRequiredService<IEmailService>();
             var campaignRepository = scope.ServiceProvider.GetRequiredService<ICampaignRepository>();
             var campaignActivityRepository = scope.ServiceProvider.GetRequiredService<ICampaignActivityRepository>();
             _logger.LogInformation("Worker running at: {time}", DateTime.UtcNow);
@@ -39,6 +41,10 @@ public class BackgroundWorkerService : BackgroundService
             {
                 foreach (Campaign campaign in campaigns)
                 {
+                    // Send mail for brand
+                    emailService.SendEmailCamapaign(CampaignState.Finished, campaign.Brand.Account.Email,
+                        campaign.Brand.BrandName, campaign.CampaignName, null);
+
                     campaignActivityRepository.Add(new CampaignActivity
                     {
                         Id = Ulid.NewUlid().ToString(),
@@ -58,6 +64,10 @@ public class BackgroundWorkerService : BackgroundService
             {
                 foreach (Campaign campaign in campaigns)
                 {
+                    // Send mail for brand
+                    emailService.SendEmailCamapaign(CampaignState.Closed, campaign.Brand.Account.Email,
+                        campaign.Brand.BrandName, campaign.CampaignName, null);
+
                     campaignRepository.ExpiredToClosed(campaign.Id);
                     campaignActivityRepository.Add(new CampaignActivity
                     {
@@ -77,6 +87,10 @@ public class BackgroundWorkerService : BackgroundService
             {
                 foreach (Campaign campaign in campaigns)
                 {
+                    // Send mail for brand
+                    emailService.SendEmailCamapaign(CampaignState.Inactive, campaign.Brand.Account.Email,
+                        campaign.Brand.BrandName, campaign.CampaignName, null);
+
                     campaignRepository.ExpiredToClosed(campaign.Id);
                     campaignActivityRepository.Add(new CampaignActivity
                     {

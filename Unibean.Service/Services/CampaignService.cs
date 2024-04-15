@@ -60,6 +60,8 @@ public class CampaignService : ICampaignService
 
     private readonly IEmailService emailService;
 
+    private readonly IBrandRepository brandRepository;
+
     public CampaignService(ICampaignRepository campaignRepository,
         IVoucherRepository voucherRepository,
         IFireBaseService fireBaseService,
@@ -74,7 +76,8 @@ public class CampaignService : ICampaignService
         ICampaignActivityService campaignActivityService,
         ICampaignActivityRepository campaignActivityRepository,
         IStudentChallengeService studentChallengeService,
-        IEmailService emailService)
+        IEmailService emailService,
+        IBrandRepository brandRepository)
     {
         var config = new MapperConfiguration(cfg
                 =>
@@ -180,6 +183,7 @@ public class CampaignService : ICampaignService
         this.campaignActivityRepository = campaignActivityRepository;
         this.studentChallengeService = studentChallengeService;
         this.emailService = emailService;
+        this.brandRepository = brandRepository;
     }
 
     public async Task<CampaignExtraModel> Add(CreateCampaignModel creation)
@@ -221,6 +225,11 @@ public class CampaignService : ICampaignService
                     ToIndex = d.ToIndex,
                 });
             });
+
+            var brand = brandRepository.GetById(creation.BrandId);
+            // Send mail for brand
+            emailService.SendEmailCamapaign(CampaignState.Pending, brand.Account.Email,
+                brand.BrandName, campaign.CampaignName, null);
 
             discordService.CreateWebHooks(new DiscordWebhookModel
             {
@@ -474,6 +483,11 @@ public class CampaignService : ICampaignService
                     entity.Image = f.URL;
                     entity.ImageName = f.FileName;
                 }
+
+                // Send mail for brand
+                emailService.SendEmailCamapaign(CampaignState.Pending, entity.Brand.Account.Email,
+                    entity.Brand.BrandName, entity.CampaignName, null);
+
                 return mapper.Map<CampaignExtraModel>(campaignRepository.Update(entity));
             }
             throw new InvalidParameterException("Chiến dịch đã quá hạn cập nhật");
@@ -554,6 +568,10 @@ public class CampaignService : ICampaignService
                         // Handle refund
                         campaignRepository.ExpiredToClosed(entity.Id);
                     }
+
+                    // Send mail for brand
+                    emailService.SendEmailCamapaign(stateId, entity.Brand.Account.Email,
+                        entity.Brand.BrandName, entity.CampaignName, note);
 
                     return campaignActivityRepository.Add(new CampaignActivity
                     {
