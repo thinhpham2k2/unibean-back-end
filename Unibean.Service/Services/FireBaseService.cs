@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Vml.Office;
-using Firebase.Auth;
+﻿using Firebase.Auth;
 using Firebase.Auth.Providers;
 using Firebase.Storage;
 using FirebaseAdmin;

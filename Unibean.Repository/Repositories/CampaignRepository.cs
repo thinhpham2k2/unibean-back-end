@@ -426,6 +426,7 @@ public class CampaignRepository : ICampaignRepository
 
             result = query
                .Include(s => s.Brand)
+                    .ThenInclude(b => b.Account)
                .Include(s => s.Type)
                .Include(s => s.Wallets.Where(w => (bool)w.Status))
                .Include(s => s.CampaignActivities.Where(a => (bool)a.Status).OrderBy(a => a.Id))
@@ -454,6 +455,7 @@ public class CampaignRepository : ICampaignRepository
 
             result = query
                .Include(s => s.Brand)
+                    .ThenInclude(b => b.Account)
                .Include(s => s.Type)
                .Include(s => s.Wallets.Where(w => (bool)w.Status))
                .Include(s => s.CampaignActivities.Where(a => (bool)a.Status).OrderBy(a => a.Id))
