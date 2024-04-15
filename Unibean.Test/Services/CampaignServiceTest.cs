@@ -50,6 +50,8 @@ public class CampaignServiceTest
 
     private readonly IEmailService emailService;
 
+    private readonly IBrandRepository brandRepository;
+
     public CampaignServiceTest()
     {
         campaignRepository = A.Fake<ICampaignRepository>();
@@ -67,6 +69,7 @@ public class CampaignServiceTest
         campaignActivityRepository = A.Fake<ICampaignActivityRepository>();
         studentChallengeService = A.Fake<IStudentChallengeService>();
         emailService = A.Fake<IEmailService>();
+        brandRepository = A.Fake<IBrandRepository>();
     }
 
     [Fact]
@@ -106,11 +109,15 @@ public class CampaignServiceTest
             EndOn = DateOnly.FromDateTime(DateTime.Now).AddDays(100),
             CampaignDetails = new List<CampaignDetail>()
         });
+        A.CallTo(() => brandRepository.GetById(A<string>.Ignored)).Returns(new()
+        {
+            Account = new()
+        });
         A.CallTo(() => discordService.CreateWebHooks(A<DiscordWebhookModel>.Ignored));
         var service = new CampaignService(campaignRepository, voucherRepository,
              fireBaseService, storeService, majorService, campusService, discordService,
              activityService, voucherItemRepository, studentRepository, campaignDetailService,
-             campaignActivityService, campaignActivityRepository, studentChallengeService, emailService);
+             campaignActivityService, campaignActivityRepository, studentChallengeService, emailService, brandRepository);
 
         // Act
         var result = service.Add(creation);
@@ -165,7 +172,7 @@ public class CampaignServiceTest
         var service = new CampaignService(campaignRepository, voucherRepository,
              fireBaseService, storeService, majorService, campusService, discordService,
              activityService, voucherItemRepository, studentRepository, campaignDetailService,
-             campaignActivityService, campaignActivityRepository, studentChallengeService, emailService);
+             campaignActivityService, campaignActivityRepository, studentChallengeService, emailService, brandRepository);
 
         // Act & Assert
         var result = service.AddActivity(id, detailId, creation);
@@ -191,7 +198,7 @@ public class CampaignServiceTest
         var service = new CampaignService(campaignRepository, voucherRepository,
              fireBaseService, storeService, majorService, campusService, discordService,
              activityService, voucherItemRepository, studentRepository, campaignDetailService,
-             campaignActivityService, campaignActivityRepository, studentChallengeService, emailService);
+             campaignActivityService, campaignActivityRepository, studentChallengeService, emailService, brandRepository);
 
         // Act & Assert
         service.Delete(id);
@@ -226,7 +233,7 @@ public class CampaignServiceTest
         var service = new CampaignService(campaignRepository, voucherRepository,
              fireBaseService, storeService, majorService, campusService, discordService,
              activityService, voucherItemRepository, studentRepository, campaignDetailService,
-             campaignActivityService, campaignActivityRepository, studentChallengeService, emailService);
+             campaignActivityService, campaignActivityRepository, studentChallengeService, emailService, brandRepository);
 
         // Act
         var result = service.GetAll(brandIds, typeIds, storeIds, majorIds, campusIds,
@@ -251,7 +258,7 @@ public class CampaignServiceTest
         var service = new CampaignService(campaignRepository, voucherRepository,
              fireBaseService, storeService, majorService, campusService, discordService,
              activityService, voucherItemRepository, studentRepository, campaignDetailService,
-             campaignActivityService, campaignActivityRepository, studentChallengeService, emailService);
+             campaignActivityService, campaignActivityRepository, studentChallengeService, emailService, brandRepository);
 
         // Act
         var result = service.GetById(id);
@@ -292,7 +299,7 @@ public class CampaignServiceTest
         var service = new CampaignService(campaignRepository, voucherRepository,
              fireBaseService, storeService, majorService, campusService, discordService,
              activityService, voucherItemRepository, studentRepository, campaignDetailService,
-             campaignActivityService, campaignActivityRepository, studentChallengeService, emailService);
+             campaignActivityService, campaignActivityRepository, studentChallengeService, emailService, brandRepository);
 
         // Act
         var result = service.GetCampaignActivityListByCampaignId(id, stateIds, propertySort,
@@ -324,7 +331,7 @@ public class CampaignServiceTest
         var service = new CampaignService(campaignRepository, voucherRepository,
              fireBaseService, storeService, majorService, campusService, discordService,
              activityService, voucherItemRepository, studentRepository, campaignDetailService,
-             campaignActivityService, campaignActivityRepository, studentChallengeService, emailService);
+             campaignActivityService, campaignActivityRepository, studentChallengeService, emailService, brandRepository);
 
         // Act
         var result = service.GetCampaignDetailById(id, detailId);
@@ -367,7 +374,7 @@ public class CampaignServiceTest
         var service = new CampaignService(campaignRepository, voucherRepository,
              fireBaseService, storeService, majorService, campusService, discordService,
              activityService, voucherItemRepository, studentRepository, campaignDetailService,
-             campaignActivityService, campaignActivityRepository, studentChallengeService, emailService);
+             campaignActivityService, campaignActivityRepository, studentChallengeService, emailService, brandRepository);
 
         // Act
         var result = service.GetCampaignDetailListByCampaignId(id, typeIds, state, propertySort,
@@ -411,7 +418,7 @@ public class CampaignServiceTest
         var service = new CampaignService(campaignRepository, voucherRepository,
              fireBaseService, storeService, majorService, campusService, discordService,
              activityService, voucherItemRepository, studentRepository, campaignDetailService,
-             campaignActivityService, campaignActivityRepository, studentChallengeService, emailService);
+             campaignActivityService, campaignActivityRepository, studentChallengeService, emailService, brandRepository);
 
         // Act
         var result = service.GetCampusListByCampaignId(id, universityIds, areaIds, state,
@@ -453,7 +460,7 @@ public class CampaignServiceTest
         var service = new CampaignService(campaignRepository, voucherRepository,
              fireBaseService, storeService, majorService, campusService, discordService,
              activityService, voucherItemRepository, studentRepository, campaignDetailService,
-             campaignActivityService, campaignActivityRepository, studentChallengeService, emailService);
+             campaignActivityService, campaignActivityRepository, studentChallengeService, emailService, brandRepository);
 
         // Act
         var result = service.GetMajorListByCampaignId(id, state, propertySort, isAsc,
@@ -497,7 +504,7 @@ public class CampaignServiceTest
         var service = new CampaignService(campaignRepository, voucherRepository,
              fireBaseService, storeService, majorService, campusService, discordService,
              activityService, voucherItemRepository, studentRepository, campaignDetailService,
-             campaignActivityService, campaignActivityRepository, studentChallengeService, emailService);
+             campaignActivityService, campaignActivityRepository, studentChallengeService, emailService, brandRepository);
 
         // Act
         var result = service.GetStoreListByCampaignId(id, brandIds, areaIds, state, propertySort,
@@ -519,6 +526,12 @@ public class CampaignServiceTest
         {
             StartOn = DateOnly.FromDateTime(DateTime.Now).AddDays(3),
             EndOn = DateOnly.FromDateTime(DateTime.Now).AddDays(100),
+            Brand = new()
+            {
+                Account = new()
+                {
+                }
+            },
             CampaignActivities = new List<CampaignActivity>()
             {
                 new()
@@ -535,7 +548,7 @@ public class CampaignServiceTest
         var service = new CampaignService(campaignRepository, voucherRepository,
              fireBaseService, storeService, majorService, campusService, discordService,
              activityService, voucherItemRepository, studentRepository, campaignDetailService,
-             campaignActivityService, campaignActivityRepository, studentChallengeService, emailService);
+             campaignActivityService, campaignActivityRepository, studentChallengeService, emailService, brandRepository);
 
         // Act
         var result = service.Update(id, update);
@@ -558,6 +571,12 @@ public class CampaignServiceTest
         {
             StartOn = DateOnly.FromDateTime(DateTime.Now).AddDays(3),
             EndOn = DateOnly.FromDateTime(DateTime.Now).AddDays(100),
+            Brand = new()
+            {
+                Account = new()
+                {
+                }
+            },
             CampaignActivities = new List<CampaignActivity>()
             {
                 new()
@@ -573,7 +592,7 @@ public class CampaignServiceTest
         var service = new CampaignService(campaignRepository, voucherRepository,
              fireBaseService, storeService, majorService, campusService, discordService,
              activityService, voucherItemRepository, studentRepository, campaignDetailService,
-             campaignActivityService, campaignActivityRepository, studentChallengeService, emailService);
+             campaignActivityService, campaignActivityRepository, studentChallengeService, emailService, brandRepository);
 
         // Act & Assert
         var result = service.UpdateState(id, stateId, note, request);
