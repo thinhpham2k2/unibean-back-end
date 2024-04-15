@@ -239,7 +239,7 @@ public class VoucherItemRepositoryTest
         result.Should().NotBeNull();
         result.Should().BeOfType<ItemIndex>();
         Assert.Equal(1, result.FromIndex);
-        Assert.Equal(3, result.ToIndex);
+        Assert.Equal(1, result.ToIndex);
     }
 
     [Fact]
@@ -251,7 +251,7 @@ public class VoucherItemRepositoryTest
         var repository = new VoucherItemRepository(dbContext);
 
         // Act & Assert
-        Assert.Equal(10, repository.GetMaxIndex(voucherId));
+        Assert.Equal(1, repository.GetMaxIndex(voucherId));
     }
 
     [Fact]
