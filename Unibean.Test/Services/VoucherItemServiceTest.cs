@@ -3,6 +3,7 @@ using FluentAssertions;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
+using Unibean.Service.Models.Authens;
 using Unibean.Service.Models.Files;
 using Unibean.Service.Models.VoucherItems;
 using Unibean.Service.Services;
@@ -147,11 +148,15 @@ public class VoucherItemServiceTest
     public void VoucherItemService_AddTemplate()
     {
         // Arrange
+        JwtRequestModel request = new()
+        {
+            Role = "Brand"
+        };
         InsertVoucherItemModel insert = A.Fake<InsertVoucherItemModel>();
         var service = new VoucherItemService(voucherRepository, voucherItemRepository);
 
         // Act
-        var result = service.AddTemplate(insert);
+        var result = service.AddTemplate(insert, request);
 
         // Assert
         result.Should().NotBeNull();
@@ -163,7 +168,8 @@ public class VoucherItemServiceTest
     {
         // Arrange
         string code = "code";
-        A.CallTo(() => voucherItemRepository.GetByVoucherCode(code))
+        string brandId = "brandId";
+        A.CallTo(() => voucherItemRepository.GetByVoucherCode(code, brandId))
         .Returns(new()
         {
             VoucherCode = code
@@ -171,7 +177,7 @@ public class VoucherItemServiceTest
         var service = new VoucherItemService(voucherRepository, voucherItemRepository);
 
         // Act
-        var result = service.GetByCode(code);
+        var result = service.GetByCode(code, brandId);
 
         // Assert
         result.Should().NotBeNull();

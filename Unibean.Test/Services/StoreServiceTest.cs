@@ -77,8 +77,9 @@ public class StoreServiceTest
         // Arrange
         string id = "id";
         string code = "code";
+        string brandId = "brandId";
         CreateUseActivityModel creation = A.Fake<CreateUseActivityModel>();
-        A.CallTo(() => voucherItemRepository.GetByVoucherCode(code)).Returns(new()
+        A.CallTo(() => voucherItemRepository.GetByVoucherCode(code, brandId)).Returns(new()
         {
             IsLocked = true,
             VoucherCode = code,
@@ -113,6 +114,10 @@ public class StoreServiceTest
                     StudentId = id,
                 }
             }
+        });
+        A.CallTo(() => storeRepository.GetById(id)).Returns(new()
+        {
+            BrandId = brandId,
         });
         A.CallTo(() => studentRepository.GetById(id)).Returns(new()
         {
@@ -418,7 +423,8 @@ public class StoreServiceTest
         // Arrange
         string id = "id";
         string code = "code";
-        A.CallTo(() => voucherItemRepository.GetByVoucherCode(code)).Returns(new()
+        string brandId = "brandId";
+        A.CallTo(() => voucherItemRepository.GetByVoucherCode(code, brandId)).Returns(new()
         {
             IsBought = true,
             IsUsed = false,
@@ -441,6 +447,10 @@ public class StoreServiceTest
                     }
                 }
             }
+        });
+        A.CallTo(() => storeRepository.GetById(id)).Returns(new()
+        {
+            BrandId = brandId,
         });
         A.CallTo(() => voucherItemService.EntityToExtra(A<VoucherItem>.Ignored))
             .Returns(new()

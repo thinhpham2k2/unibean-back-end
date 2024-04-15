@@ -6,10 +6,6 @@ namespace Unibean.Service.Models.Vouchers;
 
 public class UpdateVoucherModel
 {
-    [ValidBrand]
-    [Required(ErrorMessage = "Thương hiệu là bắt buộc")]
-    public string BrandId { get; set; }
-
     [ValidVoucherType]
     [Required(ErrorMessage = "Loại khuyến mãi là bắt buộc")]
     public string TypeId { get; set; }

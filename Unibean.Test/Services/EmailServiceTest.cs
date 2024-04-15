@@ -275,4 +275,40 @@ public class EmailServiceTest
         // Assert
         Assert.True(result);
     }
+
+    [Fact]
+    public void EmailService_SendEmailCamapaign_ReturnFalse()
+    {
+        // Arrange
+        CampaignState state = CampaignState.Pending;
+        string receiver = "receiver";
+        string brandName = "brandName";
+        string campaignName = "campaignName";
+        string note = "note";
+        var service = new EmailService();
+
+        // Act
+        var result = service.SendEmailCamapaign(state, receiver, brandName, campaignName, note);
+
+        // Assert
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void EmailService_SendEmailCamapaign_ReturnTrue()
+    {
+        // Arrange
+        CampaignState state = CampaignState.Pending;
+        string receiver = "receiver@gmail.com";
+        string brandName = "brandName";
+        string campaignName = "campaignName";
+        string note = "note";
+        var service = new EmailService();
+
+        // Act
+        var result = service.SendEmailCamapaign(state, receiver, brandName, campaignName, note);
+
+        // Assert
+        Assert.True(result);
+    }
 }

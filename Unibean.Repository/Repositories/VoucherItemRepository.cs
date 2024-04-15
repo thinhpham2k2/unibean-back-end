@@ -45,14 +45,15 @@ public class VoucherItemRepository : IVoucherItemRepository
         }
     }
 
-    public bool CheckVoucherCode(string code)
+    public bool CheckVoucherCode(string code, string brandId)
     {
         VoucherItem voucher = new();
         try
         {
             var db = unibeanDB;
             voucher = db.VoucherItems
-            .Where(s => s.VoucherCode.Equals(code))
+            .Where(s => s.VoucherCode.Equals(code) 
+            && s.Voucher.BrandId.Equals(brandId))
             .FirstOrDefault();
         }
         catch (Exception ex)
@@ -199,14 +200,15 @@ public class VoucherItemRepository : IVoucherItemRepository
         return voucher;
     }
 
-    public VoucherItem GetByVoucherCode(string code)
+    public VoucherItem GetByVoucherCode(string code, string brandId)
     {
         VoucherItem voucher = new();
         try
         {
             var db = unibeanDB;
             voucher = db.VoucherItems
-            .Where(s => s.VoucherCode.Equals(code) && (bool)s.Status)
+            .Where(s => s.VoucherCode.Equals(code)
+            && s.Voucher.BrandId.Equals(brandId) && (bool)s.Status)
             .Include(s => s.CampaignDetail)
                 .ThenInclude(c => c.Campaign)
                     .ThenInclude(v => v.Type)

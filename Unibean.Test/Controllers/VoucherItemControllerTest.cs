@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Unibean.API.Controllers;
 using Unibean.Repository.Paging;
+using Unibean.Service.Models.Authens;
 using Unibean.Service.Models.Exceptions;
 using Unibean.Service.Models.Parameters;
 using Unibean.Service.Models.VoucherItems;
@@ -15,9 +16,12 @@ public class VoucherItemControllerTest
 {
     private readonly IVoucherItemService voucherItemService;
 
+    private readonly IJwtService jwtService;
+
     public VoucherItemControllerTest()
     {
         voucherItemService = A.Fake<IVoucherItemService>();
+        jwtService = A.Fake<IJwtService>();
     }
 
     [Fact]
@@ -41,7 +45,7 @@ public class VoucherItemControllerTest
             Page = 1,
             Limit = 10,
         };
-        var controller = new VoucherItemController(voucherItemService);
+        var controller = new VoucherItemController(voucherItemService, jwtService);
 
         // Act
         var result = controller.GetList
@@ -76,7 +80,7 @@ public class VoucherItemControllerTest
             Page = 1,
             Limit = 10,
         };
-        var controller = new VoucherItemController(voucherItemService);
+        var controller = new VoucherItemController(voucherItemService, jwtService);
         controller.ModelState.AddModelError("SessionName", "Required");
 
         // Act & Assert
@@ -107,7 +111,7 @@ public class VoucherItemControllerTest
             Page = 1,
             Limit = 10,
         };
-        var controller = new VoucherItemController(voucherItemService);
+        var controller = new VoucherItemController(voucherItemService, jwtService);
 
         // Act
         var result = controller.GetList
@@ -127,7 +131,7 @@ public class VoucherItemControllerTest
         // Arrange
         string id = "";
         A.CallTo(() => voucherItemService.GetById(id)).Returns(new());
-        var controller = new VoucherItemController(voucherItemService);
+        var controller = new VoucherItemController(voucherItemService, jwtService);
 
         // Act
         var result = controller.GetById(id);
@@ -146,7 +150,7 @@ public class VoucherItemControllerTest
         string id = "";
         A.CallTo(() => voucherItemService.GetById(id))
             .Throws(new InvalidParameterException());
-        var controller = new VoucherItemController(voucherItemService);
+        var controller = new VoucherItemController(voucherItemService, jwtService);
 
         // Act
         var result = controller.GetById(id);
@@ -164,7 +168,7 @@ public class VoucherItemControllerTest
         // Arrange
         CreateVoucherItemModel creation = new();
         A.CallTo(() => voucherItemService.Add(creation)).Returns(new());
-        var controller = new VoucherItemController(voucherItemService);
+        var controller = new VoucherItemController(voucherItemService, jwtService);
 
         // Act
         var result = controller.Create(creation);
@@ -181,7 +185,7 @@ public class VoucherItemControllerTest
     {
         // Arrange
         CreateVoucherItemModel creation = new();
-        var controller = new VoucherItemController(voucherItemService);
+        var controller = new VoucherItemController(voucherItemService, jwtService);
         controller.ModelState.AddModelError("SessionName", "Required");
 
         // Act & Assert
@@ -194,7 +198,7 @@ public class VoucherItemControllerTest
     {
         // Arrange
         string id = "";
-        var controller = new VoucherItemController(voucherItemService);
+        var controller = new VoucherItemController(voucherItemService, jwtService);
 
         // Act
         var result = controller.Delete(id);
@@ -213,7 +217,7 @@ public class VoucherItemControllerTest
         string id = "";
         A.CallTo(() => voucherItemService.Delete(id))
             .Throws(new InvalidParameterException());
-        var controller = new VoucherItemController(voucherItemService);
+        var controller = new VoucherItemController(voucherItemService, jwtService);
 
         // Act
         var result = controller.Delete(id);
@@ -229,7 +233,7 @@ public class VoucherItemControllerTest
     public void VoucherItemController_GetTemplate_ReturnOK()
     {
         // Arrange
-        var controller = new VoucherItemController(voucherItemService);
+        var controller = new VoucherItemController(voucherItemService, jwtService);
 
         // Act
         var result = controller.GetTemplate();
@@ -246,7 +250,7 @@ public class VoucherItemControllerTest
     {
         // Arrange
         InsertVoucherItemModel insert = new();
-        var controller = new VoucherItemController(voucherItemService);
+        var controller = new VoucherItemController(voucherItemService, jwtService);
         controller.ModelState.AddModelError("SessionName", "Required");
 
         // Act
@@ -264,9 +268,17 @@ public class VoucherItemControllerTest
     {
         // Arrange
         InsertVoucherItemModel insert = new();
-        A.CallTo(() => voucherItemService.AddTemplate(insert))
+        var httpContext = new DefaultHttpContext();
+        httpContext.Request.Headers["Authorization"] = "Bearer TOKEN";
+        A.CallTo(() => voucherItemService.AddTemplate(insert, A<JwtRequestModel>.Ignored))
             .Throws(new InvalidParameterException());
-        var controller = new VoucherItemController(voucherItemService);
+        var controller = new VoucherItemController(voucherItemService, jwtService)
+        {
+            ControllerContext = new ControllerContext()
+            {
+                HttpContext = httpContext
+            }
+        };
 
         // Act
         var result = controller.ImportTemplate(insert);
