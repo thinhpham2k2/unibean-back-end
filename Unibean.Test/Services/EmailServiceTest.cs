@@ -114,10 +114,11 @@ public class EmailServiceTest
     {
         // Arrange
         string receiver = "receiver";
+        string note = "note";
         var service = new EmailService();
 
         // Act
-        var result = service.SendEmailStudentRegisterReject(receiver);
+        var result = service.SendEmailStudentRegisterReject(receiver, note);
 
         // Assert
         Assert.False(result);
@@ -128,10 +129,11 @@ public class EmailServiceTest
     {
         // Arrange
         string receiver = "receiver@gmail.com";
+        string note = "note";
         var service = new EmailService();
 
         // Act
-        var result = service.SendEmailStudentRegisterReject(receiver);
+        var result = service.SendEmailStudentRegisterReject(receiver, note);
 
         // Assert
         Assert.True(result);

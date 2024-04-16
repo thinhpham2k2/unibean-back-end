@@ -286,7 +286,7 @@ public class StudentService : IStudentService
                     emailService.SendEmailStudentRegisterApprove(account.Email);
                     break;
                 case StudentState.Rejected:
-                    emailService.SendEmailStudentRegisterReject(account.Email);
+                    emailService.SendEmailStudentRegisterReject(account.Email, creation.Description);
                     break;
             }
         }
@@ -656,7 +656,7 @@ public class StudentService : IStudentService
                         }
                         else if (stateId.Equals(StudentState.Rejected))
                         {
-                            emailService.SendEmailStudentRegisterReject(entity.Account.Email);
+                            emailService.SendEmailStudentRegisterReject(entity.Account.Email, note);
                         }
 
                         entity.Account.IsVerify = true;
