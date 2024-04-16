@@ -12,7 +12,7 @@ public interface IEmailService
 
     bool SendEmailStudentRegisterApprove(string receiver);
 
-    bool SendEmailStudentRegisterReject(string receiver);
+    bool SendEmailStudentRegisterReject(string receiver, string note);
 
     string SendEmailVerification(string receiver);
 
