@@ -158,10 +158,11 @@ public class EmailServiceTest
         // Arrange
         string receiver = "receiver";
         string orderId = "01HQJE16SX45YXF9SM2GNAENS9";
+        string note = "note";
         var service = new EmailService();
 
         // Act
-        var result = service.SendEmailAbortOrder(receiver, orderId);
+        var result = service.SendEmailAbortOrder(receiver, orderId, note);
 
         // Assert
         Assert.False(result);
@@ -173,10 +174,11 @@ public class EmailServiceTest
         // Arrange
         string receiver = "receiver@gmail.com";
         string orderId = "01HQJE16SX45YXF9SM2GNAENS9";
+        string note = "note";
         var service = new EmailService();
 
         // Act
-        var result = service.SendEmailAbortOrder(receiver, orderId);
+        var result = service.SendEmailAbortOrder(receiver, orderId, note);
 
         // Assert
         Assert.True(result);
