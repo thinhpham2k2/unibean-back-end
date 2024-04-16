@@ -16,7 +16,7 @@ public interface IEmailService
 
     string SendEmailVerification(string receiver);
 
-    bool SendEmailAbortOrder(string receiver, string orderId);
+    bool SendEmailAbortOrder(string receiver, string orderId, string note);
 
     bool SendEmailCreateOrder(string receiver, string studentCode, string studentName, Order order);
 

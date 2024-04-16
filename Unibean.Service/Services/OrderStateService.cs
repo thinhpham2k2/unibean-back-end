@@ -47,7 +47,7 @@ public class OrderStateService : IOrderStateService
                             Status = true,
                         });
 
-                        emailService.SendEmailAbortOrder(entity.Student.Account.Email, id);
+                        emailService.SendEmailAbortOrder(entity.Student.Account.Email, id, creation.Note);
                         return "Hủy đơn hàng thành công";
                     }
                     else
