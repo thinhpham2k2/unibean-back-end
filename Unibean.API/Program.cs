@@ -220,7 +220,8 @@ app.UseCors(builder =>
     builder
     .AllowAnyOrigin()
     .AllowAnyMethod()
-    .AllowAnyHeader();
+    .AllowAnyHeader()
+    .WithExposedHeaders("Content-Disposition");
 });
 
 app.UseHttpsRedirection();
