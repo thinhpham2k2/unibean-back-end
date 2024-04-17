@@ -437,11 +437,12 @@ public class StudentService : IStudentService
     }
 
     public PagedResultModel<StudentModel> GetAll
-        (List<string> majorIds, List<string> campusIds, List<StudentState> stateIds,
-        bool? isVerify, string propertySort, bool isAsc, string search, int page, int limit)
+        (List<string> majorIds, List<string> campusIds, List<string> universityIds, 
+        List<StudentState> stateIds, bool? isVerify, string propertySort, bool isAsc,
+        string search, int page, int limit)
     {
         return mapper.Map<PagedResultModel<StudentModel>>
-            (studentRepository.GetAll(majorIds, campusIds, stateIds,
+            (studentRepository.GetAll(majorIds, campusIds, universityIds, stateIds,
             isVerify, propertySort, isAsc, search, page, limit));
     }
 

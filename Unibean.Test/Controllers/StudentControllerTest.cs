@@ -35,6 +35,7 @@ public class StudentControllerTest
         // Arrange
         List<string> majorIds = new();
         List<string> campusIds = new();
+        List<string> universityIds = new();
         List<StudentState> stateIds = new();
         bool? isVerify = null;
         PagingModel paging = new()
@@ -48,7 +49,7 @@ public class StudentControllerTest
 
         // Act
         var result = controller.GetList
-            (majorIds, campusIds, stateIds, isVerify, paging);
+            (majorIds, campusIds, universityIds, stateIds, isVerify, paging);
 
         // Assert
         result.Should().NotBeNull();
@@ -63,6 +64,7 @@ public class StudentControllerTest
         // Arrange
         List<string> majorIds = new();
         List<string> campusIds = new();
+        List<string> universityIds = new();
         List<StudentState> stateIds = new();
         bool? isVerify = null;
         PagingModel paging = new()
@@ -78,7 +80,7 @@ public class StudentControllerTest
         // Act & Assert
         Assert.Throws<InvalidParameterException>(
             () => controller.GetList
-            (majorIds, campusIds, stateIds, isVerify, paging));
+            (majorIds, campusIds, universityIds, stateIds, isVerify, paging));
     }
 
     [Fact]
@@ -87,6 +89,7 @@ public class StudentControllerTest
         // Arrange
         List<string> majorIds = new();
         List<string> campusIds = new();
+        List<string> universityIds = new();
         List<StudentState> stateIds = new();
         bool? isVerify = null;
         PagingModel paging = new()
@@ -100,7 +103,7 @@ public class StudentControllerTest
 
         // Act
         var result = controller.GetList
-            (majorIds, campusIds, stateIds, isVerify, paging);
+            (majorIds, campusIds, universityIds, stateIds, isVerify, paging);
 
         // Assert
         result.Should().NotBeNull();

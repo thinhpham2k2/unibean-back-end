@@ -38,6 +38,7 @@ public class StudentController : ControllerBase
     /// </summary>
     /// <param name="majorIds">Filter by major id.</param>
     /// <param name="campusIds">Filter by campus id.</param>
+    /// <param name="universityIds">Filter by university id.</param>
     /// <param name="stateIds">Filter by student state --- Pending = 1, Active = 2, Inactive = 3, Rejected = 4</param>
     /// <param name="isVerify">Filter by student verification status.</param>
     /// <param name="paging">Paging parameter.</param>
@@ -50,6 +51,7 @@ public class StudentController : ControllerBase
     public ActionResult<PagedResultModel<StudentModel>> GetList(
         [FromQuery] List<string> majorIds,
         [FromQuery] List<string> campusIds,
+        [FromQuery] List<string> universityIds,
         [FromQuery] List<StudentState> stateIds,
         [FromQuery] bool? isVerify,
         [FromQuery] PagingModel paging)
@@ -62,7 +64,7 @@ public class StudentController : ControllerBase
         {
             PagedResultModel<StudentModel>
                 result = studentService.GetAll
-                (majorIds, campusIds, stateIds, isVerify, propertySort,
+                (majorIds, campusIds, universityIds, stateIds, isVerify, propertySort,
                 paging.Sort.Split(",")[1].Equals("asc"), paging.Search, paging.Page, paging.Limit);
             return StatusCode(StatusCodes.Status200OK, result);
         }
