@@ -329,6 +329,7 @@ public class VoucherItemService : IVoucherItemService
             if (!sheet.IsPasswordProtected || !sheet.IsProtected
                 || !sheet.Cell("C6").Value.Equals("thinh0938081927"))
             {
+                RemoveFile(upload);
                 throw new InvalidParameterException("Mẫu tạo khuyến mãi không hợp lệ");
             }
 
@@ -344,6 +345,7 @@ public class VoucherItemService : IVoucherItemService
 
             if(cells.Count == 0)
             {
+                RemoveFile(upload);
                 throw new InvalidParameterException("Mẫu tạo khuyến mãi rỗng");
             }
 
