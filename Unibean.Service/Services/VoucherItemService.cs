@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Enable.EnumDisplayName;
 using MoreLinq;
 using System.Data;
@@ -343,12 +344,13 @@ public class VoucherItemService : IVoucherItemService
             sheet.Cell("C5").Style.Fill.BackgroundColor = XLColor.Yellow;
             var cells = sheet.Cells("B4:B1003").Where(c => !c.Value.IsBlank).ToList();
 
-            if(cells.Count == 0)
+            if (cells.Count == 0)
             {
                 RemoveFile(upload);
                 throw new InvalidParameterException("Mẫu tạo khuyến mãi rỗng");
             }
 
+            sheet.Cells("B3:B1003").Style.Fill.BackgroundColor = XLColor.NoColor;
             var index = voucherItemRepository.GetMaxIndex(insert.VoucherId);
             List<VoucherItem> list = new();
             int errorListValid = 0;
