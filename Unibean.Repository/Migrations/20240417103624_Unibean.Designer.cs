@@ -11,7 +11,7 @@ using Unibean.Repository.Entities;
 namespace Unibean.Repository.Migrations
 {
     [DbContext(typeof(UnibeanDBContext))]
-    [Migration("20240303094321_Unibean")]
+    [Migration("20240417103624_Unibean")]
     partial class Unibean
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1011,12 +1011,12 @@ namespace Unibean.Repository.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "01HR1V4KY2PSZ2970BGMZ00YA1",
+                            Id = "01HVNT2382AE6M3FQZ2NT83CEA",
                             Amount = 100000m,
                             ChallengeName = "Xác nhận tài khoản sinh viên",
                             Condition = 1m,
-                            DateCreated = new DateTime(2024, 3, 3, 16, 43, 21, 282, DateTimeKind.Local).AddTicks(7422),
-                            DateUpdated = new DateTime(2024, 3, 3, 16, 43, 21, 282, DateTimeKind.Local).AddTicks(7443),
+                            DateCreated = new DateTime(2024, 4, 17, 17, 36, 24, 194, DateTimeKind.Local).AddTicks(7940),
+                            DateUpdated = new DateTime(2024, 4, 17, 17, 36, 24, 194, DateTimeKind.Local).AddTicks(7952),
                             Description = "Tài khoản sinh viên đã được xác thực sẽ hoàn thành thử thách",
                             FileName = "01HKYHZ6MVH2JKG32NX15K3CDG",
                             Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HKYHZ6MVH2JKG32NX15K3CDG?alt=media&token=17dfbee0-8324-4dcd-9f73-320436766c5",
@@ -1026,12 +1026,12 @@ namespace Unibean.Repository.Migrations
                         },
                         new
                         {
-                            Id = "01HR1V4KYBWFPAV12XS8GJ2T9Y",
+                            Id = "01HVNT238BHT7EM03DVEREWZME",
                             Amount = 50000m,
                             ChallengeName = "Đồng cam cộng hưởng",
                             Condition = 1m,
-                            DateCreated = new DateTime(2024, 3, 3, 16, 43, 21, 291, DateTimeKind.Local).AddTicks(2428),
-                            DateUpdated = new DateTime(2024, 3, 3, 16, 43, 21, 291, DateTimeKind.Local).AddTicks(2451),
+                            DateCreated = new DateTime(2024, 4, 17, 17, 36, 24, 203, DateTimeKind.Local).AddTicks(2139),
+                            DateUpdated = new DateTime(2024, 4, 17, 17, 36, 24, 203, DateTimeKind.Local).AddTicks(2150),
                             Description = "Nhập mã giới thiệu của bạn bè để hoàn thành thử thách",
                             FileName = "01HKYJ4PDDV2QZJCFZDDEVQ0PJ",
                             Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HKYJ4PDDV2QZJCFZDDEVQ0PJ?alt=media&token=7397417a-2a73-47af-968a-9197cceaf43c",
@@ -1041,12 +1041,12 @@ namespace Unibean.Repository.Migrations
                         },
                         new
                         {
-                            Id = "01HR1V4KYVRJEQPVMVZWZ0X83M",
+                            Id = "01HVNT238TA21MASJD5MFXBH0S",
                             Amount = 10000m,
                             ChallengeName = "Mời bạn cùng vui 1",
                             Condition = 1m,
-                            DateCreated = new DateTime(2024, 3, 3, 16, 43, 21, 307, DateTimeKind.Local).AddTicks(2541),
-                            DateUpdated = new DateTime(2024, 3, 3, 16, 43, 21, 307, DateTimeKind.Local).AddTicks(2548),
+                            DateCreated = new DateTime(2024, 4, 17, 17, 36, 24, 218, DateTimeKind.Local).AddTicks(4078),
+                            DateUpdated = new DateTime(2024, 4, 17, 17, 36, 24, 218, DateTimeKind.Local).AddTicks(4083),
                             Description = "Được 1 tài khoản nhập mã giới thiệu để hoàn thành thử thách",
                             FileName = "01HKYJFX60DHMR6FRY4532VSX7",
                             Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HKYJFX60DHMR6FRY4532VSX7?alt=media&token=d86a619f-01ac-4a0a-941d-95f7bd64fa40",
@@ -1056,12 +1056,12 @@ namespace Unibean.Repository.Migrations
                         },
                         new
                         {
-                            Id = "01HR1V4KZAT92G99VKS09JRAVY",
+                            Id = "01HVNT2399WYXM6ETFPDP5A70J",
                             Amount = 100000m,
                             ChallengeName = "Mời bạn cùng vui 10",
                             Condition = 10m,
-                            DateCreated = new DateTime(2024, 3, 3, 16, 43, 21, 322, DateTimeKind.Local).AddTicks(7863),
-                            DateUpdated = new DateTime(2024, 3, 3, 16, 43, 21, 322, DateTimeKind.Local).AddTicks(7875),
+                            DateCreated = new DateTime(2024, 4, 17, 17, 36, 24, 233, DateTimeKind.Local).AddTicks(4514),
+                            DateUpdated = new DateTime(2024, 4, 17, 17, 36, 24, 233, DateTimeKind.Local).AddTicks(4529),
                             Description = "Được 10 tài khoản nhập mã giới thiệu để hoàn thành thử thách",
                             FileName = "01HKYJFX60DHMR6FRY4532VSX7",
                             Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HKYJFX60DHMR6FRY4532VSX7?alt=media&token=d86a619f-01ac-4a0a-941d-95f7bd64fa40",
@@ -1071,12 +1071,12 @@ namespace Unibean.Repository.Migrations
                         },
                         new
                         {
-                            Id = "01HR1V4KZT2VTJJVSHTS2B78NF",
+                            Id = "01HVNT239SHVSH897GMDQFGH00",
                             Amount = 300000m,
                             ChallengeName = "Mời bạn cùng vui 30",
                             Condition = 30m,
-                            DateCreated = new DateTime(2024, 3, 3, 16, 43, 21, 338, DateTimeKind.Local).AddTicks(6650),
-                            DateUpdated = new DateTime(2024, 3, 3, 16, 43, 21, 339, DateTimeKind.Local).AddTicks(6810),
+                            DateCreated = new DateTime(2024, 4, 17, 17, 36, 24, 249, DateTimeKind.Local).AddTicks(4728),
+                            DateUpdated = new DateTime(2024, 4, 17, 17, 36, 24, 249, DateTimeKind.Local).AddTicks(4756),
                             Description = "Được 30 tài khoản nhập mã giới thiệu để hoàn thành thử thách",
                             FileName = "01HKYJFX60DHMR6FRY4532VSX7",
                             Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HKYJFX60DHMR6FRY4532VSX7?alt=media&token=d86a619f-01ac-4a0a-941d-95f7bd64fa40",
@@ -1086,12 +1086,12 @@ namespace Unibean.Repository.Migrations
                         },
                         new
                         {
-                            Id = "01HR1V4M0ATJW3T329DGA4DZ0W",
+                            Id = "01HVNT23A80FFTS3PHFR2HZPSP",
                             Amount = 500000m,
                             ChallengeName = "Mời bạn cùng vui 50",
                             Condition = 50m,
-                            DateCreated = new DateTime(2024, 3, 3, 16, 43, 21, 354, DateTimeKind.Local).AddTicks(6390),
-                            DateUpdated = new DateTime(2024, 3, 3, 16, 43, 21, 354, DateTimeKind.Local).AddTicks(6397),
+                            DateCreated = new DateTime(2024, 4, 17, 17, 36, 24, 264, DateTimeKind.Local).AddTicks(4520),
+                            DateUpdated = new DateTime(2024, 4, 17, 17, 36, 24, 264, DateTimeKind.Local).AddTicks(4551),
                             Description = "Được 50 tài khoản nhập mã giới thiệu để hoàn thành thử thách",
                             FileName = "01HKYJFX60DHMR6FRY4532VSX7",
                             Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HKYJFX60DHMR6FRY4532VSX7?alt=media&token=d86a619f-01ac-4a0a-941d-95f7bd64fa40",
@@ -1101,12 +1101,12 @@ namespace Unibean.Repository.Migrations
                         },
                         new
                         {
-                            Id = "01HR1V4M0T6HTW7HR7F1C1XX8N",
+                            Id = "01HVNT23ARR39XKJAPHQVKS4F7",
                             Amount = 1000000m,
                             ChallengeName = "Mời bạn cùng vui 100",
                             Condition = 100m,
-                            DateCreated = new DateTime(2024, 3, 3, 16, 43, 21, 370, DateTimeKind.Local).AddTicks(6481),
-                            DateUpdated = new DateTime(2024, 3, 3, 16, 43, 21, 370, DateTimeKind.Local).AddTicks(6487),
+                            DateCreated = new DateTime(2024, 4, 17, 17, 36, 24, 280, DateTimeKind.Local).AddTicks(4652),
+                            DateUpdated = new DateTime(2024, 4, 17, 17, 36, 24, 280, DateTimeKind.Local).AddTicks(4670),
                             Description = "Được 100 tài khoản nhập mã giới thiệu để hoàn thành thử thách",
                             FileName = "01HKYJFX60DHMR6FRY4532VSX7",
                             Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HKYJFX60DHMR6FRY4532VSX7?alt=media&token=d86a619f-01ac-4a0a-941d-95f7bd64fa40",
@@ -1116,12 +1116,12 @@ namespace Unibean.Repository.Migrations
                         },
                         new
                         {
-                            Id = "01HR1V4M1AA3AAWSF1970X9ZK9",
+                            Id = "01HVNT23B79CY4E1P8124KAAD3",
                             Amount = 10000000m,
                             ChallengeName = "Mời bạn cùng vui 1000",
                             Condition = 1000m,
-                            DateCreated = new DateTime(2024, 3, 3, 16, 43, 21, 386, DateTimeKind.Local).AddTicks(6448),
-                            DateUpdated = new DateTime(2024, 3, 3, 16, 43, 21, 386, DateTimeKind.Local).AddTicks(6460),
+                            DateCreated = new DateTime(2024, 4, 17, 17, 36, 24, 295, DateTimeKind.Local).AddTicks(5048),
+                            DateUpdated = new DateTime(2024, 4, 17, 17, 36, 24, 295, DateTimeKind.Local).AddTicks(5069),
                             Description = "Được 1000 tài khoản nhập mã giới thiệu để hoàn thành thử thách",
                             FileName = "01HKYJFX60DHMR6FRY4532VSX7",
                             Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HKYJFX60DHMR6FRY4532VSX7?alt=media&token=d86a619f-01ac-4a0a-941d-95f7bd64fa40",
@@ -1131,12 +1131,12 @@ namespace Unibean.Repository.Migrations
                         },
                         new
                         {
-                            Id = "01HR1V4M1TEWDTF894P6572Q7S",
+                            Id = "01HVNT23BPAN06015QTGMRSKF3",
                             Amount = 100000000m,
                             ChallengeName = "Mời bạn cùng vui 10000",
                             Condition = 10000m,
-                            DateCreated = new DateTime(2024, 3, 3, 16, 43, 21, 402, DateTimeKind.Local).AddTicks(6483),
-                            DateUpdated = new DateTime(2024, 3, 3, 16, 43, 21, 402, DateTimeKind.Local).AddTicks(6488),
+                            DateCreated = new DateTime(2024, 4, 17, 17, 36, 24, 310, DateTimeKind.Local).AddTicks(6023),
+                            DateUpdated = new DateTime(2024, 4, 17, 17, 36, 24, 310, DateTimeKind.Local).AddTicks(6062),
                             Description = "Được 10000 tài khoản nhập mã giới thiệu để hoàn thành thử thách",
                             FileName = "01HKYJFX60DHMR6FRY4532VSX7",
                             Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HKYJFX60DHMR6FRY4532VSX7?alt=media&token=d86a619f-01ac-4a0a-941d-95f7bd64fa40",
@@ -1146,12 +1146,12 @@ namespace Unibean.Repository.Migrations
                         },
                         new
                         {
-                            Id = "01HR1V4M2A3V4FV1SX5T629D7G",
+                            Id = "01HVNT23C6ZAQ160FEXCTNKHW1",
                             Amount = 1000m,
                             ChallengeName = "Tiền tiêu như nước 1",
                             Condition = 10000m,
-                            DateCreated = new DateTime(2024, 3, 3, 16, 43, 21, 418, DateTimeKind.Local).AddTicks(6405),
-                            DateUpdated = new DateTime(2024, 3, 3, 16, 43, 21, 418, DateTimeKind.Local).AddTicks(6417),
+                            DateCreated = new DateTime(2024, 4, 17, 17, 36, 24, 326, DateTimeKind.Local).AddTicks(6918),
+                            DateUpdated = new DateTime(2024, 4, 17, 17, 36, 24, 326, DateTimeKind.Local).AddTicks(6958),
                             Description = "Tích trữ tiêu thụ 10000 đậu xanh từ việc mua khuyến mãi để hoàn thành thử thách",
                             FileName = "01HNM20GGS9Q5QPJQF4N29Y10F.png",
                             Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HNM20GGS9Q5QPJQF4N29Y10F.png?alt=media&token=62c5862e-5ee5-4747-b431-f15a3f3ee93c",
@@ -1161,12 +1161,12 @@ namespace Unibean.Repository.Migrations
                         },
                         new
                         {
-                            Id = "01HR1V4M2T84354502GHK520PK",
+                            Id = "01HVNT23CNTZZXTPTSWCP7C1JF",
                             Amount = 10000m,
                             ChallengeName = "Tiền tiêu như nước 2",
                             Condition = 100000m,
-                            DateCreated = new DateTime(2024, 3, 3, 16, 43, 21, 434, DateTimeKind.Local).AddTicks(6587),
-                            DateUpdated = new DateTime(2024, 3, 3, 16, 43, 21, 434, DateTimeKind.Local).AddTicks(6599),
+                            DateCreated = new DateTime(2024, 4, 17, 17, 36, 24, 341, DateTimeKind.Local).AddTicks(6771),
+                            DateUpdated = new DateTime(2024, 4, 17, 17, 36, 24, 341, DateTimeKind.Local).AddTicks(6820),
                             Description = "Tích trữ tiêu thụ 100000 đậu xanh từ việc mua khuyến mãi để hoàn thành thử thách",
                             FileName = "01HNM20GGS9Q5QPJQF4N29Y10F.png",
                             Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HNM20GGS9Q5QPJQF4N29Y10F.png?alt=media&token=62c5862e-5ee5-4747-b431-f15a3f3ee93c",
@@ -1176,12 +1176,12 @@ namespace Unibean.Repository.Migrations
                         },
                         new
                         {
-                            Id = "01HR1V4M3A9JWM650FZPRA3MAK",
+                            Id = "01HVNT23D50X7Y3DGGWSCZN571",
                             Amount = 50000m,
                             ChallengeName = "Tiền tiêu như nước 3",
                             Condition = 500000m,
-                            DateCreated = new DateTime(2024, 3, 3, 16, 43, 21, 450, DateTimeKind.Local).AddTicks(7009),
-                            DateUpdated = new DateTime(2024, 3, 3, 16, 43, 21, 450, DateTimeKind.Local).AddTicks(7017),
+                            DateCreated = new DateTime(2024, 4, 17, 17, 36, 24, 357, DateTimeKind.Local).AddTicks(6080),
+                            DateUpdated = new DateTime(2024, 4, 17, 17, 36, 24, 357, DateTimeKind.Local).AddTicks(6091),
                             Description = "Tích trữ tiêu thụ 500000 đậu xanh từ việc mua khuyến mãi để hoàn thành thử thách",
                             FileName = "01HNM20GGS9Q5QPJQF4N29Y10F.png",
                             Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HNM20GGS9Q5QPJQF4N29Y10F.png?alt=media&token=62c5862e-5ee5-4747-b431-f15a3f3ee93c",
@@ -1191,12 +1191,12 @@ namespace Unibean.Repository.Migrations
                         },
                         new
                         {
-                            Id = "01HR1V4M3TB5VK86N3BWED0AGN",
+                            Id = "01HVNT23DMGBHH712ZDCEZ91YN",
                             Amount = 100000m,
                             ChallengeName = "Tiền tiêu như nước 4",
                             Condition = 1000000m,
-                            DateCreated = new DateTime(2024, 3, 3, 16, 43, 21, 466, DateTimeKind.Local).AddTicks(7011),
-                            DateUpdated = new DateTime(2024, 3, 3, 16, 43, 21, 466, DateTimeKind.Local).AddTicks(7033),
+                            DateCreated = new DateTime(2024, 4, 17, 17, 36, 24, 372, DateTimeKind.Local).AddTicks(6007),
+                            DateUpdated = new DateTime(2024, 4, 17, 17, 36, 24, 372, DateTimeKind.Local).AddTicks(6019),
                             Description = "Tích trữ tiêu thụ 1000000 đậu xanh từ việc mua khuyến mãi để hoàn thành thử thách",
                             FileName = "01HNM20GGS9Q5QPJQF4N29Y10F.png",
                             Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HNM20GGS9Q5QPJQF4N29Y10F.png?alt=media&token=62c5862e-5ee5-4747-b431-f15a3f3ee93c",
@@ -1206,12 +1206,12 @@ namespace Unibean.Repository.Migrations
                         },
                         new
                         {
-                            Id = "01HR1V4M4A6GBQ4F6KX2ZYYFC1",
+                            Id = "01HVNT23E3AQ1Y3SQ9M7N680HD",
                             Amount = 1000000m,
                             ChallengeName = "Tiền tiêu như nước 5",
                             Condition = 10000000m,
-                            DateCreated = new DateTime(2024, 3, 3, 16, 43, 21, 482, DateTimeKind.Local).AddTicks(6605),
-                            DateUpdated = new DateTime(2024, 3, 3, 16, 43, 21, 482, DateTimeKind.Local).AddTicks(6623),
+                            DateCreated = new DateTime(2024, 4, 17, 17, 36, 24, 387, DateTimeKind.Local).AddTicks(7306),
+                            DateUpdated = new DateTime(2024, 4, 17, 17, 36, 24, 387, DateTimeKind.Local).AddTicks(7312),
                             Description = "Tích trữ tiêu thụ 10000000 đậu xanh từ việc mua khuyến mãi để hoàn thành thử thách",
                             FileName = "01HNM20GGS9Q5QPJQF4N29Y10F.png",
                             Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HNM20GGS9Q5QPJQF4N29Y10F.png?alt=media&token=62c5862e-5ee5-4747-b431-f15a3f3ee93c",
@@ -1221,12 +1221,12 @@ namespace Unibean.Repository.Migrations
                         },
                         new
                         {
-                            Id = "01HR1V4M4TY2HXTXDDM8ZYPMFX",
+                            Id = "01HVNT23EJ58DYV43NXEF62BCZ",
                             Amount = 5000000m,
                             ChallengeName = "Tiền tiêu như nước 6",
                             Condition = 50000000m,
-                            DateCreated = new DateTime(2024, 3, 3, 16, 43, 21, 498, DateTimeKind.Local).AddTicks(4337),
-                            DateUpdated = new DateTime(2024, 3, 3, 16, 43, 21, 498, DateTimeKind.Local).AddTicks(4353),
+                            DateCreated = new DateTime(2024, 4, 17, 17, 36, 24, 402, DateTimeKind.Local).AddTicks(7237),
+                            DateUpdated = new DateTime(2024, 4, 17, 17, 36, 24, 402, DateTimeKind.Local).AddTicks(7239),
                             Description = "Tích trữ tiêu thụ 50000000 đậu xanh từ việc mua khuyến mãi để hoàn thành thử thách",
                             FileName = "01HNM20GGS9Q5QPJQF4N29Y10F.png",
                             Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HNM20GGS9Q5QPJQF4N29Y10F.png?alt=media&token=62c5862e-5ee5-4747-b431-f15a3f3ee93c",
@@ -1236,12 +1236,12 @@ namespace Unibean.Repository.Migrations
                         },
                         new
                         {
-                            Id = "01HR1V4M5AJ287R2HZFXST554J",
+                            Id = "01HVNT23F1KRW2ACWY768YMJY5",
                             Amount = 10000000m,
                             ChallengeName = "Tiền tiêu như nước 7",
                             Condition = 100000000m,
-                            DateCreated = new DateTime(2024, 3, 3, 16, 43, 21, 514, DateTimeKind.Local).AddTicks(4560),
-                            DateUpdated = new DateTime(2024, 3, 3, 16, 43, 21, 514, DateTimeKind.Local).AddTicks(4587),
+                            DateCreated = new DateTime(2024, 4, 17, 17, 36, 24, 417, DateTimeKind.Local).AddTicks(7252),
+                            DateUpdated = new DateTime(2024, 4, 17, 17, 36, 24, 417, DateTimeKind.Local).AddTicks(7257),
                             Description = "Tích trữ tiêu thụ 100000000 đậu xanh từ việc mua khuyến mãi để hoàn thành thử thách",
                             FileName = "01HNM20GGS9Q5QPJQF4N29Y10F.png",
                             Image = "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/challenges%2F01HNM20GGS9Q5QPJQF4N29Y10F.png?alt=media&token=62c5862e-5ee5-4747-b431-f15a3f3ee93c",

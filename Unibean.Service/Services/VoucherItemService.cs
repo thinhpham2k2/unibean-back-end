@@ -167,7 +167,7 @@ public class VoucherItemService : IVoucherItemService
         var sheet = wb.AddWorksheet("Voucher Item Record");
         sheet.Cell("A2").InsertTable(dt)
             .Theme = XLTableTheme.TableStyleMedium4;
-        sheet.Protect("unibean");
+        sheet.Protect("unibean123");
 
         // Set for cell
         sheet.Cell("A1").Value = "          *Lưu ý\r\n     - Stt: Số thứ tự của khuyến mãi.\r\n     - Id: Định danh của khuyến mãi.\r\n     - Code: Mã quét của khuyến mãi.\r\n     - Index: Chỉ mục của khuyến mãi (nâng cao).\r\n     - Name: Tên của khuyến mãi.";
@@ -255,10 +255,12 @@ public class VoucherItemService : IVoucherItemService
         sheet.Protect("unibean");
 
         // Set style for cell
-        sheet.Cells("B3").Style.Font.Italic = true;
-        sheet.Cells("C1").FormulaA1 = "\"Số lượng khuyến mãi đã thêm:\r\n     \" & COUNTIF(B4:B1003,\"<>\") - COUNTIF(B4:B1003,\"* *\") & \" / 1000\"";
-        sheet.Cells("C1").Style.Font.FontColor = XLColor.Red;
-        sheet.Cells("C1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+        sheet.Cell("B3").Style.Font.Italic = true;
+        sheet.Cell("C1").FormulaA1 = "\"Số lượng khuyến mãi đã thêm:\r\n     \" & COUNTIF(B4:B1003,\"<>\") - COUNTIF(B4:B1003,\"* *\") & \" / 1000\"";
+        sheet.Cell("C1").Style.Font.FontColor = XLColor.Red;
+        sheet.Cell("C1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+        sheet.Cell("C6").Value = "thinh0938081927";
+        sheet.Cell("C6").Style.Font.FontColor = XLColor.White;
         sheet.Cell("A1").Value = "          *Lưu ý\r\n     - Stt: Số thứ tự của khuyến mãi.\r\n     - Code: Mã quét của khuyến mãi.\r\n     - Quantity: Số lượng của khuyến mãi.";
 
         // Set style for first row
@@ -324,7 +326,8 @@ public class VoucherItemService : IVoucherItemService
             using var wb = new XLWorkbook(filePath);
             var sheet = wb.Worksheet(1);
 
-            if (!sheet.IsPasswordProtected || !sheet.IsProtected || !sheet.Range("A1:C1").IsMerged())
+            if (!sheet.IsPasswordProtected || !sheet.IsProtected
+                || !sheet.Cell("C6").Value.Equals("thinh0938081927"))
             {
                 throw new InvalidParameterException("Mẫu tạo khuyến mãi không hợp lệ");
             }
@@ -338,6 +341,12 @@ public class VoucherItemService : IVoucherItemService
             sheet.Cell("C5").Value = "Khuyến mãi đã được sử dụng";
             sheet.Cell("C5").Style.Fill.BackgroundColor = XLColor.Yellow;
             var cells = sheet.Cells("B4:B1003").Where(c => !c.Value.IsBlank).ToList();
+
+            if(cells.Count == 0)
+            {
+                throw new InvalidParameterException("Mẫu tạo khuyến mãi rỗng");
+            }
+
             var index = voucherItemRepository.GetMaxIndex(insert.VoucherId);
             List<VoucherItem> list = new();
             int errorListValid = 0;
