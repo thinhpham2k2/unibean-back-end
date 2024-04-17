@@ -203,6 +203,7 @@ public class StudentServiceTest
         // Arrange
         List<string> majorIds = new();
         List<string> campusIds = new();
+        List<string> universityIds = new();
         List<StudentState> stateIds = new();
         bool? isVerify = null;
         string propertySort = "";
@@ -232,15 +233,15 @@ public class StudentServiceTest
                 }
             }
         };
-        A.CallTo(() => studentRepository.GetAll(majorIds, campusIds, stateIds, isVerify,
-            propertySort, isAsc, search, page, limit)).Returns(pagedResultModel);
+        A.CallTo(() => studentRepository.GetAll(majorIds, campusIds, universityIds, stateIds, 
+            isVerify, propertySort, isAsc, search, page, limit)).Returns(pagedResultModel);
         var service = new StudentService(studentRepository, fireBaseService, accountRepository,
             invitationService, studentChallengeService, challengeTransactionService, orderService,
             voucherItemService, emailService, transactionService);
 
         // Act
-        var result = service.GetAll(majorIds, campusIds, stateIds, isVerify, propertySort,
-            isAsc, search, page, limit);
+        var result = service.GetAll(majorIds, campusIds, universityIds, stateIds, 
+            isVerify, propertySort, isAsc, search, page, limit);
 
         // Assert
         result.Should().NotBeNull();

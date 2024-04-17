@@ -179,8 +179,9 @@ public class StudentRepository : IStudentRepository
     }
 
     public PagedResultModel<Student> GetAll
-        (List<string> majorIds, List<string> campusIds, List<StudentState> stateIds,
-        bool? isVerify, string propertySort, bool isAsc, string search, int page, int limit)
+        (List<string> majorIds, List<string> campusIds, List<string> universityIds, 
+        List<StudentState> stateIds, bool? isVerify, string propertySort, bool isAsc, 
+        string search, int page, int limit)
     {
         PagedResultModel<Student> pagedResult = new();
         try
@@ -196,6 +197,7 @@ public class StudentRepository : IStudentRepository
                 || EF.Functions.Like(s.Campus.CampusName, "%" + search + "%"))
                 && (majorIds.Count == 0 || majorIds.Contains(s.MajorId))
                 && (campusIds.Count == 0 || campusIds.Contains(s.CampusId))
+                && (universityIds.Count == 0 || universityIds.Contains(s.Campus.UniversityId))
                 && (stateIds.Count == 0 || stateIds.Contains(s.State.Value))
                 && (isVerify == null || isVerify.Equals(s.Account.IsVerify))
                 && (bool)s.Status)

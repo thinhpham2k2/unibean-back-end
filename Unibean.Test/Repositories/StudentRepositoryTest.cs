@@ -201,6 +201,7 @@ public class StudentRepositoryTest
         // Arrange
         List<string> majorIds = new();
         List<string> campusIds = new();
+        List<string> universityIds = new();
         List<StudentState> stateIds = new();
         bool? isVerify = null;
         string propertySort = "Id";
@@ -212,8 +213,8 @@ public class StudentRepositoryTest
         var repository = new StudentRepository(dbContext);
 
         // Act
-        var result = repository.GetAll(majorIds, campusIds, stateIds,
-            isVerify, propertySort, isAsc, search, page, limit);
+        var result = repository.GetAll(majorIds, campusIds, universityIds, 
+            stateIds, isVerify, propertySort, isAsc, search, page, limit);
 
         // Assert
         result.Should().NotBeNull();
