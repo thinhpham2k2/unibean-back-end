@@ -5,6 +5,10 @@ namespace Unibean.Repository.Entities;
 
 public class UnibeanDBContext : DbContext
 {
+    public UnibeanDBContext()
+    {
+    }
+
     public UnibeanDBContext(DbContextOptions<UnibeanDBContext> options) : base(options) { }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
