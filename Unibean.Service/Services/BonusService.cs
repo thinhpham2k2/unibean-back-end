@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Enable.EnumDisplayName;
+using FirebaseAdmin.Messaging;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
 using Unibean.Repository.Repositories.Interfaces;
@@ -19,8 +20,11 @@ public class BonusService : IBonusService
 
     private readonly IStoreRepository storeRepository;
 
+    private readonly IFireBaseService firebaseService;
+
     public BonusService(IBonusRepository bonusRepository,
-        IStoreRepository storeRepository)
+        IStoreRepository storeRepository,
+        IFireBaseService firebaseService)
     {
         var config = new MapperConfiguration(cfg
             =>
@@ -71,6 +75,7 @@ public class BonusService : IBonusService
         mapper = new Mapper(config);
         this.bonusRepository = bonusRepository;
         this.storeRepository = storeRepository;
+        this.firebaseService = firebaseService;
     }
 
     public BonusExtraModel Add(string id, CreateBonusModel creation)
@@ -83,6 +88,27 @@ public class BonusService : IBonusService
                 Bonus bonus = mapper.Map<Bonus>(creation);
                 bonus.StoreId = id;
                 bonus.BrandId = store.BrandId;
+
+                // Push notification to mobile app
+                firebaseService.PushNotificationToStudent(new Message
+                {
+                    Data = new Dictionary<string, string>()
+                                    {
+                                        { "brandId", "" },
+                                        { "campaignId", "" },
+                                        { "image", "" },
+                                    },
+                    //Token = registrationToken,
+                    Topic = creation.StudentId,
+                    Notification = new Notification()
+                    {
+                        Title = store.StoreName + " đã tặng đậu cho bạn",
+                        Body = "Bạn đã nhận được "
+                        + creation.Amount + " đậu xanh từ việc tặng đậu của " + store.StoreName,
+                        ImageUrl = ""
+                    }
+                });
+
                 return mapper.Map<BonusExtraModel>(bonusRepository.Add(bonus));
             }
             throw new InvalidParameterException("Số dư ví đậu xanh của thương hiệu là không đủ");

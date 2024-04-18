@@ -6,6 +6,7 @@ using Unibean.Repository.Repositories.Interfaces;
 using Unibean.Service.Models.Bonuses;
 using Unibean.Service.Models.Transactions;
 using Unibean.Service.Services;
+using Unibean.Service.Services.Interfaces;
 
 namespace Unibean.Test.Services;
 
@@ -15,10 +16,13 @@ public class BonusServiceTest
 
     private readonly IStoreRepository storeRepository;
 
+    private readonly IFireBaseService fireBaseService;
+
     public BonusServiceTest()
     {
         bonusRepository = A.Fake<IBonusRepository>();
         storeRepository = A.Fake<IStoreRepository>();
+        fireBaseService = A.Fake<IFireBaseService>();
     }
 
     [Fact]
@@ -47,7 +51,7 @@ public class BonusServiceTest
         {
             StoreId = id,
         });
-        var service = new BonusService(bonusRepository, storeRepository);
+        var service = new BonusService(bonusRepository, storeRepository, fireBaseService);
 
         // Act
         var result = service.Add(id, creation);
@@ -82,7 +86,7 @@ public class BonusServiceTest
         };
         A.CallTo(() => bonusRepository.GetAll(brandIds, storeIds, studentIds, state,
             propertySort, isAsc, search, page, limit)).Returns(pagedResultModel);
-        var service = new BonusService(bonusRepository, storeRepository);
+        var service = new BonusService(bonusRepository, storeRepository, fireBaseService);
 
         // Act
         var result = service.GetAll(brandIds, storeIds, studentIds,
@@ -104,7 +108,7 @@ public class BonusServiceTest
             {
                 Id = id
             });
-        var service = new BonusService(bonusRepository, storeRepository);
+        var service = new BonusService(bonusRepository, storeRepository, fireBaseService);
 
         // Act
         var result = service.GetById(id);
@@ -131,7 +135,7 @@ public class BonusServiceTest
         };
         A.CallTo(() => bonusRepository.GetList(brandIds, storeIds, studentIds, search))
             .Returns(list);
-        var service = new BonusService(bonusRepository, storeRepository);
+        var service = new BonusService(bonusRepository, storeRepository, fireBaseService);
 
         // Act
         var result = service.GetList(brandIds, storeIds, studentIds, search);

@@ -546,6 +546,7 @@ public class CampaignService : ICampaignService
                                     {
                                         { "brandId", entity.BrandId },
                                         { "campaignId", entity.Id },
+                                        { "image", entity.Image },
                                     },
                             //Token = registrationToken,
                             Topic = entity.BrandId,

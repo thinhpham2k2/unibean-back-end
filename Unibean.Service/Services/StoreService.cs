@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Vml.Office;
+using FirebaseAdmin.Messaging;
 using System.Linq.Dynamic.Core;
 using Unibean.Repository.Entities;
 using Unibean.Repository.Paging;
@@ -147,7 +149,8 @@ public class StoreService : IStoreService
         (string id, string code, CreateUseActivityModel creation)
     {
         DateOnly today = DateOnly.FromDateTime(DateTime.Now);
-        var item = voucherItemRepository.GetByVoucherCode(code, storeRepository.GetById(id).BrandId)
+        var store = storeRepository.GetById(id);
+        var item = voucherItemRepository.GetByVoucherCode(code, store.BrandId)
             ?? throw new InvalidParameterException("Không tìm thấy khuyến mãi");
         if (new[] { CampaignState.Active, CampaignState.Inactive }.Contains
             (item.CampaignDetail.Campaign.CampaignActivities.LastOrDefault().State.Value))
@@ -168,6 +171,28 @@ public class StoreService : IStoreService
                                 create.StudentId = item.Activities.FirstOrDefault().StudentId;
                                 create.VoucherItemId = item.Id;
                                 create.StoreId = id;
+
+                                // Push notification to mobile app
+                                fireBaseService.PushNotificationToStudent(new Message
+                                {
+                                    Data = new Dictionary<string, string>()
+                                    {
+                                        { "brandId", "" },
+                                        { "campaignId", "" },
+                                        { "image", "" },
+                                    },
+                                    //Token = registrationToken,
+                                    Topic = stu.Id,
+                                    Notification = new Notification()
+                                    {
+                                        Title = store.StoreName + " đã quét thành công " + item.Voucher.VoucherName,
+                                        Body = "Bạn đã nhận được " 
+                                        + item.CampaignDetail.Price * item.CampaignDetail.Rate 
+                                        + " đậu đỏ do sử dụng " + item.Voucher.VoucherName,
+                                        ImageUrl = ""
+                                    }
+                                });
+
                                 return activityService.Add(create) != null;
                             }
                             throw new InvalidParameterException("Sinh viên không hợp lệ");
