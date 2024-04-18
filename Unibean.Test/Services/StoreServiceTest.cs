@@ -77,6 +77,7 @@ public class StoreServiceTest
         // Arrange
         string id = "id";
         string code = "code";
+        string name = "name";
         string brandId = "brandId";
         CreateUseActivityModel creation = A.Fake<CreateUseActivityModel>();
         A.CallTo(() => voucherItemRepository.GetByVoucherCode(code, brandId)).Returns(new()
@@ -105,7 +106,9 @@ public class StoreServiceTest
                             StoreId = id,
                         }
                     }
-                }
+                },
+                Price = 2,
+                Rate = 2,
             },
             Activities = new List<Activity>()
             {
@@ -113,6 +116,10 @@ public class StoreServiceTest
                 {
                     StudentId = id,
                 }
+            },
+            Voucher = new()
+            {
+                VoucherName = name
             }
         });
         A.CallTo(() => storeRepository.GetById(id)).Returns(new()
@@ -121,6 +128,7 @@ public class StoreServiceTest
         });
         A.CallTo(() => studentRepository.GetById(id)).Returns(new()
         {
+            Id = id,
             State = StudentState.Active
         });
         A.CallTo(() => activityService.Add(A<CreateActivityModel>.Ignored)).Returns(new());
