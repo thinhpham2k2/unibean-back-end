@@ -543,11 +543,11 @@ public class CampaignService : ICampaignService
                         fireBaseService.PushNotificationToStudent(new Message
                         {
                             Data = new Dictionary<string, string>()
-                                    {
-                                        { "brandId", entity.BrandId },
-                                        { "campaignId", entity.Id },
-                                        { "image", entity.Image },
-                                    },
+                            {
+                                { "brandId", entity.BrandId },
+                                { "campaignId", entity.Id },
+                                { "image", entity.Image },
+                            },
                             //Token = registrationToken,
                             Topic = entity.BrandId,
                             Notification = new Notification()

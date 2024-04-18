@@ -93,11 +93,11 @@ public class BonusService : IBonusService
                 firebaseService.PushNotificationToStudent(new Message
                 {
                     Data = new Dictionary<string, string>()
-                                    {
-                                        { "brandId", "" },
-                                        { "campaignId", "" },
-                                        { "image", "" },
-                                    },
+                    {
+                        { "brandId", "" },
+                        { "campaignId", "" },
+                        { "image", "" },
+                    },
                     //Token = registrationToken,
                     Topic = creation.StudentId,
                     Notification = new Notification()

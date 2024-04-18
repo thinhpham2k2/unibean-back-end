@@ -83,6 +83,7 @@ public class FireBaseService : IFireBaseService
             {
                 { "brandId", "01HRNPKBJ03ZRJ1FKMFXTP17AZ" },
                 { "campaignId", "01HV425KPDFK48FEDQNYNK6B9V" },
+                { "image", "https://firebasestorage.googleapis.com/v0/b/upload-file-2ac29.appspot.com/o/campaigns%2F01HV425KPDQ97Z7TE7PYVMBMJW?alt=media&token=496ef81f-9493-40f4-9b3b-b67f4471bfb4" },
             },
             //Token = registrationToken,
             Topic = topic,
