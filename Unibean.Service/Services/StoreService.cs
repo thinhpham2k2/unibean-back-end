@@ -187,7 +187,7 @@ public class StoreService : IStoreService
                                     {
                                         Title = store.StoreName + " đã quét thành công " + item.Voucher.VoucherName,
                                         Body = "Bạn đã nhận được " 
-                                        + item.CampaignDetail.Price * item.CampaignDetail.Rate 
+                                        + (item.CampaignDetail.Price * item.CampaignDetail.Rate).Value.ToString("N2")
                                         + " đậu đỏ do sử dụng " + item.Voucher.VoucherName,
                                         ImageUrl = "https://image"
                                     }
