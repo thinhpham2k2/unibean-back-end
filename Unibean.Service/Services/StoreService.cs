@@ -179,7 +179,7 @@ public class StoreService : IStoreService
                                     {
                                         { "brandId", "" },
                                         { "campaignId", "" },
-                                        { "image", "" },
+                                        { "image", "https://image" },
                                     },
                                     //Token = registrationToken,
                                     Topic = stu.Id,
@@ -189,7 +189,7 @@ public class StoreService : IStoreService
                                         Body = "Bạn đã nhận được " 
                                         + item.CampaignDetail.Price * item.CampaignDetail.Rate 
                                         + " đậu đỏ do sử dụng " + item.Voucher.VoucherName,
-                                        ImageUrl = ""
+                                        ImageUrl = "https://image"
                                     }
                                 });
 

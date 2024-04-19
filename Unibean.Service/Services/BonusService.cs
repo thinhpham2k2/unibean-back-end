@@ -96,7 +96,7 @@ public class BonusService : IBonusService
                     {
                         { "brandId", "" },
                         { "campaignId", "" },
-                        { "image", "" },
+                        { "image", "https://image" },
                     },
                     //Token = registrationToken,
                     Topic = creation.StudentId,
@@ -105,7 +105,7 @@ public class BonusService : IBonusService
                         Title = store.StoreName + " đã tặng đậu cho bạn",
                         Body = "Bạn đã nhận được "
                         + creation.Amount + " đậu xanh từ việc tặng đậu của " + store.StoreName,
-                        ImageUrl = ""
+                        ImageUrl = "https://image"
                     }
                 });
 

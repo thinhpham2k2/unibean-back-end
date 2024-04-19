@@ -315,7 +315,7 @@ public class AdminController : ControllerBase
     }
 
     /// <summary>
-    /// Push noification to topic
+    /// Push notification to topic
     /// </summary>
     [HttpPost("notification")]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.Created)]
