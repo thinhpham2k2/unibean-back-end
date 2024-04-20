@@ -83,7 +83,8 @@ public class BonusService : IBonusService
         Store store = storeRepository.GetById(id);
         if (store != null)
         {
-            if (store.Brand.Wallets.Where(w => w.Type.Equals(WalletType.Green)).FirstOrDefault().Balance >= creation.Amount)
+            if (store.Brand.Wallets.Where(w => w.Type.Equals(WalletType.Green))
+                .FirstOrDefault().Balance * 0.1M >= creation.Amount)
             {
                 Bonus bonus = mapper.Map<Bonus>(creation);
                 bonus.StoreId = id;
@@ -111,7 +112,7 @@ public class BonusService : IBonusService
 
                 return mapper.Map<BonusExtraModel>(bonusRepository.Add(bonus));
             }
-            throw new InvalidParameterException("Số dư ví đậu xanh của thương hiệu là không đủ");
+            throw new InvalidParameterException("Lượng điểm thưởng không vượt quá 10% số dư ví đậu xanh của thương hiệu");
         }
         throw new InvalidParameterException("Không tìm thấy cửa hàng");
     }
