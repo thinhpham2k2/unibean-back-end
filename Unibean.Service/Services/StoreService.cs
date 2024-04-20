@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using DocumentFormat.OpenXml.Vml.Office;
 using FirebaseAdmin.Messaging;
 using System.Linq.Dynamic.Core;
 using Unibean.Repository.Entities;
@@ -186,7 +185,7 @@ public class StoreService : IStoreService
                                     Notification = new Notification()
                                     {
                                         Title = store.StoreName + " đã quét thành công " + item.Voucher.VoucherName,
-                                        Body = "Bạn đã nhận được " 
+                                        Body = "Bạn đã nhận được "
                                         + (item.CampaignDetail.Price * item.CampaignDetail.Rate).Value.ToString("N2")
                                         + " đậu đỏ do sử dụng " + item.Voucher.VoucherName,
                                         ImageUrl = "https://image"

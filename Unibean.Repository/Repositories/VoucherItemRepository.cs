@@ -52,7 +52,7 @@ public class VoucherItemRepository : IVoucherItemRepository
         {
             var db = unibeanDB;
             voucher = db.VoucherItems
-            .Where(s => s.VoucherCode.Equals(code) 
+            .Where(s => s.VoucherCode.Equals(code)
             && s.Voucher.BrandId.Equals(brandId))
             .FirstOrDefault();
         }

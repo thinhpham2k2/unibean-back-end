@@ -233,14 +233,14 @@ public class StudentServiceTest
                 }
             }
         };
-        A.CallTo(() => studentRepository.GetAll(majorIds, campusIds, universityIds, stateIds, 
+        A.CallTo(() => studentRepository.GetAll(majorIds, campusIds, universityIds, stateIds,
             isVerify, propertySort, isAsc, search, page, limit)).Returns(pagedResultModel);
         var service = new StudentService(studentRepository, fireBaseService, accountRepository,
             invitationService, studentChallengeService, challengeTransactionService, orderService,
             voucherItemService, emailService, transactionService);
 
         // Act
-        var result = service.GetAll(majorIds, campusIds, universityIds, stateIds, 
+        var result = service.GetAll(majorIds, campusIds, universityIds, stateIds,
             isVerify, propertySort, isAsc, search, page, limit);
 
         // Assert

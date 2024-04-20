@@ -179,8 +179,8 @@ public class StudentRepository : IStudentRepository
     }
 
     public PagedResultModel<Student> GetAll
-        (List<string> majorIds, List<string> campusIds, List<string> universityIds, 
-        List<StudentState> stateIds, bool? isVerify, string propertySort, bool isAsc, 
+        (List<string> majorIds, List<string> campusIds, List<string> universityIds,
+        List<StudentState> stateIds, bool? isVerify, string propertySort, bool isAsc,
         string search, int page, int limit)
     {
         PagedResultModel<Student> pagedResult = new();
