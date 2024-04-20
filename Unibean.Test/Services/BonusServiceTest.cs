@@ -32,7 +32,7 @@ public class BonusServiceTest
         string id = "id";
         CreateBonusModel creation = new()
         {
-            Amount = 0
+            Amount = 1
         };
         A.CallTo(() => storeRepository.GetById(id)).Returns(new()
         {
@@ -42,7 +42,7 @@ public class BonusServiceTest
                     new()
                     {
                         Type = WalletType.Green,
-                        Balance = 1
+                        Balance = 10
                     }
                 }
             }

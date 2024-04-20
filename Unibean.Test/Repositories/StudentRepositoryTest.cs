@@ -213,7 +213,7 @@ public class StudentRepositoryTest
         var repository = new StudentRepository(dbContext);
 
         // Act
-        var result = repository.GetAll(majorIds, campusIds, universityIds, 
+        var result = repository.GetAll(majorIds, campusIds, universityIds,
             stateIds, isVerify, propertySort, isAsc, search, page, limit);
 
         // Assert
