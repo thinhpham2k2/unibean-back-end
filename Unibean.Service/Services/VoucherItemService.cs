@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ClosedXML.Excel;
 using Enable.EnumDisplayName;
+using Microsoft.IdentityModel.Tokens;
 using MoreLinq;
 using System.Data;
 using System.Text.RegularExpressions;
@@ -341,7 +342,7 @@ public class VoucherItemService : IVoucherItemService
             sheet.Cell("C4").Style.Fill.BackgroundColor = XLColor.Orange;
             sheet.Cell("C5").Value = "Khuyến mãi đã được sử dụng";
             sheet.Cell("C5").Style.Fill.BackgroundColor = XLColor.Yellow;
-            var cells = sheet.Cells("B4:B1003").Where(c => !c.Value.IsBlank).ToList();
+            var cells = sheet.Cells("B4:B1003").Where(c => !c.Value.ToString().IsNullOrEmpty()).ToList();
 
             if (cells.Count == 0)
             {
