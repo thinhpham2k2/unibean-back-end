@@ -38,6 +38,19 @@ public class CampaignDetailRepositoryTest
                                     Id = i.ToString(),
                                 }
                             }
+                        },
+                        CampaignActivities = new List<CampaignActivity>()
+                        {
+                            new()
+                            {
+                                Id = "active1" + i.ToString(),
+                                State = CampaignState.Pending,
+                            },
+                            new()
+                            {
+                                Id = "active2" +  i.ToString(),
+                                State = CampaignState.Active,
+                            }
                         }
                     },
                     VoucherItems = new List<VoucherItem>()
