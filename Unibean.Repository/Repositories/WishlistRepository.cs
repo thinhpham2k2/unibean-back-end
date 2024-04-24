@@ -61,6 +61,7 @@ public class WishlistRepository : IWishlistRepository
                 && (studentIds.Count == 0 || studentIds.Contains(t.StudentId))
                 && (brandIds.Count == 0 || brandIds.Contains(t.BrandId))
                 && (state == null || state.Equals(t.State))
+                && (bool)t.Brand.Status
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 

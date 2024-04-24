@@ -244,7 +244,7 @@ public class StudentRepository : IStudentRepository
             .Include(b => b.Account)
             .Include(s => s.Activities.Where(a => (bool)a.Status))
             .Include(s => s.Wallets.Where(w => (bool)w.Status))
-            .Include(s => s.Wishlists.Where(w => (bool)w.Status))
+            .Include(s => s.Wishlists.Where(w => (bool)w.Status && (bool)w.Brand.Status))
             .Include(s => s.Inviters.Where(i => (bool)i.Status))
             .Include(s => s.Invitees.Where(i => (bool)i.Status))
                 .ThenInclude(i => i.Inviter)
