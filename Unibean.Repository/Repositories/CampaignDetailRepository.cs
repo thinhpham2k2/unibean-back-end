@@ -106,7 +106,8 @@ public class CampaignDetailRepository : ICampaignDetailRepository
                 && (campaignIds.Count == 0 || campaignIds.Contains(t.CampaignId))
                 && (typeIds.Count == 0 || typeIds.Contains(t.Voucher.TypeId))
                 && (state == null || state.Equals(t.State))
-                && t.Campaign.CampaignActivities.LastOrDefault().State.Equals(CampaignState.Active)
+                && t.Campaign.CampaignActivities.OrderBy(a => a.Id)
+                .LastOrDefault().State.Equals(CampaignState.Active)
                 && (bool)t.Status)
                 .OrderBy(propertySort + (isAsc ? " ascending" : " descending"));
 
