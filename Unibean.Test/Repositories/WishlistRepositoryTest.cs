@@ -25,6 +25,11 @@ public class WishlistRepositoryTest
                     Id = i.ToString(),
                     StudentId = i.ToString(),
                     BrandId = i.ToString(),
+                    Brand = new()
+                    {
+                        Id = i.ToString(),
+                        Status = i % 2 == 0,
+                    },
                     Description = "description" + i,
                     State = true,
                     Status = true,
@@ -90,7 +95,7 @@ public class WishlistRepositoryTest
         // Assert
         result.Should().NotBeNull();
         result.Should().BeOfType<PagedResultModel<Wishlist>>();
-        Assert.Equal(10, result.RowCount);
+        Assert.Equal(5, result.RowCount);
     }
 
     [Fact]
