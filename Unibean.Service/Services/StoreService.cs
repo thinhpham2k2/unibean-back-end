@@ -152,7 +152,7 @@ public class StoreService : IStoreService
         var item = voucherItemRepository.GetByVoucherCode(code, store.BrandId)
             ?? throw new InvalidParameterException("Không tìm thấy khuyến mãi");
         if (new[] { CampaignState.Active, CampaignState.Inactive }.Contains
-            (item.CampaignDetail.Campaign.CampaignActivities.LastOrDefault().State.Value))
+            (item.CampaignDetail.Campaign.CampaignActivities.OrderBy(a => a.Id).LastOrDefault().State.Value))
         {
             if (item.CampaignDetail.Campaign.StartOn <= today && today <= item.CampaignDetail.Campaign.EndOn)
             {
@@ -213,7 +213,8 @@ public class StoreService : IStoreService
         if (entity != null)
         {
             if (entity.CampaignStores.All(
-                s => new[] { CampaignState.Closed, CampaignState.Cancelled }.Contains(s.Campaign.CampaignActivities.LastOrDefault().State.Value)))
+                s => new[] { CampaignState.Closed, CampaignState.Cancelled }
+                .Contains(s.Campaign.CampaignActivities.LastOrDefault().State.Value)))
             {
                 // Avatar
                 if (entity.Account.Avatar != null && entity.Account.Avatar.Length > 0)
@@ -354,10 +355,8 @@ public class StoreService : IStoreService
         var item = voucherItemRepository.GetByVoucherCode(code, storeRepository.GetById(id).BrandId)
             ?? throw new InvalidParameterException("Không tìm thấy khuyến mãi");
 
-        foreach (var a in item.CampaignDetail.Campaign.CampaignActivities)
-        {
-            Console.WriteLine(a.State);
-        }
+        item.CampaignDetail.Campaign.CampaignActivities =
+            item.CampaignDetail.Campaign.CampaignActivities.OrderBy(a => a.Id).ToList();
 
         if (item.ValidOn <= today && today <= item.ExpireOn)
         {
