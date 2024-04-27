@@ -353,6 +353,12 @@ public class StoreService : IStoreService
 
         var item = voucherItemRepository.GetByVoucherCode(code, storeRepository.GetById(id).BrandId)
             ?? throw new InvalidParameterException("Không tìm thấy khuyến mãi");
+
+        foreach (var a in item.CampaignDetail.Campaign.CampaignActivities)
+        {
+            Console.WriteLine(a.State);
+        }
+
         if (item.ValidOn <= today && today <= item.ExpireOn)
         {
             if (item.CampaignDetail.Campaign.CampaignStores.Any(c => c.StoreId.Equals(id)))
