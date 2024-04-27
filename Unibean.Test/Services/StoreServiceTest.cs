@@ -452,6 +452,13 @@ public class StoreServiceTest
                         {
                             StoreId = id,
                         }
+                    },
+                    CampaignActivities = new List<CampaignActivity>()
+                    {
+                        new()
+                        {
+                            Id = id,
+                        }
                     }
                 }
             }
