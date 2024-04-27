@@ -184,10 +184,10 @@ public class StoreService : IStoreService
                                     Topic = stu.Id,
                                     Notification = new Notification()
                                     {
-                                        Title = store.StoreName + " đã quét thành công " + item.Voucher.VoucherName,
+                                        Title = store.StoreName + " đã quét thành công khuyến mãi \"" + item.Voucher.VoucherName + "\"",
                                         Body = "Bạn đã nhận được "
                                         + (item.CampaignDetail.Price * item.CampaignDetail.Rate).Value.ToString("N2")
-                                        + " đậu đỏ do sử dụng " + item.Voucher.VoucherName,
+                                        + " đậu đỏ do sử dụng khuyến mãi \"" + item.Voucher.VoucherName + "\"",
                                         ImageUrl = "https://image"
                                     }
                                 });
