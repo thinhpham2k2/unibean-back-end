@@ -24,17 +24,13 @@ public class AdminController : ControllerBase
 
     private readonly IRequestService requestService;
 
-    private readonly IFireBaseService fireBaseService;
-
     public AdminController(IAdminService adminService,
         IChartService chartService,
-        IRequestService requestService,
-        IFireBaseService fireBaseService)
+        IRequestService requestService)
     {
         this.adminService = adminService;
         this.chartService = chartService;
         this.requestService = requestService;
-        this.fireBaseService = fireBaseService;
     }
 
     /// <summary>
@@ -307,28 +303,6 @@ public class AdminController : ControllerBase
         try
         {
             return StatusCode(StatusCodes.Status200OK, chartService.GetTitleAdmin(id));
-        }
-        catch (InvalidParameterException e)
-        {
-            return StatusCode(StatusCodes.Status400BadRequest, e.Message);
-        }
-    }
-
-    /// <summary>
-    /// Push notification to topic
-    /// </summary>
-    [HttpPost("notification")]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.Created)]
-    [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.BadRequest)]
-    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
-    public IActionResult PushNoification([FromBody] string topic)
-    {
-        if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
-
-        try
-        {
-            return StatusCode(StatusCodes.Status201Created,
-                fireBaseService.PushNotificationToTopic(topic));
         }
         catch (InvalidParameterException e)
         {
