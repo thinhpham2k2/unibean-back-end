@@ -21,14 +21,11 @@ public class AdminControllerTest
 
     private readonly IRequestService requestService;
 
-    private readonly IFireBaseService fireBaseService;
-
     public AdminControllerTest()
     {
         adminService = A.Fake<IAdminService>();
         chartService = A.Fake<IChartService>();
         requestService = A.Fake<IRequestService>();
-        fireBaseService = A.Fake<IFireBaseService>();
     }
 
     [Fact]
@@ -44,7 +41,7 @@ public class AdminControllerTest
             Limit = 10,
         };
         var controller = new AdminController
-            (adminService, chartService, requestService, fireBaseService);
+            (adminService, chartService, requestService);
 
         // Act
         var result = controller.GetList(state, paging);
@@ -69,7 +66,7 @@ public class AdminControllerTest
             Limit = 10,
         };
         var controller = new AdminController
-            (adminService, chartService, requestService, fireBaseService);
+            (adminService, chartService, requestService);
         controller.ModelState.AddModelError("SessionName", "Required");
 
         // Act & Assert
@@ -90,7 +87,7 @@ public class AdminControllerTest
             Limit = 10,
         };
         var controller = new AdminController
-            (adminService, chartService, requestService, fireBaseService);
+            (adminService, chartService, requestService);
 
         // Act
         var result = controller.GetList(state, paging);
@@ -109,7 +106,7 @@ public class AdminControllerTest
         string id = "";
         A.CallTo(() => adminService.GetById(id)).Returns(new());
         var controller = new AdminController
-            (adminService, chartService, requestService, fireBaseService);
+            (adminService, chartService, requestService);
 
         // Act
         var result = controller.GetById(id);
@@ -128,7 +125,7 @@ public class AdminControllerTest
         string id = "";
         A.CallTo(() => adminService.GetById(id)).Throws(new InvalidParameterException());
         var controller = new AdminController
-            (adminService, chartService, requestService, fireBaseService);
+            (adminService, chartService, requestService);
 
         // Act
         var result = controller.GetById(id);
@@ -147,7 +144,7 @@ public class AdminControllerTest
         CreateAdminModel create = new();
         A.CallTo(() => adminService.Add(create)).Returns<AdminExtraModel>(new());
         var controller = new AdminController
-            (adminService, chartService, requestService, fireBaseService);
+            (adminService, chartService, requestService);
 
         // Act
         var result = controller.Create(create);
@@ -165,7 +162,7 @@ public class AdminControllerTest
         // Arrange
         CreateAdminModel create = new();
         var controller = new AdminController
-            (adminService, chartService, requestService, fireBaseService);
+            (adminService, chartService, requestService);
         controller.ModelState.AddModelError("SessionName", "Required");
 
         // Act
@@ -186,7 +183,7 @@ public class AdminControllerTest
         A.CallTo(() => adminService.Add(create))
             .Throws(new InvalidParameterException());
         var controller = new AdminController
-            (adminService, chartService, requestService, fireBaseService);
+            (adminService, chartService, requestService);
 
         // Act
         var result = controller.Create(create);
@@ -205,7 +202,7 @@ public class AdminControllerTest
         CreateAdminModel create = new();
         A.CallTo(() => adminService.Add(create)).Returns<AdminExtraModel>(null);
         var controller = new AdminController
-            (adminService, chartService, requestService, fireBaseService);
+            (adminService, chartService, requestService);
 
         // Act
         var result = controller.Create(create);
@@ -225,7 +222,7 @@ public class AdminControllerTest
         UpdateAdminModel update = new();
         A.CallTo(() => adminService.Update(id, update)).Returns<AdminExtraModel>(new());
         var controller = new AdminController
-            (adminService, chartService, requestService, fireBaseService);
+            (adminService, chartService, requestService);
 
         // Act
         var result = controller.Update(id, update);
@@ -244,7 +241,7 @@ public class AdminControllerTest
         string id = "";
         UpdateAdminModel update = new();
         var controller = new AdminController
-            (adminService, chartService, requestService, fireBaseService);
+            (adminService, chartService, requestService);
         controller.ModelState.AddModelError("SessionName", "Required");
 
         // Act
@@ -266,7 +263,7 @@ public class AdminControllerTest
         A.CallTo(() => adminService.Update(id, update))
             .Throws(new InvalidParameterException());
         var controller = new AdminController
-            (adminService, chartService, requestService, fireBaseService);
+            (adminService, chartService, requestService);
 
         // Act
         var result = controller.Update(id, update);
@@ -286,7 +283,7 @@ public class AdminControllerTest
         UpdateAdminModel update = new();
         A.CallTo(() => adminService.Update(id, update)).Returns<AdminExtraModel>(null);
         var controller = new AdminController
-            (adminService, chartService, requestService, fireBaseService);
+            (adminService, chartService, requestService);
 
         // Act
         var result = controller.Update(id, update);
@@ -304,7 +301,7 @@ public class AdminControllerTest
         // Arrange
         string id = "";
         var controller = new AdminController
-            (adminService, chartService, requestService, fireBaseService);
+            (adminService, chartService, requestService);
 
         // Act
         var result = controller.Delete(id);
@@ -323,7 +320,7 @@ public class AdminControllerTest
         string id = "";
         A.CallTo(() => adminService.Delete(id)).Throws(new InvalidParameterException());
         var controller = new AdminController
-            (adminService, chartService, requestService, fireBaseService);
+            (adminService, chartService, requestService);
 
         // Act
         var result = controller.Delete(id);
@@ -343,7 +340,7 @@ public class AdminControllerTest
         A.CallTo(() => chartService.GetRankingChart
         (id, typeof(Brand), Role.Admin)).Returns(new());
         var controller = new AdminController
-            (adminService, chartService, requestService, fireBaseService);
+            (adminService, chartService, requestService);
 
         // Act
         var result = controller.GetBrandRankingByAdminId(id);
@@ -364,7 +361,7 @@ public class AdminControllerTest
         (id, typeof(Brand), Role.Admin))
             .Throws(new InvalidParameterException());
         var controller = new AdminController
-            (adminService, chartService, requestService, fireBaseService);
+            (adminService, chartService, requestService);
 
         // Act
         var result = controller.GetBrandRankingByAdminId(id);
@@ -384,7 +381,7 @@ public class AdminControllerTest
         A.CallTo(() => chartService.GetRankingChart
         (id, typeof(Student), Role.Admin)).Returns(new());
         var controller = new AdminController
-            (adminService, chartService, requestService, fireBaseService);
+            (adminService, chartService, requestService);
 
         // Act
         var result = controller.GetStudentRankingByAdminId(id);
@@ -405,7 +402,7 @@ public class AdminControllerTest
         (id, typeof(Student), Role.Admin))
             .Throws(new InvalidParameterException());
         var controller = new AdminController
-            (adminService, chartService, requestService, fireBaseService);
+            (adminService, chartService, requestService);
 
         // Act
         var result = controller.GetStudentRankingByAdminId(id);
@@ -428,7 +425,7 @@ public class AdminControllerTest
         A.CallTo(() => chartService.GetColumnChart
         (id, fromDate, toDate, isAsc, Role.Admin)).Returns(new());
         var controller = new AdminController
-            (adminService, chartService, requestService, fireBaseService);
+            (adminService, chartService, requestService);
 
         // Act
         var result = controller.GetColumnChartByAdminId(id, fromDate, toDate, isAsc);
@@ -452,7 +449,7 @@ public class AdminControllerTest
         (id, fromDate, toDate, isAsc, Role.Admin))
             .Throws(new InvalidParameterException());
         var controller = new AdminController
-            (adminService, chartService, requestService, fireBaseService);
+            (adminService, chartService, requestService);
 
         // Act
         var result = controller.GetColumnChartByAdminId(id, fromDate, toDate, isAsc);
@@ -471,7 +468,7 @@ public class AdminControllerTest
         string id = "";
         A.CallTo(() => chartService.GetLineChart(id, Role.Admin)).Returns(new());
         var controller = new AdminController
-            (adminService, chartService, requestService, fireBaseService);
+            (adminService, chartService, requestService);
 
         // Act
         var result = controller.GetLineChartByAdminId(id);
@@ -491,7 +488,7 @@ public class AdminControllerTest
         A.CallTo(() => chartService.GetLineChart(id, Role.Admin))
             .Throws(new InvalidParameterException());
         var controller = new AdminController
-            (adminService, chartService, requestService, fireBaseService);
+            (adminService, chartService, requestService);
 
         // Act
         var result = controller.GetLineChartByAdminId(id);
@@ -511,7 +508,7 @@ public class AdminControllerTest
         CreateRequestModel create = new();
         A.CallTo(() => requestService.Add(id, create)).Returns(new());
         var controller = new AdminController
-            (adminService, chartService, requestService, fireBaseService);
+            (adminService, chartService, requestService);
 
         // Act
         var result = controller.CreateRequest(id, create);
@@ -530,7 +527,7 @@ public class AdminControllerTest
         string id = "";
         CreateRequestModel create = new();
         var controller = new AdminController
-            (adminService, chartService, requestService, fireBaseService);
+            (adminService, chartService, requestService);
         controller.ModelState.AddModelError("SessionName", "Required");
 
         // Act & Assert
@@ -547,7 +544,7 @@ public class AdminControllerTest
         A.CallTo(() => requestService.Add(id, create))
             .Throws(new InvalidParameterException());
         var controller = new AdminController
-            (adminService, chartService, requestService, fireBaseService);
+            (adminService, chartService, requestService);
 
         // Act
         var result = controller.CreateRequest(id, create);
@@ -567,7 +564,7 @@ public class AdminControllerTest
         CreateRequestModel create = new();
         A.CallTo(() => requestService.Add(id, create)).Returns(null);
         var controller = new AdminController
-            (adminService, chartService, requestService, fireBaseService);
+            (adminService, chartService, requestService);
 
         // Act
         var result = controller.CreateRequest(id, create);
@@ -586,7 +583,7 @@ public class AdminControllerTest
         string id = "";
         A.CallTo(() => chartService.GetTitleAdmin(id)).Returns(new());
         var controller = new AdminController
-            (adminService, chartService, requestService, fireBaseService);
+            (adminService, chartService, requestService);
 
         // Act
         var result = controller.GetTitleByAdminId(id);
@@ -606,7 +603,7 @@ public class AdminControllerTest
         A.CallTo(() => chartService.GetTitleAdmin(id))
             .Throws(new InvalidParameterException());
         var controller = new AdminController
-            (adminService, chartService, requestService, fireBaseService);
+            (adminService, chartService, requestService);
 
         // Act
         var result = controller.GetTitleByAdminId(id);
