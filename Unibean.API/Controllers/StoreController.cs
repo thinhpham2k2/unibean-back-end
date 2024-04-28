@@ -285,7 +285,7 @@ public class StoreController : ControllerBase
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<string> ScanVoucher(
         [ValidStore] string id,
-        [ValidItem] string code,
+        string code,
         CreateUseActivityModel creation)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
@@ -314,7 +314,7 @@ public class StoreController : ControllerBase
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public ActionResult<VoucherItemExtraModel> GetVoucherInformation(
         [ValidStore] string id,
-        [ValidItem] string code)
+        string code)
     {
         if (!ModelState.IsValid) throw new InvalidParameterException(ModelState);
 
